@@ -599,3 +599,205 @@ input:focus-visible,select:focus-visible,textarea:focus-visible{
   .intro-splash{display:none!important}
   .hero-golf-scene,.floating-golf-icon{display:none!important}
 }
+
+
+/* ===== Version 5: cinematic first-tee intro ===== */
+.intro-splash{
+  background:
+    radial-gradient(circle at 50% 28%, rgba(217,182,95,.24), transparent 26%),
+    linear-gradient(180deg,#03291d 0%,#063d2a 68%,#0b5338 100%);
+}
+.intro-fairway{
+  position:absolute;
+  left:-4vw;
+  right:-4vw;
+  bottom:-4px;
+  height:24vh;
+  min-height:150px;
+  background:
+    linear-gradient(180deg,rgba(255,255,255,.05),transparent 20%),
+    repeating-linear-gradient(
+      100deg,
+      rgba(255,255,255,.035) 0 30px,
+      rgba(0,0,0,.025) 30px 60px
+    ),
+    linear-gradient(180deg,#2e8b58,#17613f);
+  clip-path:ellipse(75% 55% at 50% 100%);
+  box-shadow:inset 0 18px 45px rgba(255,255,255,.04);
+}
+.intro-green{
+  position:absolute;
+  right:4vw;
+  bottom:0;
+  width:min(34vw,420px);
+  height:18vh;
+  min-height:125px;
+  border-radius:50% 50% 0 0 / 100% 100% 0 0;
+  background:radial-gradient(circle at 48% 38%,#59ad72 0 12%,#36935d 38%,#1c7348 100%);
+  box-shadow:inset 0 14px 30px rgba(255,255,255,.06),0 -12px 36px rgba(0,0,0,.12);
+}
+.intro-cup{
+  position:absolute;
+  right:13.5vw;
+  bottom:8vh;
+  width:34px;
+  height:13px;
+  background:#051a12;
+  border-radius:50%;
+  box-shadow:0 2px 0 rgba(255,255,255,.14),inset 0 3px 6px rgba(0,0,0,.65);
+}
+.intro-flag{
+  position:absolute;
+  right:15vw;
+  bottom:8vh;
+  width:5px;
+  height:132px;
+  background:linear-gradient(180deg,#fff,#dedede);
+  transform-origin:bottom center;
+  animation:introFlagIdle 2.8s ease-in-out infinite;
+}
+.intro-flag::before{
+  content:"";
+  position:absolute;
+  left:5px;
+  top:5px;
+  width:78px;
+  height:42px;
+  background:linear-gradient(135deg,var(--gold-400),var(--gold-700));
+  clip-path:polygon(0 0,100% 18%,70% 100%,0 82%);
+  transform-origin:left center;
+  animation:introFlagWave 1.35s ease-in-out infinite;
+}
+.intro-flag.hit{
+  animation:introFlagHit .75s var(--ease);
+}
+.intro-ball{
+  position:absolute;
+  left:4vw;
+  bottom:7.5vh;
+  width:40px;
+  height:40px;
+  z-index:3;
+  animation:none;
+}
+.intro-splash.is-rolling .intro-ball{
+  animation:introBallToCup 2.35s var(--ease) forwards;
+}
+.intro-ball-shadow{
+  position:absolute;
+  left:4vw;
+  bottom:6.7vh;
+  width:44px;
+  height:12px;
+  border-radius:50%;
+  background:rgba(0,0,0,.22);
+  filter:blur(4px);
+  transform-origin:center;
+  animation:none;
+}
+.intro-splash.is-rolling .intro-ball-shadow{
+  animation:introShadowToCup 2.35s var(--ease) forwards;
+}
+.intro-trail{
+  position:absolute;
+  left:6vw;
+  right:17vw;
+  bottom:9vh;
+  height:3px;
+  border-radius:4px;
+  background:linear-gradient(90deg,rgba(255,255,255,.0),rgba(255,255,255,.2),rgba(255,255,255,0));
+  transform:scaleX(0);
+  transform-origin:left;
+}
+.intro-splash.is-rolling .intro-trail{
+  animation:introTrail 1.85s ease-out forwards;
+}
+.intro-hole-pulse{
+  position:absolute;
+  right:13.4vw;
+  bottom:7.7vh;
+  width:40px;
+  height:18px;
+  border:2px solid rgba(255,255,255,.32);
+  border-radius:50%;
+  opacity:0;
+}
+.intro-hole-pulse.is-active{
+  animation:holePulse .8s ease-out;
+}
+@keyframes introBallToCup{
+  0%{transform:translate(0,0) rotate(0deg) scale(1);opacity:1}
+  14%{transform:translate(10vw,-4px) rotate(260deg)}
+  38%{transform:translate(36vw,2px) rotate(760deg)}
+  66%{transform:translate(62vw,-2px) rotate(1320deg)}
+  84%{transform:translate(calc(79vw - 88px),0) rotate(1680deg)}
+  93%{transform:translate(calc(81vw - 78px),2px) rotate(1780deg) scale(.93)}
+  100%{transform:translate(calc(82vw - 72px),13px) rotate(1840deg) scale(.42);opacity:0}
+}
+@keyframes introShadowToCup{
+  0%{transform:translateX(0) scale(1);opacity:.22}
+  84%{transform:translateX(calc(79vw - 88px)) scale(.85);opacity:.18}
+  100%{transform:translateX(calc(82vw - 72px)) scale(.35);opacity:0}
+}
+@keyframes introTrail{
+  0%{transform:scaleX(0);opacity:0}
+  18%{opacity:1}
+  100%{transform:scaleX(1);opacity:.6}
+}
+@keyframes holePulse{
+  0%{transform:scale(.7);opacity:.8}
+  100%{transform:scale(2.2);opacity:0}
+}
+@keyframes introFlagWave{
+  50%{transform:skewY(-7deg) scaleX(.92)}
+}
+@keyframes introFlagIdle{
+  50%{transform:rotate(.7deg)}
+}
+@keyframes introFlagHit{
+  0%{transform:rotate(0)}
+  30%{transform:rotate(4deg)}
+  62%{transform:rotate(-2deg)}
+  100%{transform:rotate(0)}
+}
+.intro-copy{
+  position:absolute;
+  left:50%;
+  top:7vh;
+  transform:translateX(-50%);
+  width:min(92vw,760px);
+  text-align:center;
+  color:#fff;
+}
+.intro-copy strong{
+  display:block;
+  font-family:"Playfair Display",Georgia,serif;
+  font-size:clamp(1.7rem,4vw,3rem);
+  line-height:1.1;
+}
+.intro-copy span{
+  display:block;
+  margin-top:8px;
+  color:#e3efe8;
+  font-size:clamp(.95rem,2vw,1.15rem);
+}
+@media(max-width:700px){
+  .intro-green{right:-10vw;width:58vw}
+  .intro-cup{right:17vw}
+  .intro-flag{right:20vw;height:112px}
+  .intro-ball{bottom:9vh}
+  .intro-ball-shadow{bottom:8.2vh}
+  .intro-trail{bottom:10.5vh;right:22vw}
+  .intro-hole-pulse{right:16.8vw;bottom:8.2vh}
+  @keyframes introBallToCup{
+    0%{transform:translate(0,0) rotate(0) scale(1);opacity:1}
+    72%{transform:translate(calc(70vw - 42px),0) rotate(1250deg)}
+    92%{transform:translate(calc(73vw - 36px),2px) rotate(1380deg) scale(.88)}
+    100%{transform:translate(calc(74vw - 32px),12px) rotate(1440deg) scale(.4);opacity:0}
+  }
+  @keyframes introShadowToCup{
+    0%{transform:translateX(0) scale(1);opacity:.22}
+    92%{transform:translateX(calc(73vw - 36px)) scale(.82);opacity:.16}
+    100%{transform:translateX(calc(74vw - 32px)) scale(.35);opacity:0}
+  }
+}
