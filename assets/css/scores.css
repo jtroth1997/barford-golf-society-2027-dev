@@ -976,3 +976,308 @@ main{
     width:auto;
   }
 }
+
+
+/* =========================================================
+   Mobile admin fix — stacked, simple and touch-friendly
+   ========================================================= */
+@media (max-width: 719px) {
+  .admin-dialog {
+    inset: 0 !important;
+    width: 100vw !important;
+    height: 100dvh !important;
+    max-width: none !important;
+    max-height: none !important;
+    margin: 0 !important;
+    padding: 0 !important;
+    border-radius: 0 !important;
+    overflow: hidden !important;
+  }
+
+  .admin-shell {
+    display: flex !important;
+    flex-direction: column !important;
+    width: 100% !important;
+    height: 100dvh !important;
+    min-height: 100dvh !important;
+    max-height: 100dvh !important;
+    overflow: hidden !important;
+  }
+
+  .admin-sidebar {
+    position: static !important;
+    width: 100% !important;
+    height: auto !important;
+    min-height: 0 !important;
+    padding: 14px 12px 10px !important;
+    flex: 0 0 auto !important;
+  }
+
+  .admin-sidebar > div {
+    display: flex !important;
+    align-items: center !important;
+    justify-content: space-between !important;
+    gap: 12px !important;
+  }
+
+  .admin-sidebar .eyebrow {
+    margin-bottom: 2px !important;
+  }
+
+  .admin-sidebar h2 {
+    margin: 0 0 10px !important;
+    font-size: 1.25rem !important;
+    line-height: 1.15 !important;
+  }
+
+  .admin-sidebar nav {
+    display: flex !important;
+    flex-wrap: nowrap !important;
+    gap: 8px !important;
+    width: 100% !important;
+    overflow-x: auto !important;
+    overflow-y: hidden !important;
+    padding: 2px 0 6px !important;
+    scroll-snap-type: x proximity !important;
+    -webkit-overflow-scrolling: touch !important;
+  }
+
+  .admin-nav-button {
+    flex: 0 0 auto !important;
+    min-width: max-content !important;
+    min-height: 44px !important;
+    padding: 10px 14px !important;
+    border-radius: 999px !important;
+    scroll-snap-align: start !important;
+    font-size: .92rem !important;
+  }
+
+  .admin-content {
+    flex: 1 1 auto !important;
+    min-width: 0 !important;
+    min-height: 0 !important;
+    width: 100% !important;
+    overflow-y: auto !important;
+    overflow-x: hidden !important;
+    padding: 0 12px calc(28px + env(safe-area-inset-bottom)) !important;
+    -webkit-overflow-scrolling: touch !important;
+  }
+
+  .admin-header {
+    position: sticky !important;
+    top: 0 !important;
+    z-index: 10 !important;
+    margin: 0 -12px 12px !important;
+    padding: 12px !important;
+    display: flex !important;
+    align-items: center !important;
+    gap: 10px !important;
+    background: rgba(243,246,244,.98) !important;
+    border-bottom: 1px solid var(--line) !important;
+  }
+
+  .admin-header > div {
+    min-width: 0 !important;
+    flex: 1 1 auto !important;
+  }
+
+  .admin-header h2 {
+    font-size: 1.18rem !important;
+    line-height: 1.15 !important;
+    overflow-wrap: anywhere !important;
+  }
+
+  .admin-header .icon-button {
+    flex: 0 0 44px !important;
+    width: 44px !important;
+    height: 44px !important;
+    min-width: 44px !important;
+    min-height: 44px !important;
+  }
+
+  .dev-banner {
+    margin: 10px 0 14px !important;
+    padding: 12px !important;
+    font-size: .9rem !important;
+    line-height: 1.4 !important;
+  }
+
+  .admin-panel,
+  .admin-guide,
+  .card-form,
+  .danger-card {
+    width: 100% !important;
+    max-width: 100% !important;
+  }
+
+  .admin-panel {
+    padding-bottom: 8px !important;
+  }
+
+  .admin-panel h3,
+  .admin-guide h3,
+  .card-form h3,
+  .danger-card h3 {
+    font-size: 1.25rem !important;
+    line-height: 1.2 !important;
+  }
+
+  .form-grid,
+  .form-grid.two-column,
+  .action-grid {
+    display: grid !important;
+    grid-template-columns: 1fr !important;
+    gap: 12px !important;
+  }
+
+  .field,
+  .card-form .field {
+    width: 100% !important;
+    margin: 0 0 12px !important;
+  }
+
+  .field input,
+  .field select,
+  .field textarea {
+    width: 100% !important;
+    min-width: 0 !important;
+    min-height: 52px !important;
+    font-size: 16px !important;
+  }
+
+  .score-entry-list {
+    display: grid !important;
+    gap: 14px !important;
+  }
+
+  .score-entry-row {
+    display: grid !important;
+    grid-template-columns: 1fr !important;
+    gap: 12px !important;
+    width: 100% !important;
+    padding: 14px !important;
+    overflow: visible !important;
+  }
+
+  .score-player {
+    width: 100% !important;
+    min-width: 0 !important;
+  }
+
+  .score-player strong {
+    font-size: 1.05rem !important;
+  }
+
+  .score-player span {
+    white-space: normal !important;
+    overflow-wrap: anywhere !important;
+  }
+
+  .calculated-result {
+    grid-column: 1 !important;
+    display: grid !important;
+    grid-template-columns: 1fr !important;
+    gap: 10px !important;
+    width: 100% !important;
+  }
+
+  .calculated-result span {
+    display: flex !important;
+    flex-direction: row !important;
+    align-items: center !important;
+    justify-content: space-between !important;
+    gap: 12px !important;
+  }
+
+  .admin-list {
+    display: grid !important;
+    gap: 10px !important;
+  }
+
+  .admin-list-item {
+    display: grid !important;
+    grid-template-columns: 1fr !important;
+    gap: 12px !important;
+    width: 100% !important;
+    padding: 14px !important;
+  }
+
+  .admin-list-item > div {
+    min-width: 0 !important;
+  }
+
+  .admin-list-item h4,
+  .admin-list-item span {
+    white-space: normal !important;
+    overflow-wrap: anywhere !important;
+  }
+
+  .primary-button,
+  .secondary-button,
+  .danger-button,
+  .upload-button,
+  .small-button {
+    width: 100% !important;
+    min-height: 52px !important;
+    justify-content: center !important;
+    text-align: center !important;
+  }
+
+  .admin-steps {
+    gap: 10px !important;
+  }
+
+  .admin-steps li {
+    grid-template-columns: 38px minmax(0,1fr) !important;
+    gap: 4px 10px !important;
+    padding: 13px !important;
+  }
+
+  .admin-steps li::before {
+    width: 36px !important;
+    height: 36px !important;
+  }
+
+  .confirm-dialog {
+    width: calc(100% - 20px) !important;
+    max-width: none !important;
+    max-height: calc(100dvh - 20px) !important;
+    padding: 18px !important;
+  }
+
+  .dialog-actions {
+    display: grid !important;
+    grid-template-columns: 1fr !important;
+    gap: 10px !important;
+  }
+
+  .dialog-actions button {
+    width: 100% !important;
+    min-height: 50px !important;
+  }
+}
+
+/* Extra tightening for narrow phones */
+@media (max-width: 390px) {
+  .admin-sidebar {
+    padding-inline: 10px !important;
+  }
+
+  .admin-content {
+    padding-inline: 10px !important;
+  }
+
+  .admin-header {
+    margin-inline: -10px !important;
+    padding-inline: 10px !important;
+  }
+
+  .admin-nav-button {
+    font-size: .86rem !important;
+    padding-inline: 12px !important;
+  }
+
+  .score-entry-row {
+    padding: 12px !important;
+  }
+}
