@@ -1,33 +1,12 @@
-# Barford Golf Society 2027 — Updated Video Intro Edition
+# Barford Golf Society 2027 Scores
 
-This complete static website includes:
+Open via a local web server because the JavaScript uses ES modules.
 
-- the latest cinematic intro video supplied for the project
-- full-screen autoplay with sound muted for browser compatibility
-- skip-intro button
-- mobile-safe full-screen video presentation
-- reduced-motion support
-- elegant dark green and gold design
-- Home
-- Events
-- World Events
-- Scores
-- Shop
-- Gallery
-- About Us
-- Sign Up
-- responsive navigation
-- mobile quick navigation
-- safe demo-only forms and admin previews
+Example:
+```bash
+python3 -m http.server 8080
+```
+Then visit `http://localhost:8080/scores.html`.
 
-## Safety
-
-This development build is not connected to the current live website, database, storage, payments or production administration tools.
-
-## Upload
-
-Upload every item inside this folder to the root of the `barford-golf-society-2027-dev` repository, preserving the `assets` directory.
-
-The updated intro video is stored at:
-
-`assets/video/intro.mp4`
+The current build stores development data only in browser localStorage.
+The backend boundary is isolated in `assets/js/scores-data.js`.
