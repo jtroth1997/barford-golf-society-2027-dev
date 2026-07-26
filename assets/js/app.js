@@ -242,3 +242,51 @@ if (isHomePage && !reducedMotion && !sessionStorage.getItem("bgsCinematicIntroPl
     sessionStorage.setItem("bgsCinematicIntroPlayed", "true");
   }, 4600);
 }
+
+
+// Version 6 replaces the earlier intro with a clearer golf-first sequence.
+if (isHomePage && !reducedMotion && !sessionStorage.getItem("bgsGolfIntroV6Played")) {
+  document.querySelectorAll(".intro-splash").forEach(el => el.remove());
+
+  const intro = document.createElement("div");
+  intro.className = "intro-splash";
+  intro.setAttribute("aria-hidden", "true");
+  intro.innerHTML = `
+    <div class="intro-copy">
+      <strong>Welcome to Barford Golf Society</strong>
+      <span>Great golf. Better company.</span>
+    </div>
+
+    <div class="intro-logo-wrap">
+      <img src="assets/images/barford-golf-society-logo.jpeg" alt="">
+    </div>
+
+    <div class="intro-golf-label">Your round starts here</div>
+    <div class="intro-fairway"></div>
+    <div class="intro-green"></div>
+    <div class="intro-trail"></div>
+    <div class="golf-ball intro-ball"></div>
+    <div class="intro-ball-shadow"></div>
+    <div class="intro-hole-pulse"></div>
+    <div class="intro-cup"></div>
+    <div class="intro-flag"></div>
+  `;
+
+  document.body.appendChild(intro);
+  document.body.style.overflow = "hidden";
+
+  const flag = intro.querySelector(".intro-flag");
+  const pulse = intro.querySelector(".intro-hole-pulse");
+
+  setTimeout(() => intro.classList.add("is-rolling"), 1250);
+  setTimeout(() => {
+    flag?.classList.add("hit");
+    pulse?.classList.add("is-active");
+  }, 3900);
+  setTimeout(() => intro.classList.add("is-shrinking"), 4250);
+  setTimeout(() => {
+    intro.classList.add("is-finished");
+    document.body.style.overflow = "";
+    sessionStorage.setItem("bgsGolfIntroV6Played", "true");
+  }, 5250);
+}

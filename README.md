@@ -1,16 +1,15 @@
-# Barford Golf Society 2027 — Version 5.0 Cinematic
+# Barford Golf Society 2027 — Version 6 Golf Intro
 
-New opening sequence:
+Opening sequence:
 
-- full-screen welcome
-- large centred Barford logo
-- animated fairway and putting green
-- golf ball rolls across the bottom of the screen
-- ball slows, reaches the cup and drops into the hole
-- flag reacts when the ball drops
-- logo transitions into the site
-- mobile-specific animation path
-- reduced-motion support
-- animation plays once per browser session
+- the Barford Golf Society logo appears prominently
+- a clear fairway runs across the bottom of the screen
+- a visible putting green, cup and flag appear on the right
+- a golf ball rolls from left to right
+- the ball slows and drops into the hole
+- the flag reacts when the ball lands
+- the website then opens
+- mobile path is shorter and clearer
+- reduced-motion support remains enabled
 
-This remains separate from the production website and contains no live database connection.
+The intro plays once per browser session.

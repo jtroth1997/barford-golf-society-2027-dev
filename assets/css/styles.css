@@ -801,3 +801,152 @@ input:focus-visible,select:focus-visible,textarea:focus-visible{
     100%{transform:translateX(calc(74vw - 32px)) scale(.35);opacity:0}
   }
 }
+
+
+/* ===== Version 6: clearer golf-first opening sequence ===== */
+.intro-splash{
+  background:
+    radial-gradient(circle at 50% 22%,rgba(217,182,95,.26),transparent 24%),
+    linear-gradient(180deg,#02261a 0%,#063d2a 64%,#0b5338 100%);
+}
+.intro-copy{
+  top:4.5vh;
+}
+.intro-copy strong{
+  font-size:clamp(1.9rem,4.6vw,3.4rem);
+}
+.intro-copy span{
+  font-size:clamp(1rem,2.2vw,1.28rem);
+  color:#f3dfaa;
+  font-weight:800;
+}
+.intro-logo-wrap{
+  width:min(54vw,390px);
+  transform:scale(.82);
+  animation:introLogoIn .85s var(--ease) forwards;
+}
+.intro-logo-wrap img{
+  padding:18px;
+  border-radius:28px;
+}
+.intro-logo-wrap::after{
+  border-radius:34px;
+}
+.intro-fairway{
+  height:29vh;
+  min-height:185px;
+  background:
+    repeating-linear-gradient(
+      96deg,
+      rgba(255,255,255,.04) 0 28px,
+      rgba(0,0,0,.03) 28px 56px
+    ),
+    linear-gradient(180deg,#3b985f,#1e7048);
+}
+.intro-green{
+  right:1.5vw;
+  width:min(38vw,470px);
+  height:21vh;
+  min-height:145px;
+}
+.intro-cup{
+  right:12vw;
+  bottom:9.3vh;
+  width:42px;
+  height:15px;
+  border:2px solid rgba(255,255,255,.2);
+}
+.intro-flag{
+  right:14.2vw;
+  bottom:9.3vh;
+  height:150px;
+  width:6px;
+}
+.intro-flag::before{
+  width:88px;
+  height:46px;
+}
+.intro-ball{
+  left:3vw;
+  bottom:8.8vh;
+  width:46px;
+  height:46px;
+}
+.intro-ball-shadow{
+  left:3vw;
+  bottom:7.8vh;
+  width:50px;
+}
+.intro-trail{
+  left:6vw;
+  right:15vw;
+  bottom:10.3vh;
+}
+.intro-hole-pulse{
+  right:11.8vw;
+  bottom:8.9vh;
+  width:48px;
+}
+.intro-splash.is-rolling .intro-ball{
+  animation:introBallToCupV6 2.75s var(--ease) forwards;
+}
+.intro-splash.is-rolling .intro-ball-shadow{
+  animation:introShadowToCupV6 2.75s var(--ease) forwards;
+}
+@keyframes introBallToCupV6{
+  0%{transform:translate(0,0) rotate(0) scale(1);opacity:1}
+  16%{transform:translate(11vw,-2px) rotate(300deg)}
+  38%{transform:translate(34vw,1px) rotate(760deg)}
+  62%{transform:translate(57vw,-1px) rotate(1260deg)}
+  80%{transform:translate(calc(74vw - 70px),0) rotate(1640deg)}
+  91%{transform:translate(calc(79vw - 66px),2px) rotate(1760deg) scale(.92)}
+  100%{transform:translate(calc(81vw - 60px),16px) rotate(1840deg) scale(.35);opacity:0}
+}
+@keyframes introShadowToCupV6{
+  0%{transform:translateX(0) scale(1);opacity:.22}
+  91%{transform:translateX(calc(79vw - 66px)) scale(.82);opacity:.15}
+  100%{transform:translateX(calc(81vw - 60px)) scale(.3);opacity:0}
+}
+.intro-golf-label{
+  position:absolute;
+  left:50%;
+  bottom:30vh;
+  transform:translateX(-50%) translateY(10px);
+  padding:9px 16px;
+  color:#fff;
+  background:rgba(0,0,0,.18);
+  border:1px solid rgba(255,255,255,.14);
+  border-radius:999px;
+  font-size:.82rem;
+  font-weight:900;
+  letter-spacing:.12em;
+  text-transform:uppercase;
+  opacity:0;
+  animation:introGolfLabel .65s 1.05s var(--ease) forwards;
+}
+@keyframes introGolfLabel{
+  to{opacity:1;transform:translateX(-50%) translateY(0)}
+}
+@media(max-width:700px){
+  .intro-logo-wrap{width:min(68vw,320px)}
+  .intro-copy{top:3vh}
+  .intro-green{right:-13vw;width:66vw;height:18vh}
+  .intro-cup{right:16vw;bottom:10vh}
+  .intro-flag{right:20vw;bottom:10vh;height:122px}
+  .intro-ball{bottom:10vh;width:40px;height:40px}
+  .intro-ball-shadow{bottom:9vh}
+  .intro-trail{bottom:11.4vh;right:22vw}
+  .intro-hole-pulse{right:15.8vw;bottom:9.5vh}
+  .intro-golf-label{bottom:28vh}
+  @keyframes introBallToCupV6{
+    0%{transform:translate(0,0) rotate(0) scale(1);opacity:1}
+    72%{transform:translate(calc(66vw - 36px),0) rotate(1220deg)}
+    92%{transform:translate(calc(70vw - 30px),2px) rotate(1360deg) scale(.86)}
+    100%{transform:translate(calc(72vw - 26px),14px) rotate(1440deg) scale(.34);opacity:0}
+  }
+  @keyframes introShadowToCupV6{
+    0%{transform:translateX(0) scale(1);opacity:.22}
+    92%{transform:translateX(calc(70vw - 30px)) scale(.8);opacity:.14}
+    100%{transform:translateX(calc(72vw - 26px)) scale(.3);opacity:0}
+  }
+}
