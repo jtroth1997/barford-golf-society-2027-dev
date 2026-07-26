@@ -1,8 +1,8 @@
-# Barford Golf Society 2027 — Final Video Intro Edition
+# Barford Golf Society 2027 — Updated Video Intro Edition
 
 This complete static website includes:
 
-- the exact cinematic intro video selected for the project
+- the latest cinematic intro video supplied for the project
 - full-screen autoplay with sound muted for browser compatibility
 - skip-intro button
 - mobile-safe full-screen video presentation
@@ -28,6 +28,6 @@ This development build is not connected to the current live website, database, s
 
 Upload every item inside this folder to the root of the `barford-golf-society-2027-dev` repository, preserving the `assets` directory.
 
-The video is stored at:
+The updated intro video is stored at:
 
 `assets/video/intro.mp4`
