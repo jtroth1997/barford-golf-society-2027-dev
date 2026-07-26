@@ -2,7 +2,14 @@ import { ScoresData } from "./scores-data.js";
 import { rankPlayers, calculatePlayerStatistics } from "./handicap-engine.js";
 import { AdminDashboard } from "./scores-admin.js";
 
-const state = { data: null, activeView: "leaderboard", selectedRoundId: null, selectedPlayerId: null, search: "" };
+const state = {
+  data: null,
+  activeView: "leaderboard",
+  selectedRoundId: null,
+  selectedLeaderboardRoundId: null,
+  selectedPlayerId: null,
+  search: ""
+};
 const $ = selector => document.querySelector(selector);
 const $$ = selector => [...document.querySelectorAll(selector)];
 const formatChange = value => value == null ? "DNP" : value > 0 ? `+${value}` : `${value}`;
@@ -12,10 +19,20 @@ async function refresh() {
   state.data = await ScoresData.getSnapshot();
   state.selectedRoundId ||= state.data.rounds[0]?.id;
   state.selectedPlayerId ||= state.data.players[0]?.id;
+
+  const completedRounds = getCompletedRounds();
+  if (
+    !state.selectedLeaderboardRoundId ||
+    !completedRounds.some(round => round.id === state.selectedLeaderboardRoundId)
+  ) {
+    state.selectedLeaderboardRoundId = completedRounds.at(-1)?.id ?? null;
+  }
+
   renderAll();
 }
 
 function renderAll() {
+  renderLeaderboardRoundTabs();
   renderLeaderboard();
   renderRoundTabs();
   renderRound();
@@ -24,10 +41,58 @@ function renderAll() {
   if (state.activeView === "statistics") renderStatistics();
 }
 
+function getCompletedRounds() {
+  return [...state.data.rounds]
+    .filter(round => round.results.some(result => result && (result.dnp || Number.isFinite(result.points))))
+    .sort((a, b) => a.number - b.number);
+}
+
+function getLeaderboardRounds() {
+  const completed = getCompletedRounds();
+  const selectedIndex = completed.findIndex(round => round.id === state.selectedLeaderboardRoundId);
+  return selectedIndex >= 0 ? completed.slice(0, selectedIndex + 1) : completed;
+}
+
+function renderLeaderboardRoundTabs() {
+  const tabs = $("#leaderboardRoundTabs");
+  tabs.innerHTML = "";
+  const rounds = getCompletedRounds();
+
+  rounds.forEach(round => {
+    const button = document.createElement("button");
+    button.className = "leaderboard-round-tab";
+    button.type = "button";
+    button.role = "tab";
+    button.textContent = `After ${round.name}`;
+    button.setAttribute("aria-selected", String(round.id === state.selectedLeaderboardRoundId));
+    button.addEventListener("click", () => {
+      state.selectedLeaderboardRoundId = round.id;
+      renderLeaderboardRoundTabs();
+      renderLeaderboard();
+    });
+    tabs.append(button);
+  });
+}
+
 function renderLeaderboard() {
   const list = $("#leaderboardList");
   list.innerHTML = "";
-  const ranked = rankPlayers(state.data.players, state.data.rounds, state.data.achievements)
+
+  const selectedRound = state.data.rounds.find(
+    round => round.id === state.selectedLeaderboardRoundId
+  );
+  const roundsForStandings = getLeaderboardRounds();
+  const roundLabel = selectedRound ? `after ${selectedRound.name}` : "before the season starts";
+
+  $("#leaderboardHeading").textContent = selectedRound
+    ? `Leaderboard after ${selectedRound.name}`
+    : "Leaderboard";
+
+  $("#leaderboardContext").innerHTML = selectedRound
+    ? `<strong>${escapeHtml(selectedRound.name)} standings</strong><span>Season totals include completed rounds up to and including this round.</span>`
+    : `<strong>No completed rounds yet</strong><span>The leaderboard will appear after scores are calculated and saved.</span>`;
+
+  const ranked = rankPlayers(state.data.players, roundsForStandings, state.data.achievements)
     .filter(player => player.name.toLowerCase().includes(state.search));
 
   ranked.forEach(player => {
@@ -35,33 +100,46 @@ function renderLeaderboard() {
     const card = node.querySelector(".player-card");
     const summary = node.querySelector(".player-card-summary");
     const detail = node.querySelector(".player-details");
-    const last = latestResult(player.id);
+    const selectedResult = selectedRound?.results.find(result => result.playerId === player.id);
     const medal = ["🥇","🥈","🥉"][player.position - 1];
 
     node.querySelector(".rank-badge").textContent = medal || player.position;
     if (medal) node.querySelector(".rank-badge").classList.add("medal");
     node.querySelector(".player-name").textContent = player.name;
-    node.querySelector(".player-meta").textContent =
-      `HCP ${player.currentHandicap} · ${player.statistics.roundsPlayed} rounds · Last ${last?.dnp ? "DNP" : last?.points ?? "—"}`;
+
+    const meta = node.querySelector(".player-meta");
+    meta.innerHTML = selectedResult
+      ? `<span class="leaderboard-round-line">Played off <strong>${selectedResult.handicapUsed}</strong></span>
+         <span class="leaderboard-round-line">Score <strong>${selectedResult.dnp ? "DNP" : selectedResult.points}</strong></span>
+         <span class="leaderboard-round-line">Adjustment <strong class="change ${changeClass(selectedResult.adjustment)}">${formatChange(selectedResult.adjustment)}</strong></span>
+         <span class="leaderboard-round-line">Next HCP <strong>${selectedResult.nextHandicap}</strong></span>`
+      : `<span class="leaderboard-round-line">No result recorded for ${escapeHtml(selectedRound?.name ?? "this round")}</span>`;
+
     node.querySelector(".player-points").textContent = player.statistics.seasonPoints;
+
+    summary.setAttribute(
+      "aria-label",
+      `${player.name}, position ${player.position}, ${player.statistics.seasonPoints} points, ${roundLabel}`
+    );
 
     summary.addEventListener("click", () => {
       const open = card.classList.toggle("is-open");
       summary.setAttribute("aria-expanded", String(open));
       detail.hidden = !open;
       if (open && !detail.dataset.rendered) {
-        detail.innerHTML = playerDetailsMarkup(player);
+        detail.innerHTML = playerDetailsMarkup(player, roundsForStandings);
         detail.dataset.rendered = "true";
       }
     });
     list.append(node);
   });
+
   $("#statusMessage").textContent = ranked.length ? "" : "No players match that search.";
 }
 
-function playerDetailsMarkup(player) {
+function playerDetailsMarkup(player, roundsForStandings = state.data.rounds) {
   const s = player.statistics;
-  const history = state.data.rounds.map(round => {
+  const history = roundsForStandings.map(round => {
     const result = round.results.find(item => item.playerId === player.id);
     return { round, result };
   }).filter(item => item.result);
