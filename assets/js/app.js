@@ -131,35 +131,70 @@ if (false && isHome && !reducedMotion && !sessionStorage.getItem("bgsElegantIntr
   }, 5750);
 }
 
-// Premium cinematic intro video.
-if (isHome && !reducedMotion && !sessionStorage.getItem("bgsPremiumIntroPlayed")) {
-  const overlay = document.createElement("div");
-  overlay.className = "premium-video-intro";
-  overlay.innerHTML = `
-    <video autoplay muted playsinline preload="auto" aria-label="Barford Golf Society opening animation">
+
+// Final cinematic intro using the exact selected video.
+const finalIntroIsHome = (window.location.pathname.split("/").pop() || "index.html") === "index.html";
+const finalIntroReducedMotion = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+
+if (
+  finalIntroIsHome &&
+  !finalIntroReducedMotion &&
+  !sessionStorage.getItem("bgsFinalVideoIntroPlayed")
+) {
+  const intro = document.createElement("div");
+  intro.className = "video-intro";
+  intro.setAttribute("aria-label", "Barford Golf Society opening animation");
+
+  intro.innerHTML = `
+    <video autoplay muted playsinline preload="auto">
       <source src="assets/video/intro.mp4" type="video/mp4">
     </video>
-    <button class="premium-intro-skip" type="button">Skip intro</button>
+
+    <div class="video-intro-controls">
+      <button class="video-intro-button" type="button">Skip intro</button>
+    </div>
   `;
-  document.body.appendChild(overlay);
+
+  document.body.appendChild(intro);
   document.body.style.overflow = "hidden";
 
-  const video = overlay.querySelector("video");
-  const skip = overlay.querySelector("button");
+  const video = intro.querySelector("video");
+  const skipButton = intro.querySelector(".video-intro-button");
 
-  const finish = () => {
-    overlay.classList.add("is-hidden");
+  let finished = false;
+
+  const finishIntro = () => {
+    if (finished) return;
+    finished = true;
+
+    intro.classList.add("is-hidden");
     document.body.style.overflow = "";
-    sessionStorage.setItem("bgsPremiumIntroPlayed","true");
-    setTimeout(() => overlay.remove(), 900);
+    sessionStorage.setItem("bgsFinalVideoIntroPlayed", "true");
+
+    window.setTimeout(() => {
+      intro.remove();
+    }, 900);
   };
 
-  video.addEventListener("ended", finish, { once:true });
-  video.addEventListener("error", finish, { once:true });
-  skip.addEventListener("click", finish, { once:true });
+  video.addEventListener("ended", finishIntro, { once:true });
+  video.addEventListener("error", () => {
+    intro.innerHTML = `
+      <div class="video-intro-fallback">
+        <div>
+          <img src="assets/images/barford-golf-society-logo.png" alt="Barford Golf Society">
+          <p>Relax. Play. Enjoy.</p>
+        </div>
+      </div>
+    `;
+    window.setTimeout(finishIntro, 1800);
+  }, { once:true });
 
-  const playAttempt = video.play();
-  if (playAttempt && typeof playAttempt.catch === "function") {
-    playAttempt.catch(finish);
+  skipButton.addEventListener("click", finishIntro, { once:true });
+
+  const playPromise = video.play();
+  if (playPromise && typeof playPromise.catch === "function") {
+    playPromise.catch(() => {
+      video.controls = true;
+    });
   }
 }
