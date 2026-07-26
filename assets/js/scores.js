@@ -281,6 +281,12 @@ function escapeHtml(value=""){return String(value).replace(/[&<>"']/g,c=>({"&":"
 
 $$(".nav-tab").forEach(button=>button.addEventListener("click",()=>{setView(button.dataset.view);$("#primaryNav").classList.remove("is-open")}));
 $("#menuButton").addEventListener("click",()=>{const open=$("#primaryNav").classList.toggle("is-open");$("#menuButton").setAttribute("aria-expanded",String(open))});
+$("#primaryNav").addEventListener("click", event => {
+  if (event.target.closest("a")) {
+    $("#primaryNav").classList.remove("is-open");
+    $("#menuButton").setAttribute("aria-expanded", "false");
+  }
+});
 $("#playerSearch").addEventListener("input",event=>{state.search=event.target.value.trim().toLowerCase();renderLeaderboard();renderRound();if(state.activeView==="statistics")renderStatistics()});
 $("#handicapPlayerSelect").addEventListener("change",event=>{state.selectedPlayerId=event.target.value;renderHandicapHistory()});
 window.addEventListener("scores:data-changed",refresh);
