@@ -1,14 +1,23 @@
-# Barford Golf Society 2027 Scores
+# Barford Golf Society 2027 — Current Full Build
 
-Open via a local web server because the JavaScript uses ES modules.
+This package contains the complete current development website:
 
-Example:
-```bash
-python3 -m http.server 8080
-```
-Then visit `http://localhost:8080/scores.html`.
+- Home page with the latest supplied intro video
+- Updated safe Events page
+- World Events
+- Scores
+- Shop
+- Gallery
+- About Us
+- Sign Up
+- Shared responsive styling and navigation
 
-The current build stores development data only in browser localStorage.
-The backend boundary is isolated in `assets/js/scores-data.js`.
+## Important
 
-Handicaps automatically carry forward from each saved round's `nextHandicap` into the following round's admin score card.
+The updated Events page is disconnected from the current production Supabase project and uses demonstration data only.
+
+The Scores page in this package is the existing development version and has not yet been replaced by the planned mobile-first leaderboard rebuild.
+
+## Upload
+
+Upload every item inside this folder to the root of the development repository, preserving the `assets` folder structure.
