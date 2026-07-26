@@ -146,197 +146,53 @@ mobileNav.innerHTML = `
 body.appendChild(mobileNav);
 
 
-// Full-screen logo entrance on the home page.
-// It plays once per browser session so returning members are not delayed repeatedly.
-const isHomePage = (window.location.pathname.split("/").pop() || "index.html") === "index.html";
-const reducedMotion = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+// Version 8: one clean intro only — smooth roll, visible drop, camera zoom into the cup.
+const v8Home = (window.location.pathname.split("/").pop() || "index.html") === "index.html";
+const v8ReducedMotion = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
 
-if (isHomePage && !reducedMotion && !sessionStorage.getItem("bgsIntroPlayed")) {
+if (v8Home && !v8ReducedMotion && !sessionStorage.getItem("bgsHoleZoomV8Played")) {
   const intro = document.createElement("div");
-  intro.className = "intro-splash";
+  intro.className = "intro-cinema";
   intro.setAttribute("aria-hidden", "true");
   intro.innerHTML = `
-    <div class="intro-logo-wrap">
-      <img src="assets/images/barford-golf-society-logo.jpeg" alt="">
+    <div class="intro-world">
+      <div class="intro-heading">
+        <strong>Welcome to Barford Golf Society</strong>
+        <span>Relax. Play. Enjoy.</span>
+      </div>
+      <div class="intro-logo">
+        <img src="assets/images/barford-golf-society-logo.jpeg" alt="">
+      </div>
+      <div class="intro-fairway"></div>
+      <div class="intro-green"></div>
+      <div class="intro-ball"></div>
+      <div class="intro-ball-shadow"></div>
+      <div class="intro-ripple"></div>
+      <div class="intro-cup"></div>
+      <div class="intro-flag"></div>
     </div>
-    <div class="golf-ball intro-ball"></div>
-    <div class="intro-tagline">Welcome to Barford Golf Society</div>
-  `;
-  document.body.appendChild(intro);
-  document.body.style.overflow = "hidden";
-
-  setTimeout(() => intro.classList.add("is-shrinking"), 1900);
-  setTimeout(() => {
-    intro.classList.add("is-finished");
-    document.body.style.overflow = "";
-    sessionStorage.setItem("bgsIntroPlayed", "true");
-  }, 2900);
-}
-
-// Add playful golf scene to the homepage hero.
-const hero = document.querySelector(".hero");
-if (hero && !reducedMotion) {
-  const scene = document.createElement("div");
-  scene.className = "hero-golf-scene";
-  scene.setAttribute("aria-hidden", "true");
-  scene.innerHTML = `
-    <div class="hero-golf-green"></div>
-    <div class="hero-flag"></div>
-    <div class="golf-ball hero-ball"></div>
-  `;
-  hero.appendChild(scene);
-
-  for (let i = 0; i < 4; i += 1) {
-    const particle = document.createElement("span");
-    particle.className = "floating-golf-icon";
-    hero.appendChild(particle);
-  }
-}
-
-// Give key cards and buttons a light, fun bounce.
-document.querySelectorAll(".feature-card,.product-card,.media-card,.button").forEach(el => {
-  el.classList.add("fun-bounce");
-});
-
-
-// Version 5 cinematic intro: rolling ball into the cup with a flag.
-if (isHomePage && !reducedMotion && !sessionStorage.getItem("bgsCinematicIntroPlayed")) {
-  document.querySelectorAll(".intro-splash").forEach(el => el.remove());
-
-  const intro = document.createElement("div");
-  intro.className = "intro-splash";
-  intro.setAttribute("aria-hidden", "true");
-  intro.innerHTML = `
-    <div class="intro-copy">
-      <strong>Welcome to Barford Golf Society</strong>
-      <span>Great golf. Better company.</span>
-    </div>
-    <div class="intro-logo-wrap">
-      <img src="assets/images/barford-golf-society-logo.jpeg" alt="">
-    </div>
-    <div class="intro-fairway"></div>
-    <div class="intro-green"></div>
-    <div class="intro-trail"></div>
-    <div class="golf-ball intro-ball"></div>
-    <div class="intro-ball-shadow"></div>
-    <div class="intro-hole-pulse"></div>
-    <div class="intro-cup"></div>
-    <div class="intro-flag"></div>
+    <div class="intro-hole-dark"></div>
   `;
 
   document.body.appendChild(intro);
   document.body.style.overflow = "hidden";
 
   const flag = intro.querySelector(".intro-flag");
-  const pulse = intro.querySelector(".intro-hole-pulse");
+  const ripple = intro.querySelector(".intro-ripple");
 
-  setTimeout(() => intro.classList.add("is-rolling"), 1050);
+  setTimeout(() => intro.classList.add("is-rolling"), 1150);
+
   setTimeout(() => {
-    flag?.classList.add("hit");
-    pulse?.classList.add("is-active");
-  }, 3250);
-  setTimeout(() => intro.classList.add("is-shrinking"), 3600);
+    flag?.classList.add("is-hit");
+    ripple?.classList.add("is-active");
+  }, 4380);
+
+  setTimeout(() => intro.classList.add("is-zooming"), 4620);
+  setTimeout(() => intro.classList.add("is-darkening"), 5350);
+
   setTimeout(() => {
-    intro.classList.add("is-finished");
+    intro.classList.add("is-hidden");
     document.body.style.overflow = "";
-    sessionStorage.setItem("bgsCinematicIntroPlayed", "true");
-  }, 4600);
-}
-
-
-// Version 6 replaces the earlier intro with a clearer golf-first sequence.
-if (isHomePage && !reducedMotion && !sessionStorage.getItem("bgsGolfIntroV6Played")) {
-  document.querySelectorAll(".intro-splash").forEach(el => el.remove());
-
-  const intro = document.createElement("div");
-  intro.className = "intro-splash";
-  intro.setAttribute("aria-hidden", "true");
-  intro.innerHTML = `
-    <div class="intro-copy">
-      <strong>Welcome to Barford Golf Society</strong>
-      <span>Great golf. Better company.</span>
-    </div>
-
-    <div class="intro-logo-wrap">
-      <img src="assets/images/barford-golf-society-logo.jpeg" alt="">
-    </div>
-
-    <div class="intro-golf-label">Your round starts here</div>
-    <div class="intro-fairway"></div>
-    <div class="intro-green"></div>
-    <div class="intro-trail"></div>
-    <div class="golf-ball intro-ball"></div>
-    <div class="intro-ball-shadow"></div>
-    <div class="intro-hole-pulse"></div>
-    <div class="intro-cup"></div>
-    <div class="intro-flag"></div>
-  `;
-
-  document.body.appendChild(intro);
-  document.body.style.overflow = "hidden";
-
-  const flag = intro.querySelector(".intro-flag");
-  const pulse = intro.querySelector(".intro-hole-pulse");
-
-  setTimeout(() => intro.classList.add("is-rolling"), 1250);
-  setTimeout(() => {
-    flag?.classList.add("hit");
-    pulse?.classList.add("is-active");
-  }, 3900);
-  setTimeout(() => intro.classList.add("is-shrinking"), 4250);
-  setTimeout(() => {
-    intro.classList.add("is-finished");
-    document.body.style.overflow = "";
-    sessionStorage.setItem("bgsGolfIntroV6Played", "true");
-  }, 5250);
-}
-
-
-// Version 7: calm, smooth and professional opening.
-if (isHomePage && !reducedMotion && !sessionStorage.getItem("bgsRelaxedIntroV7Played")) {
-  document.querySelectorAll(".intro-splash").forEach(el => el.remove());
-
-  const intro = document.createElement("div");
-  intro.className = "intro-splash";
-  intro.setAttribute("aria-hidden", "true");
-  intro.innerHTML = `
-    <div class="intro-cloud one"></div>
-    <div class="intro-cloud two"></div>
-
-    <div class="intro-copy">
-      <strong>Welcome to Barford Golf Society</strong>
-      <span>Relax. Play. Enjoy.</span>
-    </div>
-
-    <div class="intro-logo-wrap">
-      <img src="assets/images/barford-golf-society-logo.jpeg" alt="">
-    </div>
-
-    <div class="intro-golf-label">Your round starts here</div>
-    <div class="intro-fairway"></div>
-    <div class="intro-green"></div>
-    <div class="golf-ball intro-ball"></div>
-    <div class="intro-ball-shadow"></div>
-    <div class="intro-hole-pulse"></div>
-    <div class="intro-cup"></div>
-    <div class="intro-flag"></div>
-  `;
-
-  document.body.appendChild(intro);
-  document.body.style.overflow = "hidden";
-
-  const flag = intro.querySelector(".intro-flag");
-  const pulse = intro.querySelector(".intro-hole-pulse");
-
-  setTimeout(() => intro.classList.add("is-rolling"), 1200);
-  setTimeout(() => {
-    flag?.classList.add("hit");
-    pulse?.classList.add("is-active");
-  }, 4070);
-  setTimeout(() => intro.classList.add("is-shrinking"), 4450);
-  setTimeout(() => {
-    intro.classList.add("is-finished");
-    document.body.style.overflow = "";
-    sessionStorage.setItem("bgsRelaxedIntroV7Played", "true");
-  }, 5300);
+    sessionStorage.setItem("bgsHoleZoomV8Played", "true");
+  }, 6100);
 }

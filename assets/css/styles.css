@@ -375,776 +375,268 @@ input:focus-visible,select:focus-visible,textarea:focus-visible{
 }
 
 
-/* ===== Version 4: playful golf animations ===== */
-.intro-splash{
+/* ===== Version 8: smooth ball-to-hole camera intro ===== */
+.intro-cinema{
   position:fixed;
   inset:0;
   z-index:10000;
-  display:grid;
-  place-items:center;
   overflow:hidden;
   background:
-    radial-gradient(circle at 50% 36%, rgba(217,182,95,.22), transparent 28%),
-    linear-gradient(135deg, var(--green-950), var(--green-700));
+    radial-gradient(circle at 50% 18%,rgba(236,211,150,.16),transparent 26%),
+    linear-gradient(180deg,#03291e 0%,#064632 64%,#0d5c40 100%);
   opacity:1;
   visibility:visible;
-  transition:opacity .45s ease, visibility .45s ease;
+  transition:opacity .8s ease,visibility .8s ease;
 }
-.intro-splash.is-finished{
+.intro-cinema.is-hidden{
   opacity:0;
   visibility:hidden;
   pointer-events:none;
 }
-.intro-logo-wrap{
-  position:relative;
-  width:min(70vw,520px);
-  aspect-ratio:1;
-  display:grid;
-  place-items:center;
-  transform:scale(.72);
-  opacity:0;
-  animation:introLogoIn .9s var(--ease) forwards;
-}
-.intro-logo-wrap img{
-  width:100%;
-  height:100%;
-  object-fit:contain;
-  padding:22px;
-  background:#fff;
-  border-radius:50%;
-  box-shadow:0 35px 100px rgba(0,0,0,.34);
-}
-.intro-logo-wrap::after{
-  content:"";
+.intro-world{
   position:absolute;
-  inset:-26px;
-  border:2px solid rgba(217,182,95,.48);
-  border-radius:50%;
-  animation:introRing 2.2s ease-in-out infinite;
+  inset:0;
+  transform-origin:84% 88%;
+  will-change:transform;
 }
-.intro-tagline{
+.intro-cinema.is-zooming .intro-world{
+  animation:cameraIntoCup 1.35s cubic-bezier(.2,.75,.2,1) forwards;
+}
+@keyframes cameraIntoCup{
+  0%{transform:scale(1) translate(0,0)}
+  55%{transform:scale(2.1) translate(-16%,-14%)}
+  100%{transform:scale(6.2) translate(-28%,-29%)}
+}
+
+.intro-heading{
   position:absolute;
   left:50%;
-  bottom:10vh;
-  transform:translateX(-50%) translateY(20px);
-  width:min(90vw,680px);
+  top:5vh;
+  z-index:4;
+  width:min(90vw,760px);
+  transform:translateX(-50%);
   text-align:center;
   color:#fff;
+}
+.intro-heading strong{
+  display:block;
   font-family:"Playfair Display",Georgia,serif;
-  font-size:clamp(1.5rem,3vw,2.4rem);
+  font-size:clamp(2rem,4.6vw,3.6rem);
+  line-height:1.08;
+}
+.intro-heading span{
+  display:block;
+  margin-top:8px;
+  color:#ead79f;
+  font-weight:800;
+}
+.intro-logo{
+  position:absolute;
+  left:50%;
+  top:18vh;
+  z-index:4;
+  width:min(34vw,300px);
+  transform:translateX(-50%);
   opacity:0;
-  animation:introTag .7s .45s var(--ease) forwards;
+  animation:introLogoSoft 1s cubic-bezier(.22,1,.36,1) forwards;
 }
-.intro-splash.is-shrinking .intro-logo-wrap{
-  animation:introLogoToHeader 1s var(--ease) forwards;
+.intro-logo img{
+  width:100%;
+  padding:15px;
+  background:#fff;
+  border-radius:26px;
+  box-shadow:0 28px 80px rgba(0,0,0,.25);
 }
-.intro-splash.is-shrinking .intro-tagline{
-  opacity:0;
-  transform:translateX(-50%) translateY(18px);
-  transition:.35s ease;
-}
-@keyframes introLogoIn{
-  0%{opacity:0;transform:scale(.68) rotate(-4deg)}
-  70%{opacity:1;transform:scale(1.04) rotate(1deg)}
-  100%{opacity:1;transform:scale(1) rotate(0)}
-}
-@keyframes introLogoToHeader{
-  0%{transform:scale(1);opacity:1}
-  100%{transform:translate(calc(-50vw + 110px),calc(-50vh + 70px)) scale(.18);opacity:.15}
-}
-@keyframes introRing{
-  50%{transform:scale(1.04);opacity:.45}
-}
-@keyframes introTag{
-  to{opacity:1;transform:translateX(-50%) translateY(0)}
+@keyframes introLogoSoft{
+  from{opacity:0;transform:translateX(-50%) translateY(16px) scale(.94)}
+  to{opacity:1;transform:translateX(-50%) translateY(0) scale(1)}
 }
 
-.golf-ball{
-  position:absolute;
-  width:34px;
-  height:34px;
-  border-radius:50%;
-  background:
-    radial-gradient(circle at 35% 30%, #fff 0 18%, #ededed 19% 68%, #d0d0d0 69% 100%);
-  box-shadow:0 10px 20px rgba(0,0,0,.18);
-}
-.golf-ball::after{
-  content:"";
-  position:absolute;
-  inset:5px;
-  border-radius:50%;
-  background-image:
-    radial-gradient(circle,rgba(0,0,0,.12) 0 1px,transparent 1.5px);
-  background-size:7px 7px;
-}
-.golf-ball.intro-ball{
-  left:-50px;
-  bottom:14vh;
-  animation:rollAcross 2.1s .35s var(--ease) forwards;
-}
-@keyframes rollAcross{
-  0%{transform:translateX(0) rotate(0deg)}
-  75%{transform:translateX(calc(100vw - 160px)) rotate(900deg)}
-  100%{transform:translateX(calc(100vw - 120px)) translateY(-8px) rotate(1080deg)}
-}
-
-.hero-golf-scene{
-  position:absolute;
-  right:5%;
-  bottom:5%;
-  width:230px;
-  height:160px;
-  pointer-events:none;
-  opacity:.9;
-}
-.hero-golf-green{
-  position:absolute;
-  right:0;
-  bottom:0;
-  width:210px;
-  height:52px;
-  border-radius:50%;
-  background:linear-gradient(180deg,#3e9f68,#206f48);
-  box-shadow:inset 0 -10px 20px rgba(0,0,0,.15);
-}
-.hero-flag{
-  position:absolute;
-  right:58px;
-  bottom:34px;
-  width:4px;
-  height:104px;
-  background:#f4f4f4;
-  transform-origin:bottom;
-  animation:flagPoleSway 3.8s ease-in-out infinite;
-}
-.hero-flag::before{
-  content:"";
-  position:absolute;
-  top:2px;
-  left:4px;
-  width:56px;
-  height:34px;
-  background:linear-gradient(135deg,var(--gold-400),var(--gold-600));
-  clip-path:polygon(0 0,100% 18%,72% 100%,0 82%);
-  transform-origin:left center;
-  animation:flagWave 1.9s ease-in-out infinite;
-}
-.hero-ball{
-  left:10px;
-  bottom:22px;
-  animation:heroBallPutt 4.6s ease-in-out infinite;
-}
-@keyframes heroBallPutt{
-  0%,8%{transform:translateX(0) rotate(0)}
-  55%{transform:translateX(128px) rotate(620deg)}
-  67%{transform:translateX(136px) translateY(2px) rotate(680deg)}
-  75%,100%{transform:translateX(136px) translateY(5px) scale(.76);opacity:.2}
-}
-@keyframes flagPoleSway{
-  50%{transform:rotate(.8deg)}
-}
-@keyframes flagWave{
-  50%{transform:skewY(-8deg) scaleX(.92)}
-}
-
-.floating-golf-icon{
-  position:absolute;
-  width:14px;
-  height:14px;
-  border:2px solid rgba(255,255,255,.16);
-  border-radius:50%;
-  animation:floatParticle 7s linear infinite;
-}
-.floating-golf-icon:nth-child(1){left:8%;top:18%;animation-delay:0s}
-.floating-golf-icon:nth-child(2){left:18%;top:72%;animation-delay:1.2s}
-.floating-golf-icon:nth-child(3){right:16%;top:16%;animation-delay:2.4s}
-.floating-golf-icon:nth-child(4){right:8%;top:68%;animation-delay:3.6s}
-@keyframes floatParticle{
-  0%{transform:translateY(0) scale(.8);opacity:0}
-  20%{opacity:1}
-  80%{opacity:1}
-  100%{transform:translateY(-70px) scale(1.25);opacity:0}
-}
-
-.logo-card{position:relative}
-.logo-card::after{
-  content:"";
-  position:absolute;
-  inset:12px;
-  border-radius:24px;
-  border:1px solid rgba(199,154,56,.22);
-  animation:logoCardGlow 3.5s ease-in-out infinite;
-}
-@keyframes logoCardGlow{
-  50%{box-shadow:0 0 30px rgba(217,182,95,.28)}
-}
-
-.fun-bounce:hover{
-  animation:funBounce .55s var(--ease);
-}
-@keyframes funBounce{
-  35%{transform:translateY(-7px) rotate(-1deg)}
-  65%{transform:translateY(-3px) rotate(1deg)}
-}
-
-@media(max-width:850px){
-  .intro-logo-wrap{width:min(78vw,430px)}
-  .hero-golf-scene{right:2%;bottom:2%;transform:scale(.78);transform-origin:bottom right;opacity:.75}
-}
-@media(max-width:650px){
-  .intro-tagline{bottom:14vh;font-size:1.45rem}
-  .hero-golf-scene{display:none}
-}
-@media(prefers-reduced-motion:reduce){
-  .intro-splash{display:none!important}
-  .hero-golf-scene,.floating-golf-icon{display:none!important}
-}
-
-
-/* ===== Version 5: cinematic first-tee intro ===== */
-.intro-splash{
-  background:
-    radial-gradient(circle at 50% 28%, rgba(217,182,95,.24), transparent 26%),
-    linear-gradient(180deg,#03291d 0%,#063d2a 68%,#0b5338 100%);
-}
 .intro-fairway{
   position:absolute;
-  left:-4vw;
-  right:-4vw;
-  bottom:-4px;
-  height:24vh;
-  min-height:150px;
+  left:-5vw;
+  right:-5vw;
+  bottom:-2px;
+  height:30vh;
+  min-height:190px;
   background:
-    linear-gradient(180deg,rgba(255,255,255,.05),transparent 20%),
+    linear-gradient(180deg,rgba(255,255,255,.025),transparent 18%),
     repeating-linear-gradient(
-      100deg,
-      rgba(255,255,255,.035) 0 30px,
-      rgba(0,0,0,.025) 30px 60px
+      98deg,
+      rgba(255,255,255,.035) 0 34px,
+      rgba(0,0,0,.025) 34px 68px
     ),
-    linear-gradient(180deg,#2e8b58,#17613f);
-  clip-path:ellipse(75% 55% at 50% 100%);
-  box-shadow:inset 0 18px 45px rgba(255,255,255,.04);
+    linear-gradient(180deg,#449b68,#25784f);
+  clip-path:ellipse(82% 58% at 50% 100%);
 }
 .intro-green{
   position:absolute;
-  right:4vw;
+  right:0;
   bottom:0;
-  width:min(34vw,420px);
-  height:18vh;
-  min-height:125px;
-  border-radius:50% 50% 0 0 / 100% 100% 0 0;
-  background:radial-gradient(circle at 48% 38%,#59ad72 0 12%,#36935d 38%,#1c7348 100%);
-  box-shadow:inset 0 14px 30px rgba(255,255,255,.06),0 -12px 36px rgba(0,0,0,.12);
+  width:min(41vw,500px);
+  height:22vh;
+  min-height:150px;
+  border-radius:52% 0 0 0 / 100% 0 0 0;
+  background:radial-gradient(circle at 50% 40%,#6aba80 0 12%,#4da36d 38%,#2b8055 100%);
+  box-shadow:inset 0 14px 28px rgba(255,255,255,.05),0 -12px 30px rgba(0,0,0,.08);
 }
 .intro-cup{
   position:absolute;
-  right:13.5vw;
-  bottom:8vh;
-  width:34px;
-  height:13px;
-  background:#051a12;
+  right:11.8vw;
+  bottom:9.6vh;
+  width:44px;
+  height:15px;
   border-radius:50%;
-  box-shadow:0 2px 0 rgba(255,255,255,.14),inset 0 3px 6px rgba(0,0,0,.65);
+  background:#061a12;
+  box-shadow:0 2px 0 rgba(255,255,255,.12),inset 0 4px 8px rgba(0,0,0,.5);
 }
 .intro-flag{
   position:absolute;
-  right:15vw;
-  bottom:8vh;
+  right:14vw;
+  bottom:9.6vh;
   width:5px;
-  height:132px;
-  background:linear-gradient(180deg,#fff,#dedede);
+  height:142px;
+  background:#f4f4f4;
   transform-origin:bottom center;
-  animation:introFlagIdle 2.8s ease-in-out infinite;
+  animation:flagCalm 4.5s ease-in-out infinite;
 }
 .intro-flag::before{
   content:"";
   position:absolute;
   left:5px;
   top:5px;
-  width:78px;
-  height:42px;
-  background:linear-gradient(135deg,var(--gold-400),var(--gold-700));
-  clip-path:polygon(0 0,100% 18%,70% 100%,0 82%);
+  width:76px;
+  height:40px;
+  background:linear-gradient(135deg,#dfc16e,#aa7a22);
+  clip-path:polygon(0 0,100% 18%,72% 100%,0 82%);
   transform-origin:left center;
-  animation:introFlagWave 1.35s ease-in-out infinite;
+  animation:flagWaveCalm 2.6s ease-in-out infinite;
 }
-.intro-flag.hit{
-  animation:introFlagHit .75s var(--ease);
+.intro-flag.is-hit{
+  animation:flagReaction .75s cubic-bezier(.22,1,.36,1);
 }
+@keyframes flagCalm{50%{transform:rotate(.35deg)}}
+@keyframes flagWaveCalm{50%{transform:skewY(-4deg) scaleX(.96)}}
+@keyframes flagReaction{
+  0%{transform:rotate(0)}
+  38%{transform:rotate(2.4deg)}
+  70%{transform:rotate(-.8deg)}
+  100%{transform:rotate(0)}
+}
+
 .intro-ball{
   position:absolute;
   left:4vw;
-  bottom:7.5vh;
-  width:40px;
-  height:40px;
+  bottom:9.3vh;
   z-index:3;
-  animation:none;
+  width:42px;
+  height:42px;
+  border-radius:50%;
+  background:
+    radial-gradient(circle at 34% 28%,#fff 0 18%,#ededed 19% 68%,#d4d4d4 69% 100%);
+  box-shadow:0 10px 20px rgba(0,0,0,.18);
+  will-change:transform,opacity;
 }
-.intro-splash.is-rolling .intro-ball{
-  animation:introBallToCup 2.35s var(--ease) forwards;
+.intro-ball::after{
+  content:"";
+  position:absolute;
+  inset:5px;
+  border-radius:50%;
+  background-image:radial-gradient(circle,rgba(0,0,0,.12) 0 1px,transparent 1.5px);
+  background-size:7px 7px;
 }
 .intro-ball-shadow{
   position:absolute;
   left:4vw;
-  bottom:6.7vh;
-  width:44px;
-  height:12px;
+  bottom:8.5vh;
+  width:48px;
+  height:11px;
   border-radius:50%;
-  background:rgba(0,0,0,.22);
+  background:rgba(0,0,0,.18);
   filter:blur(4px);
-  transform-origin:center;
-  animation:none;
+  will-change:transform,opacity;
 }
-.intro-splash.is-rolling .intro-ball-shadow{
-  animation:introShadowToCup 2.35s var(--ease) forwards;
+.intro-cinema.is-rolling .intro-ball{
+  animation:ballIntoCup 3.35s cubic-bezier(.12,.72,.16,1) forwards;
 }
-.intro-trail{
+.intro-cinema.is-rolling .intro-ball-shadow{
+  animation:shadowIntoCup 3.35s cubic-bezier(.12,.72,.16,1) forwards;
+}
+@keyframes ballIntoCup{
+  0%{transform:translate(0,0) rotate(0) scale(1);opacity:1}
+  20%{transform:translate(18vw,-1px) rotate(420deg)}
+  45%{transform:translate(42vw,0) rotate(920deg)}
+  68%{transform:translate(61vw,-1px) rotate(1320deg)}
+  84%{transform:translate(calc(74vw - 56px),0) rotate(1580deg)}
+  94%{transform:translate(calc(78vw - 50px),1px) rotate(1690deg) scale(.94)}
+  98%{transform:translate(calc(79vw - 47px),5px) rotate(1730deg) scale(.76)}
+  100%{transform:translate(calc(79.5vw - 45px),18px) rotate(1760deg) scale(.28);opacity:0}
+}
+@keyframes shadowIntoCup{
+  0%{transform:translateX(0) scale(1);opacity:.18}
+  94%{transform:translateX(calc(78vw - 50px)) scale(.82);opacity:.12}
+  100%{transform:translateX(calc(79.5vw - 45px)) scale(.25);opacity:0}
+}
+.intro-ripple{
   position:absolute;
-  left:6vw;
-  right:17vw;
-  bottom:9vh;
-  height:3px;
-  border-radius:4px;
-  background:linear-gradient(90deg,rgba(255,255,255,.0),rgba(255,255,255,.2),rgba(255,255,255,0));
-  transform:scaleX(0);
-  transform-origin:left;
-}
-.intro-splash.is-rolling .intro-trail{
-  animation:introTrail 1.85s ease-out forwards;
-}
-.intro-hole-pulse{
-  position:absolute;
-  right:13.4vw;
-  bottom:7.7vh;
-  width:40px;
-  height:18px;
-  border:2px solid rgba(255,255,255,.32);
+  right:11.55vw;
+  bottom:9.25vh;
+  width:50px;
+  height:20px;
+  border:2px solid rgba(255,255,255,.22);
   border-radius:50%;
   opacity:0;
 }
-.intro-hole-pulse.is-active{
-  animation:holePulse .8s ease-out;
-}
-@keyframes introBallToCup{
-  0%{transform:translate(0,0) rotate(0deg) scale(1);opacity:1}
-  14%{transform:translate(10vw,-4px) rotate(260deg)}
-  38%{transform:translate(36vw,2px) rotate(760deg)}
-  66%{transform:translate(62vw,-2px) rotate(1320deg)}
-  84%{transform:translate(calc(79vw - 88px),0) rotate(1680deg)}
-  93%{transform:translate(calc(81vw - 78px),2px) rotate(1780deg) scale(.93)}
-  100%{transform:translate(calc(82vw - 72px),13px) rotate(1840deg) scale(.42);opacity:0}
-}
-@keyframes introShadowToCup{
-  0%{transform:translateX(0) scale(1);opacity:.22}
-  84%{transform:translateX(calc(79vw - 88px)) scale(.85);opacity:.18}
-  100%{transform:translateX(calc(82vw - 72px)) scale(.35);opacity:0}
-}
-@keyframes introTrail{
-  0%{transform:scaleX(0);opacity:0}
-  18%{opacity:1}
-  100%{transform:scaleX(1);opacity:.6}
-}
-@keyframes holePulse{
-  0%{transform:scale(.7);opacity:.8}
+.intro-ripple.is-active{animation:cupRipple 1s ease-out}
+@keyframes cupRipple{
+  0%{transform:scale(.65);opacity:.65}
   100%{transform:scale(2.2);opacity:0}
 }
-@keyframes introFlagWave{
-  50%{transform:skewY(-7deg) scaleX(.92)}
+.intro-cinema.is-zooming .intro-heading,
+.intro-cinema.is-zooming .intro-logo{
+  animation:fadeForZoom .45s ease forwards;
 }
-@keyframes introFlagIdle{
-  50%{transform:rotate(.7deg)}
-}
-@keyframes introFlagHit{
-  0%{transform:rotate(0)}
-  30%{transform:rotate(4deg)}
-  62%{transform:rotate(-2deg)}
-  100%{transform:rotate(0)}
-}
-.intro-copy{
+@keyframes fadeForZoom{to{opacity:0;transform:translateX(-50%) translateY(-10px)}}
+
+.intro-hole-dark{
   position:absolute;
-  left:50%;
-  top:7vh;
-  transform:translateX(-50%);
-  width:min(92vw,760px);
-  text-align:center;
-  color:#fff;
-}
-.intro-copy strong{
-  display:block;
-  font-family:"Playfair Display",Georgia,serif;
-  font-size:clamp(1.7rem,4vw,3rem);
-  line-height:1.1;
-}
-.intro-copy span{
-  display:block;
-  margin-top:8px;
-  color:#e3efe8;
-  font-size:clamp(.95rem,2vw,1.15rem);
-}
-@media(max-width:700px){
-  .intro-green{right:-10vw;width:58vw}
-  .intro-cup{right:17vw}
-  .intro-flag{right:20vw;height:112px}
-  .intro-ball{bottom:9vh}
-  .intro-ball-shadow{bottom:8.2vh}
-  .intro-trail{bottom:10.5vh;right:22vw}
-  .intro-hole-pulse{right:16.8vw;bottom:8.2vh}
-  @keyframes introBallToCup{
-    0%{transform:translate(0,0) rotate(0) scale(1);opacity:1}
-    72%{transform:translate(calc(70vw - 42px),0) rotate(1250deg)}
-    92%{transform:translate(calc(73vw - 36px),2px) rotate(1380deg) scale(.88)}
-    100%{transform:translate(calc(74vw - 32px),12px) rotate(1440deg) scale(.4);opacity:0}
-  }
-  @keyframes introShadowToCup{
-    0%{transform:translateX(0) scale(1);opacity:.22}
-    92%{transform:translateX(calc(73vw - 36px)) scale(.82);opacity:.16}
-    100%{transform:translateX(calc(74vw - 32px)) scale(.35);opacity:0}
-  }
-}
-
-
-/* ===== Version 6: clearer golf-first opening sequence ===== */
-.intro-splash{
-  background:
-    radial-gradient(circle at 50% 22%,rgba(217,182,95,.26),transparent 24%),
-    linear-gradient(180deg,#02261a 0%,#063d2a 64%,#0b5338 100%);
-}
-.intro-copy{
-  top:4.5vh;
-}
-.intro-copy strong{
-  font-size:clamp(1.9rem,4.6vw,3.4rem);
-}
-.intro-copy span{
-  font-size:clamp(1rem,2.2vw,1.28rem);
-  color:#f3dfaa;
-  font-weight:800;
-}
-.intro-logo-wrap{
-  width:min(54vw,390px);
-  transform:scale(.82);
-  animation:introLogoIn .85s var(--ease) forwards;
-}
-.intro-logo-wrap img{
-  padding:18px;
-  border-radius:28px;
-}
-.intro-logo-wrap::after{
-  border-radius:34px;
-}
-.intro-fairway{
-  height:29vh;
-  min-height:185px;
-  background:
-    repeating-linear-gradient(
-      96deg,
-      rgba(255,255,255,.04) 0 28px,
-      rgba(0,0,0,.03) 28px 56px
-    ),
-    linear-gradient(180deg,#3b985f,#1e7048);
-}
-.intro-green{
-  right:1.5vw;
-  width:min(38vw,470px);
-  height:21vh;
-  min-height:145px;
-}
-.intro-cup{
-  right:12vw;
-  bottom:9.3vh;
-  width:42px;
-  height:15px;
-  border:2px solid rgba(255,255,255,.2);
-}
-.intro-flag{
-  right:14.2vw;
-  bottom:9.3vh;
-  height:150px;
-  width:6px;
-}
-.intro-flag::before{
-  width:88px;
-  height:46px;
-}
-.intro-ball{
-  left:3vw;
-  bottom:8.8vh;
-  width:46px;
-  height:46px;
-}
-.intro-ball-shadow{
-  left:3vw;
-  bottom:7.8vh;
-  width:50px;
-}
-.intro-trail{
-  left:6vw;
-  right:15vw;
-  bottom:10.3vh;
-}
-.intro-hole-pulse{
-  right:11.8vw;
-  bottom:8.9vh;
-  width:48px;
-}
-.intro-splash.is-rolling .intro-ball{
-  animation:introBallToCupV6 2.75s var(--ease) forwards;
-}
-.intro-splash.is-rolling .intro-ball-shadow{
-  animation:introShadowToCupV6 2.75s var(--ease) forwards;
-}
-@keyframes introBallToCupV6{
-  0%{transform:translate(0,0) rotate(0) scale(1);opacity:1}
-  16%{transform:translate(11vw,-2px) rotate(300deg)}
-  38%{transform:translate(34vw,1px) rotate(760deg)}
-  62%{transform:translate(57vw,-1px) rotate(1260deg)}
-  80%{transform:translate(calc(74vw - 70px),0) rotate(1640deg)}
-  91%{transform:translate(calc(79vw - 66px),2px) rotate(1760deg) scale(.92)}
-  100%{transform:translate(calc(81vw - 60px),16px) rotate(1840deg) scale(.35);opacity:0}
-}
-@keyframes introShadowToCupV6{
-  0%{transform:translateX(0) scale(1);opacity:.22}
-  91%{transform:translateX(calc(79vw - 66px)) scale(.82);opacity:.15}
-  100%{transform:translateX(calc(81vw - 60px)) scale(.3);opacity:0}
-}
-.intro-golf-label{
-  position:absolute;
-  left:50%;
-  bottom:30vh;
-  transform:translateX(-50%) translateY(10px);
-  padding:9px 16px;
-  color:#fff;
-  background:rgba(0,0,0,.18);
-  border:1px solid rgba(255,255,255,.14);
-  border-radius:999px;
-  font-size:.82rem;
-  font-weight:900;
-  letter-spacing:.12em;
-  text-transform:uppercase;
+  inset:0;
+  z-index:5;
+  background:#04140e;
   opacity:0;
-  animation:introGolfLabel .65s 1.05s var(--ease) forwards;
+  pointer-events:none;
 }
-@keyframes introGolfLabel{
-  to{opacity:1;transform:translateX(-50%) translateY(0)}
+.intro-cinema.is-darkening .intro-hole-dark{
+  animation:holeDark 1s ease forwards;
 }
-@media(max-width:700px){
-  .intro-logo-wrap{width:min(68vw,320px)}
-  .intro-copy{top:3vh}
-  .intro-green{right:-13vw;width:66vw;height:18vh}
-  .intro-cup{right:16vw;bottom:10vh}
-  .intro-flag{right:20vw;bottom:10vh;height:122px}
-  .intro-ball{bottom:10vh;width:40px;height:40px}
-  .intro-ball-shadow{bottom:9vh}
-  .intro-trail{bottom:11.4vh;right:22vw}
-  .intro-hole-pulse{right:15.8vw;bottom:9.5vh}
-  .intro-golf-label{bottom:28vh}
-  @keyframes introBallToCupV6{
-    0%{transform:translate(0,0) rotate(0) scale(1);opacity:1}
-    72%{transform:translate(calc(66vw - 36px),0) rotate(1220deg)}
-    92%{transform:translate(calc(70vw - 30px),2px) rotate(1360deg) scale(.86)}
-    100%{transform:translate(calc(72vw - 26px),14px) rotate(1440deg) scale(.34);opacity:0}
-  }
-  @keyframes introShadowToCupV6{
-    0%{transform:translateX(0) scale(1);opacity:.22}
-    92%{transform:translateX(calc(70vw - 30px)) scale(.8);opacity:.14}
-    100%{transform:translateX(calc(72vw - 26px)) scale(.3);opacity:0}
-  }
+@keyframes holeDark{
+  0%{opacity:0}
+  100%{opacity:1}
 }
 
-
-/* ===== Version 7: smooth, calm and professional intro ===== */
-.intro-splash{
-  background:
-    radial-gradient(circle at 50% 18%,rgba(239,216,158,.16),transparent 30%),
-    linear-gradient(180deg,#032a1e 0%,#064432 62%,#0b5a3e 100%);
-}
-.intro-copy{
-  top:4.5vh;
-}
-.intro-copy strong{
-  font-size:clamp(1.8rem,4vw,3rem);
-  letter-spacing:-.02em;
-}
-.intro-copy span{
-  color:#e9d59b;
-  font-weight:700;
-}
-.intro-logo-wrap{
-  width:min(46vw,330px);
-  opacity:0;
-  animation:v7LogoIn 1.15s cubic-bezier(.22,1,.36,1) forwards;
-}
-.intro-logo-wrap img{
-  border-radius:26px;
-  box-shadow:0 26px 80px rgba(0,0,0,.24);
-}
-.intro-logo-wrap::after{
-  inset:-18px;
-  border:1px solid rgba(231,202,126,.28);
-  animation:v7Halo 3.4s ease-in-out infinite;
-}
-@keyframes v7LogoIn{
-  0%{opacity:0;transform:translateY(18px) scale(.9)}
-  100%{opacity:1;transform:translateY(0) scale(1)}
-}
-@keyframes v7Halo{
-  50%{transform:scale(1.025);opacity:.45}
-}
-.intro-fairway{
-  height:24vh;
-  min-height:160px;
-  background:
-    linear-gradient(180deg,rgba(255,255,255,.02),transparent 20%),
-    linear-gradient(180deg,#3f9a66,#26784f);
-  clip-path:ellipse(82% 55% at 50% 100%);
-}
-.intro-green{
-  right:2vw;
-  width:min(36vw,440px);
-  height:19vh;
-  min-height:138px;
-  background:radial-gradient(circle at 48% 36%,#68b57d 0 10%,#4a9f6b 35%,#2c7d53 100%);
-  box-shadow:inset 0 12px 28px rgba(255,255,255,.05),0 -10px 28px rgba(0,0,0,.08);
-}
-.intro-cup{
-  right:12vw;
-  bottom:9vh;
-  width:38px;
-  height:13px;
-  border:none;
-  background:#071c13;
-  box-shadow:0 2px 0 rgba(255,255,255,.10);
-}
-.intro-flag{
-  right:14vw;
-  bottom:9vh;
-  height:138px;
-  width:5px;
-  animation:v7FlagIdle 4.8s ease-in-out infinite;
-}
-.intro-flag::before{
-  width:74px;
-  height:40px;
-  background:linear-gradient(135deg,#dfc16e,#b98a2a);
-  animation:v7FlagWave 2.8s ease-in-out infinite;
-}
-@keyframes v7FlagIdle{
-  50%{transform:rotate(.35deg)}
-}
-@keyframes v7FlagWave{
-  50%{transform:skewY(-4deg) scaleX(.96)}
-}
-.intro-ball{
-  left:4vw;
-  bottom:8.9vh;
-  width:42px;
-  height:42px;
-}
-.intro-ball-shadow{
-  left:4vw;
-  bottom:8vh;
-  width:46px;
-  opacity:.18;
-}
-.intro-trail{
-  display:none;
-}
-.intro-golf-label{
-  bottom:27vh;
-  padding:8px 15px;
-  background:rgba(0,0,0,.12);
-  border-color:rgba(255,255,255,.10);
-  color:#eef6f1;
-  font-size:.76rem;
-  letter-spacing:.14em;
-}
-.intro-splash.is-rolling .intro-ball{
-  animation:v7BallRoll 3.05s cubic-bezier(.15,.72,.18,1) forwards;
-}
-.intro-splash.is-rolling .intro-ball-shadow{
-  animation:v7ShadowRoll 3.05s cubic-bezier(.15,.72,.18,1) forwards;
-}
-@keyframes v7BallRoll{
-  0%{transform:translate(0,0) rotate(0deg) scale(1);opacity:1}
-  22%{transform:translate(18vw,-1px) rotate(420deg)}
-  48%{transform:translate(42vw,0) rotate(920deg)}
-  72%{transform:translate(62vw,-1px) rotate(1320deg)}
-  88%{transform:translate(calc(76vw - 58px),0) rotate(1600deg)}
-  96%{transform:translate(calc(79vw - 54px),2px) rotate(1700deg) scale(.92)}
-  100%{transform:translate(calc(80vw - 50px),14px) rotate(1760deg) scale(.38);opacity:0}
-}
-@keyframes v7ShadowRoll{
-  0%{transform:translateX(0) scale(1);opacity:.18}
-  88%{transform:translateX(calc(76vw - 58px)) scale(.9);opacity:.14}
-  100%{transform:translateX(calc(80vw - 50px)) scale(.35);opacity:0}
-}
-.intro-hole-pulse{
-  right:11.8vw;
-  bottom:8.7vh;
-  border-color:rgba(255,255,255,.22);
-}
-.intro-hole-pulse.is-active{
-  animation:v7CupRipple .95s ease-out;
-}
-@keyframes v7CupRipple{
-  0%{transform:scale(.7);opacity:.6}
-  100%{transform:scale(1.9);opacity:0}
-}
-.intro-flag.hit{
-  animation:v7FlagHit .8s cubic-bezier(.22,1,.36,1);
-}
-@keyframes v7FlagHit{
-  0%{transform:rotate(0)}
-  35%{transform:rotate(2.2deg)}
-  70%{transform:rotate(-.7deg)}
-  100%{transform:rotate(0)}
-}
-.intro-splash.is-shrinking .intro-logo-wrap{
-  animation:v7LogoExit .9s cubic-bezier(.22,1,.36,1) forwards;
-}
-@keyframes v7LogoExit{
-  0%{opacity:1;transform:translateY(0) scale(1)}
-  100%{opacity:0;transform:translateY(-16px) scale(.94)}
-}
-.intro-splash.is-shrinking{
-  transition:opacity .8s ease,visibility .8s ease;
-}
-.intro-splash.is-finished{
-  opacity:0;
-}
-.intro-cloud{
-  position:absolute;
-  width:180px;
-  height:46px;
-  border-radius:999px;
-  background:rgba(255,255,255,.035);
-  filter:blur(1px);
-  animation:v7Cloud 18s linear infinite;
-}
-.intro-cloud.one{left:-220px;top:24%;animation-delay:0s}
-.intro-cloud.two{left:-260px;top:34%;width:240px;opacity:.6;animation-delay:6s}
-@keyframes v7Cloud{
-  to{transform:translateX(calc(100vw + 480px))}
-}
 @media(max-width:700px){
-  .intro-logo-wrap{width:min(62vw,290px)}
-  .intro-green{right:-12vw;width:64vw;height:17vh}
+  .intro-logo{top:20vh;width:min(58vw,280px)}
+  .intro-green{right:-14vw;width:70vw;height:19vh}
   .intro-cup{right:16vw;bottom:10vh}
   .intro-flag{right:20vw;bottom:10vh;height:118px}
   .intro-ball{bottom:10vh;width:38px;height:38px}
-  .intro-ball-shadow{bottom:9.1vh}
-  .intro-hole-pulse{right:15.8vw;bottom:9.6vh}
-  .intro-golf-label{bottom:25vh}
-  @keyframes v7BallRoll{
-    0%{transform:translate(0,0) rotate(0deg) scale(1);opacity:1}
-    55%{transform:translate(42vw,0) rotate(820deg)}
-    88%{transform:translate(calc(67vw - 34px),0) rotate(1240deg)}
-    97%{transform:translate(calc(70vw - 30px),2px) rotate(1340deg) scale(.86)}
-    100%{transform:translate(calc(71vw - 27px),13px) rotate(1400deg) scale(.36);opacity:0}
+  .intro-ball-shadow{bottom:9.2vh}
+  .intro-ripple{right:15.7vw;bottom:9.55vh}
+  .intro-world{transform-origin:82% 88%}
+  @keyframes ballIntoCup{
+    0%{transform:translate(0,0) rotate(0) scale(1);opacity:1}
+    54%{transform:translate(42vw,0) rotate(800deg)}
+    84%{transform:translate(calc(65vw - 34px),0) rotate(1200deg)}
+    95%{transform:translate(calc(69vw - 29px),1px) rotate(1320deg) scale(.88)}
+    99%{transform:translate(calc(70vw - 27px),6px) rotate(1370deg) scale(.7)}
+    100%{transform:translate(calc(70.5vw - 25px),17px) rotate(1400deg) scale(.25);opacity:0}
   }
-  @keyframes v7ShadowRoll{
+  @keyframes shadowIntoCup{
     0%{transform:translateX(0) scale(1);opacity:.18}
-    97%{transform:translateX(calc(70vw - 30px)) scale(.8);opacity:.12}
-    100%{transform:translateX(calc(71vw - 27px)) scale(.34);opacity:0}
+    95%{transform:translateX(calc(69vw - 29px)) scale(.78);opacity:.11}
+    100%{transform:translateX(calc(70.5vw - 25px)) scale(.24);opacity:0}
   }
+}
+@media(prefers-reduced-motion:reduce){
+  .intro-cinema{display:none!important}
 }

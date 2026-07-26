@@ -1,17 +1,14 @@
-# Barford Golf Society 2027 — Version 7 Relaxed
+# Barford Golf Society 2027 — Version 8 Hole Zoom
 
-Refined opening experience:
+This version rebuilds the opening sequence from a clean animation base:
 
-- smoother logo reveal
-- calmer green palette
-- subtle drifting clouds
-- clean fairway and putting green
-- slower, more natural golf-ball roll
-- softer flag movement
-- gentle cup ripple
-- relaxed wording: “Relax. Play. Enjoy.”
-- professional fade into the homepage
-- mobile-specific motion path
-- reduced-motion support
+- one smooth ball roll
+- the ball visibly drops into the cup
+- the flag reacts gently
+- the camera follows and zooms into the hole
+- the screen darkens inside the cup
+- the website then fades in
+- mobile path is separately tuned
+- reduced-motion support remains enabled
 
-This version remains separate from the live production website.
+The intro plays once per browser session.
