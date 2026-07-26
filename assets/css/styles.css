@@ -531,3 +531,50 @@ th{background:linear-gradient(135deg,var(--green-1000),var(--green-800));color:#
     display:none!important;
   }
 }
+
+/* Safe homepage logo refinement */
+.hero-art-premium{
+  display:grid;
+  justify-items:center;
+  align-content:center;
+  gap:18px;
+  text-align:center;
+}
+.hero-art-premium .logo-card{
+  position:relative;
+  margin:0;
+  max-width:390px;
+}
+.hero-season-lockup{
+  display:grid;
+  justify-items:center;
+  gap:5px;
+  color:#fff;
+}
+.hero-society-name{
+  color:var(--gold-400);
+  font-size:.76rem;
+  font-weight:900;
+  letter-spacing:.16em;
+  text-transform:uppercase;
+}
+.hero-season-lockup strong{
+  font-family:"Playfair Display",Georgia,serif;
+  font-size:clamp(1.9rem,3.5vw,2.7rem);
+  line-height:1.1;
+}
+.hero-season-lockup em{
+  color:#d7e2dc;
+  font-style:normal;
+  font-size:.95rem;
+}
+.hero-divider{
+  display:block;
+  width:170px;
+  height:1px;
+  margin:7px 0 4px;
+  background:linear-gradient(90deg,transparent,var(--gold-400),transparent);
+}
+@media(max-width:850px){
+  .hero-art-premium .logo-card{width:min(76vw,360px)}
+}

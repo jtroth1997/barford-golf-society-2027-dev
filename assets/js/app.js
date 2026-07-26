@@ -191,6 +191,9 @@ if (
 
   skipButton.addEventListener("click", finishIntro, { once:true });
 
+  // Hard fail-safe: reveal the website even if video playback stalls.
+  window.setTimeout(finishIntro, 12000);
+
   const playPromise = video.play();
   if (playPromise && typeof playPromise.catch === "function") {
     playPromise.catch(() => {

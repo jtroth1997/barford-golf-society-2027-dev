@@ -1,53 +1,218 @@
-<!doctype html>
+<!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="utf-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1">
-  <meta name="description" content="Barford Golf Society 2027 website">
-  <meta name="theme-color" content="#063d2a">
-  <title>About Us | Barford Golf Society</title>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+  <meta name="theme-color" content="#063f2d">
+  <meta name="description" content="Barford Golf Society 2027 scores, handicaps and round results.">
+  <title>Scores | Barford Golf Society 2027</title>
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=Playfair+Display:wght@700&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="assets/css/styles.css">
-  
+  <link rel="stylesheet" href="assets/css/scores.css">
 </head>
 <body>
-<a class="skip-link" href="#main-content">Skip to content</a>
-<header class="site-header">
+  <a class="skip-link" href="#main-content">Skip to scores</a>
+
+  <header class="site-header global-site-header">
   <div class="shell header-inner">
-    <a class="brand" href="index.html" aria-label="Barford Golf Society home">
+    <a class="brand global-brand" href="index.html" aria-label="Barford Golf Society home">
       <img src="assets/images/barford-golf-society-logo.png" alt="Barford Golf Society">
     </a>
-    <button class="menu-button" type="button" aria-expanded="false" aria-controls="primary-navigation">
+    <button class="menu-button" type="button" aria-expanded="false" aria-controls="global-navigation">
       <span class="sr-only">Open menu</span><span></span><span></span><span></span>
     </button>
-    <nav id="primary-navigation" class="site-nav" aria-label="Primary navigation">
-      <a class="" href="index.html">Home</a>
-<a class="" href="events.html">Events</a>
-<a class="" href="worldevents.html">World Events</a>
-<a class="" href="scores.html">Scores</a>
-<a class="" href="shop.html">Shop</a>
-<a class="" href="gallery.html">Gallery</a>
-<a class="active" href="about.html" aria-current="page">About Us</a>
-<a class="" href="signup.html">Sign Up</a>
+    <nav id="global-navigation" class="site-nav" aria-label="Primary navigation">
+      <a href="index.html">Home</a>
+      <a href="events.html">Events</a>
+      <a href="worldevents.html">World Events</a>
+      <a class="active" href="scores.html" aria-current="page">Scores</a>
+      <a href="shop.html">Shop</a>
+      <a href="gallery.html">Gallery</a>
+      <a href="about.html">About Us</a>
+      <a href="signup.html">Sign Up</a>
     </nav>
   </div>
 </header>
-<main id="main-content">
-<section class="page-hero about"><div class="shell"><p class="eyebrow">Our story</p><h1>About us</h1><p>Friendly golf, good company and memorable days across Warwickshire and beyond.</p></div></section>
-<section class="section shell"><div class="story-grid"><div><p class="eyebrow">Barford Golf Society</p><h2>Built around friendship and enjoyment</h2></div><div class="prose"><p>Barford Golf Society was founded more than 11 years ago in the Warwickshire village of Barford by local friends who shared a simple idea: enjoy great golf in a relaxed, friendly and social environment.</p><p>The society has grown into a welcoming community of more than 30 members, including men and women of different ages and abilities. Regular golfers and occasional players are equally welcome.</p><p>We play on the last Friday of each month from March through October, visiting eight different courses around Warwickshire and occasionally the Cotswolds. After golf, members traditionally relax together over a drink at The Granville Arms.</p></div></div></section>
-<section class="section section-soft"><div class="shell"><div class="stat-grid"><article><strong>11+</strong><span>Years of society golf</span></article><article><strong>30+</strong><span>Welcoming members</span></article><article><strong>8</strong><span>Events each season</span></article><article><strong>£40</strong><span>Typical golf-day cost</span></article></div></div></section>
-<section class="section shell"><div class="feature-grid"><article class="feature-card"><span class="feature-number">01</span><h3>Relaxed and social</h3><p>Enjoyment, good company and healthy exercise come first.</p></article><article class="feature-card"><span class="feature-number">02</span><h3>Friendly competition</h3><p>Competitive enough to matter, never so serious that it stops being fun.</p></article><article class="feature-card"><span class="feature-number">03</span><h3>Simple membership</h3><p>A modest annual fee, with each golf day typically including 18 holes, coffee and a bacon roll.</p></article></div></section>
-<section class="section shell"><div class="cta-panel"><div><p class="eyebrow eyebrow-light">Ready to join the fun?</p><h2>Become part of the society</h2><p>Register your interest and we will be delighted to welcome you.</p></div><a class="button button-gold" href="signup.html">Sign up now</a></div></section>
-</main>
-<footer class="site-footer">
-  <div class="shell footer-inner">
-    <div class="footer-brand"><img src="assets/images/barford-golf-society-logo.png" alt=""><span>Barford Golf Society</span></div>
-    <p>© <span id="year"></span> Barford Golf Society</p>
-  </div>
-</footer>
-<script src="assets/js/app.js" defer></script>
 
+  <nav class="primary-nav" id="scoresNav" aria-label="Scores navigation">
+    <button class="nav-tab is-active" data-view="leaderboard" type="button">Leaderboard</button>
+    <button class="nav-tab" data-view="rounds" type="button">Rounds</button>
+    <button class="nav-tab" data-view="handicaps" type="button">Handicap History</button>
+    <button class="nav-tab" data-view="statistics" type="button">Statistics</button>
+  </nav>
+
+  <main id="main-content">
+    <section class="hero">
+      <div>
+        <p class="eyebrow">Season overview</p>
+        <h2 id="heroTitle">Leaderboard</h2>
+        <p id="heroSubtitle">Best five rounds count towards the season total.</p>
+      </div>
+      <button class="admin-entry" id="adminEntry" type="button">Admin</button>
+    </section>
+    <p class="admin-access-note">Administrators can enter round scores, add or remove players, create rounds, manage handicaps and record trophies from the dashboard above.</p>
+
+    <section class="search-panel" aria-label="Player search">
+      <label for="playerSearch">Find a player</label>
+      <div class="search-control">
+        <span aria-hidden="true">⌕</span>
+        <input id="playerSearch" type="search" inputmode="search" autocomplete="off" placeholder="Type a player name">
+      </div>
+    </section>
+
+    <div id="statusMessage" class="status-message" role="status" aria-live="polite"></div>
+
+    <section id="leaderboardView" class="view is-active" aria-labelledby="heroTitle">
+      <div class="section-heading">
+        <div>
+          <p class="eyebrow">Current standings</p>
+          <h3 id="leaderboardHeading">Leaderboard</h3>
+        </div>
+        <span class="season-chip" id="seasonChip">2027</span>
+      </div>
+      <div class="leaderboard-round-tabs" id="leaderboardRoundTabs" role="tablist" aria-label="Leaderboard after round"></div>
+      <div class="leaderboard-context" id="leaderboardContext"></div>
+      <div id="leaderboardList" class="leaderboard-list"></div>
+    </section>
+
+    <section id="roundsView" class="view" hidden>
+      <div class="section-heading">
+        <div>
+          <p class="eyebrow">Round-by-round</p>
+          <h3>Round results</h3>
+        </div>
+      </div>
+      <div class="round-tabs" id="roundTabs" role="tablist" aria-label="Select round"></div>
+      <div id="roundSummary" class="round-summary"></div>
+      <div id="roundList" class="round-list"></div>
+    </section>
+
+    <section id="handicapsView" class="view" hidden>
+      <div class="section-heading">
+        <div>
+          <p class="eyebrow">Season movement</p>
+          <h3>Handicap history</h3>
+        </div>
+      </div>
+      <label class="field">
+        <span>Player</span>
+        <select id="handicapPlayerSelect"></select>
+      </label>
+      <article class="chart-card">
+        <div id="handicapChart" class="handicap-chart" role="img" aria-label="Handicap progression chart"></div>
+      </article>
+      <div id="handicapTimeline" class="timeline"></div>
+    </section>
+
+    <section id="statisticsView" class="view" hidden>
+      <div class="section-heading">
+        <div>
+          <p class="eyebrow">Player performance</p>
+          <h3>Statistics</h3>
+        </div>
+      </div>
+      <div id="statisticsGrid" class="statistics-grid"></div>
+    </section>
+  </main>
+
+  <dialog id="adminDialog" class="admin-dialog">
+    <div class="admin-shell">
+      <aside class="admin-sidebar">
+        <div>
+          <p class="eyebrow">Private area</p>
+          <h2>Admin Dashboard</h2>
+        </div>
+        <nav id="adminNav" aria-label="Administration">
+          <button class="admin-nav-button is-active" data-admin-panel="scores" type="button">Enter Scores</button>
+          <button class="admin-nav-button" data-admin-panel="players" type="button">Players</button>
+          <button class="admin-nav-button" data-admin-panel="settings" type="button">Settings</button>
+        </nav>
+      </aside>
+
+      <section class="admin-content">
+        <header class="admin-header">
+          <div>
+            <p class="eyebrow">Development data only</p>
+            <h2 id="adminPanelTitle">Enter Scores</h2>
+          </div>
+          <button class="icon-button" id="closeAdmin" type="button" aria-label="Close administrator dashboard">✕</button>
+        </header>
+        <div class="dev-banner">This build uses an isolated browser data store. It has no production database, storage, authentication or API connection.</div>
+
+        
+        <div class="admin-panel is-active" id="admin-scores">
+          <div class="admin-card compact">
+            <label class="field">
+              <span>Event / Round</span>
+              <select id="scoreRoundSelect"></select>
+            </label>
+            <p class="help-text">Choose the event, enter each player’s Stableford score, then save.</p>
+          </div>
+          <div id="scoreEntryList" class="score-entry-list"></div>
+          <div class="mobile-save-bar">
+            <button class="primary-button" id="calculateRoundButton" type="button">Save Round Scores</button>
+          </div>
+        </div>
+
+        <div class="admin-panel" id="admin-players" hidden>
+          <form id="addPlayerForm" class="card-form">
+            <h3>Add player</h3>
+            <label class="field"><span>Player name</span><input id="newPlayerName" required maxlength="60"></label>
+            <label class="field"><span>Starting handicap</span><input id="newPlayerHandicap" type="number" min="0" step="1" required></label>
+            <button class="primary-button" type="submit">Add Player</button>
+          </form>
+          <div id="adminPlayerList" class="admin-list"></div>
+        </div>
+
+        <div class="admin-panel" id="admin-settings" hidden>
+          <div class="card-form">
+            <h3>Handicap override</h3>
+            <label class="field"><span>Player</span><select id="overridePlayer"></select></label>
+            <label class="field"><span>New handicap</span><input id="overrideHandicap" type="number" min="0" step="1"></label>
+            <button class="primary-button" id="overrideHandicapButton" type="button">Save Handicap</button>
+          </div>
+
+          <div class="card-form">
+            <h3>Season data</h3>
+            <button class="secondary-button full-width" id="exportCsvButton" type="button">Export CSV</button>
+            <label class="upload-button full-width">Import CSV<input id="importCsvInput" type="file" accept=".csv,text/csv"></label>
+          </div>
+
+          <div class="danger-card">
+            <h3>Reset demonstration data</h3>
+            <button class="danger-button" id="resetSeasonButton" type="button">Reset Demo Season</button>
+          </div>
+        </div>
+</section>
+    </div>
+  </dialog>
+
+  <dialog id="confirmDialog" class="confirm-dialog">
+    <form method="dialog">
+      <h2 id="confirmTitle">Confirm action</h2>
+      <p id="confirmMessage"></p>
+      <div class="dialog-actions">
+        <button value="cancel" class="secondary-button">Cancel</button>
+        <button value="confirm" class="danger-button" id="confirmActionButton">Confirm</button>
+      </div>
+    </form>
+  </dialog>
+
+  <template id="leaderboardCardTemplate">
+    <article class="player-card">
+      <button class="player-card-summary" type="button" aria-expanded="false">
+        <span class="rank-badge"></span>
+        <span class="player-main"><strong class="player-name"></strong><span class="player-meta"></span></span>
+        <span class="points-block"><strong class="player-points"></strong><span>points</span></span>
+        <span class="expand-indicator" aria-hidden="true">⌄</span>
+      </button>
+      <div class="player-details" hidden></div>
+    </article>
+  </template>
+
+  <script src="assets/js/app.js" defer></script>
+  <script type="module" src="assets/js/scores.js"></script>
 </body>
 </html>

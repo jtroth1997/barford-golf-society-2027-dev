@@ -1,17 +1,5 @@
-<!doctype html>
-<html lang="en">
-<head>
-  <meta charset="utf-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1">
-  <title>Page not found | Barford Golf Society</title>
-  <link rel="stylesheet" href="assets/css/styles.css">
-</head>
-<body>
-  <main class="section shell narrow">
-    <p class="eyebrow">Barford Golf Society</p>
-    <h1 style="color:#063d2a;font-size:clamp(2.8rem,7vw,5rem)">Page not found</h1>
-    <p>The page you requested does not exist in this development site.</p>
-    <a class="button button-small" href="index.html">Return home</a>
-  </main>
-</body>
-</html>
+# White-screen fixed full build
+
+This package restores all shared website assets, keeps the intro video and integrated Scores page, and moves the 2027 Season text below the homepage logo.
+
+It also includes a fail-safe so the intro can never permanently cover the homepage.
