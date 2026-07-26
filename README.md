@@ -1,33 +1,19 @@
-# Barford Golf Society 2027 — Updated Video Intro Edition
+# Barford Golf Society 2027 — Full Website with Updated Scores
 
-This complete static website includes:
+This package contains the full working website with:
 
-- the latest cinematic intro video supplied for the project
-- full-screen autoplay with sound muted for browser compatibility
-- skip-intro button
-- mobile-safe full-screen video presentation
-- reduced-motion support
-- elegant dark green and gold design
-- Home
+- homepage intro video
+- existing site-wide branding and navigation
 - Events
 - World Events
-- Scores
+- updated mobile-first Scores page
 - Shop
 - Gallery
 - About Us
 - Sign Up
-- responsive navigation
-- mobile quick navigation
-- safe demo-only forms and admin previews
 
-## Safety
-
-This development build is not connected to the current live website, database, storage, payments or production administration tools.
+The updated Scores page is integrated into the main website navigation and uses isolated local development data only.
 
 ## Upload
 
-Upload every item inside this folder to the root of the `barford-golf-society-2027-dev` repository, preserving the `assets` directory.
-
-The updated intro video is stored at:
-
-`assets/video/intro.mp4`
+Upload every item inside this folder to the root of the development repository, preserving the `assets` folder structure.
