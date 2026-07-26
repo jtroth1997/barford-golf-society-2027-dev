@@ -12,28 +12,43 @@
   <a class="skip-link" href="#main-content">Skip to scores</a>
 
   <header class="site-header">
-    <a class="brand brand-link" href="index.html" aria-label="Barford Golf Society home">
-      <span class="brand-mark" aria-hidden="true">B</span>
-      <span>
-        <span class="eyebrow">Barford Golf Society</span>
-        <span class="brand-page-title">2027 Scores</span>
-      </span>
-    </a>
-    <button class="icon-button" id="menuButton" type="button" aria-controls="primaryNav" aria-expanded="false">
-      <span aria-hidden="true">☰</span><span class="sr-only">Open website navigation</span>
-    </button>
+    <div class="site-header-inner">
+      <a class="brand brand-link" href="index.html" aria-label="Barford Golf Society home">
+        <span class="crest-shell" aria-hidden="true">
+          <span class="crest-flag">⚑</span>
+          <span class="crest-word">BARFORD</span>
+          <span class="crest-subword">GOLF SOCIETY</span>
+        </span>
+      </a>
+
+      <button class="icon-button site-menu-button" id="menuButton" type="button" aria-controls="primaryNav" aria-expanded="false">
+        <span aria-hidden="true">☰</span><span class="sr-only">Open website navigation</span>
+      </button>
+
+      <nav class="primary-nav site-navigation" id="primaryNav" aria-label="Website navigation">
+        <a href="index.html">Home</a>
+        <a href="events.html">Events</a>
+        <a href="worldevents.html">World Events</a>
+        <a href="scores.html" class="is-active" aria-current="page">Scores</a>
+        <a href="shop.html">Shop</a>
+        <a href="gallery.html">Gallery</a>
+        <a href="about.html">About Us</a>
+        <a href="signup.html">Sign Up</a>
+      </nav>
+    </div>
   </header>
 
-  <nav class="primary-nav site-navigation" id="primaryNav" aria-label="Website navigation">
-    <a href="index.html">Home</a>
-    <a href="events.html">Events</a>
-    <a href="worldevents.html">World Events</a>
-    <a href="scores.html" class="is-active" aria-current="page">Scores</a>
-    <a href="gallery.html">Gallery</a>
-    <a href="shop.html">Shop</a>
-    <a href="about.html">About Us</a>
-    <a href="signup.html">Sign Up</a>
-  </nav>
+  <section class="scores-masthead">
+    <div>
+      <p class="masthead-kicker">Barford Golf Society · 2027 Season</p>
+      <h1>Scores &amp;<br>handicaps.</h1>
+      <p>Round-by-round standings, player progress and season performance.</p>
+    </div>
+    <div class="masthead-badge" aria-hidden="true">
+      <span>2027</span>
+      <small>Season scoring</small>
+    </div>
+  </section>
 
   <nav class="scores-nav" id="scoresNav" aria-label="Scores sections">
     <button class="nav-tab is-active" data-view="leaderboard" type="button">Leaderboard</button>
