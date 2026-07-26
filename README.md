@@ -1,33 +1,17 @@
-# Barford Golf Society 2027 — Updated Video Intro Edition
-
-This complete static website includes:
-
-- the latest cinematic intro video supplied for the project
-- full-screen autoplay with sound muted for browser compatibility
-- skip-intro button
-- mobile-safe full-screen video presentation
-- reduced-motion support
-- elegant dark green and gold design
-- Home
-- Events
-- World Events
-- Scores
-- Shop
-- Gallery
-- About Us
-- Sign Up
-- responsive navigation
-- mobile quick navigation
-- safe demo-only forms and admin previews
-
-## Safety
-
-This development build is not connected to the current live website, database, storage, payments or production administration tools.
-
-## Upload
-
-Upload every item inside this folder to the root of the `barford-golf-society-2027-dev` repository, preserving the `assets` directory.
-
-The updated intro video is stored at:
-
-`assets/video/intro.mp4`
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Page not found | Barford Golf Society</title>
+  <link rel="stylesheet" href="assets/css/styles.css">
+</head>
+<body>
+  <main class="section shell narrow">
+    <p class="eyebrow">Barford Golf Society</p>
+    <h1 style="color:#063d2a;font-size:clamp(2.8rem,7vw,5rem)">Page not found</h1>
+    <p>The page you requested does not exist in this development site.</p>
+    <a class="button button-small" href="index.html">Return home</a>
+  </main>
+</body>
+</html>
