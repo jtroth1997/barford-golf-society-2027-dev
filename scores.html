@@ -1,63 +1,68 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
-  <meta name="theme-color" content="#063f2d">
-  <meta name="description" content="Barford Golf Society 2027 scores, handicaps and round results.">
-  <title>Scores | Barford Golf Society 2027</title>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="description" content="Barford Golf Society 2027 scores, handicaps and round results">
+  <meta name="theme-color" content="#063d2a">
+  <title>Scores | Barford Golf Society</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=Playfair+Display:wght@700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="assets/css/styles.css">
   <link rel="stylesheet" href="assets/css/scores.css">
 </head>
 <body>
-  <a class="skip-link" href="#main-content">Skip to scores</a>
+<a class="skip-link" href="#main-content">Skip to content</a>
 
-  <header class="site-header">
-    <div class="site-header-inner">
-      <a class="brand brand-link" href="index.html" aria-label="Barford Golf Society home">
-        <span class="crest-shell" aria-hidden="true">
-          <span class="crest-flag">⚑</span>
-          <span class="crest-word">BARFORD</span>
-          <span class="crest-subword">GOLF SOCIETY</span>
-        </span>
-      </a>
+<header class="site-header">
+  <div class="shell header-inner">
+    <a class="brand" href="index.html" aria-label="Barford Golf Society home">
+      <img src="assets/images/barford-golf-society-logo.png" alt="Barford Golf Society">
+    </a>
+    <button class="menu-button" id="menuButton" type="button" aria-expanded="false" aria-controls="primary-navigation">
+      <span class="sr-only">Open menu</span><span></span><span></span><span></span>
+    </button>
+    <nav id="primary-navigation" class="site-nav" aria-label="Primary navigation">
+      <a href="index.html">Home</a>
+      <a href="events.html">Events</a>
+      <a href="worldevents.html">World Events</a>
+      <a class="active" href="scores.html" aria-current="page">Scores</a>
+      <a href="shop.html">Shop</a>
+      <a href="gallery.html">Gallery</a>
+      <a href="about.html">About Us</a>
+      <a href="signup.html">Sign Up</a>
+    </nav>
+  </div>
+</header>
 
-      <button class="icon-button site-menu-button" id="menuButton" type="button" aria-controls="primaryNav" aria-expanded="false">
-        <span aria-hidden="true">☰</span><span class="sr-only">Open website navigation</span>
-      </button>
-
-      <nav class="primary-nav site-navigation" id="primaryNav" aria-label="Website navigation">
-        <a href="index.html">Home</a>
-        <a href="events.html">Events</a>
-        <a href="worldevents.html">World Events</a>
-        <a href="scores.html" class="is-active" aria-current="page">Scores</a>
-        <a href="shop.html">Shop</a>
-        <a href="gallery.html">Gallery</a>
-        <a href="about.html">About Us</a>
-        <a href="signup.html">Sign Up</a>
-      </nav>
-    </div>
-  </header>
-
-  <section class="scores-masthead">
-    <div>
-      <p class="masthead-kicker">Barford Golf Society · 2027 Season</p>
+<section class="scores-page-hero">
+  <div class="shell scores-hero-grid">
+    <div class="scores-hero-copy">
+      <p class="eyebrow">Barford Golf Society · 2027 season</p>
       <h1>Scores &amp;<br>handicaps.</h1>
-      <p>Round-by-round standings, player progress and season performance.</p>
+      <p class="hero-lead">Follow every round, season standing and handicap adjustment in one clear place.</p>
     </div>
-    <div class="masthead-badge" aria-hidden="true">
-      <span>2027</span>
-      <small>Season scoring</small>
+    <div class="scores-hero-art" aria-hidden="true">
+      <div class="logo-card">
+        <img src="assets/images/barford-golf-society-logo.png" alt="">
+      </div>
+      <div class="hero-stat">
+        <strong>2027</strong>
+        <span>Season scoring</span>
+      </div>
     </div>
-  </section>
+  </div>
+</section>
 
-  <nav class="scores-nav" id="scoresNav" aria-label="Scores sections">
-    <button class="nav-tab is-active" data-view="leaderboard" type="button">Leaderboard</button>
-    <button class="nav-tab" data-view="rounds" type="button">Rounds</button>
-    <button class="nav-tab" data-view="handicaps" type="button">Handicap History</button>
-    <button class="nav-tab" data-view="statistics" type="button">Statistics</button>
-  </nav>
+<nav class="scores-nav" id="scoresNav" aria-label="Scores sections">
+  <button class="nav-tab is-active" data-view="leaderboard" type="button">Leaderboard</button>
+  <button class="nav-tab" data-view="rounds" type="button">Rounds</button>
+  <button class="nav-tab" data-view="handicaps" type="button">Handicap History</button>
+  <button class="nav-tab" data-view="statistics" type="button">Statistics</button>
+</nav>
 
-  <main id="main-content">
+<main id="main-content" class="shell scores-main">
     <section class="hero">
       <div>
         <p class="eyebrow">Season overview</p>
@@ -129,6 +134,17 @@
       <div id="statisticsGrid" class="statistics-grid"></div>
     </section>
   </main>
+
+
+<footer class="site-footer">
+  <div class="shell footer-inner">
+    <div class="footer-brand">
+      <img src="assets/images/barford-golf-society-logo.png" alt="">
+      <span>Barford Golf Society</span>
+    </div>
+    <p>© <span id="year"></span> Barford Golf Society</p>
+  </div>
+</footer>
 
   <dialog id="adminDialog" class="admin-dialog">
     <div class="admin-shell">
@@ -265,6 +281,7 @@
     </article>
   </template>
 
+  <script src="assets/js/app.js" defer></script>
   <script type="module" src="assets/js/scores.js"></script>
 </body>
 </html>

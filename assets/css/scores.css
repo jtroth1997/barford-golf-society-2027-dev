@@ -892,3 +892,126 @@ main{
     font-size:2rem;
   }
 }
+
+/* Shared-site integration: the global header/footer comes from styles.css. */
+.site-header-inner,
+.crest-shell,
+.scores-masthead,
+.site-navigation,
+.site-menu-button{
+  all:unset;
+}
+
+.scores-page-hero{
+  min-height:490px;
+  color:#fff;
+  background:
+    radial-gradient(circle at 83% 42%,rgba(255,255,255,.08),transparent 25rem),
+    linear-gradient(118deg,#001b12 0%,#062d20 57%,#15563d 100%);
+  border-bottom:1px solid rgba(221,179,89,.25);
+}
+.scores-hero-grid{
+  min-height:490px;
+  display:grid;
+  grid-template-columns:minmax(0,1fr) minmax(360px,560px);
+  gap:64px;
+  align-items:center;
+}
+.scores-hero-copy h1{
+  margin:0;
+  font-family:"Playfair Display",Georgia,serif;
+  font-size:clamp(4.7rem,7.3vw,8rem);
+  line-height:.88;
+  letter-spacing:-.045em;
+}
+.scores-hero-copy .hero-lead{
+  max-width:780px;
+  margin:28px 0 0;
+}
+.scores-hero-art{
+  position:relative;
+  min-height:390px;
+  display:grid;
+  place-items:center;
+}
+.scores-hero-art .logo-card{
+  width:min(430px,90%);
+  aspect-ratio:1;
+  display:grid;
+  place-items:center;
+  border-radius:50%;
+  background:#fff;
+  box-shadow:0 28px 65px rgba(0,0,0,.24);
+}
+.scores-hero-art .logo-card img{
+  width:88%;
+  height:88%;
+  object-fit:contain;
+}
+.scores-hero-art .hero-stat{
+  position:absolute;
+  left:0;
+  bottom:20px;
+  min-width:250px;
+  padding:22px 28px;
+  border-radius:20px;
+  background:var(--gold);
+  color:var(--green-950);
+  box-shadow:0 18px 38px rgba(0,0,0,.17);
+}
+.scores-hero-art .hero-stat strong{
+  display:block;
+  font-family:"Playfair Display",Georgia,serif;
+  font-size:2.6rem;
+  line-height:1;
+}
+.scores-hero-art .hero-stat span{
+  display:block;
+  margin-top:6px;
+  font-weight:800;
+}
+.scores-nav{
+  top:108px;
+  background:#fff;
+}
+.scores-main{
+  padding-top:34px;
+  padding-bottom:80px;
+}
+.scores-main > .hero{
+  border-radius:24px;
+  padding:34px;
+  background:linear-gradient(125deg,#082d22,#14543c);
+}
+.scores-main > .hero h2{
+  font-family:"Playfair Display",Georgia,serif;
+}
+.site-footer{
+  margin-top:0;
+}
+@media(max-width:1050px){
+  .scores-hero-grid{
+    grid-template-columns:1fr;
+    min-height:430px;
+    padding-block:52px;
+  }
+  .scores-hero-art{display:none}
+}
+@media(max-width:700px){
+  .scores-page-hero{min-height:310px}
+  .scores-hero-grid{
+    min-height:310px;
+    padding-block:40px;
+  }
+  .scores-hero-copy h1{
+    font-size:clamp(3.3rem,16vw,5.1rem);
+    line-height:.91;
+  }
+  .scores-hero-copy .hero-lead{
+    margin-top:20px;
+    font-size:1rem;
+  }
+  .scores-nav{top:88px}
+  .scores-main{padding-top:22px}
+  .scores-main > .hero{padding:24px 20px}
+}
