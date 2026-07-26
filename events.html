@@ -1,51 +1,66 @@
 <!doctype html>
 <html lang="en">
 <head>
-<meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
-<meta name="description" content="Barford Golf Society events and RSVP information.">
-<title>Events | Barford Golf Society</title>
-<link rel="preconnect" href="https://fonts.googleapis.com">
-<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=Playfair+Display:wght@700&display=swap" rel="stylesheet">
-<link rel="stylesheet" href="assets/css/styles.css">
-<link rel="stylesheet" href="assets/css/events.css">
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="description" content="Barford Golf Society 2027 website">
+  <meta name="theme-color" content="#063d2a">
+  <title>Events | Barford Golf Society</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=Playfair+Display:wght@700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="assets/css/styles.css">
+  
 </head>
 <body>
 <a class="skip-link" href="#main-content">Skip to content</a>
-<header class="site-header"><div class="shell header-inner">
-<a class="brand" href="index.html"><img src="assets/images/barford-golf-society-logo.png" alt="Barford Golf Society"></a>
-<button class="menu-button" type="button" aria-expanded="false" aria-controls="primary-navigation"><span class="sr-only">Open menu</span><span></span><span></span><span></span></button>
-<nav id="primary-navigation" class="site-nav" aria-label="Primary navigation">
-<a href="index.html">Home</a><a class="active" href="events.html" aria-current="page">Events</a><a href="worldevents.html">World Events</a><a href="scores.html">Scores</a><a href="shop.html">Shop</a><a href="gallery.html">Gallery</a><a href="about.html">About Us</a><a href="signup.html">Sign Up</a>
-</nav></div></header>
-
+<header class="site-header">
+  <div class="shell header-inner">
+    <a class="brand" href="index.html" aria-label="Barford Golf Society home">
+      <img src="assets/images/barford-golf-society-logo.png" alt="Barford Golf Society">
+    </a>
+    <button class="menu-button" type="button" aria-expanded="false" aria-controls="primary-navigation">
+      <span class="sr-only">Open menu</span><span></span><span></span><span></span>
+    </button>
+    <nav id="primary-navigation" class="site-nav" aria-label="Primary navigation">
+      <a class="" href="index.html">Home</a>
+<a class="active" href="events.html" aria-current="page">Events</a>
+<a class="" href="worldevents.html">World Events</a>
+<a class="" href="scores.html">Scores</a>
+<a class="" href="shop.html">Shop</a>
+<a class="" href="gallery.html">Gallery</a>
+<a class="" href="about.html">About Us</a>
+<a class="" href="signup.html">Sign Up</a>
+    </nav>
+  </div>
+</header>
 <main id="main-content">
-<section class="events-hero"><div class="shell events-hero-grid">
-<div><p class="eyebrow eyebrow-light">2027 society calendar</p><h1>Plan your next golf day</h1><p class="events-hero-lead">See every upcoming event, reserve your place and check tee-time information in one simple view.</p></div>
-<aside class="next-event-summary"><span class="summary-label">Next event</span><h2>Season opener</h2><dl><div><dt>Date</dt><dd>26 March 2027</dd></div><div><dt>Venue</dt><dd>To be confirmed</dd></div><div><dt>Places</dt><dd>18 remaining</dd></div></dl><a class="button button-gold" href="#event-1">RSVP now</a></aside>
-</div></section>
-
-<section class="events-toolbar-section"><div class="shell events-toolbar">
-<div class="view-toggle"><button class="view-button active" type="button">Upcoming</button><button class="view-button" type="button">All events</button></div>
-<div class="toolbar-actions"><button class="button button-outline" id="calendarHelpBtn" type="button">Calendar help</button><button class="button button-small" id="adminToggle" type="button">Admin preview</button></div>
-</div></section>
-
-<section class="section shell"><div class="section-heading"><div><p class="eyebrow">Upcoming events</p><h2>Choose your golf day</h2></div><p class="events-count" id="eventsCount"></p></div><div id="eventList" class="events-list" aria-live="polite"></div></section>
-
-<section id="adminPanel" class="section section-soft hidden"><div class="shell">
-<div class="admin-intro"><div><p class="eyebrow">Safe development preview</p><h2>Event administration</h2><p>These controls use browser-only demonstration data and cannot affect the current live website.</p></div><span class="safe-badge">Disconnected from production</span></div>
-<div class="admin-layout">
-<nav class="admin-menu"><button class="admin-menu-button active" data-panel="create">Create event</button><button class="admin-menu-button" data-panel="manage">Edit event</button><button class="admin-menu-button" data-panel="rsvps">Manage RSVPs</button><button class="admin-menu-button" data-panel="tee">Tee times</button></nav>
-<div class="admin-workspace">
-<section class="admin-view active" data-admin-view="create"><h3>Create an event</h3><form id="createEventForm" class="admin-form"><div class="form-grid"><label>Event name<input name="name" required></label><label>Date<input name="date" type="date" required></label><label>Location<input name="location"></label><label>Price<input name="price" placeholder="£45"></label><label>Maximum players<input name="maxPlayers" type="number" min="1" value="24"></label><label>First tee time<input name="firstTime" type="time"></label></div><label>Description<textarea name="description" rows="4"></textarea></label><button class="button button-small" type="submit">Create demo event</button><p class="form-status" id="createEventStatus"></p></form></section>
-<section class="admin-view" data-admin-view="manage"><h3>Edit or cancel an event</h3><label>Select event<select id="manageEventSelect"></select></label><div class="admin-action-grid"><button class="button button-outline demo-admin-action">Edit details</button><button class="button button-outline demo-admin-action">Mark cancelled</button><button class="button button-outline demo-admin-action">Delete event</button></div><p class="admin-note">Destructive actions are disabled in development.</p></section>
-<section class="admin-view" data-admin-view="rsvps"><h3>Manage RSVPs</h3><label>Select event<select id="rsvpEventSelect"></select></label><div class="empty-admin-state">RSVP management will connect to the separate 2027 database later.</div></section>
-<section class="admin-view" data-admin-view="tee"><h3>Build tee times</h3><div class="form-grid"><label>Select event<select id="teeEventSelect"></select></label><label>Start time<input type="time"></label><label>Gap between groups<input type="number" min="1" value="8"></label></div><div class="admin-action-grid"><button class="button button-small demo-admin-action">Generate groups</button><button class="button button-outline demo-admin-action">Save tee times</button></div></section>
-</div></div></div></section>
+<section class="page-hero"><div class="shell"><p class="eyebrow">2027 calendar</p><h1>Society events</h1><p>All upcoming golf days, RSVP information and tee-time details in one place.</p></div></section>
+<section class="section shell">
+  <div class="toolbar"><div><h2>Upcoming events</h2><p class="muted">Development preview — no live bookings are being made.</p></div><button class="button button-outline admin-toggle" type="button" data-target="eventAdmin">🔐 Admin access</button></div>
+  <div class="cards-list">
+    <article class="event-list-card"><div class="date-badge"><span>MAR</span><strong>26</strong></div><div><p class="event-label">Season opener</p><h3>Venue to be confirmed</h3><p>Friday · 18 holes · coffee and bacon roll</p><div class="chip-row"><span class="chip">£TBC</span><span class="chip">24 places</span><span class="chip">Tee times TBC</span></div></div><a class="button button-small" href="#rsvp">RSVP</a></article>
+    <article class="event-list-card"><div class="date-badge"><span>APR</span><strong>30</strong></div><div><p class="event-label">Monthly event</p><h3>Venue to be confirmed</h3><p>Friday · 18 holes · friendly competition</p><div class="chip-row"><span class="chip">£TBC</span><span class="chip">Course link</span><span class="chip">Weather</span></div></div><a class="button button-small" href="#rsvp">RSVP</a></article>
+  </div>
+</section>
+<section id="rsvp" class="section section-soft"><div class="shell narrow"><p class="eyebrow">RSVP</p><h2>Reserve your place</h2><form class="form-card demo-form"><label>Choose event<select><option>Season opener — 26 March 2027</option><option>Monthly event — 30 April 2027</option></select></label><label>Your name<input type="text" placeholder="Full name"></label><label>Guest name (optional)<input type="text" placeholder="Guest name"></label><button class="button button-primary" type="submit">Submit RSVP</button><p class="form-status"></p></form></div></section>
+<section id="eventAdmin" class="section shell admin-panel hidden">
+  <div class="admin-heading"><div><p class="eyebrow">Administration preview</p><h2>Event management</h2></div><span class="status-pill">Disconnected from live data</span></div>
+  <div class="admin-grid">
+    <article class="admin-card"><h3>Create new event</h3><input placeholder="Name"><input type="date"><input placeholder="Location"><input placeholder="Price (£)"><textarea placeholder="Description"></textarea><input placeholder="Course link"><input placeholder="Weather link"><button class="button button-small" disabled>Create event</button></article>
+    <article class="admin-card"><h3>Edit / cancel event</h3><select><option>Select event</option></select><input placeholder="Max players"><input placeholder="First tee time"><button class="button button-small" disabled>Save changes</button><button class="button button-danger" disabled>Cancel event</button></article>
+    <article class="admin-card"><h3>Manage RSVPs</h3><select><option>Select event</option></select><button class="button button-outline" disabled>Who's playing</button><button class="button button-outline" disabled>Reserve list</button><button class="button button-outline" disabled>Manage dropouts</button></article>
+    <article class="admin-card"><h3>Tee-time generator</h3><input type="time"><input type="number" placeholder="Gap (minutes)"><button class="button button-small" disabled>Generate tee times</button><button class="button button-outline" disabled>Send WhatsApp tee times</button></article>
+  </div>
+</section>
 </main>
+<footer class="site-footer">
+  <div class="shell footer-inner">
+    <div class="footer-brand"><img src="assets/images/barford-golf-society-logo.png" alt=""><span>Barford Golf Society</span></div>
+    <p>© <span id="year"></span> Barford Golf Society</p>
+  </div>
+</footer>
+<script src="assets/js/app.js" defer></script>
 
-<footer class="site-footer"><div class="shell footer-inner"><div class="footer-brand"><img src="assets/images/barford-golf-society-logo.png" alt=""><span>Barford Golf Society</span></div><p>© <span id="year"></span> Barford Golf Society</p></div></footer>
-
-<div id="dialogBackdrop" class="dialog-backdrop hidden"><section class="dialog" role="dialog" aria-modal="true"><button class="dialog-close" type="button">×</button><div id="dialogContent"></div></section></div>
-<script src="assets/js/app.js" defer></script><script src="assets/js/events-data.js" defer></script><script src="assets/js/events.js" defer></script>
-</body></html>
+</body>
+</html>

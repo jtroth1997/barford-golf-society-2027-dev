@@ -1,23 +1,33 @@
-# Barford Golf Society 2027 — Current Full Build
+# Barford Golf Society 2027 — Updated Video Intro Edition
 
-This package contains the complete current development website:
+This complete static website includes:
 
-- Home page with the latest supplied intro video
-- Updated safe Events page
+- the latest cinematic intro video supplied for the project
+- full-screen autoplay with sound muted for browser compatibility
+- skip-intro button
+- mobile-safe full-screen video presentation
+- reduced-motion support
+- elegant dark green and gold design
+- Home
+- Events
 - World Events
 - Scores
 - Shop
 - Gallery
 - About Us
 - Sign Up
-- Shared responsive styling and navigation
+- responsive navigation
+- mobile quick navigation
+- safe demo-only forms and admin previews
 
-## Important
+## Safety
 
-The updated Events page is disconnected from the current production Supabase project and uses demonstration data only.
-
-The Scores page in this package is the existing development version and has not yet been replaced by the planned mobile-first leaderboard rebuild.
+This development build is not connected to the current live website, database, storage, payments or production administration tools.
 
 ## Upload
 
-Upload every item inside this folder to the root of the development repository, preserving the `assets` folder structure.
+Upload every item inside this folder to the root of the `barford-golf-society-2027-dev` repository, preserving the `assets` directory.
+
+The updated intro video is stored at:
+
+`assets/video/intro.mp4`
