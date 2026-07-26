@@ -1,15 +1,17 @@
-# Barford Golf Society 2027 — Version 6 Golf Intro
+# Barford Golf Society 2027 — Version 7 Relaxed
 
-Opening sequence:
+Refined opening experience:
 
-- the Barford Golf Society logo appears prominently
-- a clear fairway runs across the bottom of the screen
-- a visible putting green, cup and flag appear on the right
-- a golf ball rolls from left to right
-- the ball slows and drops into the hole
-- the flag reacts when the ball lands
-- the website then opens
-- mobile path is shorter and clearer
-- reduced-motion support remains enabled
+- smoother logo reveal
+- calmer green palette
+- subtle drifting clouds
+- clean fairway and putting green
+- slower, more natural golf-ball roll
+- softer flag movement
+- gentle cup ripple
+- relaxed wording: “Relax. Play. Enjoy.”
+- professional fade into the homepage
+- mobile-specific motion path
+- reduced-motion support
 
-The intro plays once per browser session.
+This version remains separate from the live production website.

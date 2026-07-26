@@ -950,3 +950,201 @@ input:focus-visible,select:focus-visible,textarea:focus-visible{
     100%{transform:translateX(calc(72vw - 26px)) scale(.3);opacity:0}
   }
 }
+
+
+/* ===== Version 7: smooth, calm and professional intro ===== */
+.intro-splash{
+  background:
+    radial-gradient(circle at 50% 18%,rgba(239,216,158,.16),transparent 30%),
+    linear-gradient(180deg,#032a1e 0%,#064432 62%,#0b5a3e 100%);
+}
+.intro-copy{
+  top:4.5vh;
+}
+.intro-copy strong{
+  font-size:clamp(1.8rem,4vw,3rem);
+  letter-spacing:-.02em;
+}
+.intro-copy span{
+  color:#e9d59b;
+  font-weight:700;
+}
+.intro-logo-wrap{
+  width:min(46vw,330px);
+  opacity:0;
+  animation:v7LogoIn 1.15s cubic-bezier(.22,1,.36,1) forwards;
+}
+.intro-logo-wrap img{
+  border-radius:26px;
+  box-shadow:0 26px 80px rgba(0,0,0,.24);
+}
+.intro-logo-wrap::after{
+  inset:-18px;
+  border:1px solid rgba(231,202,126,.28);
+  animation:v7Halo 3.4s ease-in-out infinite;
+}
+@keyframes v7LogoIn{
+  0%{opacity:0;transform:translateY(18px) scale(.9)}
+  100%{opacity:1;transform:translateY(0) scale(1)}
+}
+@keyframes v7Halo{
+  50%{transform:scale(1.025);opacity:.45}
+}
+.intro-fairway{
+  height:24vh;
+  min-height:160px;
+  background:
+    linear-gradient(180deg,rgba(255,255,255,.02),transparent 20%),
+    linear-gradient(180deg,#3f9a66,#26784f);
+  clip-path:ellipse(82% 55% at 50% 100%);
+}
+.intro-green{
+  right:2vw;
+  width:min(36vw,440px);
+  height:19vh;
+  min-height:138px;
+  background:radial-gradient(circle at 48% 36%,#68b57d 0 10%,#4a9f6b 35%,#2c7d53 100%);
+  box-shadow:inset 0 12px 28px rgba(255,255,255,.05),0 -10px 28px rgba(0,0,0,.08);
+}
+.intro-cup{
+  right:12vw;
+  bottom:9vh;
+  width:38px;
+  height:13px;
+  border:none;
+  background:#071c13;
+  box-shadow:0 2px 0 rgba(255,255,255,.10);
+}
+.intro-flag{
+  right:14vw;
+  bottom:9vh;
+  height:138px;
+  width:5px;
+  animation:v7FlagIdle 4.8s ease-in-out infinite;
+}
+.intro-flag::before{
+  width:74px;
+  height:40px;
+  background:linear-gradient(135deg,#dfc16e,#b98a2a);
+  animation:v7FlagWave 2.8s ease-in-out infinite;
+}
+@keyframes v7FlagIdle{
+  50%{transform:rotate(.35deg)}
+}
+@keyframes v7FlagWave{
+  50%{transform:skewY(-4deg) scaleX(.96)}
+}
+.intro-ball{
+  left:4vw;
+  bottom:8.9vh;
+  width:42px;
+  height:42px;
+}
+.intro-ball-shadow{
+  left:4vw;
+  bottom:8vh;
+  width:46px;
+  opacity:.18;
+}
+.intro-trail{
+  display:none;
+}
+.intro-golf-label{
+  bottom:27vh;
+  padding:8px 15px;
+  background:rgba(0,0,0,.12);
+  border-color:rgba(255,255,255,.10);
+  color:#eef6f1;
+  font-size:.76rem;
+  letter-spacing:.14em;
+}
+.intro-splash.is-rolling .intro-ball{
+  animation:v7BallRoll 3.05s cubic-bezier(.15,.72,.18,1) forwards;
+}
+.intro-splash.is-rolling .intro-ball-shadow{
+  animation:v7ShadowRoll 3.05s cubic-bezier(.15,.72,.18,1) forwards;
+}
+@keyframes v7BallRoll{
+  0%{transform:translate(0,0) rotate(0deg) scale(1);opacity:1}
+  22%{transform:translate(18vw,-1px) rotate(420deg)}
+  48%{transform:translate(42vw,0) rotate(920deg)}
+  72%{transform:translate(62vw,-1px) rotate(1320deg)}
+  88%{transform:translate(calc(76vw - 58px),0) rotate(1600deg)}
+  96%{transform:translate(calc(79vw - 54px),2px) rotate(1700deg) scale(.92)}
+  100%{transform:translate(calc(80vw - 50px),14px) rotate(1760deg) scale(.38);opacity:0}
+}
+@keyframes v7ShadowRoll{
+  0%{transform:translateX(0) scale(1);opacity:.18}
+  88%{transform:translateX(calc(76vw - 58px)) scale(.9);opacity:.14}
+  100%{transform:translateX(calc(80vw - 50px)) scale(.35);opacity:0}
+}
+.intro-hole-pulse{
+  right:11.8vw;
+  bottom:8.7vh;
+  border-color:rgba(255,255,255,.22);
+}
+.intro-hole-pulse.is-active{
+  animation:v7CupRipple .95s ease-out;
+}
+@keyframes v7CupRipple{
+  0%{transform:scale(.7);opacity:.6}
+  100%{transform:scale(1.9);opacity:0}
+}
+.intro-flag.hit{
+  animation:v7FlagHit .8s cubic-bezier(.22,1,.36,1);
+}
+@keyframes v7FlagHit{
+  0%{transform:rotate(0)}
+  35%{transform:rotate(2.2deg)}
+  70%{transform:rotate(-.7deg)}
+  100%{transform:rotate(0)}
+}
+.intro-splash.is-shrinking .intro-logo-wrap{
+  animation:v7LogoExit .9s cubic-bezier(.22,1,.36,1) forwards;
+}
+@keyframes v7LogoExit{
+  0%{opacity:1;transform:translateY(0) scale(1)}
+  100%{opacity:0;transform:translateY(-16px) scale(.94)}
+}
+.intro-splash.is-shrinking{
+  transition:opacity .8s ease,visibility .8s ease;
+}
+.intro-splash.is-finished{
+  opacity:0;
+}
+.intro-cloud{
+  position:absolute;
+  width:180px;
+  height:46px;
+  border-radius:999px;
+  background:rgba(255,255,255,.035);
+  filter:blur(1px);
+  animation:v7Cloud 18s linear infinite;
+}
+.intro-cloud.one{left:-220px;top:24%;animation-delay:0s}
+.intro-cloud.two{left:-260px;top:34%;width:240px;opacity:.6;animation-delay:6s}
+@keyframes v7Cloud{
+  to{transform:translateX(calc(100vw + 480px))}
+}
+@media(max-width:700px){
+  .intro-logo-wrap{width:min(62vw,290px)}
+  .intro-green{right:-12vw;width:64vw;height:17vh}
+  .intro-cup{right:16vw;bottom:10vh}
+  .intro-flag{right:20vw;bottom:10vh;height:118px}
+  .intro-ball{bottom:10vh;width:38px;height:38px}
+  .intro-ball-shadow{bottom:9.1vh}
+  .intro-hole-pulse{right:15.8vw;bottom:9.6vh}
+  .intro-golf-label{bottom:25vh}
+  @keyframes v7BallRoll{
+    0%{transform:translate(0,0) rotate(0deg) scale(1);opacity:1}
+    55%{transform:translate(42vw,0) rotate(820deg)}
+    88%{transform:translate(calc(67vw - 34px),0) rotate(1240deg)}
+    97%{transform:translate(calc(70vw - 30px),2px) rotate(1340deg) scale(.86)}
+    100%{transform:translate(calc(71vw - 27px),13px) rotate(1400deg) scale(.36);opacity:0}
+  }
+  @keyframes v7ShadowRoll{
+    0%{transform:translateX(0) scale(1);opacity:.18}
+    97%{transform:translateX(calc(70vw - 30px)) scale(.8);opacity:.12}
+    100%{transform:translateX(calc(71vw - 27px)) scale(.34);opacity:0}
+  }
+}
