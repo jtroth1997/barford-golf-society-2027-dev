@@ -91,6 +91,8 @@ const seed = {
       "id": "r1",
       "number": 1,
       "name": "Round 1",
+      "eventName": "Season Opener",
+      "venue": "The Belfry",
       "date": "2027-03-15",
       "results": [
         {
@@ -195,6 +197,8 @@ const seed = {
       "id": "r2",
       "number": 2,
       "name": "Round 2",
+      "eventName": "Spring Society Day",
+      "venue": "Forest of Arden",
       "date": "2027-04-16",
       "results": [
         {
@@ -299,6 +303,8 @@ const seed = {
       "id": "r3",
       "number": 3,
       "name": "Round 3",
+      "eventName": "Summer Cup",
+      "venue": "Moor Hall",
       "date": "2027-05-17",
       "results": [
         {
@@ -403,6 +409,8 @@ const seed = {
       "id": "r4",
       "number": 4,
       "name": "Round 4",
+      "eventName": "Captain's Day",
+      "venue": "Walmley Golf Club",
       "date": "2027-06-18",
       "results": [
         {
@@ -507,6 +515,8 @@ const seed = {
       "id": "r5",
       "number": 5,
       "name": "Round 5",
+      "eventName": "Autumn Trophy",
+      "venue": "Wishaw Golf Club",
       "date": "2027-07-19",
       "results": [
         {
@@ -611,6 +621,8 @@ const seed = {
       "id": "r6",
       "number": 6,
       "name": "Round 6",
+      "eventName": "Finals Day",
+      "venue": "The Warwickshire",
       "date": "2027-08-20",
       "results": [
         {
@@ -715,6 +727,8 @@ const seed = {
       "id": "r7",
       "number": 7,
       "name": "Round 7",
+      "eventName": "Christmas Scramble",
+      "venue": "Pype Hayes",
       "date": "2027-09-21",
       "results": [
         {

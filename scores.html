@@ -50,7 +50,7 @@
         <h2 id="heroTitle">Leaderboard</h2>
         <p id="heroSubtitle">Best five rounds count towards the season total.</p>
       </div>
-      <button class="admin-entry" id="adminEntry" type="button">Open Admin Dashboard</button>
+      <button class="admin-entry" id="adminEntry" type="button">Admin</button>
     </section>
     <p class="admin-access-note">Administrators can enter round scores, add or remove players, create rounds, manage handicaps and record trophies from the dashboard above.</p>
 
@@ -125,14 +125,9 @@
           <h2>Admin Dashboard</h2>
         </div>
         <nav id="adminNav" aria-label="Administration">
-          <button class="admin-nav-button is-active" data-admin-panel="guide" type="button">Start Here</button>
-          <button class="admin-nav-button" data-admin-panel="scores" type="button">1. Enter Scores</button>
+          <button class="admin-nav-button is-active" data-admin-panel="scores" type="button">Enter Scores</button>
           <button class="admin-nav-button" data-admin-panel="players" type="button">Players</button>
-          <button class="admin-nav-button" data-admin-panel="rounds" type="button">Rounds</button>
-          <button class="admin-nav-button" data-admin-panel="handicaps" type="button">Handicaps</button>
-          <button class="admin-nav-button" data-admin-panel="trophies" type="button">Trophies</button>
-          <button class="admin-nav-button" data-admin-panel="data" type="button">Data</button>
-          <button class="admin-nav-button danger-text" data-admin-panel="reset" type="button">Reset</button>
+          <button class="admin-nav-button" data-admin-panel="settings" type="button">Settings</button>
         </nav>
       </aside>
 
@@ -140,112 +135,57 @@
         <header class="admin-header">
           <div>
             <p class="eyebrow">Development data only</p>
-            <h2 id="adminPanelTitle">Start Here</h2>
+            <h2 id="adminPanelTitle">Enter Scores</h2>
           </div>
           <button class="icon-button" id="closeAdmin" type="button" aria-label="Close administrator dashboard">✕</button>
         </header>
         <div class="dev-banner">This build uses an isolated browser data store. It has no production database, storage, authentication or API connection.</div>
 
         
-        <div class="admin-panel is-active" id="admin-guide">
-          <div class="admin-guide">
-            <h3>Simple round-day checklist</h3>
-            <p>Follow these four steps. You do not need to work anything out manually.</p>
-            <ol class="admin-steps">
-              <li><strong>Choose the round</strong><span>Open “Enter Scores” and select the round you are entering.</span></li>
-              <li><strong>Enter each player’s Stableford points</strong><span>Enter 0 for anyone who did not play. Their handicap will stay unchanged.</span></li>
-              <li><strong>Calculate and save</strong><span>The system works out the round average, adjustment and next handicap automatically.</span></li>
-              <li><strong>Check the next round</strong><span>The new handicap is carried forward and becomes the player’s handicap for the next round.</span></li>
-            </ol>
-            <div class="admin-help-box">
-              <strong>Important:</strong> Best five rounds count towards the season leaderboard. A minimum of four playing scores is required before handicaps can be calculated.
-            </div>
-            <button class="primary-button" type="button" id="startScoreEntryButton">Start entering scores</button>
+        <div class="admin-panel is-active" id="admin-scores">
+          <div class="admin-card compact">
+            <label class="field">
+              <span>Event / Round</span>
+              <select id="scoreRoundSelect"></select>
+            </label>
+            <p class="help-text">Choose the event, enter each player’s Stableford score, then save.</p>
           </div>
-        </div>
-
-        <div class="admin-panel" id="admin-scores" hidden>
-          <div class="form-grid two-column">
-            <label class="field"><span>Round</span><select id="scoreRoundSelect"></select></label>
-            <div class="field"><span>Action</span><button class="primary-button" id="calculateRoundButton" type="button">Calculate Handicaps & Save Round</button></div>
-          </div>
-          <p class="help-text score-help">Enter the Stableford points for every player. Enter <strong>0</strong> for DNP. Check the handicap shown before saving.</p>
           <div id="scoreEntryList" class="score-entry-list"></div>
+          <div class="mobile-save-bar">
+            <button class="primary-button" id="calculateRoundButton" type="button">Save Round Scores</button>
+          </div>
         </div>
 
         <div class="admin-panel" id="admin-players" hidden>
           <form id="addPlayerForm" class="card-form">
             <h3>Add player</h3>
-            <div class="form-grid two-column">
-              <label class="field"><span>Player name</span><input id="newPlayerName" required maxlength="60"></label>
-              <label class="field"><span>Starting handicap</span><input id="newPlayerHandicap" type="number" min="0" step="1" required></label>
-            </div>
+            <label class="field"><span>Player name</span><input id="newPlayerName" required maxlength="60"></label>
+            <label class="field"><span>Starting handicap</span><input id="newPlayerHandicap" type="number" min="0" step="1" required></label>
             <button class="primary-button" type="submit">Add Player</button>
           </form>
           <div id="adminPlayerList" class="admin-list"></div>
         </div>
 
-        <div class="admin-panel" id="admin-rounds" hidden>
-          <form id="createRoundForm" class="card-form">
-            <h3>Create round</h3>
-            <div class="form-grid two-column">
-              <label class="field"><span>Round name</span><input id="newRoundName" required maxlength="60" placeholder="Round 8"></label>
-              <label class="field"><span>Date</span><input id="newRoundDate" type="date"></label>
-            </div>
-            <button class="primary-button" type="submit">Create Round</button>
-          </form>
-          <div id="adminRoundList" class="admin-list"></div>
-        </div>
-
-        <div class="admin-panel" id="admin-handicaps" hidden>
+        <div class="admin-panel" id="admin-settings" hidden>
           <div class="card-form">
-            <h3>Override handicap</h3>
-            <div class="form-grid two-column">
-              <label class="field"><span>Player</span><select id="overridePlayer"></select></label>
-              <label class="field"><span>New handicap</span><input id="overrideHandicap" type="number" min="0" step="1"></label>
-            </div>
-            <button class="primary-button" id="overrideHandicapButton" type="button">Save Override</button>
+            <h3>Handicap override</h3>
+            <label class="field"><span>Player</span><select id="overridePlayer"></select></label>
+            <label class="field"><span>New handicap</span><input id="overrideHandicap" type="number" min="0" step="1"></label>
+            <button class="primary-button" id="overrideHandicapButton" type="button">Save Handicap</button>
           </div>
-          <button class="secondary-button full-width" id="generateNextRoundButton" type="button">Use Latest Handicaps</button>
-        </div>
 
-        <div class="admin-panel" id="admin-trophies" hidden>
-          <form id="trophyForm" class="card-form">
-            <h3>Record achievement</h3>
-            <div class="form-grid two-column">
-              <label class="field"><span>Round</span><select id="trophyRound"></select></label>
-              <label class="field"><span>Player</span><select id="trophyPlayer"></select></label>
-              <label class="field"><span>Type</span>
-                <select id="trophyType">
-                  <option value="win">Round win</option>
-                  <option value="runnerUp">Runner-up</option>
-                  <option value="third">Third place</option>
-                  <option value="nearestPin">Nearest the Pin</option>
-                  <option value="longestDrive">Longest Drive</option>
-                </select>
-              </label>
-            </div>
-            <button class="primary-button" type="submit">Save Achievement</button>
-          </form>
-          <div id="achievementList" class="admin-list"></div>
-        </div>
-
-        <div class="admin-panel" id="admin-data" hidden>
-          <div class="action-grid">
-            <button class="primary-button" id="exportCsvButton" type="button">Export CSV</button>
-            <label class="upload-button">Import CSV<input id="importCsvInput" type="file" accept=".csv,text/csv"></label>
+          <div class="card-form">
+            <h3>Season data</h3>
+            <button class="secondary-button full-width" id="exportCsvButton" type="button">Export CSV</button>
+            <label class="upload-button full-width">Import CSV<input id="importCsvInput" type="file" accept=".csv,text/csv"></label>
           </div>
-          <p class="help-text">CSV import updates player round scores. Export includes every saved round result.</p>
-        </div>
 
-        <div class="admin-panel" id="admin-reset" hidden>
           <div class="danger-card">
-            <h3>Reset season</h3>
-            <p>Deletes all local development players, rounds, scores and achievements, then restores the demonstration data.</p>
-            <button class="danger-button" id="resetSeasonButton" type="button">Reset Development Season</button>
+            <h3>Reset demonstration data</h3>
+            <button class="danger-button" id="resetSeasonButton" type="button">Reset Demo Season</button>
           </div>
         </div>
-      </section>
+</section>
     </div>
   </dialog>
 
