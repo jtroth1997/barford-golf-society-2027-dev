@@ -125,7 +125,8 @@
           <h2>Admin Dashboard</h2>
         </div>
         <nav id="adminNav" aria-label="Administration">
-          <button class="admin-nav-button is-active" data-admin-panel="scores" type="button">Enter Scores</button>
+          <button class="admin-nav-button is-active" data-admin-panel="guide" type="button">Start Here</button>
+          <button class="admin-nav-button" data-admin-panel="scores" type="button">1. Enter Scores</button>
           <button class="admin-nav-button" data-admin-panel="players" type="button">Players</button>
           <button class="admin-nav-button" data-admin-panel="rounds" type="button">Rounds</button>
           <button class="admin-nav-button" data-admin-panel="handicaps" type="button">Handicaps</button>
@@ -139,17 +140,36 @@
         <header class="admin-header">
           <div>
             <p class="eyebrow">Development data only</p>
-            <h2 id="adminPanelTitle">Enter Scores</h2>
+            <h2 id="adminPanelTitle">Start Here</h2>
           </div>
           <button class="icon-button" id="closeAdmin" type="button" aria-label="Close administrator dashboard">✕</button>
         </header>
         <div class="dev-banner">This build uses an isolated browser data store. It has no production database, storage, authentication or API connection.</div>
 
-        <div class="admin-panel is-active" id="admin-scores">
+        
+        <div class="admin-panel is-active" id="admin-guide">
+          <div class="admin-guide">
+            <h3>Simple round-day checklist</h3>
+            <p>Follow these four steps. You do not need to work anything out manually.</p>
+            <ol class="admin-steps">
+              <li><strong>Choose the round</strong><span>Open “Enter Scores” and select the round you are entering.</span></li>
+              <li><strong>Enter each player’s Stableford points</strong><span>Enter 0 for anyone who did not play. Their handicap will stay unchanged.</span></li>
+              <li><strong>Calculate and save</strong><span>The system works out the round average, adjustment and next handicap automatically.</span></li>
+              <li><strong>Check the next round</strong><span>The new handicap is carried forward and becomes the player’s handicap for the next round.</span></li>
+            </ol>
+            <div class="admin-help-box">
+              <strong>Important:</strong> Best five rounds count towards the season leaderboard. A minimum of four playing scores is required before handicaps can be calculated.
+            </div>
+            <button class="primary-button" type="button" id="startScoreEntryButton">Start entering scores</button>
+          </div>
+        </div>
+
+        <div class="admin-panel" id="admin-scores" hidden>
           <div class="form-grid two-column">
             <label class="field"><span>Round</span><select id="scoreRoundSelect"></select></label>
-            <div class="field"><span>Action</span><button class="primary-button" id="calculateRoundButton" type="button">Calculate & Save Round</button></div>
+            <div class="field"><span>Action</span><button class="primary-button" id="calculateRoundButton" type="button">Calculate Handicaps & Save Round</button></div>
           </div>
+          <p class="help-text score-help">Enter the Stableford points for every player. Enter <strong>0</strong> for DNP. Check the handicap shown before saving.</p>
           <div id="scoreEntryList" class="score-entry-list"></div>
         </div>
 

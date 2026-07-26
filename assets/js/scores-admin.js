@@ -15,6 +15,7 @@ export class AdminDashboard {
 
   bind() {
     document.querySelector("#closeAdmin").addEventListener("click", () => this.close());
+    document.querySelector("#startScoreEntryButton")?.addEventListener("click", () => this.showPanel("scores", "1. Enter Scores"));
     document.querySelector("#adminNav").addEventListener("click", event => {
       const button = event.target.closest("[data-admin-panel]");
       if (button) this.showPanel(button.dataset.adminPanel, button.textContent);
@@ -50,6 +51,7 @@ export class AdminDashboard {
     ["overridePlayer","trophyPlayer"].forEach(id => document.querySelector(`#${id}`).innerHTML = playerOptions);
     ["scoreRoundSelect","trophyRound"].forEach(id => document.querySelector(`#${id}`).innerHTML = roundOptions);
     this.renderScoreEntries(); this.renderPlayers(); this.renderRounds(); this.renderAchievements();
+    this.showPanel("guide", "Start Here");
   }
 
   renderScoreEntries() {
@@ -67,7 +69,7 @@ export class AdminDashboard {
           <span>Playing handicap for this round: <b>${handicapForRound}</b></span>
         </div>
         <label class="field"><span>Handicap played</span><input data-hcp="${player.id}" type="number" min="0" step="1" value="${handicapForRound}"></label>
-        <label class="field"><span>Round score</span><input data-points="${player.id}" type="number" min="0" step="1" value="${saved?.dnp ? 0 : saved?.points ?? ""}" placeholder="0 = DNP"></label>
+        <label class="field"><span>Stableford points</span><input data-points="${player.id}" type="number" min="0" step="1" value="${saved?.dnp ? 0 : saved?.points ?? ""}" placeholder="0 means DNP"></label>
         <div class="calculated-result" data-result="${player.id}" aria-live="polite">
           ${saved ? this.resultMarkup(saved.adjustment, saved.nextHandicap, saved.dnp) : '<span>Press calculate to see next handicap</span>'}
         </div>`;
@@ -131,6 +133,36 @@ export class AdminDashboard {
         return calculated;
       });
       await this.dataService.saveRoundResults(roundId,results);
+
+      // Preserve the live page's winner logic: highest Stableford score wins.
+      // For a tie, the administrator chooses the winner.
+      const playableResults = results.filter(result => Number.isFinite(result.points));
+      if (playableResults.length) {
+        const topScore = Math.max(...playableResults.map(result => result.points));
+        const tied = playableResults.filter(result => result.points === topScore);
+        let winner = tied[0];
+
+        if (tied.length > 1) {
+          const choices = tied.map((result, index) => {
+            const player = this.data.players.find(item => item.id === result.playerId);
+            return `${index + 1}. ${player?.name ?? "Player"} (${topScore} points)`;
+          }).join("\n");
+          const selected = Number(window.prompt(`The round is tied. Choose the winner:\n\n${choices}`, "1")) - 1;
+          winner = tied[selected] ?? tied[0];
+        }
+
+        const existingWins = this.data.achievements.filter(
+          item => item.roundId === roundId && item.type === "win"
+        );
+        for (const item of existingWins) {
+          await this.dataService.removeAchievement(item.id);
+        }
+        await this.dataService.addAchievement({
+          roundId,
+          playerId: winner.playerId,
+          type: "win"
+        });
+      }
 
       const orderedRounds = [...this.data.rounds].sort((a, b) => a.number - b.number);
       const currentIndex = orderedRounds.findIndex(round => round.id === roundId);
