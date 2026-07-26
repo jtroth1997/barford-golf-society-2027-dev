@@ -1,0 +1,58 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="description" content="Barford Golf Society 2027 website">
+  <meta name="theme-color" content="#063d2a">
+  <title>World Events | Barford Golf Society</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=Playfair+Display:wght@700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="assets/css/styles.css">
+  
+</head>
+<body>
+<a class="skip-link" href="#main-content">Skip to content</a>
+<header class="site-header">
+  <div class="shell header-inner">
+    <a class="brand" href="index.html" aria-label="Barford Golf Society home">
+      <img src="assets/images/barford-golf-society-logo.jpeg" alt="Barford Golf Society">
+    </a>
+    <button class="menu-button" type="button" aria-expanded="false" aria-controls="primary-navigation">
+      <span class="sr-only">Open menu</span><span></span><span></span><span></span>
+    </button>
+    <nav id="primary-navigation" class="site-nav" aria-label="Primary navigation">
+      <a class="" href="index.html">Home</a>
+<a class="" href="events.html">Events</a>
+<a class="active" href="worldevents.html" aria-current="page">World Events</a>
+<a class="" href="scores.html">Scores</a>
+<a class="" href="shop.html">Shop</a>
+<a class="" href="gallery.html">Gallery</a>
+<a class="" href="about.html">About Us</a>
+<a class="" href="signup.html">Sign Up</a>
+    </nav>
+  </div>
+</header>
+<main id="main-content">
+<section class="page-hero world"><div class="shell"><p class="eyebrow">Trips & tournaments</p><h1>World golf events</h1><p>Explore society trips, watch destination videos and vote for future events.</p></div></section>
+<section class="section shell">
+  <div class="toolbar"><div><h2>Featured trip ideas</h2><p class="muted">Members can review each destination before voting.</p></div><button class="button button-outline admin-toggle" data-target="worldAdmin" type="button">🔐 Admin access</button></div>
+  <div class="feature-grid">
+    <article class="media-card"><div class="media-placeholder">Video preview</div><div class="media-content"><p class="event-label">Trip idea</p><h3>Destination to be announced</h3><p>Full details and member voting will appear here.</p><button class="button button-small demo-action">Vote for this trip</button></div></article>
+    <article class="media-card"><div class="media-placeholder">Video preview</div><div class="media-content"><p class="event-label">Future event</p><h3>European golf weekend</h3><p>Preview accommodation, courses and travel information.</p><button class="button button-small demo-action">Vote for this trip</button></div></article>
+    <article class="media-card"><div class="media-placeholder">Video preview</div><div class="media-content"><p class="event-label">Member choice</p><h3>UK golf break</h3><p>Compare venues and register your preferred option.</p><button class="button button-small demo-action">Vote for this trip</button></div></article>
+  </div>
+</section>
+<section id="worldAdmin" class="section section-soft admin-panel hidden"><div class="shell"><div class="admin-heading"><div><p class="eyebrow">Administration preview</p><h2>Manage world events</h2></div><span class="status-pill">Demo only</span></div><div class="admin-grid"><article class="admin-card"><h3>Create new trip event</h3><input placeholder="Event name"><input type="file" accept="video/*"><button class="button button-small" disabled>Create event</button></article><article class="admin-card"><h3>Delete event</h3><select><option>Select event</option></select><button class="button button-danger" disabled>Delete event</button></article><article class="admin-card"><h3>View votes</h3><select><option>Select event</option></select><div class="empty-state">Voting results will appear here.</div></article></div></div></section>
+</main>
+<footer class="site-footer">
+  <div class="shell footer-inner">
+    <div class="footer-brand"><img src="assets/images/barford-golf-society-logo.jpeg" alt=""><span>Barford Golf Society</span></div>
+    <p>© <span id="year"></span> Barford Golf Society</p>
+  </div>
+</footer>
+<script src="assets/js/app.js" defer></script>
+
+</body>
+</html>
