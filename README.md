@@ -1,21 +1,18 @@
-# Barford Golf Society 2027 — Simplified Scores Administration
+# Barford Golf Society 2027 — Mobile-First Scores Edition
 
-This full development website keeps the premium Scores design and incorporates the working rules and administration functions from the former live Scores page.
+This complete development website keeps the current scoring rules and simplified administrator workflow, with a professional mobile-first redesign.
 
-Admin features:
-- beginner-friendly Start Here guide
-- choose a round
-- enter Stableford points
-- enter 0 for DNP
-- automatic trimmed round average
-- automatic handicap adjustment
-- automatic next-round handicap carry-forward
-- automatic winner detection with tie selection
-- add and remove players
-- create rounds
-- override handicaps
-- record trophies, runner-up, third, nearest pin and longest drive
-- CSV import/export
-- reset demonstration season
+Key mobile improvements:
+- no horizontal page overflow
+- compact leaderboard cards
+- large touch-friendly controls
+- full-screen administrator dashboard
+- horizontally scrollable admin navigation
+- sticky admin heading and close button
+- single-column score entry on phones
+- clear 0 = DNP guidance
+- better spacing on small screens
+- improved charts, round results and player statistics
+- responsive layouts down to narrow phones
 
-The development build uses browser-only localStorage and does not connect to the live Supabase database.
+The Scores page still uses isolated browser localStorage and does not connect to the live production database.
