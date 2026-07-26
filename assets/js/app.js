@@ -130,3 +130,46 @@ if (isHome && !reducedMotion && !sessionStorage.getItem("bgsElegantIntroPlayed")
     sessionStorage.setItem("bgsElegantIntroPlayed","true");
   }, 5750);
 }
+
+
+// Version 10: realistic smooth roll with camera tracking before the drop.
+if (isHome && !reducedMotion && !sessionStorage.getItem("bgsSmoothCinematicV10Played")) {
+  document.querySelectorAll(".site-intro").forEach(el => el.remove());
+
+  const intro = document.createElement("div");
+  intro.className = "site-intro v10";
+  intro.setAttribute("aria-hidden","true");
+  intro.innerHTML = `
+    <div class="intro-stage">
+      <div class="intro-brand">
+        <img src="assets/images/barford-golf-society-logo.png" alt="">
+        <p>Relax. Play. Enjoy.</p>
+      </div>
+      <div class="intro-fairway"></div>
+      <div class="intro-green"></div>
+      <div class="intro-ball"></div>
+      <div class="intro-shadow"></div>
+      <div class="intro-ripple"></div>
+      <div class="intro-cup"></div>
+      <div class="intro-flag"></div>
+    </div>
+    <div class="intro-dark"></div>
+  `;
+
+  body.appendChild(intro);
+  body.style.overflow = "hidden";
+
+  const ripple = intro.querySelector(".intro-ripple");
+
+  setTimeout(() => intro.classList.add("is-tracking"), 1050);
+  setTimeout(() => {
+    intro.classList.add("is-dropping");
+    ripple?.classList.add("active");
+  }, 4480);
+  setTimeout(() => intro.classList.add("is-darkening"), 5150);
+  setTimeout(() => {
+    intro.classList.add("is-hidden");
+    body.style.overflow = "";
+    sessionStorage.setItem("bgsSmoothCinematicV10Played","true");
+  }, 5750);
+}

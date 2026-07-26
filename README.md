@@ -1,16 +1,14 @@
-# Barford Golf Society 2027 — Version 9 Elegant
+# Barford Golf Society 2027 — Version 10 Smooth Cinematic
 
-A complete static website package with:
+Refined opening animation:
 
-- the official Barford Golf Society logo
-- cinematic opening sequence
-- smooth golf-ball roll into the cup
-- camera zoom into the hole
-- dark transition into the homepage
-- elegant dark green and gold visual system
-- responsive navigation
-- mobile quick-access menu
-- events, scores, gallery, shop, world events, about and sign-up pages
-- safe demo-only forms and admin previews
+- official Barford Golf Society logo
+- realistic golf-ball movement
+- constant, smooth rolling motion
+- camera begins zooming while the ball approaches the cup
+- separate drop animation so the ball visibly falls into the hole
+- faster dark blend into the homepage
+- mobile-specific motion path
+- reduced-motion support
 
-This build is not connected to the production website or live data.
+The intro plays once per browser session.
