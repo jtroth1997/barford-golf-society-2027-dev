@@ -109,11 +109,11 @@ function renderLeaderboard() {
 
     const meta = node.querySelector(".player-meta");
     meta.innerHTML = selectedResult
-      ? `<span class="leaderboard-round-line">Played off <strong>${selectedResult.handicapUsed}</strong></span>
-         <span class="leaderboard-round-line">Score <strong>${selectedResult.dnp ? "DNP" : selectedResult.points}</strong></span>
-         <span class="leaderboard-round-line">Adjustment <strong class="change ${changeClass(selectedResult.adjustment)}">${formatChange(selectedResult.adjustment)}</strong></span>
-         <span class="leaderboard-round-line">Next HCP <strong>${selectedResult.nextHandicap}</strong></span>`
-      : `<span class="leaderboard-round-line">No result recorded for ${escapeHtml(selectedRound?.name ?? "this round")}</span>`;
+      ? `<span class="leaderboard-round-line"><span>Played off</span><strong>${selectedResult.handicapUsed}</strong></span>
+         <span class="leaderboard-round-line"><span>Score</span><strong>${selectedResult.dnp ? "DNP" : selectedResult.points}</strong></span>
+         <span class="leaderboard-round-line"><span>Adjustment</span><strong class="change ${changeClass(selectedResult.adjustment)}">${formatChange(selectedResult.adjustment)}</strong></span>
+         <span class="leaderboard-round-line"><span>Next HCP</span><strong>${selectedResult.nextHandicap}</strong></span>`
+      : `<span class="leaderboard-round-line leaderboard-empty"><span>No result recorded</span><strong>${escapeHtml(selectedRound?.name ?? "This round")}</strong></span>`;
 
     node.querySelector(".player-points").textContent = player.statistics.seasonPoints;
 

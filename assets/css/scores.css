@@ -221,3 +221,142 @@ main{width:min(1120px,100%);margin:auto;padding:18px 16px 64px}
     align-items:center;
   }
 }
+
+/* Mobile leaderboard result card: round facts are visible without opening the card. */
+@media(max-width:719px){
+  .leaderboard-list{
+    gap:12px;
+  }
+
+  .player-card{
+    border-radius:22px;
+  }
+
+  .player-card-summary{
+    min-height:0;
+    padding:18px 14px;
+    display:grid;
+    grid-template-columns:48px minmax(0,1fr) auto;
+    grid-template-areas:
+      "rank name points"
+      "rank details points";
+    column-gap:12px;
+    row-gap:8px;
+    align-items:start;
+  }
+
+  .rank-badge{
+    grid-area:rank;
+    align-self:start;
+    width:44px;
+    height:44px;
+  }
+
+  .player-main{
+    grid-area:name / name / details / details;
+    width:100%;
+    min-width:0;
+  }
+
+  .player-name{
+    font-size:1.05rem;
+    line-height:1.2;
+    white-space:normal;
+    overflow:visible;
+    text-overflow:clip;
+    color:var(--ink);
+  }
+
+  .player-meta{
+    margin-top:10px;
+    display:grid;
+    grid-template-columns:repeat(2,minmax(0,1fr));
+    gap:8px 14px;
+  }
+
+  .leaderboard-round-line{
+    display:grid;
+    grid-template-columns:auto auto;
+    justify-content:start;
+    align-items:baseline;
+    gap:5px;
+    min-width:0;
+    white-space:normal;
+    font-size:.9rem;
+    line-height:1.25;
+  }
+
+  .leaderboard-round-line span{
+    color:var(--muted);
+  }
+
+  .leaderboard-round-line strong{
+    font-size:.95rem;
+    color:var(--ink);
+  }
+
+  .leaderboard-round-line .change{
+    font-size:.95rem;
+  }
+
+  .leaderboard-empty{
+    grid-column:1/-1;
+    display:flex;
+    flex-direction:column;
+    gap:2px;
+  }
+
+  .points-block{
+    grid-area:points;
+    align-self:center;
+    min-width:58px;
+    text-align:right;
+    padding-left:4px;
+  }
+
+  .points-block strong{
+    font-size:1.65rem;
+    color:var(--emerald-900);
+  }
+
+  .points-block span{
+    font-size:.78rem;
+  }
+
+  .expand-indicator{
+    display:none;
+  }
+}
+
+@media(max-width:390px){
+  .player-card-summary{
+    grid-template-columns:42px minmax(0,1fr) auto;
+    column-gap:10px;
+    padding:16px 12px;
+  }
+
+  .rank-badge{
+    width:40px;
+    height:40px;
+  }
+
+  .player-meta{
+    gap:7px 10px;
+  }
+
+  .leaderboard-round-line{
+    font-size:.82rem;
+  }
+
+  .leaderboard-round-line strong{
+    font-size:.88rem;
+  }
+
+  .points-block{
+    min-width:50px;
+  }
+
+  .points-block strong{
+    font-size:1.45rem;
+  }
+}
