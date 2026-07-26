@@ -1,53 +1,31 @@
-<!doctype html>
-<html lang="en">
-<head>
-  <meta charset="utf-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1">
-  <meta name="description" content="Barford Golf Society 2027 website">
-  <meta name="theme-color" content="#063d2a">
-  <title>About Us | Barford Golf Society</title>
-  <link rel="preconnect" href="https://fonts.googleapis.com">
-  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=Playfair+Display:wght@700&display=swap" rel="stylesheet">
-  <link rel="stylesheet" href="assets/css/styles.css">
-  
-</head>
-<body>
-<a class="skip-link" href="#main-content">Skip to content</a>
-<header class="site-header">
-  <div class="shell header-inner">
-    <a class="brand" href="index.html" aria-label="Barford Golf Society home">
-      <img src="assets/images/barford-golf-society-logo.jpeg" alt="Barford Golf Society">
-    </a>
-    <button class="menu-button" type="button" aria-expanded="false" aria-controls="primary-navigation">
-      <span class="sr-only">Open menu</span><span></span><span></span><span></span>
-    </button>
-    <nav id="primary-navigation" class="site-nav" aria-label="Primary navigation">
-      <a class="" href="index.html">Home</a>
-<a class="" href="events.html">Events</a>
-<a class="" href="worldevents.html">World Events</a>
-<a class="" href="scores.html">Scores</a>
-<a class="" href="shop.html">Shop</a>
-<a class="" href="gallery.html">Gallery</a>
-<a class="active" href="about.html" aria-current="page">About Us</a>
-<a class="" href="signup.html">Sign Up</a>
-    </nav>
-  </div>
-</header>
-<main id="main-content">
-<section class="page-hero about"><div class="shell"><p class="eyebrow">Our story</p><h1>About us</h1><p>Friendly golf, good company and memorable days across Warwickshire and beyond.</p></div></section>
-<section class="section shell"><div class="story-grid"><div><p class="eyebrow">Barford Golf Society</p><h2>Built around friendship and enjoyment</h2></div><div class="prose"><p>Barford Golf Society was founded more than 11 years ago in the Warwickshire village of Barford by local friends who shared a simple idea: enjoy great golf in a relaxed, friendly and social environment.</p><p>The society has grown into a welcoming community of more than 30 members, including men and women of different ages and abilities. Regular golfers and occasional players are equally welcome.</p><p>We play on the last Friday of each month from March through October, visiting eight different courses around Warwickshire and occasionally the Cotswolds. After golf, members traditionally relax together over a drink at The Granville Arms.</p></div></div></section>
-<section class="section section-soft"><div class="shell"><div class="stat-grid"><article><strong>11+</strong><span>Years of society golf</span></article><article><strong>30+</strong><span>Welcoming members</span></article><article><strong>8</strong><span>Events each season</span></article><article><strong>£40</strong><span>Typical golf-day cost</span></article></div></div></section>
-<section class="section shell"><div class="feature-grid"><article class="feature-card"><span class="feature-number">01</span><h3>Relaxed and social</h3><p>Enjoyment, good company and healthy exercise come first.</p></article><article class="feature-card"><span class="feature-number">02</span><h3>Friendly competition</h3><p>Competitive enough to matter, never so serious that it stops being fun.</p></article><article class="feature-card"><span class="feature-number">03</span><h3>Simple membership</h3><p>A modest annual fee, with each golf day typically including 18 holes, coffee and a bacon roll.</p></article></div></section>
-<section class="section shell"><div class="cta-panel"><div><p class="eyebrow eyebrow-light">Ready to join the fun?</p><h2>Become part of the society</h2><p>Register your interest and we will be delighted to welcome you.</p></div><a class="button button-gold" href="signup.html">Sign up now</a></div></section>
-</main>
-<footer class="site-footer">
-  <div class="shell footer-inner">
-    <div class="footer-brand"><img src="assets/images/barford-golf-society-logo.jpeg" alt=""><span>Barford Golf Society</span></div>
-    <p>© <span id="year"></span> Barford Golf Society</p>
-  </div>
-</footer>
-<script src="assets/js/app.js" defer></script>
+# Barford Golf Society 2027 — Version 2.0
 
-</body>
-</html>
+Complete static development build for the 2027 redesign.
+
+## Included
+- Home
+- Events and RSVP preview
+- World Events and voting preview
+- Scores and handicap tables
+- Shop and demo basket
+- Gallery and upload preview
+- About Us
+- Sign Up
+- Responsive navigation
+- Shared green-and-gold design system
+- GitHub Pages 404 page
+
+## Safety
+This build is not connected to the current live website, production database, Supabase storage, payment processing or live administration tools. Forms and admin controls are demonstrations only.
+
+## Upload to GitHub
+Upload every item inside this folder to the root of `barford-golf-society-2027-dev`.
+
+The repository must contain:
+- `index.html`
+- all other `.html` pages
+- `assets/css/styles.css`
+- `assets/js/app.js`
+- `assets/images/barford-golf-society-logo.jpeg`
+
+Then enable GitHub Pages from `main` and `/(root)`.

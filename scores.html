@@ -5,7 +5,7 @@
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <meta name="description" content="Barford Golf Society 2027 website">
   <meta name="theme-color" content="#063d2a">
-  <title>Events | Barford Golf Society</title>
+  <title>Scores | Barford Golf Society</title>
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=Playfair+Display:wght@700&display=swap" rel="stylesheet">
@@ -24,9 +24,9 @@
     </button>
     <nav id="primary-navigation" class="site-nav" aria-label="Primary navigation">
       <a class="" href="index.html">Home</a>
-<a class="active" href="events.html" aria-current="page">Events</a>
+<a class="" href="events.html">Events</a>
 <a class="" href="worldevents.html">World Events</a>
-<a class="" href="scores.html">Scores</a>
+<a class="active" href="scores.html" aria-current="page">Scores</a>
 <a class="" href="shop.html">Shop</a>
 <a class="" href="gallery.html">Gallery</a>
 <a class="" href="about.html">About Us</a>
@@ -35,24 +35,14 @@
   </div>
 </header>
 <main id="main-content">
-<section class="page-hero"><div class="shell"><p class="eyebrow">2027 calendar</p><h1>Society events</h1><p>All upcoming golf days, RSVP information and tee-time details in one place.</p></div></section>
+<section class="page-hero scores"><div class="shell"><p class="eyebrow">League standings</p><h1>Scores & handicaps</h1><p>Follow all seven rounds, adjusted totals and handicap progression.</p></div></section>
 <section class="section shell">
-  <div class="toolbar"><div><h2>Upcoming events</h2><p class="muted">Development preview — no live bookings are being made.</p></div><button class="button button-outline admin-toggle" type="button" data-target="eventAdmin">🔐 Admin access</button></div>
-  <div class="cards-list">
-    <article class="event-list-card"><div class="date-badge"><span>MAR</span><strong>26</strong></div><div><p class="event-label">Season opener</p><h3>Venue to be confirmed</h3><p>Friday · 18 holes · coffee and bacon roll</p><div class="chip-row"><span class="chip">£TBC</span><span class="chip">24 places</span><span class="chip">Tee times TBC</span></div></div><a class="button button-small" href="#rsvp">RSVP</a></article>
-    <article class="event-list-card"><div class="date-badge"><span>APR</span><strong>30</strong></div><div><p class="event-label">Monthly event</p><h3>Venue to be confirmed</h3><p>Friday · 18 holes · friendly competition</p><div class="chip-row"><span class="chip">£TBC</span><span class="chip">Course link</span><span class="chip">Weather</span></div></div><a class="button button-small" href="#rsvp">RSVP</a></article>
-  </div>
+  <div class="score-toolbar"><div><p class="eyebrow">Round selector</p><h2>Round 1 of 7</h2></div><div class="button-row"><button class="button button-outline" type="button">◀ Previous</button><button class="button button-outline" type="button">Next ▶</button><button class="button button-small admin-toggle" data-target="scoreAdmin" type="button">🔐 Admin tools</button></div></div>
+  <div class="table-wrap"><table><thead><tr><th>Rank</th><th>Player</th><th>Round 1 HCP</th><th>Points</th><th>Adj</th><th>Next HCP</th><th>Total</th><th>DNP</th><th>🏆</th></tr></thead><tbody><tr><td>1</td><td>Sample Player</td><td>18</td><td>36</td><td>36</td><td>18</td><td>36</td><td>0</td><td>—</td></tr><tr><td>2</td><td>Demo Member</td><td>22</td><td>34</td><td>34</td><td>22</td><td>34</td><td>0</td><td>—</td></tr><tr><td>3</td><td>Example Golfer</td><td>14</td><td>31</td><td>31</td><td>15</td><td>31</td><td>0</td><td>—</td></tr></tbody></table></div>
+  <p class="notice">Rounds 6 and 7 will remain locked until they are ready to view.</p>
 </section>
-<section id="rsvp" class="section section-soft"><div class="shell narrow"><p class="eyebrow">RSVP</p><h2>Reserve your place</h2><form class="form-card demo-form"><label>Choose event<select><option>Season opener — 26 March 2027</option><option>Monthly event — 30 April 2027</option></select></label><label>Your name<input type="text" placeholder="Full name"></label><label>Guest name (optional)<input type="text" placeholder="Guest name"></label><button class="button button-primary" type="submit">Submit RSVP</button><p class="form-status"></p></form></div></section>
-<section id="eventAdmin" class="section shell admin-panel hidden">
-  <div class="admin-heading"><div><p class="eyebrow">Administration preview</p><h2>Event management</h2></div><span class="status-pill">Disconnected from live data</span></div>
-  <div class="admin-grid">
-    <article class="admin-card"><h3>Create new event</h3><input placeholder="Name"><input type="date"><input placeholder="Location"><input placeholder="Price (£)"><textarea placeholder="Description"></textarea><input placeholder="Course link"><input placeholder="Weather link"><button class="button button-small" disabled>Create event</button></article>
-    <article class="admin-card"><h3>Edit / cancel event</h3><select><option>Select event</option></select><input placeholder="Max players"><input placeholder="First tee time"><button class="button button-small" disabled>Save changes</button><button class="button button-danger" disabled>Cancel event</button></article>
-    <article class="admin-card"><h3>Manage RSVPs</h3><select><option>Select event</option></select><button class="button button-outline" disabled>Who's playing</button><button class="button button-outline" disabled>Reserve list</button><button class="button button-outline" disabled>Manage dropouts</button></article>
-    <article class="admin-card"><h3>Tee-time generator</h3><input type="time"><input type="number" placeholder="Gap (minutes)"><button class="button button-small" disabled>Generate tee times</button><button class="button button-outline" disabled>Send WhatsApp tee times</button></article>
-  </div>
-</section>
+<section class="section section-soft"><div class="shell"><p class="eyebrow">Performance</p><h2>Handicap progression</h2><div class="chart-placeholder"><div class="chart-line"></div><span>Interactive season chart will appear here.</span></div></div></section>
+<section id="scoreAdmin" class="section shell admin-panel hidden"><div class="admin-heading"><div><p class="eyebrow">Administration preview</p><h2>Score controls</h2></div><span class="status-pill">No live calculations</span></div><div class="button-grid"><button disabled>Calculate</button><button disabled>+ Player</button><button disabled>Change password</button><button disabled>Export leaderboard</button><button disabled>Export all</button><button disabled>Export stats</button><button disabled>Clear league</button><button disabled>Remove player</button></div></section>
 </main>
 <footer class="site-footer">
   <div class="shell footer-inner">
