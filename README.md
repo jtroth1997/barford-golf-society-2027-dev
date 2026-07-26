@@ -1,19 +1,16 @@
-# Barford Golf Society 2027 — Full Website with Updated Scores
+# Barford Golf Society 2027 — Full Website with Demo Scores
 
-This package contains the full working website with:
+This package contains the complete development website with the updated mobile-first Scores page and demonstration season data.
 
-- homepage intro video
-- existing site-wide branding and navigation
-- Events
-- World Events
-- updated mobile-first Scores page
-- Shop
-- Gallery
-- About Us
-- Sign Up
+The Scores page includes:
+- 12 example players
+- 7 completed rounds
+- handicap history
+- round-by-round results
+- trophies and achievements
+- leaderboard search
+- administrator tools
+- CSV export/import
+- isolated browser-only development storage
 
-The updated Scores page is integrated into the main website navigation and uses isolated local development data only.
-
-## Upload
-
-Upload every item inside this folder to the root of the development repository, preserving the `assets` folder structure.
+No production Supabase connection is included in the Scores page.
