@@ -1,16 +1,23 @@
-# Barford Golf Society 2027 — Full Website with Demo Scores
+# Barford Golf Society 2027 — Full Website with Working Scores Admin
 
-This package contains the complete development website with the updated mobile-first Scores page and demonstration season data.
+This complete development website includes:
 
-The Scores page includes:
-- 12 example players
-- 7 completed rounds
-- handicap history
-- round-by-round results
-- trophies and achievements
-- leaderboard search
-- administrator tools
-- CSV export/import
-- isolated browser-only development storage
+- homepage intro video
+- all existing pages and navigation
+- mobile-first Scores leaderboard
+- 12 demonstration players
+- 7 completed demonstration rounds
+- working Scores administrator dashboard
 
-No production Supabase connection is included in the Scores page.
+The Scores admin dashboard supports:
+- entering scores for each round
+- calculating and saving handicaps
+- carrying next-round handicaps forward
+- adding and removing players
+- creating rounds
+- overriding handicaps
+- recording trophies and achievements
+- CSV import and export
+- resetting the development season
+
+The Scores system uses browser-only localStorage and does not connect to the live production database.

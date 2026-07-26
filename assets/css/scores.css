@@ -426,3 +426,12 @@ main{width:min(1120px,100%);margin:auto;padding:18px 16px 64px}
   .global-site-header .site-nav.is-open{display:flex}
   .primary-nav{top:72px}
 }
+
+.admin-access-note{
+  margin:14px 2px 0;
+  color:var(--muted);
+  font-size:.92rem;
+}
+.admin-entry{
+  box-shadow:0 10px 24px rgba(0,0,0,.18);
+}

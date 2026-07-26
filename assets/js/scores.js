@@ -280,7 +280,13 @@ function setView(name) {
 function escapeHtml(value=""){return String(value).replace(/[&<>"']/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[c]));}
 
 $$(".nav-tab").forEach(button=>button.addEventListener("click",()=>{setView(button.dataset.view);$("#scoresNav").classList.remove("is-open")}));
-$("#scoresMenuButton").addEventListener("click",()=>{const open=$("#scoresNav").classList.toggle("is-open");$("#scoresMenuButton").setAttribute("aria-expanded",String(open))});
+const scoresMenuButton = $("#scoresMenuButton");
+if (scoresMenuButton) {
+  scoresMenuButton.addEventListener("click", () => {
+    const open = $("#scoresNav").classList.toggle("is-open");
+    scoresMenuButton.setAttribute("aria-expanded", String(open));
+  });
+}
 $("#playerSearch").addEventListener("input",event=>{state.search=event.target.value.trim().toLowerCase();renderLeaderboard();renderRound();if(state.activeView==="statistics")renderStatistics()});
 $("#handicapPlayerSelect").addEventListener("change",event=>{state.selectedPlayerId=event.target.value;renderHandicapHistory()});
 window.addEventListener("scores:data-changed",refresh);
