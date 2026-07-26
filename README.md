@@ -1,17 +1,17 @@
-# Barford Golf Society 2027 — Simple Mobile Scores Admin
-
-This version simplifies the Scores admin area for phone use.
-
-Changes:
-- three admin sections only: Enter Scores, Players, Settings
-- no long instruction page
-- each round is labelled with its linked event
-- compact player score cards
-- sticky Save Round Scores button
-- add/remove players
-- handicap override
-- CSV export
-- demo reset
-- all scoring rules and next-handicap carry-forward retained
-
-The Scores system remains browser-only and does not connect to the live database.
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Page not found | Barford Golf Society</title>
+  <link rel="stylesheet" href="assets/css/styles.css">
+</head>
+<body>
+  <main class="section shell narrow">
+    <p class="eyebrow">Barford Golf Society</p>
+    <h1 style="color:#063d2a;font-size:clamp(2.8rem,7vw,5rem)">Page not found</h1>
+    <p>The page you requested does not exist in this development site.</p>
+    <a class="button button-small" href="index.html">Return home</a>
+  </main>
+</body>
+</html>

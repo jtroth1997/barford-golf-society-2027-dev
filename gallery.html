@@ -1,55 +1,200 @@
-<!doctype html>
-<html lang="en">
-<head>
-  <meta charset="utf-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1">
-  <meta name="description" content="Barford Golf Society 2027 website">
-  <meta name="theme-color" content="#063d2a">
-  <title>Gallery | Barford Golf Society</title>
-  <link rel="preconnect" href="https://fonts.googleapis.com">
-  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=Playfair+Display:wght@700&display=swap" rel="stylesheet">
-  <link rel="stylesheet" href="assets/css/styles.css">
-  
-</head>
-<body>
-<a class="skip-link" href="#main-content">Skip to content</a>
-<header class="site-header">
-  <div class="shell header-inner">
-    <a class="brand" href="index.html" aria-label="Barford Golf Society home">
-      <img src="assets/images/barford-golf-society-logo.png" alt="Barford Golf Society">
-    </a>
-    <button class="menu-button" type="button" aria-expanded="false" aria-controls="primary-navigation">
-      <span class="sr-only">Open menu</span><span></span><span></span><span></span>
-    </button>
-    <nav id="primary-navigation" class="site-nav" aria-label="Primary navigation">
-      <a class="" href="index.html">Home</a>
-<a class="" href="events.html">Events</a>
-<a class="" href="worldevents.html">World Events</a>
-<a class="" href="scores.html">Scores</a>
-<a class="" href="shop.html">Shop</a>
-<a class="active" href="gallery.html" aria-current="page">Gallery</a>
-<a class="" href="about.html">About Us</a>
-<a class="" href="signup.html">Sign Up</a>
-    </nav>
-  </div>
-</header>
-<main id="main-content">
-<section class="page-hero gallery"><div class="shell"><p class="eyebrow">Member memories</p><h1>Gallery</h1><p>Photos from golf days, society trips and memorable moments.</p></div></section>
-<section class="section shell">
-  <div class="toolbar"><div><p class="eyebrow">Share a moment</p><h2>Upload your golf photos</h2></div><button class="button button-small admin-toggle" data-target="galleryAdmin">Approve uploads</button></div>
-  <form class="upload-card demo-form"><input type="file" accept="image/*" multiple><button class="button button-primary" type="submit">Upload photos</button><p class="form-status"></p></form>
-</section>
-<section class="section section-soft"><div class="shell"><div class="section-heading"><div><p class="eyebrow">Latest photos</p><h2>Society gallery</h2></div></div><div class="gallery-grid"><div class="gallery-placeholder">Photo 1</div><div class="gallery-placeholder tall">Photo 2</div><div class="gallery-placeholder">Photo 3</div><div class="gallery-placeholder wide">Photo 4</div><div class="gallery-placeholder">Photo 5</div></div></div></section>
-<section id="galleryAdmin" class="section shell admin-panel hidden"><div class="admin-heading"><div><p class="eyebrow">Administration preview</p><h2>Approve uploads</h2></div><span class="status-pill">No live storage connected</span></div><div class="empty-state">Pending uploads will appear here once the separate 2027 gallery is connected.</div></section>
-</main>
-<footer class="site-footer">
-  <div class="shell footer-inner">
-    <div class="footer-brand"><img src="assets/images/barford-golf-society-logo.png" alt=""><span>Barford Golf Society</span></div>
-    <p>© <span id="year"></span> Barford Golf Society</p>
-  </div>
-</footer>
-<script src="assets/js/app.js" defer></script>
 
-</body>
-</html>
+const body = document.body;
+const menuButton = document.querySelector(".menu-button");
+const navigation = document.querySelector("#primary-navigation");
+if (menuButton && navigation) {
+  menuButton.addEventListener("click", () => {
+    const open = navigation.classList.toggle("is-open");
+    menuButton.setAttribute("aria-expanded", String(open));
+  });
+  navigation.querySelectorAll("a").forEach(link => link.addEventListener("click", () => {
+    navigation.classList.remove("is-open");
+    menuButton.setAttribute("aria-expanded", "false");
+  }));
+}
+
+const year = document.querySelector("#year");
+if (year) year.textContent = new Date().getFullYear();
+
+document.querySelectorAll(".admin-toggle").forEach(btn => {
+  btn.addEventListener("click", () => {
+    const panel = document.getElementById(btn.dataset.target);
+    if (!panel) return;
+    panel.classList.toggle("hidden");
+    if (!panel.classList.contains("hidden")) panel.scrollIntoView({ behavior:"smooth", block:"start" });
+  });
+});
+
+document.querySelectorAll(".demo-form").forEach(form => {
+  form.addEventListener("submit", event => {
+    event.preventDefault();
+    const status = form.querySelector(".form-status");
+    if (status) status.textContent = "Demo only — nothing has been sent or saved.";
+  });
+});
+
+document.querySelectorAll(".demo-action").forEach(btn => {
+  btn.addEventListener("click", () => alert("Demo only — this action is not connected to live data."));
+});
+
+const installBtn = document.querySelector("#installHelpBtn");
+const installHelp = document.querySelector("#installHelp");
+if (installBtn && installHelp) {
+  installBtn.addEventListener("click", () => {
+    installHelp.classList.toggle("hidden");
+    installBtn.textContent = installHelp.classList.contains("hidden") ? "Show instructions" : "Hide instructions";
+  });
+}
+
+let basketCount = 0;
+let basketTotal = 0;
+const prices = [12,18,15];
+document.querySelectorAll(".add-to-basket").forEach((btn,index) => {
+  btn.addEventListener("click", () => {
+    basketCount += 1;
+    basketTotal += prices[index] || 0;
+    const count = document.querySelector("#basketCount");
+    const summary = document.querySelector("#basketSummary");
+    const total = document.querySelector("#basketTotal");
+    if (count) count.textContent = String(basketCount);
+    if (summary) summary.textContent = `${basketCount} item${basketCount===1?"":"s"} in your demo basket.`;
+    if (total) total.textContent = `£${basketTotal.toFixed(2)}`;
+    btn.textContent = "Added ✓";
+    setTimeout(() => btn.textContent = "Add to basket", 1200);
+  });
+});
+const basketBtn = document.querySelector("#basketBtn");
+const basketPanel = document.querySelector("#basketPanel");
+if (basketBtn && basketPanel) basketBtn.addEventListener("click", () => {
+  basketPanel.classList.toggle("hidden");
+  if (!basketPanel.classList.contains("hidden")) basketPanel.scrollIntoView({behavior:"smooth",block:"start"});
+});
+
+const reducedMotion = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+if (!reducedMotion) {
+  const revealTargets = document.querySelectorAll(".section-heading,.event-card,.event-list-card,.feature-card,.install-panel,.cta-panel,.form-card,.upload-card,.table-wrap,.story-grid,.signup-grid,.chart-placeholder,.media-card,.product-card");
+  revealTargets.forEach(el => el.classList.add("reveal"));
+  const observer = new IntersectionObserver(entries => {
+    entries.forEach(entry => {
+      if (entry.isIntersecting) {
+        entry.target.classList.add("is-visible");
+        observer.unobserve(entry.target);
+      }
+    });
+  }, {threshold:.12});
+  revealTargets.forEach(el => observer.observe(el));
+}
+
+const currentPage = window.location.pathname.split("/").pop() || "index.html";
+const mobileNav = document.createElement("nav");
+mobileNav.className = "mobile-quick-nav";
+mobileNav.setAttribute("aria-label","Quick navigation");
+mobileNav.innerHTML = `
+  <a href="index.html" class="${currentPage==="index.html"?"active":""}">⌂<span>Home</span></a>
+  <a href="events.html" class="${currentPage==="events.html"?"active":""}">◷<span>Events</span></a>
+  <a href="scores.html" class="${currentPage==="scores.html"?"active":""}">★<span>Scores</span></a>
+  <a href="gallery.html" class="${currentPage==="gallery.html"?"active":""}">▦<span>Gallery</span></a>
+`;
+body.appendChild(mobileNav);
+
+// Cinematic home-page intro using the official Barford logo.
+const isHome = currentPage === "index.html";
+if (false && isHome && !reducedMotion && !sessionStorage.getItem("bgsElegantIntroPlayed")) {
+  const intro = document.createElement("div");
+  intro.className = "site-intro";
+  intro.setAttribute("aria-hidden","true");
+  intro.innerHTML = `
+    <div class="intro-stage">
+      <div class="intro-brand">
+        <img src="assets/images/barford-golf-society-logo.png" alt="">
+        <p>Relax. Play. Enjoy.</p>
+      </div>
+      <div class="intro-fairway"></div>
+      <div class="intro-green"></div>
+      <div class="intro-ball"></div>
+      <div class="intro-shadow"></div>
+      <div class="intro-cup"></div>
+      <div class="intro-flag"></div>
+    </div>
+    <div class="intro-dark"></div>
+  `;
+  body.appendChild(intro);
+  body.style.overflow = "hidden";
+
+  setTimeout(() => intro.classList.add("is-rolling"), 1050);
+  setTimeout(() => intro.classList.add("is-zooming"), 4300);
+  setTimeout(() => intro.classList.add("is-darkening"), 5050);
+  setTimeout(() => {
+    intro.classList.add("is-hidden");
+    body.style.overflow = "";
+    sessionStorage.setItem("bgsElegantIntroPlayed","true");
+  }, 5750);
+}
+
+
+// Final cinematic intro using the exact selected video.
+const finalIntroIsHome = (window.location.pathname.split("/").pop() || "index.html") === "index.html";
+const finalIntroReducedMotion = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+
+if (
+  finalIntroIsHome &&
+  !finalIntroReducedMotion &&
+  !sessionStorage.getItem("bgsFinalVideoIntroPlayed")
+) {
+  const intro = document.createElement("div");
+  intro.className = "video-intro";
+  intro.setAttribute("aria-label", "Barford Golf Society opening animation");
+
+  intro.innerHTML = `
+    <video autoplay muted playsinline preload="auto">
+      <source src="assets/video/intro.mp4" type="video/mp4">
+    </video>
+
+    <div class="video-intro-controls">
+      <button class="video-intro-button" type="button">Skip intro</button>
+    </div>
+  `;
+
+  document.body.appendChild(intro);
+  document.body.style.overflow = "hidden";
+
+  const video = intro.querySelector("video");
+  const skipButton = intro.querySelector(".video-intro-button");
+
+  let finished = false;
+
+  const finishIntro = () => {
+    if (finished) return;
+    finished = true;
+
+    intro.classList.add("is-hidden");
+    document.body.style.overflow = "";
+    sessionStorage.setItem("bgsFinalVideoIntroPlayed", "true");
+
+    window.setTimeout(() => {
+      intro.remove();
+    }, 900);
+  };
+
+  video.addEventListener("ended", finishIntro, { once:true });
+  video.addEventListener("error", () => {
+    intro.innerHTML = `
+      <div class="video-intro-fallback">
+        <div>
+          <img src="assets/images/barford-golf-society-logo.png" alt="Barford Golf Society">
+          <p>Relax. Play. Enjoy.</p>
+        </div>
+      </div>
+    `;
+    window.setTimeout(finishIntro, 1800);
+  }, { once:true });
+
+  skipButton.addEventListener("click", finishIntro, { once:true });
+
+  const playPromise = video.play();
+  if (playPromise && typeof playPromise.catch === "function") {
+    playPromise.catch(() => {
+      video.controls = true;
+    });
+  }
+}

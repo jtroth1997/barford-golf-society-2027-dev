@@ -5,7 +5,7 @@
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <meta name="description" content="Barford Golf Society 2027 website">
   <meta name="theme-color" content="#063d2a">
-  <title>Shop | Barford Golf Society</title>
+  <title>Events | Barford Golf Society</title>
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=Playfair+Display:wght@700&display=swap" rel="stylesheet">
@@ -24,10 +24,10 @@
     </button>
     <nav id="primary-navigation" class="site-nav" aria-label="Primary navigation">
       <a class="" href="index.html">Home</a>
-<a class="" href="events.html">Events</a>
+<a class="active" href="events.html" aria-current="page">Events</a>
 <a class="" href="worldevents.html">World Events</a>
 <a class="" href="scores.html">Scores</a>
-<a class="active" href="shop.html" aria-current="page">Shop</a>
+<a class="" href="shop.html">Shop</a>
 <a class="" href="gallery.html">Gallery</a>
 <a class="" href="about.html">About Us</a>
 <a class="" href="signup.html">Sign Up</a>
@@ -35,17 +35,24 @@
   </div>
 </header>
 <main id="main-content">
-<section class="page-hero shop"><div class="shell"><p class="eyebrow">Society merchandise</p><h1>Golf shop</h1><p>Browse society products and reserve items for collection.</p></div></section>
+<section class="page-hero"><div class="shell"><p class="eyebrow">2027 calendar</p><h1>Society events</h1><p>All upcoming golf days, RSVP information and tee-time details in one place.</p></div></section>
 <section class="section shell">
-  <div class="toolbar"><div><p class="eyebrow">Products</p><h2>Golf essentials</h2></div><div class="button-row"><button class="button button-outline" id="basketBtn">🛒 Basket (<span id="basketCount">0</span>)</button><button class="button button-small admin-toggle" data-target="shopAdmin">Admin</button></div></div>
-  <div class="product-grid">
-    <article class="product-card"><div class="product-image">BGS</div><div><h3>Society golf balls</h3><p>Premium golf balls with Barford branding.</p><strong>£12.00</strong><button class="button button-small add-to-basket">Add to basket</button></div></article>
-    <article class="product-card"><div class="product-image">BGS</div><div><h3>Society cap</h3><p>Classic cap in society green.</p><strong>£18.00</strong><button class="button button-small add-to-basket">Add to basket</button></div></article>
-    <article class="product-card"><div class="product-image">BGS</div><div><h3>Golf towel</h3><p>Embroidered towel for your golf bag.</p><strong>£15.00</strong><button class="button button-small add-to-basket">Add to basket</button></div></article>
+  <div class="toolbar"><div><h2>Upcoming events</h2><p class="muted">Development preview — no live bookings are being made.</p></div><button class="button button-outline admin-toggle" type="button" data-target="eventAdmin">🔐 Admin access</button></div>
+  <div class="cards-list">
+    <article class="event-list-card"><div class="date-badge"><span>MAR</span><strong>26</strong></div><div><p class="event-label">Season opener</p><h3>Venue to be confirmed</h3><p>Friday · 18 holes · coffee and bacon roll</p><div class="chip-row"><span class="chip">£TBC</span><span class="chip">24 places</span><span class="chip">Tee times TBC</span></div></div><a class="button button-small" href="#rsvp">RSVP</a></article>
+    <article class="event-list-card"><div class="date-badge"><span>APR</span><strong>30</strong></div><div><p class="event-label">Monthly event</p><h3>Venue to be confirmed</h3><p>Friday · 18 holes · friendly competition</p><div class="chip-row"><span class="chip">£TBC</span><span class="chip">Course link</span><span class="chip">Weather</span></div></div><a class="button button-small" href="#rsvp">RSVP</a></article>
   </div>
 </section>
-<section id="basketPanel" class="section section-soft hidden"><div class="shell narrow"><p class="eyebrow">Your basket</p><h2>Reserve items</h2><div class="form-card"><p id="basketSummary">Your basket is empty.</p><h3>Total: <span id="basketTotal">£0.00</span></h3><input placeholder="Your name"><select><option>Collection method</option><option>Collect at next event</option><option>Arrange separately</option></select><button class="button button-primary demo-action">Reserve items</button></div></div></section>
-<section id="shopAdmin" class="section shell admin-panel hidden"><div class="admin-heading"><div><p class="eyebrow">Administration preview</p><h2>Manage products</h2></div><span class="status-pill">Demo only</span></div><div class="admin-grid"><article class="admin-card"><h3>Add product</h3><input placeholder="Product name"><textarea placeholder="Description"></textarea><input type="number" placeholder="Price"><input type="number" placeholder="Stock"><input placeholder="Image URL"><button class="button button-small" disabled>Add product</button></article><article class="admin-card"><h3>Manage products</h3><div class="empty-state">Product management controls will appear here.</div></article></div></section>
+<section id="rsvp" class="section section-soft"><div class="shell narrow"><p class="eyebrow">RSVP</p><h2>Reserve your place</h2><form class="form-card demo-form"><label>Choose event<select><option>Season opener — 26 March 2027</option><option>Monthly event — 30 April 2027</option></select></label><label>Your name<input type="text" placeholder="Full name"></label><label>Guest name (optional)<input type="text" placeholder="Guest name"></label><button class="button button-primary" type="submit">Submit RSVP</button><p class="form-status"></p></form></div></section>
+<section id="eventAdmin" class="section shell admin-panel hidden">
+  <div class="admin-heading"><div><p class="eyebrow">Administration preview</p><h2>Event management</h2></div><span class="status-pill">Disconnected from live data</span></div>
+  <div class="admin-grid">
+    <article class="admin-card"><h3>Create new event</h3><input placeholder="Name"><input type="date"><input placeholder="Location"><input placeholder="Price (£)"><textarea placeholder="Description"></textarea><input placeholder="Course link"><input placeholder="Weather link"><button class="button button-small" disabled>Create event</button></article>
+    <article class="admin-card"><h3>Edit / cancel event</h3><select><option>Select event</option></select><input placeholder="Max players"><input placeholder="First tee time"><button class="button button-small" disabled>Save changes</button><button class="button button-danger" disabled>Cancel event</button></article>
+    <article class="admin-card"><h3>Manage RSVPs</h3><select><option>Select event</option></select><button class="button button-outline" disabled>Who's playing</button><button class="button button-outline" disabled>Reserve list</button><button class="button button-outline" disabled>Manage dropouts</button></article>
+    <article class="admin-card"><h3>Tee-time generator</h3><input type="time"><input type="number" placeholder="Gap (minutes)"><button class="button button-small" disabled>Generate tee times</button><button class="button button-outline" disabled>Send WhatsApp tee times</button></article>
+  </div>
+</section>
 </main>
 <footer class="site-footer">
   <div class="shell footer-inner">
