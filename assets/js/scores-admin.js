@@ -56,20 +56,45 @@ export class AdminDashboard {
     const roundId=document.querySelector("#scoreRoundSelect").value;
     const round=this.data.rounds.find(r=>r.id===roundId);
     const list=document.querySelector("#scoreEntryList"); list.innerHTML="";
+
     this.data.players.forEach(player=>{
       const saved=round?.results.find(r=>r.playerId===player.id);
+      const handicapForRound = saved?.handicapUsed ?? this.getHandicapForRound(player.id, roundId);
+
       const row=document.createElement("div"); row.className="score-entry-row";
       row.innerHTML=`<div class="score-player">
           <strong>${this.escape(player.name)}</strong>
-          <span>Played on handicap <b>${saved?.handicapUsed ?? player.currentHandicap}</b></span>
+          <span>Playing handicap for this round: <b>${handicapForRound}</b></span>
         </div>
-        <label class="field"><span>Handicap played</span><input data-hcp="${player.id}" type="number" min="0" step="1" value="${saved?.handicapUsed ?? player.currentHandicap}"></label>
+        <label class="field"><span>Handicap played</span><input data-hcp="${player.id}" type="number" min="0" step="1" value="${handicapForRound}"></label>
         <label class="field"><span>Round score</span><input data-points="${player.id}" type="number" min="0" step="1" value="${saved?.dnp ? 0 : saved?.points ?? ""}" placeholder="0 = DNP"></label>
         <div class="calculated-result" data-result="${player.id}" aria-live="polite">
           ${saved ? this.resultMarkup(saved.adjustment, saved.nextHandicap, saved.dnp) : '<span>Press calculate to see next handicap</span>'}
         </div>`;
       list.append(row);
     });
+  }
+
+  getHandicapForRound(playerId, roundId) {
+    const rounds = [...this.data.rounds].sort((a, b) => a.number - b.number);
+    const selectedIndex = rounds.findIndex(round => round.id === roundId);
+    const player = this.data.players.find(item => item.id === playerId);
+
+    if (!player) return 0;
+
+    // Work backwards from the selected round and use the latest calculated
+    // next-round handicap. This is the handicap the player should play from.
+    for (let index = selectedIndex - 1; index >= 0; index -= 1) {
+      const previousResult = rounds[index].results.find(
+        result => result.playerId === playerId
+      );
+
+      if (previousResult && Number.isFinite(previousResult.nextHandicap)) {
+        return previousResult.nextHandicap;
+      }
+    }
+
+    return player.startingHandicap ?? player.currentHandicap ?? 0;
   }
 
   async calculateAndSave() {
@@ -106,8 +131,24 @@ export class AdminDashboard {
         return calculated;
       });
       await this.dataService.saveRoundResults(roundId,results);
-      await this.render(); await this.onChanged();
-      alert(`Round saved. Calculated average: ${average}`);
+
+      const orderedRounds = [...this.data.rounds].sort((a, b) => a.number - b.number);
+      const currentIndex = orderedRounds.findIndex(round => round.id === roundId);
+      const nextRound = orderedRounds[currentIndex + 1];
+
+      await this.render();
+
+      if (nextRound) {
+        document.querySelector("#scoreRoundSelect").value = nextRound.id;
+        this.renderScoreEntries();
+      }
+
+      await this.onChanged();
+      alert(
+        nextRound
+          ? `Round saved. Calculated average: ${average}. The next round is ready with the new handicaps.`
+          : `Round saved. Calculated average: ${average}.`
+      );
     } catch(error) { alert(error.message); }
   }
 

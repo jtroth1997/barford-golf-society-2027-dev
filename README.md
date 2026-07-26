@@ -10,3 +10,5 @@ Then visit `http://localhost:8080/scores.html`.
 
 The current build stores development data only in browser localStorage.
 The backend boundary is isolated in `assets/js/scores-data.js`.
+
+Handicaps automatically carry forward from each saved round's `nextHandicap` into the following round's admin score card.
