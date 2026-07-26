@@ -59,9 +59,15 @@ export class AdminDashboard {
     this.data.players.forEach(player=>{
       const saved=round?.results.find(r=>r.playerId===player.id);
       const row=document.createElement("div"); row.className="score-entry-row";
-      row.innerHTML=`<strong>${this.escape(player.name)}</strong>
-        <label class="field"><span>HCP</span><input data-hcp="${player.id}" type="number" min="0" step="1" value="${saved?.handicapUsed ?? player.currentHandicap}"></label>
-        <label class="field"><span>Points</span><input data-points="${player.id}" type="number" min="0" step="1" value="${saved?.dnp ? 0 : saved?.points ?? ""}" placeholder="0 = DNP"></label>`;
+      row.innerHTML=`<div class="score-player">
+          <strong>${this.escape(player.name)}</strong>
+          <span>Played on handicap <b>${saved?.handicapUsed ?? player.currentHandicap}</b></span>
+        </div>
+        <label class="field"><span>Handicap played</span><input data-hcp="${player.id}" type="number" min="0" step="1" value="${saved?.handicapUsed ?? player.currentHandicap}"></label>
+        <label class="field"><span>Round score</span><input data-points="${player.id}" type="number" min="0" step="1" value="${saved?.dnp ? 0 : saved?.points ?? ""}" placeholder="0 = DNP"></label>
+        <div class="calculated-result" data-result="${player.id}" aria-live="polite">
+          ${saved ? this.resultMarkup(saved.adjustment, saved.nextHandicap, saved.dnp) : '<span>Press calculate to see next handicap</span>'}
+        </div>`;
       list.append(row);
     });
   }
@@ -78,12 +84,39 @@ export class AdminDashboard {
       const average=calculateRoundAverage(playable);
       const results=entries.map(entry=>{
         const result=calculateHandicapResult({handicap:entry.handicap,points:entry.points,average});
-        return {playerId:entry.playerId,handicapUsed:entry.handicap,points:result.countedScore,adjustment:result.adjustment,nextHandicap:result.nextHandicap,dnp:result.dnp};
+        const calculated = {
+          playerId:entry.playerId,
+          handicapUsed:entry.handicap,
+          points:result.countedScore,
+          adjustment:result.adjustment,
+          nextHandicap:result.nextHandicap,
+          dnp:result.dnp
+        };
+
+        const output = document.querySelector(`[data-result="${entry.playerId}"]`);
+        if (output) {
+          output.innerHTML = this.resultMarkup(
+            calculated.adjustment,
+            calculated.nextHandicap,
+            calculated.dnp
+          );
+          output.classList.add("is-calculated");
+        }
+
+        return calculated;
       });
       await this.dataService.saveRoundResults(roundId,results);
       await this.render(); await this.onChanged();
       alert(`Round saved. Calculated average: ${average}`);
     } catch(error) { alert(error.message); }
+  }
+
+  resultMarkup(adjustment, nextHandicap, dnp) {
+    const adjustmentText = dnp ? "DNP" : adjustment > 0 ? `+${adjustment}` : `${adjustment}`;
+    const adjustmentClass = dnp || adjustment === 0 ? "same" : adjustment > 0 ? "up" : "down";
+
+    return `<span>Adjustment <strong class="change ${adjustmentClass}">${adjustmentText}</strong></span>
+      <span>Next-round handicap <strong class="next-admin-handicap">${nextHandicap}</strong></span>`;
   }
 
   renderPlayers() {

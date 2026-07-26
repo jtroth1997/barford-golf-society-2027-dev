@@ -80,9 +80,23 @@ function playerDetailsMarkup(player) {
           .slice(0, history.findIndex(x => x.round.id === round.id) + 1)
           .map(x => x.result.points).filter(Number.isFinite).sort((a,b)=>b-a).slice(0,5).reduce((a,b)=>a+b,0);
         return `<article class="history-card">
-          <div><h4>${escapeHtml(round.name)}</h4><p>HCP ${result.handicapUsed} · ${result.dnp ? "Did not play" : `${result.points} Stableford points`}</p></div>
-          <div class="history-values"><strong class="change ${changeClass(result.adjustment)}">${formatChange(result.adjustment)}</strong><p>Next ${result.nextHandicap}</p></div>
-          <p>Running season total</p><strong>${seasonAtPoint}</strong>
+          <div>
+            <h4>${escapeHtml(round.name)}</h4>
+            <p>Handicap used: <strong>${result.handicapUsed}</strong></p>
+            <p>${result.dnp ? "Did not play" : `Stableford score: <strong>${result.points}</strong>`}</p>
+          </div>
+          <div class="history-values">
+            <span class="history-label">Adjustment</span>
+            <strong class="change ${changeClass(result.adjustment)}">${formatChange(result.adjustment)}</strong>
+          </div>
+          <div>
+            <span class="history-label">Next-round handicap</span>
+            <strong class="next-handicap-value">${result.nextHandicap}</strong>
+          </div>
+          <div class="history-values">
+            <span class="history-label">Running season total</span>
+            <strong>${seasonAtPoint}</strong>
+          </div>
         </article>`;
       }).join("") || "<p>No rounds recorded.</p>"}
     </div>`;
