@@ -1,14 +1,16 @@
-# Barford Golf Society 2027 — Version 8 Hole Zoom
+# Barford Golf Society 2027 — Version 9 Elegant
 
-This version rebuilds the opening sequence from a clean animation base:
+A complete static website package with:
 
-- one smooth ball roll
-- the ball visibly drops into the cup
-- the flag reacts gently
-- the camera follows and zooms into the hole
-- the screen darkens inside the cup
-- the website then fades in
-- mobile path is separately tuned
-- reduced-motion support remains enabled
+- the official Barford Golf Society logo
+- cinematic opening sequence
+- smooth golf-ball roll into the cup
+- camera zoom into the hole
+- dark transition into the homepage
+- elegant dark green and gold visual system
+- responsive navigation
+- mobile quick-access menu
+- events, scores, gallery, shop, world events, about and sign-up pages
+- safe demo-only forms and admin previews
 
-The intro plays once per browser session.
+This build is not connected to the production website or live data.
