@@ -5,7 +5,7 @@
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <meta name="description" content="Barford Golf Society 2027 website">
   <meta name="theme-color" content="#063d2a">
-  <title>About Us | Barford Golf Society</title>
+  <title>Scores | Barford Golf Society</title>
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=Playfair+Display:wght@700&display=swap" rel="stylesheet">
@@ -26,20 +26,23 @@
       <a class="" href="index.html">Home</a>
 <a class="" href="events.html">Events</a>
 <a class="" href="worldevents.html">World Events</a>
-<a class="" href="scores.html">Scores</a>
+<a class="active" href="scores.html" aria-current="page">Scores</a>
 <a class="" href="shop.html">Shop</a>
 <a class="" href="gallery.html">Gallery</a>
-<a class="active" href="about.html" aria-current="page">About Us</a>
+<a class="" href="about.html">About Us</a>
 <a class="" href="signup.html">Sign Up</a>
     </nav>
   </div>
 </header>
 <main id="main-content">
-<section class="page-hero about"><div class="shell"><p class="eyebrow">Our story</p><h1>About us</h1><p>Friendly golf, good company and memorable days across Warwickshire and beyond.</p></div></section>
-<section class="section shell"><div class="story-grid"><div><p class="eyebrow">Barford Golf Society</p><h2>Built around friendship and enjoyment</h2></div><div class="prose"><p>Barford Golf Society was founded more than 11 years ago in the Warwickshire village of Barford by local friends who shared a simple idea: enjoy great golf in a relaxed, friendly and social environment.</p><p>The society has grown into a welcoming community of more than 30 members, including men and women of different ages and abilities. Regular golfers and occasional players are equally welcome.</p><p>We play on the last Friday of each month from March through October, visiting eight different courses around Warwickshire and occasionally the Cotswolds. After golf, members traditionally relax together over a drink at The Granville Arms.</p></div></div></section>
-<section class="section section-soft"><div class="shell"><div class="stat-grid"><article><strong>11+</strong><span>Years of society golf</span></article><article><strong>30+</strong><span>Welcoming members</span></article><article><strong>8</strong><span>Events each season</span></article><article><strong>£40</strong><span>Typical golf-day cost</span></article></div></div></section>
-<section class="section shell"><div class="feature-grid"><article class="feature-card"><span class="feature-number">01</span><h3>Relaxed and social</h3><p>Enjoyment, good company and healthy exercise come first.</p></article><article class="feature-card"><span class="feature-number">02</span><h3>Friendly competition</h3><p>Competitive enough to matter, never so serious that it stops being fun.</p></article><article class="feature-card"><span class="feature-number">03</span><h3>Simple membership</h3><p>A modest annual fee, with each golf day typically including 18 holes, coffee and a bacon roll.</p></article></div></section>
-<section class="section shell"><div class="cta-panel"><div><p class="eyebrow eyebrow-light">Ready to join the fun?</p><h2>Become part of the society</h2><p>Register your interest and we will be delighted to welcome you.</p></div><a class="button button-gold" href="signup.html">Sign up now</a></div></section>
+<section class="page-hero scores"><div class="shell"><p class="eyebrow">League standings</p><h1>Scores & handicaps</h1><p>Follow all seven rounds, adjusted totals and handicap progression.</p></div></section>
+<section class="section shell">
+  <div class="score-toolbar"><div><p class="eyebrow">Round selector</p><h2>Round 1 of 7</h2></div><div class="button-row"><button class="button button-outline" type="button">◀ Previous</button><button class="button button-outline" type="button">Next ▶</button><button class="button button-small admin-toggle" data-target="scoreAdmin" type="button">🔐 Admin tools</button></div></div>
+  <div class="table-wrap"><table><thead><tr><th>Rank</th><th>Player</th><th>Round 1 HCP</th><th>Points</th><th>Adj</th><th>Next HCP</th><th>Total</th><th>DNP</th><th>🏆</th></tr></thead><tbody><tr><td>1</td><td>Sample Player</td><td>18</td><td>36</td><td>36</td><td>18</td><td>36</td><td>0</td><td>—</td></tr><tr><td>2</td><td>Demo Member</td><td>22</td><td>34</td><td>34</td><td>22</td><td>34</td><td>0</td><td>—</td></tr><tr><td>3</td><td>Example Golfer</td><td>14</td><td>31</td><td>31</td><td>15</td><td>31</td><td>0</td><td>—</td></tr></tbody></table></div>
+  <p class="notice">Rounds 6 and 7 will remain locked until they are ready to view.</p>
+</section>
+<section class="section section-soft"><div class="shell"><p class="eyebrow">Performance</p><h2>Handicap progression</h2><div class="chart-placeholder"><div class="chart-line"></div><span>Interactive season chart will appear here.</span></div></div></section>
+<section id="scoreAdmin" class="section shell admin-panel hidden"><div class="admin-heading"><div><p class="eyebrow">Administration preview</p><h2>Score controls</h2></div><span class="status-pill">No live calculations</span></div><div class="button-grid"><button disabled>Calculate</button><button disabled>+ Player</button><button disabled>Change password</button><button disabled>Export leaderboard</button><button disabled>Export all</button><button disabled>Export stats</button><button disabled>Clear league</button><button disabled>Remove player</button></div></section>
 </main>
 <footer class="site-footer">
   <div class="shell footer-inner">
