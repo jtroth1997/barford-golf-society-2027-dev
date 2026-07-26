@@ -1,19 +1,15 @@
-# Barford Golf Society 2027 — Version 3.0
+# Barford Golf Society 2027 — Version 4.0 Animated
 
-Modern, responsive development build focused on:
+Adds:
 
-- clear navigation for all ages
-- strong mobile usability
-- fast page-to-page transitions
-- scroll reveal animation
-- large tap targets
-- high contrast
-- simple page layouts
+- full-screen logo introduction on first visit
+- animated logo movement toward the header
+- rolling golf ball entrance
+- animated putting scene in the homepage hero
+- swaying flag animation
+- floating visual particles
+- playful card and button interactions
 - reduced-motion support
-- separate demo-only forms and admin controls
+- intro runs once per browser session to avoid annoying repeat visitors
 
-## Safety
-This version is not connected to the current production database, storage, payments or administration systems.
-
-## Upload
-Upload every item inside this folder to the root of `barford-golf-society-2027-dev`, preserving the `assets` directory.
+This remains a static development build and is not connected to production data.

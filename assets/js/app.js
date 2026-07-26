@@ -144,3 +144,56 @@ mobileNav.innerHTML = `
   <a href="gallery.html" class="${currentPage === "gallery.html" ? "active" : ""}">▦<span>Gallery</span></a>
 `;
 body.appendChild(mobileNav);
+
+
+// Full-screen logo entrance on the home page.
+// It plays once per browser session so returning members are not delayed repeatedly.
+const isHomePage = (window.location.pathname.split("/").pop() || "index.html") === "index.html";
+const reducedMotion = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+
+if (isHomePage && !reducedMotion && !sessionStorage.getItem("bgsIntroPlayed")) {
+  const intro = document.createElement("div");
+  intro.className = "intro-splash";
+  intro.setAttribute("aria-hidden", "true");
+  intro.innerHTML = `
+    <div class="intro-logo-wrap">
+      <img src="assets/images/barford-golf-society-logo.jpeg" alt="">
+    </div>
+    <div class="golf-ball intro-ball"></div>
+    <div class="intro-tagline">Welcome to Barford Golf Society</div>
+  `;
+  document.body.appendChild(intro);
+  document.body.style.overflow = "hidden";
+
+  setTimeout(() => intro.classList.add("is-shrinking"), 1900);
+  setTimeout(() => {
+    intro.classList.add("is-finished");
+    document.body.style.overflow = "";
+    sessionStorage.setItem("bgsIntroPlayed", "true");
+  }, 2900);
+}
+
+// Add playful golf scene to the homepage hero.
+const hero = document.querySelector(".hero");
+if (hero && !reducedMotion) {
+  const scene = document.createElement("div");
+  scene.className = "hero-golf-scene";
+  scene.setAttribute("aria-hidden", "true");
+  scene.innerHTML = `
+    <div class="hero-golf-green"></div>
+    <div class="hero-flag"></div>
+    <div class="golf-ball hero-ball"></div>
+  `;
+  hero.appendChild(scene);
+
+  for (let i = 0; i < 4; i += 1) {
+    const particle = document.createElement("span");
+    particle.className = "floating-golf-icon";
+    hero.appendChild(particle);
+  }
+}
+
+// Give key cards and buttons a light, fun bounce.
+document.querySelectorAll(".feature-card,.product-card,.media-card,.button").forEach(el => {
+  el.classList.add("fun-bounce");
+});

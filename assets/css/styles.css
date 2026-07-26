@@ -373,3 +373,229 @@ input:focus-visible,select:focus-visible,textarea:focus-visible{
   .page-transition{display:none}
   .reveal,.reveal-stagger>*{opacity:1!important;transform:none!important}
 }
+
+
+/* ===== Version 4: playful golf animations ===== */
+.intro-splash{
+  position:fixed;
+  inset:0;
+  z-index:10000;
+  display:grid;
+  place-items:center;
+  overflow:hidden;
+  background:
+    radial-gradient(circle at 50% 36%, rgba(217,182,95,.22), transparent 28%),
+    linear-gradient(135deg, var(--green-950), var(--green-700));
+  opacity:1;
+  visibility:visible;
+  transition:opacity .45s ease, visibility .45s ease;
+}
+.intro-splash.is-finished{
+  opacity:0;
+  visibility:hidden;
+  pointer-events:none;
+}
+.intro-logo-wrap{
+  position:relative;
+  width:min(70vw,520px);
+  aspect-ratio:1;
+  display:grid;
+  place-items:center;
+  transform:scale(.72);
+  opacity:0;
+  animation:introLogoIn .9s var(--ease) forwards;
+}
+.intro-logo-wrap img{
+  width:100%;
+  height:100%;
+  object-fit:contain;
+  padding:22px;
+  background:#fff;
+  border-radius:50%;
+  box-shadow:0 35px 100px rgba(0,0,0,.34);
+}
+.intro-logo-wrap::after{
+  content:"";
+  position:absolute;
+  inset:-26px;
+  border:2px solid rgba(217,182,95,.48);
+  border-radius:50%;
+  animation:introRing 2.2s ease-in-out infinite;
+}
+.intro-tagline{
+  position:absolute;
+  left:50%;
+  bottom:10vh;
+  transform:translateX(-50%) translateY(20px);
+  width:min(90vw,680px);
+  text-align:center;
+  color:#fff;
+  font-family:"Playfair Display",Georgia,serif;
+  font-size:clamp(1.5rem,3vw,2.4rem);
+  opacity:0;
+  animation:introTag .7s .45s var(--ease) forwards;
+}
+.intro-splash.is-shrinking .intro-logo-wrap{
+  animation:introLogoToHeader 1s var(--ease) forwards;
+}
+.intro-splash.is-shrinking .intro-tagline{
+  opacity:0;
+  transform:translateX(-50%) translateY(18px);
+  transition:.35s ease;
+}
+@keyframes introLogoIn{
+  0%{opacity:0;transform:scale(.68) rotate(-4deg)}
+  70%{opacity:1;transform:scale(1.04) rotate(1deg)}
+  100%{opacity:1;transform:scale(1) rotate(0)}
+}
+@keyframes introLogoToHeader{
+  0%{transform:scale(1);opacity:1}
+  100%{transform:translate(calc(-50vw + 110px),calc(-50vh + 70px)) scale(.18);opacity:.15}
+}
+@keyframes introRing{
+  50%{transform:scale(1.04);opacity:.45}
+}
+@keyframes introTag{
+  to{opacity:1;transform:translateX(-50%) translateY(0)}
+}
+
+.golf-ball{
+  position:absolute;
+  width:34px;
+  height:34px;
+  border-radius:50%;
+  background:
+    radial-gradient(circle at 35% 30%, #fff 0 18%, #ededed 19% 68%, #d0d0d0 69% 100%);
+  box-shadow:0 10px 20px rgba(0,0,0,.18);
+}
+.golf-ball::after{
+  content:"";
+  position:absolute;
+  inset:5px;
+  border-radius:50%;
+  background-image:
+    radial-gradient(circle,rgba(0,0,0,.12) 0 1px,transparent 1.5px);
+  background-size:7px 7px;
+}
+.golf-ball.intro-ball{
+  left:-50px;
+  bottom:14vh;
+  animation:rollAcross 2.1s .35s var(--ease) forwards;
+}
+@keyframes rollAcross{
+  0%{transform:translateX(0) rotate(0deg)}
+  75%{transform:translateX(calc(100vw - 160px)) rotate(900deg)}
+  100%{transform:translateX(calc(100vw - 120px)) translateY(-8px) rotate(1080deg)}
+}
+
+.hero-golf-scene{
+  position:absolute;
+  right:5%;
+  bottom:5%;
+  width:230px;
+  height:160px;
+  pointer-events:none;
+  opacity:.9;
+}
+.hero-golf-green{
+  position:absolute;
+  right:0;
+  bottom:0;
+  width:210px;
+  height:52px;
+  border-radius:50%;
+  background:linear-gradient(180deg,#3e9f68,#206f48);
+  box-shadow:inset 0 -10px 20px rgba(0,0,0,.15);
+}
+.hero-flag{
+  position:absolute;
+  right:58px;
+  bottom:34px;
+  width:4px;
+  height:104px;
+  background:#f4f4f4;
+  transform-origin:bottom;
+  animation:flagPoleSway 3.8s ease-in-out infinite;
+}
+.hero-flag::before{
+  content:"";
+  position:absolute;
+  top:2px;
+  left:4px;
+  width:56px;
+  height:34px;
+  background:linear-gradient(135deg,var(--gold-400),var(--gold-600));
+  clip-path:polygon(0 0,100% 18%,72% 100%,0 82%);
+  transform-origin:left center;
+  animation:flagWave 1.9s ease-in-out infinite;
+}
+.hero-ball{
+  left:10px;
+  bottom:22px;
+  animation:heroBallPutt 4.6s ease-in-out infinite;
+}
+@keyframes heroBallPutt{
+  0%,8%{transform:translateX(0) rotate(0)}
+  55%{transform:translateX(128px) rotate(620deg)}
+  67%{transform:translateX(136px) translateY(2px) rotate(680deg)}
+  75%,100%{transform:translateX(136px) translateY(5px) scale(.76);opacity:.2}
+}
+@keyframes flagPoleSway{
+  50%{transform:rotate(.8deg)}
+}
+@keyframes flagWave{
+  50%{transform:skewY(-8deg) scaleX(.92)}
+}
+
+.floating-golf-icon{
+  position:absolute;
+  width:14px;
+  height:14px;
+  border:2px solid rgba(255,255,255,.16);
+  border-radius:50%;
+  animation:floatParticle 7s linear infinite;
+}
+.floating-golf-icon:nth-child(1){left:8%;top:18%;animation-delay:0s}
+.floating-golf-icon:nth-child(2){left:18%;top:72%;animation-delay:1.2s}
+.floating-golf-icon:nth-child(3){right:16%;top:16%;animation-delay:2.4s}
+.floating-golf-icon:nth-child(4){right:8%;top:68%;animation-delay:3.6s}
+@keyframes floatParticle{
+  0%{transform:translateY(0) scale(.8);opacity:0}
+  20%{opacity:1}
+  80%{opacity:1}
+  100%{transform:translateY(-70px) scale(1.25);opacity:0}
+}
+
+.logo-card{position:relative}
+.logo-card::after{
+  content:"";
+  position:absolute;
+  inset:12px;
+  border-radius:24px;
+  border:1px solid rgba(199,154,56,.22);
+  animation:logoCardGlow 3.5s ease-in-out infinite;
+}
+@keyframes logoCardGlow{
+  50%{box-shadow:0 0 30px rgba(217,182,95,.28)}
+}
+
+.fun-bounce:hover{
+  animation:funBounce .55s var(--ease);
+}
+@keyframes funBounce{
+  35%{transform:translateY(-7px) rotate(-1deg)}
+  65%{transform:translateY(-3px) rotate(1deg)}
+}
+
+@media(max-width:850px){
+  .intro-logo-wrap{width:min(78vw,430px)}
+  .hero-golf-scene{right:2%;bottom:2%;transform:scale(.78);transform-origin:bottom right;opacity:.75}
+}
+@media(max-width:650px){
+  .intro-tagline{bottom:14vh;font-size:1.45rem}
+  .hero-golf-scene{display:none}
+}
+@media(prefers-reduced-motion:reduce){
+  .intro-splash{display:none!important}
+  .hero-golf-scene,.floating-golf-icon{display:none!important}
+}
