@@ -1,0 +1,137 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+  <meta name="description" content="Barford Golf Society member account">
+  <meta name="theme-color" content="#063d2a">
+  <title>Members | Barford Golf Society</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=Playfair+Display:wght@700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="assets/css/styles.css">
+  <link rel="stylesheet" href="assets/css/members.css">
+</head>
+<body>
+<a class="skip-link" href="#main-content">Skip to content</a>
+
+<header class="site-header">
+  <div class="shell header-inner">
+    <a class="brand" href="index.html" aria-label="Barford Golf Society home">
+      <img src="assets/images/barford-golf-society-logo.png" alt="Barford Golf Society">
+    </a>
+    <button class="menu-button" type="button" aria-expanded="false" aria-controls="primary-navigation">
+      <span class="sr-only">Open menu</span><span></span><span></span><span></span>
+    </button>
+    <nav id="primary-navigation" class="site-nav" aria-label="Primary navigation">
+      <a href="index.html">Home</a>
+      <a href="events.html">Events</a>
+      <a href="worldevents.html">World Events</a>
+      <a href="scores.html">Scores</a>
+      <a href="shop.html">Shop</a>
+      <a href="gallery.html">Gallery</a>
+      <a href="about.html">About Us</a>
+      <a class="active" href="members.html" aria-current="page">Members</a>
+    </nav>
+  </div>
+</header>
+
+<main id="main-content">
+  <section class="members-hero">
+    <div class="shell members-hero-grid">
+      <div>
+        <p class="eyebrow eyebrow-light">Member account</p>
+        <h1>Your details, ready when you RSVP</h1>
+        <p>Create an account once. When you RSVP to an event, your name, email and phone number can be filled automatically.</p>
+      </div>
+      <div class="member-benefit-card">
+        <strong>Simple RSVP</strong>
+        <span>Click RSVP, choose buggy and preferred tee time, then confirm.</span>
+      </div>
+    </div>
+  </section>
+
+  <section class="section shell">
+    <div id="loggedOutView" class="member-auth-grid">
+      <article class="member-card">
+        <p class="eyebrow">New member</p>
+        <h2>Create your account</h2>
+        <form id="registerForm" class="member-form">
+          <label>Full name<input id="registerName" name="name" required autocomplete="name"></label>
+          <label>Email address<input id="registerEmail" name="email" type="email" required autocomplete="email"></label>
+          <label>Mobile number<input id="registerPhone" name="phone" type="tel" required autocomplete="tel"></label>
+          <label>Password<input id="registerPassword" name="password" type="password" required minlength="6" autocomplete="new-password"></label>
+          <label class="check-row">
+            <input id="registerConsent" type="checkbox" required>
+            <span>I agree to receive event and tee-time updates from Barford Golf Society.</span>
+          </label>
+          <button class="button button-small full-button" type="submit">Create account</button>
+          <p id="registerStatus" class="form-status" aria-live="polite"></p>
+        </form>
+      </article>
+
+      <article class="member-card">
+        <p class="eyebrow">Existing member</p>
+        <h2>Log in</h2>
+        <form id="loginForm" class="member-form">
+          <label>Email address<input id="loginEmail" type="email" required autocomplete="email"></label>
+          <label>Password<input id="loginPassword" type="password" required autocomplete="current-password"></label>
+          <button class="button button-small full-button" type="submit">Log in</button>
+          <p id="loginStatus" class="form-status" aria-live="polite"></p>
+        </form>
+      </article>
+    </div>
+
+    <div id="loggedInView" class="hidden">
+      <div class="member-dashboard-heading">
+        <div>
+          <p class="eyebrow">My account</p>
+          <h2 id="welcomeHeading">Welcome</h2>
+        </div>
+        <button id="logoutButton" class="button button-outline" type="button">Log out</button>
+      </div>
+
+      <div class="member-dashboard-grid">
+        <article class="member-card member-summary">
+          <div class="member-avatar" id="memberInitials" aria-hidden="true">BG</div>
+          <div>
+            <h3 id="memberName"></h3>
+            <p id="memberEmail"></p>
+            <p id="memberPhone"></p>
+          </div>
+        </article>
+
+        <article class="member-card">
+          <p class="eyebrow">Account details</p>
+          <h3>Update your information</h3>
+          <form id="profileForm" class="member-form">
+            <label>Full name<input id="profileName" required autocomplete="name"></label>
+            <label>Email address<input id="profileEmail" type="email" required autocomplete="email"></label>
+            <label>Mobile number<input id="profilePhone" type="tel" required autocomplete="tel"></label>
+            <button class="button button-small full-button" type="submit">Save changes</button>
+            <p id="profileStatus" class="form-status" aria-live="polite"></p>
+          </form>
+        </article>
+
+        <article class="member-card member-rsvp-card">
+          <p class="eyebrow">Next step</p>
+          <h3>Ready to play?</h3>
+          <p>Open Events and select RSVP. You will be treated as playing and only need to choose buggy and preferred tee time.</p>
+          <a class="button button-gold full-button" href="events.html">View events</a>
+        </article>
+      </div>
+    </div>
+  </section>
+</main>
+
+<footer class="site-footer">
+  <div class="shell footer-inner">
+    <div class="footer-brand"><img src="assets/images/barford-golf-society-logo.png" alt=""><span>Barford Golf Society</span></div>
+    <p>© <span id="year"></span> Barford Golf Society</p>
+  </div>
+</footer>
+
+<script src="assets/js/app.js" defer></script>
+<script src="assets/js/members.js" defer></script>
+</body>
+</html>

@@ -1,5 +1,18 @@
-# White-screen fixed full build
+# Barford Golf Society 2027 — Members Edition
 
-This package restores all shared website assets, keeps the intro video and integrated Scores page, and moves the 2027 Season text below the homepage logo.
+This full development website adds a Members page.
 
-It also includes a fail-safe so the intro can never permanently cover the homepage.
+Members can:
+- create a local development account
+- log in
+- store name, email and mobile number
+- update their details
+- use those details to prefill RSVP forms
+
+RSVP behaviour:
+- clicking RSVP means the member intends to play
+- saved name, email and mobile can be inserted automatically
+- buggy and preferred tee time are still chosen for each event
+
+Important:
+This is a browser-only development account system. It does not connect to the live website, live Supabase project or production authentication.
