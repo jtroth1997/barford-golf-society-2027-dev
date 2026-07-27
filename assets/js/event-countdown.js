@@ -1,7 +1,8 @@
 (() => {
   "use strict";
   const panel = document.querySelector("#eventCountdown");
-  if (!panel) return;\n  if (panel.closest(".member-home-dashboard")?.classList.contains("hidden")) return;
+  if (!panel) return;
+  if (panel.closest(".member-home-dashboard")?.classList.contains("hidden")) return;
 
   const date = panel.dataset.eventDate;
   const teeTime = panel.dataset.teeTime || "09:00";
