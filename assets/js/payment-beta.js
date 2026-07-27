@@ -8,8 +8,10 @@
   const venue = params.get("venue") || "The Belfry – Derby Course";
   const eventDate = params.get("date") || "2027-03-26";
   const fullAmount = Number(params.get("amount") || 45);
-  let selectedAmount = fullAmount;
-  let selectedType = "full";
+  const existingCommitment = readCommitments().find(item => item.eventId === eventId);
+  const payingBalance = existingCommitment?.status === "deposit_paid";
+  let selectedAmount = payingBalance ? Number(existingCommitment?.balanceDue || Math.max(0, fullAmount - 5)) : Math.min(5, fullAmount);
+  let selectedType = payingBalance ? "balance" : "deposit";
   let memberName = "Jack Troth";
 
   try {
@@ -17,6 +19,10 @@
     memberName = account.name || account.fullName || memberName;
   } catch (_) {}
 
+  function readCommitments() {
+    try { return JSON.parse(localStorage.getItem(RSVP_STORAGE) || "[]"); }
+    catch (_) { return []; }
+  }
   const read = key => {
     try { return JSON.parse(localStorage.getItem(key) || "[]"); }
     catch (_) { return []; }
@@ -39,39 +45,33 @@
   setText("#paymentVenue", venue);
   setText("#paymentAmount", money(fullAmount));
   setText("#paymentMember", memberName);
-  setText("#fullPaymentLabel", `Pay ${money(fullAmount)} in full`);
-  setText("#depositBalance", `${money(Math.max(0, fullAmount - 5))} remains due`);
+  setText("#checkoutActionTitle", payingBalance ? "Pay your remaining balance" : "Confirm your RSVP");
+  setText("#checkoutActionCopy", payingBalance
+    ? "Complete payment before the event to change your status from Payment due to Paid."
+    : "A £5 non-refundable deposit confirms your place and is deducted from the event total.");
+  setText("#paymentChoiceBadge", payingBalance ? "Balance payment" : "RSVP deposit");
+  setText("#paymentChoiceTitle", payingBalance ? `Pay remaining ${money(selectedAmount)}` : "Pay £5 to confirm my place");
+  setText("#paymentChoiceNote", payingBalance ? "This will clear your event balance" : `${money(Math.max(0, fullAmount - 5))} will remain to pay`);
+  setText("#paymentChoiceAmount", money(selectedAmount));
 
   const checkout = document.querySelector("#paymentCheckout");
   const choices = document.querySelector("#paymentChoices");
   const methods = document.querySelector("#paymentMethods");
   const success = document.querySelector("#paymentSuccess");
-  const reserved = document.querySelector("#reservationSuccess");
   const declined = document.querySelector("#paymentDeclined");
   const progress = document.querySelector("#paymentProgress");
 
   const show = target => {
-    [checkout, success, reserved, declined].forEach(section => section?.classList.toggle("hidden", section !== target));
+    [checkout, success, declined].forEach(section => section?.classList.toggle("hidden", section !== target));
     scrollTo({ top: 0, behavior: "smooth" });
   };
 
-  document.querySelector("#reserveWithoutPayment")?.addEventListener("click", () => {
-    writeCommitment({ status: "reserved", amountPaid: 0, balanceDue: fullAmount });
-    setText("#reservedEvent", eventName);
-    setText("#reservedBalance", money(fullAmount));
-    show(reserved);
-  });
-
-  document.querySelectorAll("[data-payment-choice]").forEach(button => {
-    button.addEventListener("click", () => {
-      selectedType = button.dataset.paymentChoice;
-      selectedAmount = selectedType === "deposit" ? Math.min(5, fullAmount) : fullAmount;
-      setText("#selectedPaymentTitle", selectedType === "deposit" ? "Pay £5 place deposit" : "Pay in full");
-      setText("#selectedPaymentAmount", money(selectedAmount));
-      choices.classList.add("hidden");
-      methods.classList.remove("hidden");
-      methods.scrollIntoView({ behavior: "smooth", block: "nearest" });
-    });
+  document.querySelector("#continueToPayment")?.addEventListener("click", () => {
+    setText("#selectedPaymentTitle", payingBalance ? "Remaining balance" : "£5 RSVP deposit");
+    setText("#selectedPaymentAmount", money(selectedAmount));
+    choices.classList.add("hidden");
+    methods.classList.remove("hidden");
+    methods.scrollIntoView({ behavior: "smooth", block: "nearest" });
   });
 
   document.querySelector("#changePaymentChoice")?.addEventListener("click", () => {
@@ -85,16 +85,17 @@
     progress.textContent = `Processing ${method} test payment…`;
     setTimeout(() => {
       const reference = `BGS-TEST-${Date.now().toString().slice(-8)}`;
-      const existing = read(PAYMENT_STORAGE).filter(item => !(item.eventId === eventId && item.paymentType === selectedType));
+      const existing = read(PAYMENT_STORAGE);
       const payment = {
         eventId, eventName, venue, eventDate, fullAmount, memberName, method, reference,
         paymentType: selectedType, amount: selectedAmount, status: "paid", paidAt: new Date().toISOString()
       };
       existing.unshift(payment);
       localStorage.setItem(PAYMENT_STORAGE, JSON.stringify(existing.slice(0, 40)));
-      const amountPaid = selectedType === "deposit" ? selectedAmount : fullAmount;
+      const previousPaid = Number(existingCommitment?.amountPaid || 0);
+      const amountPaid = selectedType === "balance" ? fullAmount : Math.min(fullAmount, previousPaid + selectedAmount);
       writeCommitment({
-        status: selectedType === "deposit" ? "deposit_paid" : "paid",
+        status: selectedType === "balance" || amountPaid >= fullAmount ? "paid" : "deposit_paid",
         amountPaid,
         balanceDue: Math.max(0, fullAmount - amountPaid)
       });
