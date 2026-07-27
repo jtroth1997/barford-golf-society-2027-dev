@@ -74,20 +74,6 @@ function renderLeaderboardRoundTabs() {
   });
 }
 
-function renderLeaderboardPodium(players) {
-  const podium = $("#leaderboardPodium");
-  const medals = ["🥇", "🥈", "🥉"];
-  podium.innerHTML = players.slice(0, 3).map((player, index) => `
-    <article class="podium-player podium-position-${index + 1}">
-      <span class="podium-place">${index + 1}</span>
-      <span class="podium-medal" aria-hidden="true">${medals[index]}</span>
-      <strong>${escapeHtml(player.name)}</strong>
-      <span class="podium-points"><b>${player.statistics.seasonPoints}</b> points</span>
-      <small>Handicap ${player.statistics.currentHandicap}</small>
-    </article>
-  `).join("");
-}
-
 function renderLeaderboard() {
   const list = $("#leaderboardList");
   list.innerHTML = "";
@@ -107,7 +93,6 @@ function renderLeaderboard() {
     : `<strong>No completed rounds yet</strong><span>The leaderboard will appear after scores are calculated and saved.</span>`;
 
   const allRanked = rankPlayers(state.data.players, roundsForStandings, state.data.achievements);
-  renderLeaderboardPodium(allRanked);
   const ranked = allRanked.filter(player => player.name.toLowerCase().includes(state.search));
 
   ranked.forEach(player => {
@@ -117,6 +102,9 @@ function renderLeaderboard() {
     const detail = node.querySelector(".player-details");
     const selectedResult = selectedRound?.results.find(result => result.playerId === player.id);
     const medal = ["🥇","🥈","🥉"][player.position - 1];
+    if (player.position <= 3 && !state.search) {
+      card.classList.add("top-three-row", `top-position-${player.position}`);
+    }
 
     node.querySelector(".rank-badge").textContent = medal || player.position;
     if (medal) node.querySelector(".rank-badge").classList.add("medal");
@@ -285,8 +273,6 @@ function renderStatistics() {
 
 function setView(name) {
   state.activeView=name;
-  const showcase=$("#leaderboardShowcase");
-  if(showcase)showcase.hidden=name!=="leaderboard";
   $$(".nav-tab").forEach(b=>b.classList.toggle("is-active",b.dataset.view===name));
   $$(".view").forEach(v=>{const active=v.id===`${name}View`;v.hidden=!active;v.classList.toggle("is-active",active)});
   const titles={leaderboard:["Leaderboard","Best five rounds count towards the season total."],rounds:["Rounds","Every player, handicap and adjustment in a phone-friendly view."],handicaps:["Handicap History","See how handicaps move throughout the season."],statistics:["Statistics","Performance summaries for every member."]};
