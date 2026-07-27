@@ -9,9 +9,8 @@
   const eventDate = params.get("date") || "2027-03-26";
   const fullAmount = Number(params.get("amount") || 45);
   const existingCommitment = readCommitments().find(item => item.eventId === eventId);
-  const payingBalance = existingCommitment?.status === "deposit_paid";
-  let selectedAmount = payingBalance ? Number(existingCommitment?.balanceDue || Math.max(0, fullAmount - 5)) : Math.min(5, fullAmount);
-  let selectedType = payingBalance ? "balance" : "deposit";
+  const selectedAmount = Number(existingCommitment?.balanceDue || fullAmount);
+  const selectedType = "full";
   let memberName = "Jack Troth";
 
   try {
@@ -45,13 +44,11 @@
   setText("#paymentVenue", venue);
   setText("#paymentAmount", money(fullAmount));
   setText("#paymentMember", memberName);
-  setText("#checkoutActionTitle", payingBalance ? "Pay your remaining balance" : "Confirm your RSVP");
-  setText("#checkoutActionCopy", payingBalance
-    ? "Complete payment before the event to change your status from Payment due to Paid."
-    : "A £5 non-refundable deposit confirms your place and is deducted from the event total.");
-  setText("#paymentChoiceBadge", payingBalance ? "Balance payment" : "RSVP deposit");
-  setText("#paymentChoiceTitle", payingBalance ? `Pay remaining ${money(selectedAmount)}` : "Pay £5 to confirm my place");
-  setText("#paymentChoiceNote", payingBalance ? "This will clear your event balance" : `${money(Math.max(0, fullAmount - 5))} will remain to pay`);
+  setText("#checkoutActionTitle", "Pay for your event");
+  setText("#checkoutActionCopy", "Your RSVP is already confirmed. Payment clears the outstanding event balance.");
+  setText("#paymentChoiceBadge", "Full payment");
+  setText("#paymentChoiceTitle", `Pay ${money(selectedAmount)}`);
+  setText("#paymentChoiceNote", "This will change your status from Payment due to Paid");
   setText("#paymentChoiceAmount", money(selectedAmount));
 
   const checkout = document.querySelector("#paymentCheckout");
@@ -67,7 +64,7 @@
   };
 
   document.querySelector("#continueToPayment")?.addEventListener("click", () => {
-    setText("#selectedPaymentTitle", payingBalance ? "Remaining balance" : "£5 RSVP deposit");
+    setText("#selectedPaymentTitle", "Event payment");
     setText("#selectedPaymentAmount", money(selectedAmount));
     choices.classList.add("hidden");
     methods.classList.remove("hidden");
@@ -92,21 +89,17 @@
       };
       existing.unshift(payment);
       localStorage.setItem(PAYMENT_STORAGE, JSON.stringify(existing.slice(0, 40)));
-      const previousPaid = Number(existingCommitment?.amountPaid || 0);
-      const amountPaid = selectedType === "balance" ? fullAmount : Math.min(fullAmount, previousPaid + selectedAmount);
       writeCommitment({
-        status: selectedType === "balance" || amountPaid >= fullAmount ? "paid" : "deposit_paid",
-        amountPaid,
-        balanceDue: Math.max(0, fullAmount - amountPaid)
+        status:"paid",
+        amountPaid:fullAmount,
+        balanceDue:0
       });
       setText("#successAmount", money(selectedAmount));
       setText("#successEvent", eventName);
       setText("#successMember", memberName);
       setText("#successMethod", method);
       setText("#successReference", reference);
-      setText("#successBalance", selectedType === "deposit"
-        ? `${money(fullAmount - selectedAmount)} remains to be paid before the event.`
-        : "Your event is paid in full.");
+      setText("#successBalance", "Your event is paid in full.");
       show(success);
     }, 180);
   };
