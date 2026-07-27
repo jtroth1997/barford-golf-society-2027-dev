@@ -84,12 +84,30 @@
       </div>
     </article>
     <aside class="dashboard-side">
+      <article id="eventDayCameraTab" class="dashboard-card event-camera-tab hidden" data-event-date="2026-07-28">
+        <div class="camera-tab-icon" aria-hidden="true">📷</div>
+        <div><p class="eyebrow">Event day</p><h3>Add to today’s gallery</h3><p>Take a photo, check it and share it with the society gallery.</p></div>
+        <button id="openEventCamera" class="button button-gold" type="button">Take a photo</button>
+        <input id="eventCameraInput" class="camera-file-input" type="file" accept="image/*" capture="environment">
+      </article>
       <article class="dashboard-card"><p class="eyebrow">Season snapshot</p><div class="snapshot-grid"><div><strong>18.4</strong><span>Handicap</span></div><div><strong>4th</strong><span>Position</span></div><div><strong>0/7</strong><span>Events played</span></div><div><strong>—</strong><span>Best score</span></div></div></article>
       <article class="dashboard-card"><p class="eyebrow">Quick access</p><nav class="dashboard-links" aria-label="Member quick links"><a href="events.html"><span>View all events</span><b>→</b></a><a href="scores.html"><span>Scores and standings</span><b>→</b></a><a href="gallery.html"><span>Member gallery</span><b>→</b></a><a href="shop.html"><span>Society shop</span><b>→</b></a></nav></article>
       <article class="dashboard-card dashboard-note"><p class="eyebrow">Event note</p><h3>Meet in the clubhouse</h3><p>Breakfast is available from 08:00. Please be ready at the first tee ten minutes before your allocated time.</p></article>
       <button id="memberSignOut" class="button button-outline dashboard-signout" type="button">Sign out on this device</button>
     </aside>
   </div>
+<dialog id="photoReviewDialog" class="photo-review-dialog">
+    <form method="dialog" class="photo-review-card">
+      <div class="photo-review-heading"><div><p class="eyebrow">Review photo</p><h2>Happy with it?</h2></div><button class="photo-close" value="cancel" aria-label="Close">×</button></div>
+      <div class="photo-preview-frame"><img id="eventPhotoPreview" alt="Photo ready to add to the gallery"></div>
+      <p id="photoSaveStatus" class="photo-save-status" aria-live="polite"></p>
+      <div class="photo-review-actions">
+        <button id="retakeEventPhoto" class="button button-outline" type="button">Retake</button>
+        <button id="confirmEventPhoto" class="button button-gold" type="button">Add to gallery</button>
+      </div>
+      <a id="viewSavedPhoto" class="button button-small hidden" href="gallery.html#event-day-photos">View gallery</a>
+    </form>
+  </dialog>
 </section>
 <div id="publicHome">
 <section class="hero">
@@ -170,6 +188,7 @@
 <script src="assets/js/app.js" defer></script>
 <script src="assets/js/member-session.js" defer></script>
 <script src="assets/js/event-weather.js" defer></script>
+<script src="assets/js/event-camera.js" defer></script>
 
 </body>
 </html>
