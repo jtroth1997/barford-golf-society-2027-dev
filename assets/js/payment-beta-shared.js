@@ -13,6 +13,13 @@
     "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;", "'": "&#39;"
   })[character]);
   const money = value => `£${Number(value || 0).toFixed(2)}`;
+  if (document.querySelector(".compact-event-card")) {
+    const checkoutPrefetch = document.createElement("link");
+    checkoutPrefetch.rel = "prefetch";
+    checkoutPrefetch.as = "document";
+    checkoutPrefetch.href = "payment-beta.html";
+    document.head.appendChild(checkoutPrefetch);
+  }
   if (!localStorage.getItem(DEMO_RESET)) {
     localStorage.removeItem(PAYMENT_STORAGE);
     localStorage.removeItem(RSVP_STORAGE);
@@ -52,10 +59,14 @@
       event.preventDefault();
       event.stopImmediatePropagation();
       if (eventClosed(date)) return;
+      const previousLabel = button.textContent;
+      button.disabled = true;
+      button.textContent = "Opening payment…";
+      setTimeout(() => { button.disabled = false; button.textContent = previousLabel; }, 800);
       const target = new URL("payment-beta.html", location.href);
       [["event", eventId], ["name", name], ["venue", venue], ["amount", amount], ["date", date]].forEach(([key, value]) => target.searchParams.set(key, String(value)));
       if (commitment?.status === "deposit_paid") target.searchParams.set("action", "balance");
-      location.href = target.href;
+      location.assign(target.href);
     }, true);
   });
 
