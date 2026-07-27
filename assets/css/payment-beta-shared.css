@@ -1,1 +1,91 @@
-.rsvp-event-button.payment-complete{background:#dff4e8;border-color:#98d2b2;color:#0b5937}.beta-payment-admin{margin-top:1.5rem}.beta-payment-admin .admin-heading{align-items:flex-start;display:flex;gap:1rem;justify-content:space-between}.beta-payment-admin .eyebrow{color:#a96f0b;font-size:.75rem;font-weight:800;letter-spacing:.12em;margin:0 0 .35rem;text-transform:uppercase}.beta-payment-admin h3,.beta-payment-admin p{margin-top:0}.beta-payment-list{display:grid;gap:.65rem;margin-top:1rem}.beta-payment-list article{align-items:center;background:#f4f8f5;border:1px solid #dce7e0;border-radius:12px;display:grid;gap:.3rem 1rem;grid-template-columns:minmax(0,1fr) auto auto;padding:.85rem 1rem}.beta-payment-list article>div{display:grid}.beta-payment-list strong,.beta-payment-list span{overflow-wrap:anywhere}.beta-payment-list small{color:#63706a}.beta-payment-list .status{color:#0b653d;font-weight:800}.beta-payment-list .empty-state{background:#f4f8f5;border-radius:12px;color:#53615a;padding:1rem}@media(max-width:640px){.beta-payment-admin .admin-heading{display:block}.beta-payment-admin .admin-heading .access-pill{display:inline-block;margin-top:.5rem}.beta-payment-admin>button{margin-top:.75rem;min-height:48px;width:100%}.beta-payment-list article{grid-template-columns:1fr auto}.beta-payment-list article>small{grid-column:1/-1}}
+.rsvp-event-button.payment-complete {
+  background: #dff4e8;
+  border-color: #98d2b2;
+  color: #0b5937;
+}
+
+.beta-payment-admin {
+  margin-top: 1.5rem;
+}
+
+.beta-payment-admin .admin-card-heading {
+  align-items: flex-start;
+  display: flex;
+  gap: 1rem;
+  justify-content: space-between;
+}
+
+.beta-payment-admin .eyebrow {
+  color: #a96f0b;
+  font-size: 0.75rem;
+  font-weight: 800;
+  letter-spacing: 0.12em;
+  margin: 0 0 0.35rem;
+  text-transform: uppercase;
+}
+
+.beta-payment-admin h3,
+.beta-payment-admin p {
+  margin-top: 0;
+}
+
+.beta-payment-list {
+  display: grid;
+  gap: 0.65rem;
+  margin-top: 1rem;
+}
+
+.beta-payment-list article {
+  align-items: center;
+  background: #f4f8f5;
+  border: 1px solid #dce7e0;
+  border-radius: 12px;
+  display: grid;
+  gap: 0.3rem 1rem;
+  grid-template-columns: minmax(0, 1fr) auto auto;
+  padding: 0.85rem 1rem;
+}
+
+.beta-payment-list strong,
+.beta-payment-list span {
+  overflow-wrap: anywhere;
+}
+
+.beta-payment-list small {
+  color: #63706a;
+}
+
+.beta-payment-status {
+  color: #0b653d;
+  font-weight: 800;
+}
+
+.beta-payment-empty {
+  background: #f4f8f5;
+  border-radius: 12px;
+  color: #53615a;
+  padding: 1rem;
+}
+
+@media (max-width: 640px) {
+  .beta-payment-admin .admin-card-heading {
+    display: block;
+  }
+
+  .beta-payment-admin .admin-card-heading button {
+    margin-top: 0.5rem;
+    min-height: 48px;
+    width: 100%;
+  }
+
+  .beta-payment-list article {
+    grid-template-columns: 1fr auto;
+  }
+
+  .beta-payment-list small {
+    grid-column: 1 / -1;
+  }
+}
+
+.payment-admin-tabs{display:grid;grid-template-columns:1fr 1fr;gap:.5rem;margin:1rem 0}.payment-admin-tabs button{background:#eef3f0;border:1px solid #d5e0da;border-radius:10px;color:#263b32;cursor:pointer;font-weight:800;min-height:50px;padding:.7rem}.payment-admin-tabs button.active{background:#07533b;color:#fff}.payment-admin-tabs span{background:rgba(255,255,255,.2);border-radius:999px;margin-left:.3rem;padding:.15rem .45rem}.beta-payment-list article>div{display:grid;gap:.18rem}.refund-policy{background:#fff4d8;border-radius:12px;margin:1rem 0;padding:1rem}.refund-policy p{margin:.25rem 0 0}.beta-account-payments{background:#fff;border:1px solid #dbe5df;border-radius:18px;margin-bottom:1.5rem;padding:1.25rem}.beta-account-payments .section-heading{align-items:flex-start;display:flex;gap:1rem;justify-content:space-between}.payment-total{background:#fff0c8;border-radius:999px;padding:.55rem .8rem;white-space:nowrap}.account-payment-list{display:grid;gap:.7rem;margin-top:1rem}.account-payment-list article{align-items:center;background:#f3f7f5;border-radius:13px;display:flex;gap:1rem;justify-content:space-between;padding:1rem}.account-payment-list article>div{display:grid;gap:.25rem}.account-payment-list article>div:last-child{text-align:right}.account-payment-list small,.account-payment-list span{color:#627169}.account-payment-list .button{margin-top:.35rem}
+@media(max-width:640px){.payment-admin-tabs{grid-template-columns:1fr}.beta-account-payments .section-heading,.account-payment-list article{display:grid}.payment-total{justify-self:start}.account-payment-list article>div:last-child{text-align:left}.account-payment-list .button{min-height:48px;text-align:center;width:100%}}
