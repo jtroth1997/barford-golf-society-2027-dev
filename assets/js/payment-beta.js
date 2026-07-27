@@ -63,7 +63,7 @@
 
   const show = target => {
     [checkout, success, declined].forEach(section => section?.classList.toggle("hidden", section !== target));
-    scrollTo({ top: 0, behavior: "smooth" });
+    scrollTo({ top: 0, behavior: "auto" });
   };
 
   document.querySelector("#continueToPayment")?.addEventListener("click", () => {
@@ -71,7 +71,7 @@
     setText("#selectedPaymentAmount", money(selectedAmount));
     choices.classList.add("hidden");
     methods.classList.remove("hidden");
-    methods.scrollIntoView({ behavior: "smooth", block: "nearest" });
+    methods.scrollIntoView({ block: "nearest" });
   });
 
   document.querySelector("#changePaymentChoice")?.addEventListener("click", () => {
@@ -108,7 +108,7 @@
         ? `${money(fullAmount - selectedAmount)} remains to be paid before the event.`
         : "Your event is paid in full.");
       show(success);
-    }, 700);
+    }, 180);
   };
 
   document.querySelectorAll("[data-method]").forEach(button => {
