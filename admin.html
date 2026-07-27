@@ -1,0 +1,54 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+  <meta name="theme-color" content="#063d2a">
+  <title>Admin | Barford Golf Society</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=Playfair+Display:wght@700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="assets/css/styles.css">
+  <link rel="stylesheet" href="assets/css/admin.css">
+</head>
+<body>
+<header class="site-header">
+  <div class="shell header-inner">
+    <a class="brand" href="index.html"><img src="assets/images/barford-golf-society-logo.png" alt="Barford Golf Society"></a>
+    <button class="menu-button" type="button" aria-expanded="false" aria-controls="primary-navigation"><span class="sr-only">Open menu</span><span></span><span></span><span></span></button>
+    <nav id="primary-navigation" class="site-nav"><a href="index.html">Home</a><a href="events.html">Events</a><a href="scores.html">Scores</a><a href="gallery.html">Gallery</a><a href="account.html">My Account</a><a class="active" href="admin.html">Admin</a></nav>
+  </div>
+</header>
+<main class="admin-page">
+  <section class="admin-hero"><div class="shell"><p class="eyebrow eyebrow-light">Committee area</p><h1>Admin control centre</h1><p>Manage the entire society from one secure place.</p></div></section>
+
+  <section id="adminLoginPanel" class="section shell admin-login-layout">
+    <div><p class="eyebrow">Administrator login</p><h2>Your own secure admin account</h2><p>Every committee administrator signs in with their own email and password and has complete access to all society information.</p><ul class="admin-checks"><li>No shared password</li><li>Individual password resets</li><li>Access can be removed instantly</li><li>Admin activity is recorded</li></ul></div>
+    <form id="adminLoginForm" class="admin-card admin-login-card"><span class="demo-badge">Design preview</span><label>Email address<input type="email" required autocomplete="username" placeholder="admin@example.com"></label><label>Password<input type="password" required autocomplete="current-password"></label><label class="remember-row"><input type="checkbox" checked> Remember me on this device</label><button class="button button-primary" type="submit">Sign in to Admin</button><small>Passwords are not stored in this prototype.</small></form>
+  </section>
+
+  <section id="adminDashboard" class="admin-dashboard shell hidden">
+    <div class="admin-card admin-toolbar"><div><p class="eyebrow">Overview</p><h2>Good morning, Jack</h2><p>Here’s what needs attention across the society.</p></div><div><span class="access-pill">Full access</span><button id="adminSignOut" class="button button-outline">Sign out</button></div></div>
+    <div class="admin-stats"><article><span>Members</span><strong>32</strong><small>29 active · 3 pending</small></article><article><span>Next event</span><strong>24</strong><small>8 places remaining</small></article><article><span>Payments due</span><strong>7</strong><small>£315 outstanding</small></article><article><span>Buggy requests</span><strong>5</strong><small>3 buggies required</small></article></div>
+
+    <div class="admin-columns">
+      <section class="admin-card"><p class="eyebrow">Quick management</p><h3>Society controls</h3><div class="admin-actions"><a href="events.html">📅 <span><strong>Events & RSVP</strong><small>Attendance and places</small></span></a><a href="events.html">⛳ <span><strong>Tee times</strong><small>Four-balls and buggies</small></span></a><a href="scores.html">🏆 <span><strong>Scores</strong><small>Results and handicaps</small></span></a><a href="gallery.html">📷 <span><strong>Gallery</strong><small>Review photographs</small></span></a><button class="demo-admin-action">💳 <span><strong>Payments</strong><small>Paid, due and refunds</small></span></button><button class="demo-admin-action">👥 <span><strong>Members</strong><small>Profiles and attendance</small></span></button></div></section>
+      <aside class="admin-card attention-card"><p class="eyebrow">Needs attention</p><h3>Next event</h3><ul><li><span>7 members</span><b>Payment due</b></li><li><span>2 members</span><b>No RSVP</b></li><li><span>1 request</span><b>Guest approval</b></li><li><span>5 members</span><b>Buggy groups</b></li></ul></aside>
+    </div>
+
+    <section class="admin-card">
+      <div class="admin-heading"><div><p class="eyebrow">Administrators</p><h3>Admin accounts</h3><p>Every administrator has complete access to all society information.</p></div><button id="createAdminInvite" class="button button-gold">Request an admin account link</button></div>
+      <div id="inviteResult" class="invite-result hidden"><div><strong>Invitation link created</strong><small>Single use · Expires in 48 hours</small></div><input id="adminInviteLink" readonly><button id="copyAdminInvite" class="button button-primary">Copy link</button></div>
+      <div class="admin-list">
+        <article><span class="admin-avatar">JT</span><div><strong>Jack Troth</strong><small>jack@example.com</small></div><b class="status active">Active</b><div><strong>Full access</strong><small>Last login: Today, 12:25</small></div><button class="admin-more">•••</button></article>
+        <article><span class="admin-avatar muted">TC</span><div><strong>Tim Clarke</strong><small>tim@example.com</small></div><b class="status pending">Invite pending</b><div><strong>Full access</strong><small>Expires in 34 hours</small></div><button class="admin-more">•••</button></article>
+      </div>
+    </section>
+
+    <section class="admin-card"><div class="admin-heading"><div><p class="eyebrow">Security history</p><h3>Recent admin activity</h3></div></div><div class="activity-list"><p><strong>Jack Troth</strong> generated the Season Opener tee times <small>Today at 11:42</small></p><p><strong>Jack Troth</strong> updated an RSVP to Paid <small>Yesterday at 19:08</small></p><p><strong>Tim Clarke</strong> was sent an administrator invitation <small>Yesterday at 18:51</small></p></div></section>
+  </section>
+</main>
+<footer class="site-footer"><div class="shell footer-inner"><div class="footer-brand"><img src="assets/images/barford-golf-society-logo.png" alt=""><span>Barford Golf Society</span></div><p>© <span id="year"></span> Barford Golf Society</p></div></footer>
+<script src="assets/js/app.js" defer></script><script src="assets/js/admin.js" defer></script>
+</body>
+</html>
