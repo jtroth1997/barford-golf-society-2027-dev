@@ -3,9 +3,9 @@
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
-  <meta name="description" content="Barford Golf Society member account">
+  <meta name="description" content="Your Barford Golf Society member account">
   <meta name="theme-color" content="#063d2a">
-  <title>Members | Barford Golf Society</title>
+  <title>My Account | Barford Golf Society</title>
   <link rel="dns-prefetch" href="//fonts.googleapis.com">
   <link rel="dns-prefetch" href="//fonts.gstatic.com">
   <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -16,124 +16,103 @@
 </head>
 <body>
 <a class="skip-link" href="#main-content">Skip to content</a>
-
 <header class="site-header">
   <div class="shell header-inner">
-    <a class="brand" href="index.html" aria-label="Barford Golf Society home">
-      <img decoding="async" fetchpriority="high" src="assets/images/barford-golf-society-logo.png" alt="Barford Golf Society">
-    </a>
-    <button class="menu-button" type="button" aria-expanded="false" aria-controls="primary-navigation">
-      <span class="sr-only">Open menu</span><span></span><span></span><span></span>
-    </button>
+    <a class="brand" href="index.html" aria-label="Barford Golf Society home"><img decoding="async" fetchpriority="high" src="assets/images/barford-golf-society-logo.png" alt="Barford Golf Society"></a>
+    <button class="menu-button" type="button" aria-expanded="false" aria-controls="primary-navigation"><span class="sr-only">Open menu</span><span></span><span></span><span></span></button>
     <nav id="primary-navigation" class="site-nav" aria-label="Primary navigation">
-      <a href="index.html">Home</a>
-      <a href="events.html">Events</a>
-      <a href="worldevents.html">World Events</a>
-      <a href="scores.html">Scores</a>
-      <a href="shop.html">Shop</a>
-      <a href="gallery.html">Gallery</a>
-      <a href="about.html">About Us</a>
-      <a class="active" href="members.html" aria-current="page">Members</a>
+      <a href="index.html">Home</a><a href="events.html">Events</a><a href="worldevents.html">World Events</a><a href="scores.html">Scores</a><a href="shop.html">Shop</a><a href="gallery.html">Gallery</a><a href="about.html">About Us</a><a class="active" href="members.html" aria-current="page">My Account</a>
     </nav>
   </div>
 </header>
 
-<main id="main-content" class="member-dashboard-page">
-  <section class="dashboard-welcome">
-    <div class="shell dashboard-welcome-inner">
-      <div>
-        <p class="eyebrow eyebrow-light">Member dashboard</p>
-        <h1>Welcome back, Jack</h1>
-        <p>Everything you need for your next Barford Golf Society event.</p>
+<main id="main-content" class="account-page">
+  <section class="account-hero">
+    <div class="shell account-hero-inner">
+      <div class="account-identity">
+        <div id="accountHeroAvatar" class="member-avatar account-avatar">JT</div>
+        <div><p class="eyebrow eyebrow-light">My account</p><h1 id="accountHeroName">Jack Troth</h1><p><span class="account-live-dot"></span> 2027 active member · Member BGS-027</p></div>
       </div>
-      <div class="dashboard-member">
-        <div class="member-avatar" aria-hidden="true">JT</div>
-        <div><strong>Jack Troth</strong><span>2027 Member</span></div>
-      </div>
+      <a class="button button-gold" href="index.html">View my event dashboard</a>
     </div>
   </section>
 
-  <section class="dashboard-content shell">
-    <div class="dashboard-preview-login">
-        <div><strong>Homepage dashboard preview</strong><span>Save this device as Jack and open the member dashboard automatically whenever you return.</span></div>
-        <button id="rememberMemberDevice" class="button button-gold" type="button">Preview and remember me as Jack</button>
-      </div>
-    <article class="next-event-dashboard">
-      <div class="dashboard-event-top">
-        <div class="dashboard-date"><span>MAR</span><strong>26</strong><small>2027</small></div>
-        <div class="dashboard-event-title">
-          <p class="eyebrow">Your next event</p>
-          <h2>Season Opener</h2>
-          <p class="dashboard-course">The Belfry – Derby Course</p>
-        </div>
-        <span class="dashboard-status">You’re playing</span>
+  <section id="accountSignedOut" class="section shell hidden">
+    <div class="account-signed-out"><h2>Your account is not open on this device</h2><p>Create an account or use the preview to see the new account area.</p><div class="button-row"><a class="button button-primary" href="signup.html">Create account</a><button id="rememberMemberDevice" class="button button-outline" type="button">Preview as Jack</button></div></div>
+  </section>
+
+  <div id="accountContent" class="shell account-layout">
+    <section class="account-main">
+      <div class="account-section-heading"><div><p class="eyebrow">Season overview</p><h2>How you’re doing</h2></div><span>2027 season</span></div>
+      <div class="account-stat-grid">
+        <article><span>Current handicap</span><strong id="accountHandicapStat">18.4</strong><small>Starting handicap 20.1</small></article>
+        <article><span>Society position</span><strong>4th</strong><small>Up 2 places</small></article>
+        <article><span>Average points</span><strong>32.6</strong><small>Best round 38</small></article>
+        <article><span>Attendance</span><strong>4 / 7</strong><small>57% this season</small></article>
       </div>
 
-      <div class="dashboard-event-facts">
-        <div><span>First tee</span><strong>09:00</strong></div>
-        <div><span>Your tee time</span><strong>09:12</strong></div>
-        <div><span>Arrival by</span><strong>08:15</strong></div>
-        <div><span>Payment</span><strong class="paid-text">Paid</strong></div>
-      </div>
-
-      <div class="playing-group">
-        <div class="playing-group-heading">
-          <div><p class="eyebrow">Your fourball</p><h3>Who you’re playing with</h3></div>
-          <span>Tee 1 · 09:12</span>
-        </div>
-        <div class="fourball-grid">
-          <div class="fourball-member you"><span>JT</span><div><strong>Jack Troth</strong><small>You</small></div></div>
-          <div class="fourball-member"><span>DS</span><div><strong>David Smith</strong><small>Handicap 16</small></div></div>
-          <div class="fourball-member"><span>MJ</span><div><strong>Mark Taylor</strong><small>Handicap 21</small></div></div>
-          <div class="fourball-member"><span>CB</span><div><strong>Chris Brown</strong><small>Handicap 14</small></div></div>
-        </div>
-      </div>
-
-      <div class="directions-panel">
-        <div><p class="eyebrow">Directions</p><h3>Navigate to The Belfry</h3><p>Lichfield Road, Wishaw, Sutton Coldfield, B76 9PR</p></div>
-        <div class="map-buttons">
-          <a class="map-button apple" href="https://maps.apple.com/?daddr=The%20Belfry%2C%20Lichfield%20Road%2C%20Wishaw%2C%20Sutton%20Coldfield%20B76%209PR" target="_blank" rel="noopener"><span></span>Apple Maps</a>
-          <a class="map-button google" href="https://www.google.com/maps/dir/?api=1&amp;destination=The%20Belfry%2C%20Lichfield%20Road%2C%20Wishaw%2C%20Sutton%20Coldfield%20B76%209PR" target="_blank" rel="noopener"><span>G</span>Google Maps</a>
-          <a class="map-button waze" href="https://www.waze.com/ul?q=The%20Belfry%2C%20Lichfield%20Road%2C%20Wishaw%2C%20Sutton%20Coldfield%20B76%209PR&amp;navigate=yes" target="_blank" rel="noopener"><span>W</span>Waze</a>
-        </div>
-      </div>
-    </article>
-
-    <aside class="dashboard-side">
-      <article class="dashboard-card">
-        <p class="eyebrow">Season snapshot</p>
-        <div class="snapshot-grid">
-          <div><strong>18.4</strong><span>Handicap</span></div>
-          <div><strong>4th</strong><span>Season position</span></div>
-          <div><strong>0/7</strong><span>Events played</span></div>
-          <div><strong>—</strong><span>Best score</span></div>
+      <article class="account-panel performance-panel">
+        <div class="account-panel-heading"><div><p class="eyebrow">Performance</p><h3>Stableford points</h3></div><strong>Average 32.6</strong></div>
+        <div class="performance-chart" aria-label="Example Stableford points by event">
+          <div><span style="--score:78%"></span><b>31</b><small>Belfry</small></div>
+          <div><span style="--score:95%"></span><b>38</b><small>Arden</small></div>
+          <div><span style="--score:83%"></span><b>33</b><small>Warwickshire</small></div>
+          <div><span style="--score:71%"></span><b>28</b><small>Brandon</small></div>
         </div>
       </article>
-      <article class="dashboard-card">
-        <p class="eyebrow">Quick access</p>
-        <nav class="dashboard-links" aria-label="Member quick links">
-          <a href="events.html"><span>View all events</span><b>→</b></a>
-          <a href="scores.html"><span>Scores and standings</span><b>→</b></a>
-          <a href="gallery.html"><span>Member gallery</span><b>→</b></a>
-          <a href="shop.html"><span>Society shop</span><b>→</b></a>
-        </nav>
+
+      <article class="account-panel">
+        <div class="account-panel-heading"><div><p class="eyebrow">Round history</p><h3>Your season so far</h3></div><a href="scores.html">Full scores →</a></div>
+        <div class="account-round-list">
+          <div><time>26 Mar</time><span><strong>The Belfry</strong><small>Derby Course</small></span><b>31 pts</b><em>12th</em></div>
+          <div><time>28 May</time><span><strong>Forest of Arden</strong><small>Arden Course</small></span><b>38 pts</b><em>2nd</em></div>
+          <div><time>30 Jul</time><span><strong>The Warwickshire</strong><small>Kings Course</small></span><b>33 pts</b><em>6th</em></div>
+          <div><time>27 Aug</time><span><strong>Brandon Wood</strong><small>Championship Course</small></span><b>28 pts</b><em>18th</em></div>
+        </div>
       </article>
-      <article class="dashboard-card dashboard-note">
-        <p class="eyebrow">Event note</p>
-        <h3>Meet in the clubhouse</h3>
-        <p>Breakfast is available from 08:00. Please be ready at the first tee ten minutes before your allocated time.</p>
+
+      <article class="account-panel">
+        <div class="account-panel-heading"><div><p class="eyebrow">Achievements</p><h3>Your society badges</h3></div><span>4 unlocked</span></div>
+        <div class="achievement-grid">
+          <div><span>🏌️</span><strong>Season Starter</strong><small>Played the opening event</small></div>
+          <div><span>🔥</span><strong>Three in a Row</strong><small>Attended 3 consecutive days</small></div>
+          <div><span>📷</span><strong>Photographer</strong><small>Added an event photo</small></div>
+          <div><span>⭐</span><strong>Top Five</strong><small>Finished inside the top five</small></div>
+        </div>
+      </article>
+    </section>
+
+    <aside class="account-side">
+      <article class="account-panel profile-panel">
+        <div class="account-panel-heading"><div><p class="eyebrow">Profile</p><h3>Your information</h3></div></div>
+        <form id="accountProfileForm" class="account-profile-form">
+          <div class="account-photo-editor">
+            <div id="accountPhotoPreview" class="profile-photo-preview"><span>JT</span></div>
+            <div><label class="button button-outline photo-picker-button" for="accountPhotoInput">Change photo</label><input id="accountPhotoInput" class="profile-photo-input" type="file" accept="image/*" capture="user"><button id="removeAccountPhoto" class="photo-remove" type="button">Remove</button><small>Shown in your four-ball and dashboard.</small></div>
+          </div>
+          <label>Full name<input id="accountName" type="text" autocomplete="name" required></label>
+          <label>Email address<input id="accountEmail" type="email" autocomplete="email" required></label>
+          <label>Phone number<input id="accountPhone" type="tel" autocomplete="tel" required></label>
+          <label>Home club<input id="accountHomeClub" type="text" placeholder="Optional"></label>
+          <label>Handicap index<input id="accountHandicap" type="number" min="0" max="54" step=".1"></label>
+          <label>Playing preference<select id="accountPreference"><option value="walker">Walker</option><option value="buggy">Buggy requested</option><option value="either">No preference</option></select></label>
+          <button class="button button-primary full-button" type="submit">Save changes</button>
+          <p id="accountSaveStatus" class="form-status" aria-live="polite"></p>
+        </form>
+      </article>
+
+      <article class="account-panel account-membership">
+        <p class="eyebrow">Membership</p><dl><div><dt>Status</dt><dd class="paid-text">Active</dd></div><div><dt>Member since</dt><dd>2024</dd></div><div><dt>Membership no.</dt><dd>BGS-027</dd></div><div><dt>Events played</dt><dd>12 lifetime</dd></div><div><dt>Courses visited</dt><dd>9</dd></div></dl>
+      </article>
+
+      <article class="account-panel">
+        <p class="eyebrow">Account & device</p><h3>Remembered on this device</h3><p class="account-muted">You will continue to see your personalised event dashboard automatically whenever you return.</p><button id="accountSignOut" class="button button-outline full-button" type="button">Sign out on this device</button>
       </article>
     </aside>
-  </section>
+  </div>
 </main>
 
-<footer class="site-footer">
-  <div class="shell footer-inner">
-    <div class="footer-brand"><img decoding="async" src="assets/images/barford-golf-society-logo.png" alt=""><span>Barford Golf Society</span></div>
-    <p>© <span id="year"></span> Barford Golf Society</p>
-  </div>
-</footer>
-
+<footer class="site-footer"><div class="shell footer-inner"><div class="footer-brand"><img decoding="async" src="assets/images/barford-golf-society-logo.png" alt=""><span>Barford Golf Society</span></div><p>© <span id="year"></span> Barford Golf Society</p></div></footer>
 <script src="assets/js/app.js" defer></script>
 <script src="assets/js/member-session.js" defer></script>
 </body>
