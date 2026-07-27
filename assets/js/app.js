@@ -132,72 +132,51 @@ if (false && isHome && !reducedMotion && !sessionStorage.getItem("bgsElegantIntr
 }
 
 
-// Final cinematic intro using the exact selected video.
+// Fast cinematic intro: optimised video, short timeout and once-per-day playback.
 const finalIntroIsHome = (window.location.pathname.split("/").pop() || "index.html") === "index.html";
 const finalIntroReducedMotion = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+const introLastPlayed = Number(localStorage.getItem("bgsIntroLastPlayed") || 0);
+const introRecentlyPlayed = Date.now() - introLastPlayed < 24 * 60 * 60 * 1000;
 
-if (
-  finalIntroIsHome &&
-  !finalIntroReducedMotion &&
-  !sessionStorage.getItem("bgsFinalVideoIntroPlayed")
-) {
+if (finalIntroIsHome && !finalIntroReducedMotion && !introRecentlyPlayed) {
   const intro = document.createElement("div");
   intro.className = "video-intro";
   intro.setAttribute("aria-label", "Barford Golf Society opening animation");
-
   intro.innerHTML = `
-    <video autoplay muted playsinline preload="auto">
+    <video muted playsinline preload="metadata" aria-label="Barford Golf Society intro">
       <source src="assets/video/intro.mp4" type="video/mp4">
     </video>
-
     <div class="video-intro-controls">
       <button class="video-intro-button" type="button">Skip intro</button>
     </div>
   `;
 
   document.body.appendChild(intro);
-  document.body.style.overflow = "hidden";
 
   const video = intro.querySelector("video");
   const skipButton = intro.querySelector(".video-intro-button");
-
   let finished = false;
 
   const finishIntro = () => {
     if (finished) return;
     finished = true;
-
     intro.classList.add("is-hidden");
-    document.body.style.overflow = "";
-    sessionStorage.setItem("bgsFinalVideoIntroPlayed", "true");
-
-    window.setTimeout(() => {
-      intro.remove();
-    }, 900);
+    localStorage.setItem("bgsIntroLastPlayed", String(Date.now()));
+    window.setTimeout(() => intro.remove(), 500);
   };
 
   video.addEventListener("ended", finishIntro, { once:true });
-  video.addEventListener("error", () => {
-    intro.innerHTML = `
-      <div class="video-intro-fallback">
-        <div>
-          <img src="assets/images/barford-golf-society-logo.png" alt="Barford Golf Society">
-          <p>Relax. Play. Enjoy.</p>
-        </div>
-      </div>
-    `;
-    window.setTimeout(finishIntro, 1800);
-  }, { once:true });
-
+  video.addEventListener("error", finishIntro, { once:true });
   skipButton.addEventListener("click", finishIntro, { once:true });
 
-  // Hard fail-safe: reveal the website even if video playback stalls.
-  window.setTimeout(finishIntro, 12000);
+  // Never allow the intro to hold the site for more than six seconds.
+  window.setTimeout(finishIntro, 6000);
 
-  const playPromise = video.play();
-  if (playPromise && typeof playPromise.catch === "function") {
-    playPromise.catch(() => {
-      video.controls = true;
-    });
-  }
+  // Start playback after the first page paint so the homepage renders immediately.
+  window.requestAnimationFrame(() => {
+    const playAttempt = video.play();
+    if (playAttempt && typeof playAttempt.catch === "function") {
+      playAttempt.catch(finishIntro);
+    }
+  });
 }

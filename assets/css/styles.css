@@ -578,3 +578,20 @@ th{background:linear-gradient(135deg,var(--green-1000),var(--green-800));color:#
 @media(max-width:850px){
   .hero-art-premium .logo-card{width:min(76vw,360px)}
 }
+
+
+/* Performance optimisation */
+@supports (content-visibility:auto){
+  .section,
+  .site-footer{
+    content-visibility:auto;
+    contain-intrinsic-size:1px 650px;
+  }
+}
+.video-intro{
+  contain:strict;
+  transition:opacity .45s ease,visibility .45s ease;
+}
+.video-intro video{
+  transform:translateZ(0);
+}

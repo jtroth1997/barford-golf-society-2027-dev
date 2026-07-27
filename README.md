@@ -1,18 +1,15 @@
-# Barford Golf Society 2027 — Members Edition
+# Barford Golf Society 2027 — Speed Optimised
 
-This full development website adds a Members page.
+Performance changes:
+- intro video reduced from 2880×2880 to 1080×1080
+- unused video audio removed
+- MP4 metadata moved to the start for faster playback
+- logo image reduced to a web-appropriate size
+- homepage renders before intro playback begins
+- intro plays no more than once every 24 hours
+- six-second hard timeout prevents the intro blocking the site
+- asynchronous image decoding
+- below-the-fold rendering deferred where supported
+- existing Members, Events and Scores functions retained
 
-Members can:
-- create a local development account
-- log in
-- store name, email and mobile number
-- update their details
-- use those details to prefill RSVP forms
-
-RSVP behaviour:
-- clicking RSVP means the member intends to play
-- saved name, email and mobile can be inserted automatically
-- buggy and preferred tee time are still chosen for each event
-
-Important:
-This is a browser-only development account system. It does not connect to the live website, live Supabase project or production authentication.
+The development account and Scores data remain browser-only and do not connect to the live production site.

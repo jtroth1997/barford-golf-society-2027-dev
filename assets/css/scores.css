@@ -1470,3 +1470,12 @@ main{
     font-size:.76rem!important;
   }
 }
+
+@supports (content-visibility:auto){
+  .player-card,
+  .round-row,
+  .stat-card{
+    content-visibility:auto;
+    contain-intrinsic-size:1px 120px;
+  }
+}
