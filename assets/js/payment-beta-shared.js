@@ -13,13 +13,6 @@
     "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;", "'": "&#39;"
   })[character]);
   const money = value => `£${Number(value || 0).toFixed(2)}`;
-  if (document.querySelector(".compact-event-card")) {
-    const checkoutPrefetch = document.createElement("link");
-    checkoutPrefetch.rel = "prefetch";
-    checkoutPrefetch.as = "document";
-    checkoutPrefetch.href = "payment-beta.html";
-    document.head.appendChild(checkoutPrefetch);
-  }
   if (!localStorage.getItem(DEMO_RESET)) {
     localStorage.removeItem(PAYMENT_STORAGE);
     localStorage.removeItem(RSVP_STORAGE);
@@ -41,6 +34,65 @@
     if (commitment.status === "deposit_paid") return `Payment due · £${commitment.balanceDue}`;
     return "RSVP · £5 deposit";
   };
+  const memberName = (() => {
+    try {
+      const account = JSON.parse(localStorage.getItem("bgs-2027-member-account") || "{}");
+      return account.name || account.fullName || "Jack Troth";
+    } catch (_) { return "Jack Troth"; }
+  })();
+  const openFastPayment = details => {
+    const commitments = read(RSVP_STORAGE);
+    const existing = commitments.find(item => item.eventId === details.eventId);
+    const isBalance = existing?.status === "deposit_paid";
+    const amount = isBalance ? Number(existing.balanceDue) : Math.min(5, Number(details.fullAmount));
+    const paymentType = isBalance ? "balance" : "deposit";
+    const overlay = document.createElement("div");
+    overlay.className = "fast-payment-overlay";
+    overlay.innerHTML = `<section class="fast-payment-sheet" role="dialog" aria-modal="true" aria-labelledby="fastPaymentTitle">
+      <button class="fast-payment-close" type="button" aria-label="Close payment">×</button>
+      <span class="payment-test-pill">TEST MODE</span>
+      <p class="eyebrow">${isBalance ? "Remaining balance" : "RSVP deposit"}</p>
+      <h2 id="fastPaymentTitle">${isBalance ? `Pay remaining ${money(amount)}` : "Confirm your place for £5"}</h2>
+      <p><strong>${escapeHtml(details.eventName)}</strong><br><small>${escapeHtml(details.venue)}</small></p>
+      <div class="fast-payment-total"><span>Pay now</span><strong>${money(amount)}</strong></div>
+      <p class="fast-payment-note">${isBalance ? "This clears the event balance and changes your status to Paid." : `${money(Number(details.fullAmount) - amount)} will remain to pay in My Account.`}</p>
+      <div class="fast-payment-methods">
+        <button type="button" data-fast-method="Apple Pay"> Pay</button>
+        <button type="button" data-fast-method="Google Pay">G Pay</button>
+        <button type="button" data-fast-method="Test card">Test card payment</button>
+      </div>
+      <p class="fast-payment-status" role="status" aria-live="polite"></p>
+    </section>`;
+    document.body.appendChild(overlay);
+    document.body.classList.add("payment-panel-open");
+    const close = () => { overlay.remove(); document.body.classList.remove("payment-panel-open"); };
+    overlay.querySelector(".fast-payment-close").addEventListener("click", close);
+    overlay.addEventListener("click", event => { if (event.target === overlay) close(); });
+    overlay.querySelectorAll("[data-fast-method]").forEach(button => button.addEventListener("click", () => {
+      overlay.querySelectorAll("button").forEach(control => { control.disabled = true; });
+      const status = overlay.querySelector(".fast-payment-status");
+      status.textContent = "Processing test payment…";
+      const method = button.dataset.fastMethod;
+      setTimeout(() => {
+        const now = new Date().toISOString();
+        const reference = `BGS-TEST-${Date.now().toString().slice(-8)}`;
+        const payments = read(PAYMENT_STORAGE);
+        payments.unshift({ ...details, memberName, method, reference, paymentType, amount, status:"paid", paidAt:now });
+        localStorage.setItem(PAYMENT_STORAGE, JSON.stringify(payments.slice(0, 40)));
+        const updated = commitments.filter(item => item.eventId !== details.eventId);
+        updated.unshift({
+          ...details, memberName, updatedAt:now,
+          status:isBalance ? "paid" : "deposit_paid",
+          amountPaid:isBalance ? Number(details.fullAmount) : amount,
+          balanceDue:isBalance ? 0 : Number(details.fullAmount) - amount
+        });
+        localStorage.setItem(RSVP_STORAGE, JSON.stringify(updated.slice(0, 30)));
+        overlay.querySelector(".fast-payment-sheet").innerHTML = `<span class="result-icon success">✓</span><p class="eyebrow">Payment received</p><h2>${isBalance ? "Paid in full" : "RSVP confirmed"}</h2><p>${isBalance ? "Your status is now Paid." : `${money(amount)} deposit paid. ${money(Number(details.fullAmount) - amount)} remains due.`}</p><button class="button button-primary fast-payment-done" type="button">Done</button>`;
+        overlay.querySelector(".fast-payment-done").addEventListener("click", () => location.reload());
+      }, 100);
+    }));
+    overlay.querySelector("[data-fast-method]")?.focus();
+  };
 
   document.querySelectorAll(".compact-event-card").forEach(card => {
     const name = card.querySelector("h3")?.textContent.trim() || "Event";
@@ -59,14 +111,11 @@
       event.preventDefault();
       event.stopImmediatePropagation();
       if (eventClosed(date)) return;
-      const previousLabel = button.textContent;
-      button.disabled = true;
-      button.textContent = "Opening payment…";
-      setTimeout(() => { button.disabled = false; button.textContent = previousLabel; }, 800);
-      const target = new URL("payment-beta.html", location.href);
-      [["event", eventId], ["name", name], ["venue", venue], ["amount", amount], ["date", date]].forEach(([key, value]) => target.searchParams.set(key, String(value)));
-      if (commitment?.status === "deposit_paid") target.searchParams.set("action", "balance");
-      location.assign(target.href);
+      if (commitment?.status === "paid") {
+        window.showSiteMessage?.(`${name}: paid in full.`);
+        return;
+      }
+      openFastPayment({ eventId, eventName:name, venue, eventDate:date, fullAmount:amount });
     }, true);
   });
 
@@ -79,9 +128,13 @@
     section.innerHTML = `
       <div class="section-heading"><div><p class="eyebrow">Event payments</p><h2>Events to be paid for</h2><p>Places you have reserved with an outstanding balance.</p></div><strong class="payment-total">${money(outstanding.reduce((sum, item) => sum + Number(item.balanceDue || 0), 0))} due</strong></div>
       <div class="account-payment-list">
-        ${outstanding.length ? outstanding.map(item => `<article><div><strong>${escapeHtml(item.eventName)}</strong><small>${escapeHtml(item.venue)} · ${escapeHtml(item.eventDate)}</small><span>${money(item.amountPaid)} RSVP deposit paid</span></div><div><b>${money(item.balanceDue)} due</b><a class="button button-primary" href="payment-beta.html?event=${encodeURIComponent(item.eventId)}&name=${encodeURIComponent(item.eventName)}&venue=${encodeURIComponent(item.venue)}&amount=${item.fullAmount}&date=${item.eventDate}&action=balance">Pay remaining ${money(item.balanceDue)}</a></div></article>`).join("") : `<p class="empty-state">You have no outstanding event payments.</p>`}
+        ${outstanding.length ? outstanding.map(item => `<article><div><strong>${escapeHtml(item.eventName)}</strong><small>${escapeHtml(item.venue)} · ${escapeHtml(item.eventDate)}</small><span>${money(item.amountPaid)} RSVP deposit paid</span></div><div><b>${money(item.balanceDue)} due</b><button class="button button-primary" type="button" data-pay-balance="${escapeHtml(item.eventId)}">Pay remaining ${money(item.balanceDue)}</button></div></article>`).join("") : `<p class="empty-state">You have no outstanding event payments.</p>`}
       </div>`;
     accountContent.prepend(section);
+    section.querySelectorAll("[data-pay-balance]").forEach(button => button.addEventListener("click", () => {
+      const item = outstanding.find(record => record.eventId === button.dataset.payBalance);
+      if (item) openFastPayment(item);
+    }));
   }
 
   const adminDashboard = document.querySelector("#adminDashboard");
