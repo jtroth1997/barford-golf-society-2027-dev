@@ -70,6 +70,96 @@ main{width:min(1120px,100%);margin:auto;padding:18px 16px 64px}
 @media(min-width:1000px){.statistics-grid{grid-template-columns:repeat(3,1fr)}}
 @media(prefers-reduced-motion:reduce){*,*::before,*::after{animation-duration:.01ms!important;animation-iteration-count:1!important;scroll-behavior:auto!important;transition-duration:.01ms!important}}
 
+/* Podium-first leaderboard */
+.leaderboard-first{animation:none}
+.leaderboard-heading{margin-top:2px}
+.leaderboard-heading h3{font-family:Georgia,serif;font-size:clamp(2rem,5vw,3.35rem);line-height:1}
+.leaderboard-heading p:last-child{margin:6px 0 0;color:var(--muted);font-size:.86rem}
+.leaderboard-podium{
+  display:grid;
+  grid-template-columns:repeat(3,minmax(0,1fr));
+  grid-template-areas:"second first third";
+  align-items:end;
+  gap:10px;
+  min-height:200px;
+  margin:14px 0 12px;
+  padding:16px 14px 0;
+  overflow:hidden;
+  border-radius:24px;
+  background:
+    radial-gradient(circle at 50% -10%,rgba(198,168,91,.32),transparent 42%),
+    linear-gradient(145deg,var(--emerald-950),var(--emerald-800));
+  box-shadow:var(--shadow);
+}
+.podium-player{
+  min-width:0;
+  display:grid;
+  justify-items:center;
+  align-content:start;
+  gap:3px;
+  position:relative;
+  padding:48px 9px 14px;
+  border:1px solid rgba(255,255,255,.13);
+  border-bottom:0;
+  border-radius:18px 18px 0 0;
+  color:#fff;
+  text-align:center;
+  background:linear-gradient(180deg,rgba(255,255,255,.14),rgba(255,255,255,.06));
+  transform-origin:bottom center;
+  animation:podiumSlam .72s cubic-bezier(.16,.9,.3,1.18) both;
+}
+.podium-position-1{grid-area:first;min-height:178px;border-color:rgba(231,196,99,.62);background:linear-gradient(180deg,rgba(198,168,91,.35),rgba(255,255,255,.08));animation-delay:.52s}
+.podium-position-2{grid-area:second;min-height:146px;animation-delay:.25s}
+.podium-position-3{grid-area:third;min-height:124px;animation-delay:.08s}
+.podium-place{
+  position:absolute;
+  top:9px;
+  left:10px;
+  display:grid;
+  place-items:center;
+  width:30px;
+  height:30px;
+  border-radius:50%;
+  color:var(--emerald-950);
+  background:var(--gold);
+  font-weight:900;
+  animation:positionImpact .45s .9s both;
+}
+.podium-medal{position:absolute;top:9px;right:10px;font-size:1.5rem}
+.podium-player>strong{
+  width:100%;
+  overflow:hidden;
+  text-overflow:ellipsis;
+  white-space:nowrap;
+  font-family:Georgia,serif;
+  font-size:clamp(.94rem,2.1vw,1.32rem);
+  animation:nameSlam .5s cubic-bezier(.12,.8,.2,1.3) both;
+}
+.podium-position-1>strong{animation-delay:1s}.podium-position-2>strong{animation-delay:.7s}.podium-position-3>strong{animation-delay:.45s}
+.podium-points{color:#dce9e2;font-size:.72rem}.podium-points b{color:var(--gold);font-size:1.3rem}.podium-player small{color:#c4d7cd;font-size:.64rem}
+.compact-search{display:grid;grid-template-columns:auto minmax(220px,420px);align-items:center;gap:14px;margin:12px 0}.compact-search label{margin:0;white-space:nowrap}
+@keyframes podiumSlam{0%{opacity:0;transform:translateY(-120px) scale(1.12)}72%{opacity:1;transform:translateY(8px) scale(.98)}86%{transform:translateY(-4px) scale(1.01)}100%{opacity:1;transform:none}}
+@keyframes nameSlam{0%{opacity:0;transform:translateX(-100px) skewX(-12deg)}72%{opacity:1;transform:translateX(5px) skewX(2deg)}100%{opacity:1;transform:none}}
+@keyframes positionImpact{0%{opacity:0;transform:scale(3.5);filter:blur(3px)}70%{opacity:1;transform:scale(.82)}100%{opacity:1;transform:scale(1);filter:none}}
+@media(max-width:560px){
+  .primary-nav{padding-block:7px}
+  main{padding-top:8px}
+  .leaderboard-heading{margin:4px 2px 8px}
+  .leaderboard-heading h3{font-size:2.05rem}
+  .leaderboard-heading p:last-child{font-size:.72rem}
+  .leaderboard-podium{min-height:164px;gap:5px;margin-top:8px;padding:10px 7px 0;border-radius:19px}
+  .podium-player{padding:42px 5px 9px;border-radius:13px 13px 0 0}
+  .podium-position-1{min-height:150px}.podium-position-2{min-height:126px}.podium-position-3{min-height:108px}
+  .podium-place{top:7px;left:7px;width:25px;height:25px;font-size:.72rem}
+  .podium-medal{top:7px;right:6px;font-size:1.15rem}
+  .podium-player>strong{font-size:.82rem}
+  .podium-points{font-size:.58rem}.podium-points b{display:block;font-size:1.12rem;line-height:1}
+  .podium-player small{display:none}
+  .leaderboard-round-tabs{margin-top:2px}
+  .compact-search{grid-template-columns:1fr;gap:5px}
+  .compact-search label{font-size:.75rem}
+}
+
 .history-label{
   display:block;
   color:var(--muted);
