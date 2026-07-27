@@ -119,77 +119,7 @@
     </section>
   </main>
 
-  <dialog id="adminDialog" class="admin-dialog">
-    <div class="admin-shell">
-      <aside class="admin-sidebar">
-        <div>
-          <p class="eyebrow">Private area</p>
-          <h2>Admin Dashboard</h2>
-        </div>
-        <nav id="adminNav" aria-label="Administration">
-          <button class="admin-nav-button is-active" data-admin-panel="scores" type="button">Enter Scores</button>
-          <button class="admin-nav-button" data-admin-panel="players" type="button">Players</button>
-          <button class="admin-nav-button" data-admin-panel="settings" type="button">Settings</button>
-        </nav>
-      </aside>
-
-      <section class="admin-content">
-        <header class="admin-header">
-          <div>
-            <p class="eyebrow">Development data only</p>
-            <h2 id="adminPanelTitle">Enter Scores</h2>
-          </div>
-          <button class="icon-button" id="closeAdmin" type="button" aria-label="Close administrator dashboard">✕</button>
-        </header>
-        <div class="dev-banner">This build uses an isolated browser data store. It has no production database, storage, authentication or API connection.</div>
-
-        
-        <div class="admin-panel is-active" id="admin-scores">
-          <div class="admin-card compact">
-            <label class="field">
-              <span>Event / Round</span>
-              <select id="scoreRoundSelect"></select>
-            </label>
-            <p class="help-text">Choose the event, enter each player’s Stableford score, then save.</p>
-          </div>
-          <div id="scoreEntryList" class="score-entry-list"></div>
-          <div class="mobile-save-bar">
-            <button class="primary-button" id="calculateRoundButton" type="button">Save Round Scores</button>
-          </div>
-        </div>
-
-        <div class="admin-panel" id="admin-players" hidden>
-          <form id="addPlayerForm" class="card-form">
-            <h3>Add player</h3>
-            <label class="field"><span>Player name</span><input id="newPlayerName" required maxlength="60"></label>
-            <label class="field"><span>Starting handicap</span><input id="newPlayerHandicap" type="number" min="0" step="1" required></label>
-            <button class="primary-button" type="submit">Add Player</button>
-          </form>
-          <div id="adminPlayerList" class="admin-list"></div>
-        </div>
-
-        <div class="admin-panel" id="admin-settings" hidden>
-          <div class="card-form">
-            <h3>Handicap override</h3>
-            <label class="field"><span>Player</span><select id="overridePlayer"></select></label>
-            <label class="field"><span>New handicap</span><input id="overrideHandicap" type="number" min="0" step="1"></label>
-            <button class="primary-button" id="overrideHandicapButton" type="button">Save Handicap</button>
-          </div>
-
-          <div class="card-form">
-            <h3>Season data</h3>
-            <button class="secondary-button full-width" id="exportCsvButton" type="button">Export CSV</button>
-            <label class="upload-button full-width">Import CSV<input id="importCsvInput" type="file" accept=".csv,text/csv"></label>
-          </div>
-
-          <div class="danger-card">
-            <h3>Reset demonstration data</h3>
-            <button class="danger-button" id="resetSeasonButton" type="button">Reset Demo Season</button>
-          </div>
-        </div>
-</section>
-    </div>
-  </dialog>
+  
 
   <dialog id="confirmDialog" class="confirm-dialog">
     <form method="dialog">
