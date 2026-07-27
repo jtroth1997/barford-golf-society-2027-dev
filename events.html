@@ -62,113 +62,147 @@
       </button>
     </div>
 
-    <div id="eventList" class="cards-list"></div>
-  </section>
-
-  <section id="rsvp" class="section section-soft">
-    <div class="shell narrow">
-      <p class="eyebrow">RSVP</p>
-      <h2>Reserve your place</h2>
-      <p class="muted">Clicking RSVP means you are playing. Your saved member details will be filled automatically when available.</p>
-
-      <form id="rsvpForm" class="form-card">
-        <label>
-          Event
-          <select id="rsvpEvent" name="eventId" required></select>
-        </label>
-
-        <label>
-          Full name
-          <input id="rsvpName" name="name" required autocomplete="name">
-        </label>
-
-        <label>
-          Email address
-          <input id="rsvpEmail" name="email" type="email" required autocomplete="email">
-        </label>
-
-        <label>
-          Mobile number
-          <input id="rsvpPhone" name="phone" type="tel" required autocomplete="tel">
-        </label>
-
-        <label>
-          Buggy
-          <select id="rsvpBuggy" name="buggy" required>
-            <option value="">Please choose</option>
-            <option value="No">No</option>
-            <option value="Yes">Yes</option>
-          </select>
-        </label>
-
-        <label>
-          Preferred tee time
-          <select id="rsvpTeeTime" name="teeTime" required>
-            <option value="">Please choose</option>
-            <option value="Early">Early</option>
-            <option value="Middle">Middle</option>
-            <option value="Late">Late</option>
-            <option value="No preference">No preference</option>
-          </select>
-        </label>
-
-        <button class="button button-primary" type="submit">Confirm RSVP</button>
-        <p id="rsvpStatus" class="form-status" aria-live="polite"></p>
-      </form>
-    </div>
-  </section>
-
-  <section id="eventAdmin" class="section shell admin-panel hidden">
-    <div class="admin-heading">
-      <div>
-        <p class="eyebrow">Administration preview</p>
-        <h2>Event management</h2>
-      </div>
-      <span class="status-pill">Development data only</span>
-    </div>
-
-    <div class="admin-grid">
-      <article class="admin-card">
-        <h3>Manage RSVPs</h3>
-        <label>
-          Choose event
-          <select id="adminEventSelect"></select>
-        </label>
-
-        <div class="payment-key" aria-label="Payment status labels">
-          <span class="payment-status paid">Paid</span>
-          <span class="payment-status due">Payment Due</span>
+    <div id="eventList" class="cards-list">
+      <article class="event-card-enhanced compact-event-card">
+        <div class="event-date-block"><span>MAR</span><strong>26</strong><small>2027</small></div>
+        <div class="event-main">
+          <div class="event-title-row">
+            <div class="event-heading-copy"><h3>Season Opener</h3><p class="event-venue">📍 The Belfry – Derby Course</p></div>
+            <div class="event-heading-actions">
+              <button class="button button-small rsvp-event-button" type="button">RSVP</button>
+              <span class="event-price">£45</span>
+            </div>
+          </div>
+          <div class="event-summary-row">
+            <span><b>First tee</b> 09:00</span>
+            <span><b>Players</b> 18 / 24</span>
+            <span><b>Places remaining</b> 6</span>
+          </div>
+          <p class="event-description">Friday 26 March 2027 · 18 holes</p>
+          <div class="event-button-row">
+            <button class="button button-outline" type="button">Course video</button>
+            <button class="button button-outline" type="button">More details</button>
+          </div>
         </div>
-
-        <div id="adminRsvpList" class="admin-rsvp-list"></div>
+        <aside class="event-rsvp-section">
+          <div class="rsvp-list-heading"><h4>Players attending</h4><span>18 players</span></div>
+          <div class="public-rsvp-list">
+            <div class="public-rsvp-row"><strong>David Smith</strong><span class="payment-status paid">Paid</span></div>
+            <div class="public-rsvp-row"><strong>Steve Jones</strong><span class="payment-status due">Payment Due</span></div>
+            <div class="public-rsvp-row"><strong>Mark Taylor</strong><span class="payment-status paid">Paid</span></div>
+            <div class="public-rsvp-row"><strong>Chris Brown</strong><span class="payment-status paid">Paid</span></div>
+            <div class="public-rsvp-row"><strong>Andy Green</strong><span class="payment-status due">Payment Due</span></div>
+            <div class="public-rsvp-row"><strong>Paul Roberts</strong><span class="payment-status paid">Paid</span></div>
+            <div class="public-rsvp-row"><strong>Ben Harris</strong><span class="payment-status paid">Paid</span></div>
+            <div class="public-rsvp-row"><strong>John Close</strong><span class="payment-status due">Payment Due</span></div>
+            <div class="public-rsvp-row"><strong>Richard Jones</strong><span class="payment-status paid">Paid</span></div>
+            <div class="public-rsvp-row"><strong>Tim Sewards</strong><span class="payment-status paid">Paid</span></div>
+            <div class="public-rsvp-row"><strong>Nick Benbow</strong><span class="payment-status paid">Paid</span></div>
+            <div class="public-rsvp-row"><strong>Derek Lewis</strong><span class="payment-status due">Payment Due</span></div>
+            <div class="public-rsvp-row"><strong>Adam Betteridge</strong><span class="payment-status paid">Paid</span></div>
+            <div class="public-rsvp-row"><strong>Michael Evans</strong><span class="payment-status paid">Paid</span></div>
+            <div class="public-rsvp-row"><strong>Simon Clarke</strong><span class="payment-status due">Payment Due</span></div>
+            <div class="public-rsvp-row"><strong>James Wilson</strong><span class="payment-status paid">Paid</span></div>
+            <div class="public-rsvp-row"><strong>Lee Walker</strong><span class="payment-status paid">Paid</span></div>
+            <div class="public-rsvp-row"><strong>Tom Harrison</strong><span class="payment-status due">Payment Due</span></div>
+          </div>
+        </aside>
       </article>
 
-      <article class="admin-card">
-        <h3>Create new event</h3>
-        <input placeholder="Name" disabled>
-        <input type="date" disabled>
-        <input placeholder="Location" disabled>
-        <input placeholder="Price (£)" disabled>
-        <textarea placeholder="Description" disabled></textarea>
-        <button class="button button-small" disabled>Create event</button>
+      <article class="event-card-enhanced compact-event-card">
+        <div class="event-date-block"><span>MAY</span><strong>28</strong><small>2027</small></div>
+        <div class="event-main">
+          <div class="event-title-row">
+            <div class="event-heading-copy"><h3>Captain's Day</h3><p class="event-venue">📍 Forest of Arden</p></div>
+            <div class="event-heading-actions">
+              <button class="button button-small rsvp-event-button" type="button">RSVP</button>
+              <span class="event-price">£50</span>
+            </div>
+          </div>
+          <div class="event-summary-row">
+            <span><b>First tee</b> 08:30</span>
+            <span><b>Players</b> 24 / 32</span>
+            <span><b>Places remaining</b> 8</span>
+          </div>
+          <p class="event-description">Friday 28 May 2027 · Captain's Day</p>
+          <div class="event-button-row">
+            <button class="button button-outline" type="button">Course video</button>
+            <button class="button button-outline" type="button">More details</button>
+          </div>
+        </div>
+        <aside class="event-rsvp-section">
+          <div class="rsvp-list-heading"><h4>Players attending</h4><span>24 players</span></div>
+          <div class="public-rsvp-list">
+            <div class="public-rsvp-row"><strong>Ben Harris</strong><span class="payment-status paid">Paid</span></div>
+            <div class="public-rsvp-row"><strong>Paul Roberts</strong><span class="payment-status paid">Paid</span></div>
+            <div class="public-rsvp-row"><strong>John Close</strong><span class="payment-status due">Payment Due</span></div>
+            <div class="public-rsvp-row"><strong>Richard Jones</strong><span class="payment-status paid">Paid</span></div>
+            <div class="public-rsvp-row"><strong>David Smith</strong><span class="payment-status paid">Paid</span></div>
+            <div class="public-rsvp-row"><strong>Steve Jones</strong><span class="payment-status due">Payment Due</span></div>
+            <div class="public-rsvp-row"><strong>Mark Taylor</strong><span class="payment-status paid">Paid</span></div>
+            <div class="public-rsvp-row"><strong>Chris Brown</strong><span class="payment-status paid">Paid</span></div>
+            <div class="public-rsvp-row"><strong>Andy Green</strong><span class="payment-status paid">Paid</span></div>
+            <div class="public-rsvp-row"><strong>Tim Sewards</strong><span class="payment-status paid">Paid</span></div>
+            <div class="public-rsvp-row"><strong>Nick Benbow</strong><span class="payment-status due">Payment Due</span></div>
+            <div class="public-rsvp-row"><strong>Derek Lewis</strong><span class="payment-status paid">Paid</span></div>
+            <div class="public-rsvp-row"><strong>Adam Betteridge</strong><span class="payment-status paid">Paid</span></div>
+            <div class="public-rsvp-row"><strong>Michael Evans</strong><span class="payment-status paid">Paid</span></div>
+            <div class="public-rsvp-row"><strong>Simon Clarke</strong><span class="payment-status due">Payment Due</span></div>
+            <div class="public-rsvp-row"><strong>James Wilson</strong><span class="payment-status paid">Paid</span></div>
+            <div class="public-rsvp-row"><strong>Lee Walker</strong><span class="payment-status paid">Paid</span></div>
+            <div class="public-rsvp-row"><strong>Tom Harrison</strong><span class="payment-status paid">Paid</span></div>
+            <div class="public-rsvp-row"><strong>Matt Cooper</strong><span class="payment-status due">Payment Due</span></div>
+            <div class="public-rsvp-row"><strong>Daniel King</strong><span class="payment-status paid">Paid</span></div>
+            <div class="public-rsvp-row"><strong>Peter Hall</strong><span class="payment-status paid">Paid</span></div>
+            <div class="public-rsvp-row"><strong>Robert Moore</strong><span class="payment-status paid">Paid</span></div>
+            <div class="public-rsvp-row"><strong>Gary Turner</strong><span class="payment-status due">Payment Due</span></div>
+            <div class="public-rsvp-row"><strong>Martin Hill</strong><span class="payment-status paid">Paid</span></div>
+          </div>
+        </aside>
       </article>
 
-      <article class="admin-card">
-        <h3>Edit event</h3>
-        <select disabled><option>Select event</option></select>
-        <input placeholder="Maximum players" disabled>
-        <input placeholder="First tee time" disabled>
-        <button class="button button-small" disabled>Save changes</button>
-      </article>
-
-      <article class="admin-card">
-        <h3>Tee times</h3>
-        <input type="time" disabled>
-        <input type="number" placeholder="Gap in minutes" disabled>
-        <button class="button button-small" disabled>Generate tee times</button>
+      <article class="event-card-enhanced compact-event-card">
+        <div class="event-date-block"><span>JUL</span><strong>30</strong><small>2027</small></div>
+        <div class="event-main">
+          <div class="event-title-row">
+            <div class="event-heading-copy"><h3>Summer Stableford</h3><p class="event-venue">📍 The Warwickshire</p></div>
+            <div class="event-heading-actions">
+              <button class="button button-small rsvp-event-button" type="button">RSVP</button>
+              <span class="event-price">£48</span>
+            </div>
+          </div>
+          <div class="event-summary-row">
+            <span><b>First tee</b> 09:15</span>
+            <span><b>Players</b> 12 / 24</span>
+            <span><b>Places remaining</b> 12</span>
+          </div>
+          <p class="event-description">Friday 30 July 2027 · Stableford</p>
+          <div class="event-button-row">
+            <button class="button button-outline" type="button">Course video</button>
+            <button class="button button-outline" type="button">More details</button>
+          </div>
+        </div>
+        <aside class="event-rsvp-section">
+          <div class="rsvp-list-heading"><h4>Players attending</h4><span>12 players</span></div>
+          <div class="public-rsvp-list">
+            <div class="public-rsvp-row"><strong>Tim Sewards</strong><span class="payment-status paid">Paid</span></div>
+            <div class="public-rsvp-row"><strong>Nick Benbow</strong><span class="payment-status paid">Paid</span></div>
+            <div class="public-rsvp-row"><strong>Derek Lewis</strong><span class="payment-status due">Payment Due</span></div>
+            <div class="public-rsvp-row"><strong>Adam Betteridge</strong><span class="payment-status paid">Paid</span></div>
+            <div class="public-rsvp-row"><strong>David Smith</strong><span class="payment-status paid">Paid</span></div>
+            <div class="public-rsvp-row"><strong>Steve Jones</strong><span class="payment-status due">Payment Due</span></div>
+            <div class="public-rsvp-row"><strong>Mark Taylor</strong><span class="payment-status paid">Paid</span></div>
+            <div class="public-rsvp-row"><strong>Chris Brown</strong><span class="payment-status paid">Paid</span></div>
+            <div class="public-rsvp-row"><strong>Ben Harris</strong><span class="payment-status paid">Paid</span></div>
+            <div class="public-rsvp-row"><strong>Paul Roberts</strong><span class="payment-status due">Payment Due</span></div>
+            <div class="public-rsvp-row"><strong>John Close</strong><span class="payment-status paid">Paid</span></div>
+            <div class="public-rsvp-row"><strong>Richard Jones</strong><span class="payment-status paid">Paid</span></div>
+          </div>
+        </aside>
       </article>
     </div>
   </section>
+
 </main>
 
 <footer class="site-footer">
@@ -182,6 +216,5 @@
 </footer>
 
 <script src="assets/js/app.js" defer></script>
-<script src="assets/js/events.js" defer></script>
 </body>
 </html>
