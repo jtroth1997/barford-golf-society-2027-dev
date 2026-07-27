@@ -1,8 +1,8 @@
-const CACHE_NAME = "barford-golf-rapid-v2";
+const CACHE_NAME = "barford-golf-rapid-v3";
 const CORE = [
   "./","./index.html","./events.html","./scores.html","./gallery.html","./account.html","./worldevents.html","./shop.html","./about.html",
   "./assets/css/styles.css?v=fast3","./assets/css/accessible-mobile.css?v=rapid1","./assets/css/events.css","./assets/css/scores.css?v=7","./assets/css/members.css","./assets/css/gallery.css",
-  "./assets/js/app.js?v=rapid4","./assets/js/accessible-mobile.js?v=rapid2","./assets/js/member-session.js","./assets/js/scores.js?v=7","./assets/js/scores-data.js","./assets/js/handicap-engine.js",
+  "./assets/js/app.js?v=rapid5","./assets/js/accessible-mobile.js?v=rapid2","./assets/js/member-session.js","./assets/js/scores.js?v=7","./assets/js/scores-data.js","./assets/js/handicap-engine.js",
   "./assets/images/barford-golf-society-logo.png"
 ];
 self.addEventListener("install", event => {
