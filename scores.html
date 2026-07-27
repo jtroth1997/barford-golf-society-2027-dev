@@ -12,7 +12,7 @@
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="assets/css/styles.css">
-  <link rel="stylesheet" href="assets/css/scores.css?v=4">
+  <link rel="stylesheet" href="assets/css/scores.css?v=5">
 </head>
 <body>
   <a class="skip-link" href="#main-content">Skip to scores</a>
@@ -39,28 +39,14 @@
   </div>
 </header>
 
-  <section id="leaderboardShowcase" class="leaderboard-showcase" aria-labelledby="leaderboardHeading">
-    <div class="section-heading leaderboard-heading">
-      <div>
-        <p class="eyebrow">Current standings</p>
-        <h2 id="leaderboardHeading">Leaderboard</h2>
-        <p>Best five rounds count towards the season total.</p>
-      </div>
-      <span class="season-chip" id="seasonChip">2027</span>
-    </div>
-    <div id="leaderboardPodium" class="leaderboard-podium" aria-label="Top three players"></div>
-  </section>
-
-  <nav class="primary-nav" id="scoresNav" aria-label="Scores navigation">
-    <button class="nav-tab is-active" data-view="leaderboard" type="button">Leaderboard</button>
-    <button class="nav-tab" data-view="rounds" type="button">Rounds</button>
-    <button class="nav-tab" data-view="handicaps" type="button">Handicap History</button>
-    <button class="nav-tab" data-view="statistics" type="button">Statistics</button>
-  </nav>
-
   <main id="main-content">
     <section id="leaderboardView" class="view is-active leaderboard-first" aria-labelledby="leaderboardHeading">
+      <div class="leaderboard-titlebar">
+        <div><p class="eyebrow">Current standings</p><h2 id="leaderboardHeading">Leaderboard</h2></div>
+        <span class="season-chip" id="seasonChip">2027</span>
+      </div>
       <div class="leaderboard-round-tabs" id="leaderboardRoundTabs" role="tablist" aria-label="Leaderboard after round"></div>
+      <div id="leaderboardList" class="leaderboard-list"></div>
       <div class="leaderboard-context" id="leaderboardContext"></div>
       <section class="search-panel compact-search" aria-label="Player search">
         <label for="playerSearch">Find a player</label>
@@ -70,8 +56,14 @@
         </div>
       </section>
       <div id="statusMessage" class="status-message" role="status" aria-live="polite"></div>
-      <div id="leaderboardList" class="leaderboard-list"></div>
     </section>
+
+    <nav class="primary-nav" id="scoresNav" aria-label="Scores navigation">
+      <button class="nav-tab is-active" data-view="leaderboard" type="button">Leaderboard</button>
+      <button class="nav-tab" data-view="rounds" type="button">Rounds</button>
+      <button class="nav-tab" data-view="handicaps" type="button">Handicap History</button>
+      <button class="nav-tab" data-view="statistics" type="button">Statistics</button>
+    </nav>
 
     <section id="roundsView" class="view" hidden>
       <div class="section-heading">
@@ -139,6 +131,6 @@
   </template>
 
   <script src="assets/js/app.js" defer></script>
-  <script type="module" src="assets/js/scores.js?v=4"></script>
+  <script type="module" src="assets/js/scores.js?v=5"></script>
 </body>
 </html>
