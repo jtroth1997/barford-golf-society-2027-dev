@@ -1,17 +1,33 @@
 
 const body = document.body;
-const menuButton = document.querySelector(".menu-button");
-const navigation = document.querySelector("#primary-navigation");
-if (menuButton && navigation) {
-  menuButton.addEventListener("click", () => {
+document.querySelectorAll(".menu-button").forEach(menuButton => {
+  const navigationId = menuButton.getAttribute("aria-controls");
+  const navigation = navigationId
+    ? document.getElementById(navigationId)
+    : menuButton.closest(".site-header")?.querySelector(".site-nav");
+  if (!navigation) return;
+
+  const closeMenu = () => {
+    navigation.classList.remove("is-open");
+    menuButton.setAttribute("aria-expanded", "false");
+  };
+
+  menuButton.addEventListener("click", event => {
+    event.stopPropagation();
     const open = navigation.classList.toggle("is-open");
     menuButton.setAttribute("aria-expanded", String(open));
   });
-  navigation.querySelectorAll("a").forEach(link => link.addEventListener("click", () => {
-    navigation.classList.remove("is-open");
-    menuButton.setAttribute("aria-expanded", "false");
-  }));
-}
+  navigation.querySelectorAll("a").forEach(link => link.addEventListener("click", closeMenu));
+  document.addEventListener("click", event => {
+    if (!navigation.contains(event.target) && !menuButton.contains(event.target)) closeMenu();
+  });
+  document.addEventListener("keydown", event => {
+    if (event.key === "Escape") {
+      closeMenu();
+      menuButton.focus();
+    }
+  });
+});
 
 const year = document.querySelector("#year");
 if (year) year.textContent = new Date().getFullYear();
