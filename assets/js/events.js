@@ -1,2 +1,244 @@
 
-(()=>{"use strict";const events=[...window.BGS_DEMO_EVENTS],list=document.querySelector("#eventList"),count=document.querySelector("#eventsCount"),admin=document.querySelector("#adminPanel"),dialog=document.querySelector("#dialogBackdrop"),content=document.querySelector("#dialogContent");const esc=v=>String(v??"").replaceAll("&","&amp;").replaceAll("<","&lt;").replaceAll(">","&gt;").replaceAll('"',"&quot;");const parts=s=>{const d=new Date(s+"T12:00:00");return{day:String(d.getDate()).padStart(2,"0"),month:d.toLocaleDateString("en-GB",{month:"short"}).toUpperCase(),year:d.getFullYear(),weekday:d.toLocaleDateString("en-GB",{weekday:"long"})}};function options(){return'<option value="">Select event</option>'+events.map(e=>`<option value="${e.id}">${esc(e.name)} — ${e.date}</option>`).join("")}function fillSelects(){["manageEventSelect","rsvpEventSelect","teeEventSelect"].forEach(id=>{const s=document.getElementById(id);if(s)s.innerHTML=options()})}function render(){count.textContent=`${events.length} events`;list.innerHTML=events.map(e=>{const d=parts(e.date),remain=Math.max(0,e.maxPlayers-e.attending),full=remain===0,pct=Math.min(100,Math.round(e.attending/e.maxPlayers*100));return`<article class="event-card-modern" id="event-${e.id}"><div class="event-card-top"><div class="event-date-modern"><span>${d.month}</span><strong>${d.day}</strong><small>${d.year}</small></div><div class="event-main"><p class="event-label">${d.weekday} · ${esc(e.firstTime||"TBC")}</p><h3>${esc(e.name)}</h3><p>${esc(e.location)}</p><div class="event-meta-row"><span class="event-chip">${esc(e.price||"Price TBC")}</span><span class="event-chip ${full?"full":remain<=4?"warning":""}">${full?"Reserve list open":remain+" places left"}</span></div></div><div class="event-actions"><button class="button button-small rsvp-button" data-id="${e.id}">${full?"Join reserve list":"RSVP"}</button><button class="button button-outline details-button" data-id="${e.id}">View details</button></div></div><div class="event-details-panel hidden" id="details-${e.id}"><div class="event-details-grid"><div class="event-description"><h4>Event information</h4><p>${esc(e.description)}</p><div class="event-link-row"><button class="event-link calendar-button" data-id="${e.id}">Add to calendar</button></div></div><aside class="event-availability"><h4>Availability</h4><p><strong>${e.attending}</strong> of ${e.maxPlayers} places reserved</p><div class="availability-bar"><span style="width:${pct}%"></span></div><p>${full?"The main list is full. New RSVPs join the reserve list.":remain+" places are currently available."}</p></aside></div><div class="playing-list"><h5>Currently playing</h5><div class="player-pills">${e.players.map(n=>`<span class="player-pill">${esc(n)}</span>`).join("")}</div></div><div class="rsvp-panel hidden" id="rsvp-${e.id}"><h4>${full?"Join the reserve list":"Reserve your place"}</h4><form class="event-rsvp-form" data-id="${e.id}"><div class="rsvp-form-grid"><label>Full name<input name="name" required></label><label>Phone number<input name="phone" required></label><label>Need a buggy?<select name="buggy" required><option value="">Please choose</option><option>No</option><option>Yes</option></select></label><label>Preferred tee time<select name="preferred"><option>No preference</option><option>First groups</option><option>Middle groups</option><option>Later groups</option></select></label><label class="rsvp-consent"><input type="checkbox" required><span>I agree to receive tee-time and event updates via WhatsApp.</span></label></div><div class="rsvp-submit-row"><button class="button button-small">Confirm RSVP</button><p class="rsvp-status"></p></div></form></div></div></article>`}).join("");bind();fillSelects()}function bind(){document.querySelectorAll(".details-button").forEach(b=>b.onclick=()=>{const p=document.getElementById("details-"+b.dataset.id),h=p.classList.toggle("hidden");b.textContent=h?"View details":"Hide details"});document.querySelectorAll(".rsvp-button").forEach(b=>b.onclick=()=>{document.getElementById("details-"+b.dataset.id).classList.remove("hidden");const f=document.getElementById("rsvp-"+b.dataset.id);f.classList.remove("hidden");f.scrollIntoView({behavior:"smooth",block:"center"})});document.querySelectorAll(".event-rsvp-form").forEach(f=>f.onsubmit=e=>{e.preventDefault();const id=Number(f.dataset.id),ev=events.find(x=>x.id===id),fd=new FormData(f);f.querySelector(".rsvp-status").textContent="Demo confirmed — nothing has been sent to the live site.";if(ev){ev.attending++;ev.players.push(String(fd.get("name")||"Member"))}setTimeout(render,900)});document.querySelectorAll(".calendar-button").forEach(b=>b.onclick=()=>{const e=events.find(x=>x.id===Number(b.dataset.id)),d=e.date.replaceAll("-",""),u=new URL("https://www.google.com/calendar/render");u.searchParams.set("action","TEMPLATE");u.searchParams.set("text",e.name);u.searchParams.set("dates",`${d}T090000/${d}T180000`);u.searchParams.set("details",e.description);u.searchParams.set("location",e.location);window.open(u.toString(),"_blank","noopener")})}document.querySelector("#adminToggle").onclick=()=>{admin.classList.toggle("hidden");document.querySelector("#adminToggle").textContent=admin.classList.contains("hidden")?"Admin preview":"Close admin preview"};document.querySelectorAll(".admin-menu-button").forEach(b=>b.onclick=()=>{document.querySelectorAll(".admin-menu-button,.admin-view").forEach(x=>x.classList.remove("active"));b.classList.add("active");document.querySelector(`[data-admin-view="${b.dataset.panel}"]`).classList.add("active")});document.querySelector("#createEventForm").onsubmit=e=>{e.preventDefault();const f=e.currentTarget,d=new FormData(f);events.push({id:Date.now(),name:String(d.get("name")),date:String(d.get("date")),location:String(d.get("location")||"Venue TBC"),price:String(d.get("price")||"Price TBC"),description:String(d.get("description")||""),firstTime:String(d.get("firstTime")||"TBC"),maxPlayers:Number(d.get("maxPlayers")||24),attending:0,cancelled:false,players:[]});document.querySelector("#createEventStatus").textContent="Demo event created in this browser session only.";f.reset();render()};const open=h=>{content.innerHTML=h;dialog.classList.remove("hidden")},close=()=>dialog.classList.add("hidden");document.querySelector(".dialog-close").onclick=close;dialog.onclick=e=>{if(e.target===dialog)close()};document.querySelector("#calendarHelpBtn").onclick=()=>open("<h2>Calendar help</h2><p>Open an event and choose <strong>Add to calendar</strong>.</p>");document.querySelectorAll(".demo-admin-action").forEach(b=>b.onclick=()=>open("<h2>Safely disabled</h2><p>This action will connect to the separate 2027 database later.</p>"));render()})();
+(() => {
+  "use strict";
+
+  const STORAGE_KEY = "bgs-2027-events-demo-v2";
+
+  const seed = {
+    events: [
+      {
+        id: "event-1",
+        name: "Season Opener",
+        date: "2027-03-26",
+        venue: "Venue to be confirmed",
+        description: "Friday · 18 holes · coffee and bacon roll",
+        price: "£TBC",
+        places: 24,
+        teeTimes: "TBC",
+        rsvps: [
+          { id:"r1", name:"David Smith", email:"david@example.com", phone:"07111 111111", buggy:"No", teeTime:"Early", paid:true },
+          { id:"r2", name:"Steve Jones", email:"steve@example.com", phone:"07222 222222", buggy:"Yes", teeTime:"Middle", paid:false },
+          { id:"r3", name:"Mark Taylor", email:"mark@example.com", phone:"07333 333333", buggy:"No", teeTime:"No preference", paid:true },
+          { id:"r4", name:"Chris Brown", email:"chris@example.com", phone:"07444 444444", buggy:"No", teeTime:"Late", paid:false }
+        ]
+      },
+      {
+        id: "event-2",
+        name: "Monthly Event",
+        date: "2027-04-30",
+        venue: "Venue to be confirmed",
+        description: "Friday · 18 holes · friendly competition",
+        price: "£TBC",
+        places: 24,
+        teeTimes: "TBC",
+        rsvps: [
+          { id:"r5", name:"Paul Roberts", email:"paul@example.com", phone:"07555 555555", buggy:"No", teeTime:"Early", paid:true },
+          { id:"r6", name:"Andy Green", email:"andy@example.com", phone:"07666 666666", buggy:"Yes", teeTime:"Middle", paid:false }
+        ]
+      }
+    ]
+  };
+
+  const clone = value => JSON.parse(JSON.stringify(value));
+
+  const readData = () => {
+    try {
+      const saved = localStorage.getItem(STORAGE_KEY);
+      if (!saved) {
+        localStorage.setItem(STORAGE_KEY, JSON.stringify(seed));
+        return clone(seed);
+      }
+      return JSON.parse(saved);
+    } catch {
+      return clone(seed);
+    }
+  };
+
+  const writeData = data => {
+    localStorage.setItem(STORAGE_KEY, JSON.stringify(data));
+  };
+
+  let data = readData();
+
+  const formatDate = value => {
+    const date = new Date(`${value}T12:00:00`);
+    return {
+      day: String(date.getDate()).padStart(2, "0"),
+      month: date.toLocaleDateString("en-GB", { month:"short" }).toUpperCase(),
+      long: date.toLocaleDateString("en-GB", {
+        weekday:"long", day:"numeric", month:"long", year:"numeric"
+      })
+    };
+  };
+
+  const escapeHtml = value => String(value ?? "").replace(/[&<>"']/g, char => ({
+    "&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#039;"
+  })[char]);
+
+  const paymentBadge = paid =>
+    `<span class="payment-status ${paid ? "paid" : "due"}">${paid ? "Paid" : "Payment Due"}</span>`;
+
+  const renderEvents = () => {
+    const list = document.querySelector("#eventList");
+    list.innerHTML = data.events.map(event => {
+      const date = formatDate(event.date);
+      return `
+        <article class="event-card-enhanced">
+          <div class="date-badge">
+            <span>${date.month}</span>
+            <strong>${date.day}</strong>
+          </div>
+
+          <div>
+            <p class="event-label">${escapeHtml(event.name)}</p>
+            <h3>${escapeHtml(event.venue)}</h3>
+            <p>${escapeHtml(event.description)}</p>
+            <div class="chip-row">
+              <span class="chip">${escapeHtml(event.price)}</span>
+              <span class="chip">${event.places} places</span>
+              <span class="chip">Tee times ${escapeHtml(event.teeTimes)}</span>
+            </div>
+          </div>
+
+          <div class="event-actions">
+            <button class="button button-small rsvp-event-button" type="button" data-event-id="${event.id}">RSVP</button>
+            <button class="button button-outline show-rsvps-button" type="button" data-event-id="${event.id}">Who's playing</button>
+          </div>
+
+          <div class="event-rsvp-section hidden" id="public-rsvps-${event.id}">
+            <h4>Who's playing</h4>
+            <div class="public-rsvp-list">
+              ${event.rsvps.map(rsvp => `
+                <div class="public-rsvp-row">
+                  <strong>${escapeHtml(rsvp.name)}</strong>
+                  ${paymentBadge(rsvp.paid)}
+                </div>
+              `).join("") || `<p class="muted">No RSVPs yet.</p>`}
+            </div>
+          </div>
+        </article>
+      `;
+    }).join("");
+
+    bindPublicButtons();
+  };
+
+  const bindPublicButtons = () => {
+    document.querySelectorAll(".rsvp-event-button").forEach(button => {
+      button.addEventListener("click", () => {
+        document.querySelector("#rsvpEvent").value = button.dataset.eventId;
+        document.querySelector("#rsvp").scrollIntoView({ behavior:"smooth", block:"start" });
+      });
+    });
+
+    document.querySelectorAll(".show-rsvps-button").forEach(button => {
+      button.addEventListener("click", () => {
+        const panel = document.querySelector(`#public-rsvps-${button.dataset.eventId}`);
+        const hidden = panel.classList.toggle("hidden");
+        button.textContent = hidden ? "Who's playing" : "Hide players";
+      });
+    });
+  };
+
+  const renderEventOptions = () => {
+    const options = data.events.map(event =>
+      `<option value="${event.id}">${escapeHtml(event.name)} — ${escapeHtml(formatDate(event.date).long)}</option>`
+    ).join("");
+
+    document.querySelector("#rsvpEvent").innerHTML = options;
+    document.querySelector("#adminEventSelect").innerHTML = options;
+  };
+
+  const renderAdminRsvps = () => {
+    const eventId = document.querySelector("#adminEventSelect").value;
+    const event = data.events.find(item => item.id === eventId);
+    const list = document.querySelector("#adminRsvpList");
+
+    if (!event) {
+      list.innerHTML = `<p class="muted">Choose an event.</p>`;
+      return;
+    }
+
+    list.innerHTML = event.rsvps.map(rsvp => `
+      <div class="admin-rsvp-row">
+        <div>
+          <strong>${escapeHtml(rsvp.name)}</strong>
+          <div class="muted">${escapeHtml(rsvp.buggy)} buggy · ${escapeHtml(rsvp.teeTime)}</div>
+        </div>
+
+        <label class="payment-toggle">
+          <input type="checkbox" data-rsvp-id="${rsvp.id}" ${rsvp.paid ? "checked" : ""}>
+          <span class="toggle-track" aria-hidden="true"></span>
+          <span class="payment-toggle-text">${rsvp.paid ? "Paid" : "Payment Due"}</span>
+        </label>
+      </div>
+    `).join("") || `<p class="muted">No RSVPs for this event.</p>`;
+
+    list.querySelectorAll("input[type='checkbox']").forEach(toggle => {
+      toggle.addEventListener("change", () => {
+        const rsvp = event.rsvps.find(item => item.id === toggle.dataset.rsvpId);
+        if (!rsvp) return;
+
+        rsvp.paid = toggle.checked;
+        writeData(data);
+
+        toggle.parentElement.querySelector(".payment-toggle-text").textContent =
+          rsvp.paid ? "Paid" : "Payment Due";
+
+        renderEvents();
+      });
+    });
+  };
+
+  const fillMemberProfile = () => {
+    try {
+      const profile = JSON.parse(localStorage.getItem("bgs-2027-member-profile") || "null");
+      if (!profile) return;
+
+      document.querySelector("#rsvpName").value = profile.name || "";
+      document.querySelector("#rsvpEmail").value = profile.email || "";
+      document.querySelector("#rsvpPhone").value = profile.phone || "";
+    } catch {}
+  };
+
+  document.querySelector("#rsvpForm")?.addEventListener("submit", event => {
+    event.preventDefault();
+
+    const eventId = document.querySelector("#rsvpEvent").value;
+    const selectedEvent = data.events.find(item => item.id === eventId);
+    if (!selectedEvent) return;
+
+    const name = document.querySelector("#rsvpName").value.trim();
+
+    const existing = selectedEvent.rsvps.find(item =>
+      item.name.toLowerCase() === name.toLowerCase()
+    );
+
+    const record = {
+      id: existing?.id || crypto.randomUUID(),
+      name,
+      email: document.querySelector("#rsvpEmail").value.trim(),
+      phone: document.querySelector("#rsvpPhone").value.trim(),
+      buggy: document.querySelector("#rsvpBuggy").value,
+      teeTime: document.querySelector("#rsvpTeeTime").value,
+      paid: existing?.paid ?? false
+    };
+
+    if (existing) Object.assign(existing, record);
+    else selectedEvent.rsvps.push(record);
+
+    writeData(data);
+    document.querySelector("#rsvpStatus").textContent =
+      "RSVP saved. Payment status is currently Payment Due.";
+
+    renderEvents();
+    renderAdminRsvps();
+  });
+
+  document.querySelector("#adminEventSelect")?.addEventListener("change", renderAdminRsvps);
+
+  renderEventOptions();
+  fillMemberProfile();
+  renderEvents();
+  renderAdminRsvps();
+})();

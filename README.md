@@ -1,15 +1,16 @@
-# Barford Golf Society 2027 — Speed Optimised
+# Barford Golf Society 2027 — Event Payment Status Edition
 
-Performance changes:
-- intro video reduced from 2880×2880 to 1080×1080
-- unused video audio removed
-- MP4 metadata moved to the start for faster playback
-- logo image reduced to a web-appropriate size
-- homepage renders before intro playback begins
-- intro plays no more than once every 24 hours
-- six-second hard timeout prevents the intro blocking the site
-- asynchronous image decoding
-- below-the-fold rendering deferred where supported
-- existing Members, Events and Scores functions retained
+This full development website includes a payment-status feature for event RSVPs.
 
-The development account and Scores data remain browser-only and do not connect to the live production site.
+Members can see:
+- Paid
+- Payment Due
+
+Administrators can:
+- choose an event
+- see every RSVP
+- toggle each player between Payment Due and Paid
+
+No totals or money summaries are shown.
+
+The feature uses browser-only development data and does not connect to the live website or production database.
