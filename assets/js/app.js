@@ -1,15 +1,4 @@
 
-if (!document.querySelector('link[href*="accessible-mobile.css"]')) {
-  const accessibilityStyles = document.createElement("link");
-  accessibilityStyles.rel = "stylesheet";
-  accessibilityStyles.href = "assets/css/accessible-mobile.css?v=1";
-  document.head.appendChild(accessibilityStyles);
-}
-if (!document.querySelector('script[src*="accessible-mobile.js"]')) {
-  const accessibilityScript = document.createElement("script");
-  accessibilityScript.src = "assets/js/accessible-mobile.js?v=1";
-  document.head.appendChild(accessibilityScript);
-}
 
 const body = document.body;
 document.querySelectorAll(".menu-button").forEach(menuButton => {
@@ -125,16 +114,6 @@ if (eventCards.length) {
       event.currentTarget.setAttribute("aria-expanded", String(open));
     });
   });
-}
-
-const reducedMotion = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
-if (!reducedMotion) {
-  const revealTargets = document.querySelectorAll(".section-heading,.event-card,.event-list-card,.feature-card,.install-panel,.cta-panel,.form-card,.upload-card,.table-wrap,.story-grid,.signup-grid,.chart-placeholder,.media-card,.product-card");
-  revealTargets.forEach(el => el.classList.add("reveal"));
-  const observer = new IntersectionObserver(entries => {
-    entries.forEach(entry => { if (entry.isIntersecting) { entry.target.classList.add("is-visible"); observer.unobserve(entry.target); } });
-  }, {threshold:.12});
-  revealTargets.forEach(el => observer.observe(el));
 }
 
 const currentPage = window.location.pathname.split("/").pop() || "index.html";
