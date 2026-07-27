@@ -240,3 +240,47 @@
 .photo-preview-frame{display:grid;place-items:center;min-height:260px;max-height:56vh;margin:18px 0;overflow:hidden;border-radius:16px;background:var(--green-1000)}
 .photo-preview-frame img{width:100%;max-height:56vh;object-fit:contain}.photo-review-actions{display:grid;grid-template-columns:1fr 1fr;gap:10px}.photo-save-status{margin:0 0 12px;color:var(--green-700);font-weight:800}.photo-review-card>#viewSavedPhoto{width:100%;margin-top:10px}
 @media(max-width:650px){.photo-review-dialog{width:calc(100% - 20px);border-radius:19px}.photo-review-card{padding:16px}.photo-preview-frame{min-height:220px}.photo-review-actions{grid-template-columns:1fr}}
+
+
+/* Noticeable event-day camera prompt */
+.event-camera-tab{
+  position:relative;
+  overflow:hidden;
+  border:2px solid var(--gold-400);
+  box-shadow:0 18px 46px rgba(3,21,15,.24),0 0 0 4px rgba(225,190,114,.13);
+}
+.event-camera-tab::before{
+  content:"LIVE TODAY";
+  position:absolute;
+  top:13px;
+  right:13px;
+  padding:5px 8px;
+  border-radius:999px;
+  background:#e83b35;
+  color:#fff;
+  font-size:.62rem;
+  font-weight:900;
+  letter-spacing:.08em;
+}
+.event-camera-tab .camera-tab-icon{
+  animation:cameraAttention 4.2s ease-in-out infinite;
+  box-shadow:0 0 0 0 rgba(225,190,114,.45);
+}
+.event-camera-tab #openEventCamera{
+  animation:cameraButtonPulse 2.4s ease-in-out infinite;
+}
+@keyframes cameraAttention{
+  0%,72%,100%{transform:rotate(0) scale(1);box-shadow:0 0 0 0 rgba(225,190,114,0)}
+  76%{transform:rotate(-10deg) scale(1.08)}
+  80%{transform:rotate(10deg) scale(1.12);box-shadow:0 0 0 8px rgba(225,190,114,.16)}
+  84%{transform:rotate(-7deg) scale(1.08)}
+  88%{transform:rotate(5deg) scale(1.04)}
+  92%{transform:rotate(0) scale(1)}
+}
+@keyframes cameraButtonPulse{
+  0%,100%{transform:scale(1);box-shadow:0 8px 20px rgba(0,0,0,.12)}
+  50%{transform:scale(1.025);box-shadow:0 12px 28px rgba(225,190,114,.3)}
+}
+@media(prefers-reduced-motion:reduce){
+  .event-camera-tab .camera-tab-icon,.event-camera-tab #openEventCamera{animation:none}
+}
