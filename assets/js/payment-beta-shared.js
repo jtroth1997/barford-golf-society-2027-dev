@@ -21,10 +21,10 @@
   };
   const eventClosed = date => Date.now() >= new Date(`${date}T23:59:59`).getTime();
   const statusLabel = commitment => {
-    if (!commitment) return "RSVP / Pay";
+    if (!commitment) return "RSVP · £5 deposit";
     if (commitment.status === "paid") return "Paid in full ✓";
-    if (commitment.status === "deposit_paid") return `£${commitment.balanceDue} to pay`;
-    return "Place reserved · Pay later";
+    if (commitment.status === "deposit_paid") return `Payment due · £${commitment.balanceDue}`;
+    return "RSVP · £5 deposit";
   };
 
   document.querySelectorAll(".compact-event-card").forEach(card => {
@@ -46,6 +46,7 @@
       if (eventClosed(date)) return;
       const target = new URL("payment-beta.html", location.href);
       [["event", eventId], ["name", name], ["venue", venue], ["amount", amount], ["date", date]].forEach(([key, value]) => target.searchParams.set(key, String(value)));
+      if (commitment?.status === "deposit_paid") target.searchParams.set("action", "balance");
       location.href = target.href;
     }, true);
   });
@@ -59,7 +60,7 @@
     section.innerHTML = `
       <div class="section-heading"><div><p class="eyebrow">Event payments</p><h2>Events to be paid for</h2><p>Places you have reserved with an outstanding balance.</p></div><strong class="payment-total">${money(outstanding.reduce((sum, item) => sum + Number(item.balanceDue || 0), 0))} due</strong></div>
       <div class="account-payment-list">
-        ${outstanding.length ? outstanding.map(item => `<article><div><strong>${escapeHtml(item.eventName)}</strong><small>${escapeHtml(item.venue)} · ${escapeHtml(item.eventDate)}</small><span>${item.status === "deposit_paid" ? `${money(item.amountPaid)} deposit paid` : "Place reserved"}</span></div><div><b>${money(item.balanceDue)} due</b><a class="button button-primary" href="payment-beta.html?event=${encodeURIComponent(item.eventId)}&name=${encodeURIComponent(item.eventName)}&venue=${encodeURIComponent(item.venue)}&amount=${item.fullAmount}&date=${item.eventDate}">Pay now</a></div></article>`).join("") : `<p class="empty-state">You have no outstanding event payments.</p>`}
+        ${outstanding.length ? outstanding.map(item => `<article><div><strong>${escapeHtml(item.eventName)}</strong><small>${escapeHtml(item.venue)} · ${escapeHtml(item.eventDate)}</small><span>${money(item.amountPaid)} RSVP deposit paid</span></div><div><b>${money(item.balanceDue)} due</b><a class="button button-primary" href="payment-beta.html?event=${encodeURIComponent(item.eventId)}&name=${encodeURIComponent(item.eventName)}&venue=${encodeURIComponent(item.venue)}&amount=${item.fullAmount}&date=${item.eventDate}&action=balance">Pay remaining ${money(item.balanceDue)}</a></div></article>`).join("") : `<p class="empty-state">You have no outstanding event payments.</p>`}
       </div>`;
     accountContent.prepend(section);
   }
@@ -72,7 +73,7 @@
     const history = commitments.filter(item => eventClosed(item.eventDate));
     const paymentRows = records => records.length ? records.map(item => {
       const related = payments.filter(payment => payment.eventId === item.eventId);
-      return `<article><div><strong>${escapeHtml(item.memberName)}</strong><small>${escapeHtml(item.eventName)} · ${escapeHtml(item.eventDate)}</small><span>${item.status === "paid" ? "Paid in full" : item.status === "deposit_paid" ? `${money(item.amountPaid)} deposit paid` : "RSVP only"}</span></div><div><b>${money(item.amountPaid)} paid</b><small>${money(item.balanceDue)} due</small></div><div>${related.map(payment => `<small>${escapeHtml(payment.reference)} · ${escapeHtml(payment.method)}</small>`).join("") || "<small>No payment reference</small>"}</div></article>`;
+      return `<article><div><strong>${escapeHtml(item.memberName)}</strong><small>${escapeHtml(item.eventName)} · ${escapeHtml(item.eventDate)}</small><span>${item.status === "paid" ? "Paid in full" : `${money(item.amountPaid)} RSVP deposit paid`}</span></div><div><b>${money(item.amountPaid)} paid</b><small>${money(item.balanceDue)} due</small></div><div>${related.map(payment => `<small>${escapeHtml(payment.reference)} · ${escapeHtml(payment.method)}</small>`).join("") || "<small>No payment reference</small>"}</div></article>`;
     }).join("") : `<p class="empty-state">Nothing to show here yet.</p>`;
 
     const section = document.createElement("section");
