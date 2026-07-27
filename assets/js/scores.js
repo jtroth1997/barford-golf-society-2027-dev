@@ -94,16 +94,43 @@ function renderLeaderboard() {
 
   const allRanked = rankPlayers(state.data.players, roundsForStandings, state.data.achievements);
   const ranked = allRanked.filter(player => player.name.toLowerCase().includes(state.search));
+  const previousRanked = rankPlayers(
+    state.data.players,
+    roundsForStandings.slice(0, -1),
+    state.data.achievements
+  );
+  const previousPositions = new Map(previousRanked.map(player => [player.id, player.position]));
+  const animationSignature = `${selectedRound?.id || "preseason"}:${allRanked
+    .map(player => `${player.id}-${player.position}-${player.statistics.seasonPoints}`)
+    .join("|")}`;
+  let playFilm = !state.search && !window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+  try {
+    const animationKey = "bgs-leaderboard-film-seen";
+    playFilm = playFilm && localStorage.getItem(animationKey) !== animationSignature;
+    if (playFilm) localStorage.setItem(animationKey, animationSignature);
+  } catch {
+    playFilm = false;
+  }
+  list.classList.toggle("leaderboard-cinematic", playFilm);
 
-  ranked.forEach(player => {
+  ranked.forEach((player, playerIndex) => {
     const node = $("#leaderboardCardTemplate").content.cloneNode(true);
     const card = node.querySelector(".player-card");
     const summary = node.querySelector(".player-card-summary");
     const detail = node.querySelector(".player-details");
     const selectedResult = selectedRound?.results.find(result => result.playerId === player.id);
     const medal = ["🥇","🥈","🥉"][player.position - 1];
+    const previousPosition = previousPositions.get(player.id) ?? allRanked.length + 1;
+    const positionChange = previousPosition - player.position;
     if (player.position <= 3 && !state.search) {
       card.classList.add("top-three-row", `top-position-${player.position}`);
+    }
+    if (playFilm) {
+      card.classList.add("ranking-motion");
+      card.style.setProperty("--move-from", `${positionChange * 64}px`);
+      card.style.setProperty("--move-delay", `${0.25 + Math.min(playerIndex, 12) * 0.065}s`);
+      if (positionChange > 0) card.classList.add("moved-up");
+      if (positionChange < 0) card.classList.add("moved-down");
     }
 
     node.querySelector(".rank-badge").textContent = medal || player.position;
@@ -117,6 +144,14 @@ function renderLeaderboard() {
          <span class="leaderboard-round-line"><span>Adjustment</span><strong class="change ${changeClass(selectedResult.adjustment)}">${formatChange(selectedResult.adjustment)}</strong></span>
          <span class="leaderboard-round-line"><span>Next HCP</span><strong>${selectedResult.nextHandicap}</strong></span>`
       : `<span class="leaderboard-round-line leaderboard-empty"><span>No result recorded</span><strong>${escapeHtml(selectedRound?.name ?? "This round")}</strong></span>`;
+    if (positionChange !== 0) {
+      meta.insertAdjacentHTML(
+        "beforeend",
+        `<span class="movement-badge ${positionChange > 0 ? "up" : "down"}">
+          ${positionChange > 0 ? "▲" : "▼"} ${Math.abs(positionChange)}
+        </span>`
+      );
+    }
 
     node.querySelector(".player-points").textContent = player.statistics.seasonPoints;
 
