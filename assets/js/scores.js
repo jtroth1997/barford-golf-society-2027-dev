@@ -173,6 +173,17 @@ function renderLeaderboard() {
   });
 
   $("#statusMessage").textContent = ranked.length ? "" : "No players match that search.";
+  if (playFilm) {
+    window.clearTimeout(window.cinematicCleanupTimer);
+    window.cinematicCleanupTimer = window.setTimeout(() => {
+      list.classList.remove("leaderboard-cinematic");
+      list.querySelectorAll(".ranking-motion").forEach(card => {
+        card.classList.remove("ranking-motion");
+        card.style.removeProperty("--move-from");
+        card.style.removeProperty("--move-delay");
+      });
+    }, 3900);
+  }
 }
 
 function playerDetailsMarkup(player, roundsForStandings = state.data.rounds) {
