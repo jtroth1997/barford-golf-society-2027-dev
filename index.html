@@ -56,6 +56,18 @@
         <div><span>First tee</span><strong>09:00</strong></div><div><span>Your tee time</span><strong>09:12</strong></div>
         <div><span>Arrival by</span><strong>08:15</strong></div><div><span>Payment</span><strong class="paid-text">Paid</strong></div>
       </div>
+      <section class="event-weather" id="eventWeather" data-event-date="2027-03-26" data-latitude="52.554763" data-longitude="-1.733609">
+        <div class="weather-heading">
+          <div><p class="eyebrow">Event weather</p><h3>The Belfry forecast</h3><p id="weatherUpdated" class="weather-updated">Checking forecast availability…</p></div>
+          <div id="weatherSummary" class="weather-summary"><span class="weather-icon" aria-hidden="true">◷</span><div><strong>Forecast pending</strong><small>Based on the event date and course location</small></div></div>
+        </div>
+        <div id="weatherUnavailable" class="weather-unavailable hidden">
+          <span aria-hidden="true">☀︎</span>
+          <div><strong>Forecast available closer to the event</strong><p>Accurate hourly weather will appear here automatically from 10 March 2027.</p></div>
+        </div>
+        <div id="weatherHours" class="weather-hours hidden" aria-label="Hourly event forecast"></div>
+        <p class="weather-source">Forecast data automatically selected for this location from multiple weather models.</p>
+      </section>
       <div class="playing-group">
         <div class="playing-group-heading"><div><p class="eyebrow">Your fourball</p><h3>Who you’re playing with</h3></div><span>Tee 1 · 09:12</span></div>
         <div class="fourball-grid">
@@ -160,6 +172,7 @@
 </footer>
 <script src="assets/js/app.js" defer></script>
 <script src="assets/js/member-session.js" defer></script>
+<script src="assets/js/event-weather.js" defer></script>
 
 </body>
 </html>
