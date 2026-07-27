@@ -76,11 +76,19 @@
     document.querySelector("#teeGroupCount").textContent = groups.length;
   };
 
-  const balancedSizes = total => {
-    const count = Math.ceil(total / 4);
-    const base = Math.floor(total / count);
-    const extra = total % count;
-    return Array.from({length:count},(_,index) => base + (index < extra ? 1 : 0));
+  const walkerGroupSizes = total => {
+    for (let threeBalls = 0; threeBalls <= 3; threeBalls += 1) {
+      const remaining = total - (threeBalls * 3);
+      if (remaining >= 0 && remaining % 4 === 0) {
+        return [
+          ...Array(threeBalls).fill(3),
+          ...Array(remaining / 4).fill(4)
+        ];
+      }
+    }
+
+    if (total <= 4) return total ? [total] : [];
+    return [3, ...walkerGroupSizes(total - 3)];
   };
 
   const pairKey = (a,b) => [a.name,b.name].sort().join("|");
@@ -132,23 +140,85 @@
   const generate = () => {
     const notes = [];
     const players = eventPlayers();
-    const sizes = balancedSizes(players.length);
-    groups = sizes.map(size => ({capacity:size,players:[]}));
-    const units = makeUnits(players,notes);
+    const autoPair = document.querySelector("#pairBuggies").checked;
+    let buggy = players.filter(player => player.buggy);
+    let walkers = players.filter(player => !player.buggy);
+    const estimatedGroups = Math.max(1, Math.ceil(players.length / 4));
 
-    units.forEach(unit => {
-      const candidates = groups.map((group,index) => ({group,index,space:group.capacity-group.players.length}))
-        .filter(item => item.space >= unit.players.length)
-        .sort((a,b) => assignmentCost(unit,a.group,a.index,groups.length) - assignmentCost(unit,b.group,b.index,groups.length));
-      const target = candidates[0] || groups.find(group => group.players.length < group.capacity);
-      if (target?.group) target.group.players.push(...unit.players);
-      else if (target) target.players.push(...unit.players);
+    if (autoPair && buggy.length % 2 !== 0) {
+      const flexible = buggy.find(player => player.flexibility === "happy");
+      if (flexible) {
+        flexible.buggy = false;
+        buggy = buggy.filter(player => player.id !== flexible.id);
+        walkers.push(flexible);
+        notes.push(`${flexible.name} was moved to walking because the buggy list was odd and they are happy to walk.`);
+      }
+    }
+
+    const preferenceRank = player => desiredPosition(player.preference);
+    buggy.sort((a,b) => preferenceRank(a) - preferenceRank(b));
+    walkers.sort((a,b) => preferenceRank(a) - preferenceRank(b) || Math.random() - .5);
+    groups = [];
+
+    if (autoPair) {
+      while (buggy.length >= 2) {
+        const first = buggy.shift();
+        const partnerIndex = buggy.map((candidate,index) => ({
+          index,
+          score:(previousPairs.has(pairKey(first,candidate)) ? 30 : 0) + Math.abs(preferenceRank(first) - preferenceRank(candidate)) * 5 + Math.random()
+        })).sort((a,b) => a.score - b.score)[0].index;
+        const partner = buggy.splice(partnerIndex,1)[0];
+        groups.push({capacity:4,players:[first,partner],buggyGroup:true});
+      }
+    } else {
+      buggy.forEach(player => groups.push({capacity:4,players:[player],buggyGroup:true}));
+      buggy = [];
+    }
+
+    if (buggy.length) {
+      groups.push({capacity:4,players:[buggy[0]],buggyGroup:true});
+      notes.push(`${buggy[0].name} still needs a buggy partner.`);
+    }
+
+    const chooseWalker = (group,groupIndex) => {
+      if (!walkers.length) return null;
+      const ranked = walkers.map((player,index) => ({
+        player,index,
+        score:assignmentCost({players:[player]},group,groupIndex,estimatedGroups)
+      })).sort((a,b) => a.score - b.score);
+      return walkers.splice(ranked[0].index,1)[0];
+    };
+
+    groups.forEach((group,index) => {
+      while (group.players.length < group.capacity && walkers.length) {
+        const walker = chooseWalker(group,index);
+        if (!walker) break;
+        group.players.push(walker);
+      }
     });
 
-    if (document.querySelector("#respectPreferences").checked) groups.sort((a,b) => groupPreference(a) - groupPreference(b));
+    const walkingSizes = walkerGroupSizes(walkers.length);
+    walkingSizes.forEach(size => {
+      const group = {capacity:size,players:[],buggyGroup:false};
+      const groupIndex = groups.length;
+      while (group.players.length < size && walkers.length) {
+        const walker = chooseWalker(group,groupIndex);
+        if (!walker) break;
+        group.players.push(walker);
+      }
+      groups.push(group);
+    });
+
+    groups = groups.filter(group => group.players.length);
     groups.forEach((group,index) => { group.number=index+1; });
+
+    const buggyGroups = groups.filter(group => group.buggyGroup).length;
+    const threeBalls = groups.filter(group => !group.buggyGroup && group.players.length === 3).length;
+    const fourBalls = groups.filter(group => !group.buggyGroup && group.players.length === 4).length;
+    notes.unshift(`Order applied: ${buggyGroups} buggy group${buggyGroups===1?"":"s"} first, then ${threeBalls} walking threeball${threeBalls===1?"":"s"}, then ${fourBalls} walking fourball${fourBalls===1?"":"s"}.`);
+
     render(notes);
-    status.textContent = "Smart tee times generated. You can move or remove players before saving.";
+    status.textContent = "Smart tee times generated using the society’s buggy-first grouping order.";
   };
 
   const addMinutes = (value,minutes) => {
