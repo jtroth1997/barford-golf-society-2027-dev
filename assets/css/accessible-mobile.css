@@ -1,5 +1,5 @@
 :root{--tap-size:52px;--mobile-space:16px;--mobile-radius:16px}
-button,a,input,select,textarea{font:inherit}button,a{-webkit-tap-highlight-color:transparent}
+button,a,input,select,textarea{font:inherit}button,a{-webkit-tap-highlight-color:transparent}\n.reveal{opacity:1!important;transform:none!important}
 button:focus-visible,a:focus-visible,input:focus-visible,select:focus-visible,textarea:focus-visible{outline:3px solid #f2bd52!important;outline-offset:3px}
 .button,.map-button,.nav-tab{min-height:48px;display:inline-flex;align-items:center;justify-content:center}
 .menu-button-label{color:#fff;font-size:.82rem;font-weight:800}
