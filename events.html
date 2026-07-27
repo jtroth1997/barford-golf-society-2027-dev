@@ -15,6 +15,7 @@
 
   <link rel="stylesheet" href="assets/css/styles.css">
   <link rel="stylesheet" href="assets/css/events.css">
+  <link rel="stylesheet" href="assets/css/tee-organiser.css">
 </head>
 <body>
 <a class="skip-link" href="#main-content">Skip to content</a>
@@ -203,6 +204,59 @@
     </div>
   </section>
 
+  <section id="eventAdmin" class="section section-soft hidden">
+    <div class="shell">
+      <div class="admin-heading tee-admin-heading">
+        <div><p class="eyebrow">Development administration</p><h2>Smart tee-time organiser</h2><p class="muted">Generate balanced groups, respect preferences and keep buggy partners together.</p></div>
+        <span class="status-pill">Saved on this device only</span>
+      </div>
+
+      <div class="tee-organiser">
+        <div class="tee-controls-card">
+          <div class="tee-control-grid">
+            <label>Event<select id="teeEventSelect">
+              <option value="event-1">Season Opener — The Belfry</option>
+              <option value="event-2">Captain's Day — Forest of Arden</option>
+              <option value="event-3">Summer Stableford — The Warwickshire</option>
+            </select></label>
+            <label>First tee time<input id="teeStartTime" type="time" value="09:00"></label>
+            <label>Gap between groups<input id="teeGap" type="number" min="5" max="20" value="8"></label>
+          </div>
+
+          <div class="smart-rule-grid">
+            <label class="smart-rule"><input id="respectPreferences" type="checkbox" checked><span><strong>Respect preferences</strong><small>First, middle and end requests affect group order.</small></span></label>
+            <label class="smart-rule"><input id="pairBuggies" type="checkbox" checked><span><strong>Pair buggies</strong><small>Buggy users are paired automatically where possible.</small></span></label>
+            <label class="smart-rule"><input id="avoidRepeats" type="checkbox" checked><span><strong>Avoid repeat partners</strong><small>Uses sample previous-group history in this preview.</small></span></label>
+          </div>
+
+          <div class="tee-control-actions">
+            <button id="generateSmartTeeTimes" class="button button-small" type="button">Generate smart tee times</button>
+            <button id="loadSavedTeeTimes" class="button button-outline" type="button">Load saved draft</button>
+          </div>
+          <p id="teeOrganiserStatus" class="tee-organiser-status" aria-live="polite"></p>
+        </div>
+
+        <div class="tee-organiser-summary">
+          <div><strong id="teePlayerCount">0</strong><span>Players</span></div>
+          <div><strong id="teeGroupCount">0</strong><span>Groups</span></div>
+          <div><strong id="teeBuggyCount">0</strong><span>Buggy requests</span></div>
+          <div><strong id="teePreferenceCount">0</strong><span>Preferences</span></div>
+        </div>
+
+        <div id="teeWarnings" class="tee-warnings hidden"></div>
+        <div id="smartTeeGroups" class="smart-tee-groups">
+          <div class="empty-state">Choose an event and generate tee times to see the suggested groups.</div>
+        </div>
+
+        <div id="teeFinalActions" class="tee-final-actions hidden">
+          <button id="saveTeeDraft" class="button button-small" type="button">Save draft tee times</button>
+          <button id="copyTeeMessage" class="button button-outline" type="button">Copy WhatsApp message</button>
+          <button id="regenerateTeeTimes" class="button button-outline" type="button">Generate another version</button>
+          <button id="clearTeeDraft" class="button tee-danger" type="button">Clear draft</button>
+        </div>
+      </div>
+    </div>
+  </section>
 </main>
 
 <footer class="site-footer">
@@ -216,5 +270,6 @@
 </footer>
 
 <script src="assets/js/app.js" defer></script>
+<script src="assets/js/tee-organiser.js" defer></script>
 </body>
 </html>
