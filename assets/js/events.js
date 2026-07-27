@@ -10,32 +10,66 @@
         id: "event-1",
         name: "Season Opener",
         date: "2027-03-26",
-        venue: "Venue to be confirmed",
-        description: "Friday · 18 holes · coffee and bacon roll",
-        price: "£TBC",
+        venue: "The Belfry – Derby Course",
+        description: "Friday society golf · 18 holes",
+        price: "£45",
         places: 24,
         teeTimes: "09:00",
-        courseVideo: "https://www.youtube.com/watch?v=dQw4w9WgXcQ",
+        courseVideo: "https://www.youtube.com/results?search_query=The+Belfry+Derby+Course",
         rsvps: [
-          { id:"r1", name:"David Smith", email:"david@example.com", phone:"07111 111111", buggy:"No", teeTime:"Early", paid:true },
-          { id:"r2", name:"Steve Jones", email:"steve@example.com", phone:"07222 222222", buggy:"Yes", teeTime:"Middle", paid:false },
-          { id:"r3", name:"Mark Taylor", email:"mark@example.com", phone:"07333 333333", buggy:"No", teeTime:"No preference", paid:true },
-          { id:"r4", name:"Chris Brown", email:"chris@example.com", phone:"07444 444444", buggy:"No", teeTime:"Late", paid:false }
+          { id:"r1", name:"David Smith", paid:true }, { id:"r2", name:"Steve Jones", paid:false },
+          { id:"r3", name:"Mark Taylor", paid:true }, { id:"r4", name:"Chris Brown", paid:true },
+          { id:"r5", name:"Andy Green", paid:false }, { id:"r6", name:"Paul Roberts", paid:true },
+          { id:"r7", name:"Ben Harris", paid:true }, { id:"r8", name:"John Close", paid:false },
+          { id:"r9", name:"Richard Jones", paid:true }, { id:"r10", name:"Tim Sewards", paid:true },
+          { id:"r11", name:"Nick Benbow", paid:true }, { id:"r12", name:"Derek Lewis", paid:false },
+          { id:"r13", name:"Adam Betteridge", paid:true }, { id:"r14", name:"Michael Evans", paid:true },
+          { id:"r15", name:"Simon Clarke", paid:false }, { id:"r16", name:"James Wilson", paid:true },
+          { id:"r17", name:"Lee Walker", paid:true }, { id:"r18", name:"Tom Harrison", paid:false }
         ]
       },
       {
         id: "event-2",
-        name: "Monthly Event",
-        date: "2027-04-30",
-        venue: "Venue to be confirmed",
-        description: "Friday · 18 holes · friendly competition",
-        price: "£TBC",
+        name: "Captain's Day",
+        date: "2027-05-28",
+        venue: "Forest of Arden",
+        description: "Captain's Day · 18 holes · prizes after golf",
+        price: "£50",
+        places: 32,
+        teeTimes: "08:30",
+        courseVideo: "https://www.youtube.com/results?search_query=Forest+of+Arden+golf+course",
+        rsvps: [
+          { id:"r19", name:"Ben Harris", paid:true }, { id:"r20", name:"Paul Roberts", paid:true },
+          { id:"r21", name:"John Close", paid:false }, { id:"r22", name:"Richard Jones", paid:true },
+          { id:"r23", name:"David Smith", paid:true }, { id:"r24", name:"Steve Jones", paid:false },
+          { id:"r25", name:"Mark Taylor", paid:true }, { id:"r26", name:"Chris Brown", paid:true },
+          { id:"r27", name:"Andy Green", paid:true }, { id:"r28", name:"Tim Sewards", paid:true },
+          { id:"r29", name:"Nick Benbow", paid:false }, { id:"r30", name:"Derek Lewis", paid:true },
+          { id:"r31", name:"Adam Betteridge", paid:true }, { id:"r32", name:"Michael Evans", paid:true },
+          { id:"r33", name:"Simon Clarke", paid:false }, { id:"r34", name:"James Wilson", paid:true },
+          { id:"r35", name:"Lee Walker", paid:true }, { id:"r36", name:"Tom Harrison", paid:true },
+          { id:"r37", name:"Matt Cooper", paid:false }, { id:"r38", name:"Daniel King", paid:true },
+          { id:"r39", name:"Peter Hall", paid:true }, { id:"r40", name:"Robert Moore", paid:true },
+          { id:"r41", name:"Gary Turner", paid:false }, { id:"r42", name:"Martin Hill", paid:true }
+        ]
+      },
+      {
+        id: "event-3",
+        name: "Summer Stableford",
+        date: "2027-07-30",
+        venue: "The Warwickshire",
+        description: "Summer Stableford · 18 holes",
+        price: "£48",
         places: 24,
         teeTimes: "09:15",
-        courseVideo: "https://www.youtube.com/watch?v=dQw4w9WgXcQ",
+        courseVideo: "https://www.youtube.com/results?search_query=The+Warwickshire+golf+course",
         rsvps: [
-          { id:"r5", name:"Paul Roberts", email:"paul@example.com", phone:"07555 555555", buggy:"No", teeTime:"Early", paid:true },
-          { id:"r6", name:"Andy Green", email:"andy@example.com", phone:"07666 666666", buggy:"Yes", teeTime:"Middle", paid:false }
+          { id:"r43", name:"Tim Sewards", paid:true }, { id:"r44", name:"Nick Benbow", paid:true },
+          { id:"r45", name:"Derek Lewis", paid:false }, { id:"r46", name:"Adam Betteridge", paid:true },
+          { id:"r47", name:"David Smith", paid:true }, { id:"r48", name:"Steve Jones", paid:false },
+          { id:"r49", name:"Mark Taylor", paid:true }, { id:"r50", name:"Chris Brown", paid:true },
+          { id:"r51", name:"Ben Harris", paid:true }, { id:"r52", name:"Paul Roberts", paid:false },
+          { id:"r53", name:"John Close", paid:true }, { id:"r54", name:"Richard Jones", paid:true }
         ]
       }
     ]
@@ -94,11 +128,14 @@
 
           <div class="event-main">
             <div class="event-title-row">
-              <div>
-                <p class="event-label">${escapeHtml(event.name)}</p>
-                <h3>${escapeHtml(event.venue)}</h3>
+              <div class="event-heading-copy">
+                <h3>${escapeHtml(event.name)}</h3>
+                <p class="event-venue">📍 ${escapeHtml(event.venue)}</p>
               </div>
-              <span class="event-price">${escapeHtml(event.price)}</span>
+              <div class="event-heading-actions">
+                <button class="button button-small rsvp-event-button" type="button" data-event-id="${event.id}">RSVP</button>
+                <span class="event-price">${escapeHtml(event.price)}</span>
+              </div>
             </div>
 
             <div class="event-summary-row">
@@ -109,7 +146,6 @@
             <p class="event-description">${escapeHtml(event.description)}</p>
 
             <div class="event-button-row">
-              <button class="button button-small rsvp-event-button" type="button" data-event-id="${event.id}">RSVP</button>
               ${event.courseVideo ? `<button class="button button-outline course-video-button" type="button" data-video="${escapeHtml(event.courseVideo)}">Course video</button>` : ""}
               <button class="button button-outline event-details-button" type="button" data-event-id="${event.id}">More details</button>
             </div>
@@ -167,7 +203,6 @@
         document.querySelector("#rsvpEvent").value = button.dataset.eventId;
         document.querySelector("#rsvp").scrollIntoView({ behavior:"smooth", block:"start" });
       });
-    });
     });
   };
 
