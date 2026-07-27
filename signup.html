@@ -12,6 +12,7 @@
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=Playfair+Display:wght@700&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="assets/css/styles.css">
+  <link rel="stylesheet" href="assets/css/members.css">
   
 </head>
 <body>
@@ -38,7 +39,24 @@
 </header>
 <main id="main-content">
 <section class="page-hero signup"><div class="shell"><p class="eyebrow">Membership</p><h1>Join Barford Golf Society</h1><p>Register your interest for a friendly, social season of golf.</p></div></section>
-<section class="section shell"><div class="signup-grid"><div><p class="eyebrow">Become a member</p><h2>Start your next golf season with us</h2><p>Complete the form and a society organiser will contact you with membership information.</p><ul class="check-list"><li>Welcoming to different abilities</li><li>Eight society days each season</li><li>Friendly competition and social events</li></ul></div><form class="form-card demo-form"><label>Full name<input type="text" required placeholder="Your full name"></label><label>Email address<input type="email" required placeholder="name@example.com"></label><label>Phone number<input type="tel" required placeholder="07..."></label><button class="button button-primary" type="submit">Submit interest</button><p class="form-status"></p></form></div></section>
+<section class="section shell"><div class="signup-grid"><div><p class="eyebrow">Become a member</p><h2>Start your next golf season with us</h2><p>Complete the form and a society organiser will contact you with membership information.</p><ul class="check-list"><li>Welcoming to different abilities</li><li>Eight society days each season</li><li>Friendly competition and social events</li></ul></div><form id="memberSignupForm" class="form-card member-create-form">
+  <div class="profile-photo-picker">
+    <div id="signupPhotoPreview" class="profile-photo-preview" aria-hidden="true"><span>+</span></div>
+    <div class="profile-photo-copy">
+      <strong>Add a profile photo</strong>
+      <p>This will appear beside your name in four-balls and on your member dashboard.</p>
+      <label class="button button-outline photo-picker-button" for="signupPhoto">Choose photo</label>
+      <input id="signupPhoto" class="profile-photo-input" type="file" accept="image/*" capture="user">
+      <button id="removeSignupPhoto" class="photo-remove hidden" type="button">Remove photo</button>
+      <small>Optional — you can add or change it later.</small>
+    </div>
+  </div>
+  <label>Full name<input id="signupName" type="text" required autocomplete="name" placeholder="Your full name"></label>
+  <label>Email address<input id="signupEmail" type="email" required autocomplete="email" placeholder="name@example.com"></label>
+  <label>Phone number<input id="signupPhone" type="tel" required autocomplete="tel" placeholder="07..."></label>
+  <button class="button button-primary" type="submit">Create member account</button>
+  <p class="form-status" aria-live="polite"></p>
+</form></div></section>
 <section class="section section-soft"><div class="shell"><div class="toolbar"><div><p class="eyebrow">Administration</p><h2>Member sign-ups</h2></div><button class="button button-small admin-toggle" data-target="signupAdmin">Admin access</button></div><div id="signupAdmin" class="admin-panel hidden"><div class="table-wrap"><table><thead><tr><th>Name</th><th>Email</th><th>Phone</th><th>Joined</th><th>Contacted</th></tr></thead><tbody><tr><td colspan="5">No live sign-up data is connected to this development site.</td></tr></tbody></table></div></div></div></section>
 </main>
 <footer class="site-footer">
@@ -48,6 +66,7 @@
   </div>
 </footer>
 <script src="assets/js/app.js" defer></script>
+<script src="assets/js/member-session.js" defer></script>
 
 </body>
 </html>
