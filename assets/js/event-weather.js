@@ -2,7 +2,7 @@
   "use strict";
 
   const panel = document.querySelector("#eventWeather");
-  if (!panel) return;
+  if (!panel) return;\n  if (panel.closest(".member-home-dashboard")?.classList.contains("hidden")) return;
 
   const eventDate = panel.dataset.eventDate;
   const teeTime = panel.dataset.teeTime || "09:00";
