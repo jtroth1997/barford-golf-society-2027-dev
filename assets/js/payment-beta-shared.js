@@ -3,7 +3,7 @@
   const PAYMENT_STORAGE = "bgs-2027-payment-beta";
   const RSVP_STORAGE = "bgs-2027-event-commitments";
   const DEMO_SEEDED = "bgs-2027-three-event-demo";
-  const DEMO_RESET = "bgs-2027-payment-demo-reset-v2";
+  const DEMO_RESET = "bgs-2027-payment-demo-reset-v3";
   const read = key => {
     try { return JSON.parse(localStorage.getItem(key) || "[]"); }
     catch (_) { return []; }
