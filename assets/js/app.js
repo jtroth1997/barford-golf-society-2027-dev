@@ -1,30 +1,26 @@
 
+if (!document.querySelector('link[href*="accessible-mobile.css"]')) {
+  const accessibilityStyles = document.createElement("link");
+  accessibilityStyles.rel = "stylesheet";
+  accessibilityStyles.href = "assets/css/accessible-mobile.css?v=1";
+  document.head.appendChild(accessibilityStyles);
+}
+if (!document.querySelector('script[src*="accessible-mobile.js"]')) {
+  const accessibilityScript = document.createElement("script");
+  accessibilityScript.src = "assets/js/accessible-mobile.js?v=1";
+  document.head.appendChild(accessibilityScript);
+}
+
 const body = document.body;
 document.querySelectorAll(".menu-button").forEach(menuButton => {
   const navigationId = menuButton.getAttribute("aria-controls");
-  const navigation = navigationId
-    ? document.getElementById(navigationId)
-    : menuButton.closest(".site-header")?.querySelector(".site-nav");
+  const navigation = navigationId ? document.getElementById(navigationId) : menuButton.closest(".site-header")?.querySelector(".site-nav");
   if (!navigation) return;
-  const closeMenu = () => {
-    navigation.classList.remove("is-open");
-    menuButton.setAttribute("aria-expanded", "false");
-  };
-  menuButton.addEventListener("click", event => {
-    event.stopPropagation();
-    const open = navigation.classList.toggle("is-open");
-    menuButton.setAttribute("aria-expanded", String(open));
-  });
+  const closeMenu = () => { navigation.classList.remove("is-open"); menuButton.setAttribute("aria-expanded", "false"); };
+  menuButton.addEventListener("click", event => { event.stopPropagation(); const open = navigation.classList.toggle("is-open"); menuButton.setAttribute("aria-expanded", String(open)); });
   navigation.querySelectorAll("a").forEach(link => link.addEventListener("click", closeMenu));
-  document.addEventListener("click", event => {
-    if (!navigation.contains(event.target) && !menuButton.contains(event.target)) closeMenu();
-  });
-  document.addEventListener("keydown", event => {
-    if (event.key === "Escape") {
-      closeMenu();
-      menuButton.focus();
-    }
-  });
+  document.addEventListener("click", event => { if (!navigation.contains(event.target) && !menuButton.contains(event.target)) closeMenu(); });
+  document.addEventListener("keydown", event => { if (event.key === "Escape") { closeMenu(); menuButton.focus(); } });
 });
 
 const year = document.querySelector("#year");
@@ -48,25 +44,25 @@ document.querySelectorAll(".demo-form").forEach(form => {
 });
 
 document.querySelectorAll(".demo-action").forEach(btn => {
-  btn.addEventListener("click", () => alert("Demo only — this action is not connected to live data."));
+  btn.addEventListener("click", () => {
+    const message = "This is a preview. Nothing has been submitted.";
+    if (window.showSiteMessage) window.showSiteMessage(message); else alert(message);
+  });
 });
 
 const installBtn = document.querySelector("#installHelpBtn");
 const installHelp = document.querySelector("#installHelp");
-if (installBtn && installHelp) {
-  installBtn.addEventListener("click", () => {
-    installHelp.classList.toggle("hidden");
-    installBtn.textContent = installHelp.classList.contains("hidden") ? "Show instructions" : "Hide instructions";
-  });
-}
+if (installBtn && installHelp) installBtn.addEventListener("click", () => {
+  installHelp.classList.toggle("hidden");
+  installBtn.textContent = installHelp.classList.contains("hidden") ? "Show instructions" : "Hide instructions";
+});
 
 let basketCount = 0;
 let basketTotal = 0;
 const prices = [12,18,15];
 document.querySelectorAll(".add-to-basket").forEach((btn,index) => {
   btn.addEventListener("click", () => {
-    basketCount += 1;
-    basketTotal += prices[index] || 0;
+    basketCount += 1; basketTotal += prices[index] || 0;
     const count = document.querySelector("#basketCount");
     const summary = document.querySelector("#basketSummary");
     const total = document.querySelector("#basketTotal");
@@ -136,12 +132,7 @@ if (!reducedMotion) {
   const revealTargets = document.querySelectorAll(".section-heading,.event-card,.event-list-card,.feature-card,.install-panel,.cta-panel,.form-card,.upload-card,.table-wrap,.story-grid,.signup-grid,.chart-placeholder,.media-card,.product-card");
   revealTargets.forEach(el => el.classList.add("reveal"));
   const observer = new IntersectionObserver(entries => {
-    entries.forEach(entry => {
-      if (entry.isIntersecting) {
-        entry.target.classList.add("is-visible");
-        observer.unobserve(entry.target);
-      }
-    });
+    entries.forEach(entry => { if (entry.isIntersecting) { entry.target.classList.add("is-visible"); observer.unobserve(entry.target); } });
   }, {threshold:.12});
   revealTargets.forEach(el => observer.observe(el));
 }
