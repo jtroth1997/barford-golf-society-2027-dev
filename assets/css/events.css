@@ -158,3 +158,38 @@
     text-align:left;
   }
 }
+
+
+/* RSVP list is always visible */
+.event-card-enhanced .event-actions{
+  align-self:stretch;
+}
+.event-card-enhanced .event-actions .button{
+  width:100%;
+}
+.rsvp-list-heading{
+  display:flex;
+  align-items:center;
+  justify-content:space-between;
+  gap:12px;
+  margin-bottom:12px;
+}
+.rsvp-list-heading h4{
+  margin:0;
+}
+.rsvp-list-heading span{
+  color:var(--muted);
+  font-size:.84rem;
+  font-weight:800;
+}
+.public-rsvp-list{
+  max-height:none;
+  overflow:visible;
+}
+@media(max-width:540px){
+  .rsvp-list-heading{
+    align-items:flex-start;
+    flex-direction:column;
+    gap:3px;
+  }
+}

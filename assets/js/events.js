@@ -102,11 +102,10 @@
 
           <div class="event-actions">
             <button class="button button-small rsvp-event-button" type="button" data-event-id="${event.id}">RSVP</button>
-            <button class="button button-outline show-rsvps-button" type="button" data-event-id="${event.id}">Who's playing</button>
           </div>
 
-          <div class="event-rsvp-section hidden" id="public-rsvps-${event.id}">
-            <h4>Who's playing</h4>
+          <div class="event-rsvp-section" id="public-rsvps-${event.id}">
+            <div class="rsvp-list-heading"><h4>Players attending</h4><span>${event.rsvps.length} player${event.rsvps.length === 1 ? "" : "s"}</span></div>
             <div class="public-rsvp-list">
               ${event.rsvps.map(rsvp => `
                 <div class="public-rsvp-row">
@@ -130,13 +129,6 @@
         document.querySelector("#rsvp").scrollIntoView({ behavior:"smooth", block:"start" });
       });
     });
-
-    document.querySelectorAll(".show-rsvps-button").forEach(button => {
-      button.addEventListener("click", () => {
-        const panel = document.querySelector(`#public-rsvps-${button.dataset.eventId}`);
-        const hidden = panel.classList.toggle("hidden");
-        button.textContent = hidden ? "Who's playing" : "Hide players";
-      });
     });
   };
 

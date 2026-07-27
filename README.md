@@ -1,16 +1,13 @@
-# Barford Golf Society 2027 — Event Payment Status Edition
+# Barford Golf Society 2027 — Full RSVP List Edition
 
-This full development website includes a payment-status feature for event RSVPs.
+The Events page now shows the complete player RSVP list for every event at all times.
 
-Members can see:
-- Paid
-- Payment Due
+Changes:
+- removed the “Who’s playing” button
+- removed hidden/expand behaviour
+- full RSVP list always visible
+- Paid and Payment Due remain shown beside every player
+- player count shown above each list
+- mobile layout retained
 
-Administrators can:
-- choose an event
-- see every RSVP
-- toggle each player between Payment Due and Paid
-
-No totals or money summaries are shown.
-
-The feature uses browser-only development data and does not connect to the live website or production database.
+The development data remains browser-only and is not connected to the live website.
