@@ -193,3 +193,69 @@
     gap:3px;
   }
 }
+
+
+/* Event status and RSVP row */
+.event-card-enhanced{
+  grid-template-columns:94px minmax(0,1fr);
+}
+.event-price-line{
+  margin-top:12px;
+}
+.event-meta-strip{
+  display:grid;
+  grid-template-columns:repeat(2,minmax(0,1fr)) auto;
+  gap:10px;
+  align-items:stretch;
+  margin-top:16px;
+}
+.event-meta-item{
+  min-width:0;
+  padding:12px 14px;
+  border:1px solid var(--line);
+  border-radius:14px;
+  background:var(--green-050);
+}
+.event-meta-item span{
+  display:block;
+  color:var(--muted);
+  font-size:.76rem;
+  font-weight:800;
+  text-transform:uppercase;
+  letter-spacing:.06em;
+}
+.event-meta-item strong{
+  display:block;
+  margin-top:2px;
+  color:var(--green-950);
+  font-size:1.05rem;
+}
+.event-meta-strip .rsvp-event-button{
+  width:auto;
+  min-width:116px;
+  align-self:stretch;
+}
+@media(min-width:700px){
+  .event-card-enhanced{
+    grid-template-columns:110px minmax(0,1fr);
+    align-items:start;
+  }
+}
+@media(max-width:620px){
+  .event-meta-strip{
+    grid-template-columns:1fr 1fr;
+  }
+  .event-meta-strip .rsvp-event-button{
+    grid-column:1/-1;
+    width:100%;
+    min-width:0;
+  }
+}
+@media(max-width:420px){
+  .event-meta-strip{
+    grid-template-columns:1fr;
+  }
+  .event-meta-strip .rsvp-event-button{
+    grid-column:auto;
+  }
+}

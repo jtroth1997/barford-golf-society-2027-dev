@@ -1,13 +1,9 @@
-# Barford Golf Society 2027 — Full RSVP List Edition
+# Barford Golf Society 2027 — Event slots layout
 
-The Events page now shows the complete player RSVP list for every event at all times.
+The Events page now presents each event with a clear status row showing:
 
-Changes:
-- removed the “Who’s playing” button
-- removed hidden/expand behaviour
-- full RSVP list always visible
-- Paid and Payment Due remain shown beside every player
-- player count shown above each list
-- mobile layout retained
+- first tee time
+- number of slots available
+- RSVP button beside the information
 
-The development data remains browser-only and is not connected to the live website.
+The full RSVP list remains permanently visible below every event, including Paid and Payment Due status.

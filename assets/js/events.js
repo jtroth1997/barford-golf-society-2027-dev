@@ -14,7 +14,7 @@
         description: "Friday · 18 holes · coffee and bacon roll",
         price: "£TBC",
         places: 24,
-        teeTimes: "TBC",
+        teeTimes: "09:00",
         rsvps: [
           { id:"r1", name:"David Smith", email:"david@example.com", phone:"07111 111111", buggy:"No", teeTime:"Early", paid:true },
           { id:"r2", name:"Steve Jones", email:"steve@example.com", phone:"07222 222222", buggy:"Yes", teeTime:"Middle", paid:false },
@@ -30,7 +30,7 @@
         description: "Friday · 18 holes · friendly competition",
         price: "£TBC",
         places: 24,
-        teeTimes: "TBC",
+        teeTimes: "09:15",
         rsvps: [
           { id:"r5", name:"Paul Roberts", email:"paul@example.com", phone:"07555 555555", buggy:"No", teeTime:"Early", paid:true },
           { id:"r6", name:"Andy Green", email:"andy@example.com", phone:"07666 666666", buggy:"Yes", teeTime:"Middle", paid:false }
@@ -93,15 +93,18 @@
             <p class="event-label">${escapeHtml(event.name)}</p>
             <h3>${escapeHtml(event.venue)}</h3>
             <p>${escapeHtml(event.description)}</p>
-            <div class="chip-row">
-              <span class="chip">${escapeHtml(event.price)}</span>
-              <span class="chip">${event.places} places</span>
-              <span class="chip">Tee times ${escapeHtml(event.teeTimes)}</span>
+            <div class="event-price-line"><span class="chip">${escapeHtml(event.price)}</span></div>
+            <div class="event-meta-strip">
+              <div class="event-meta-item">
+                <span>First tee time</span>
+                <strong>${escapeHtml(event.teeTimes)}</strong>
+              </div>
+              <div class="event-meta-item">
+                <span>Slots available</span>
+                <strong>${Math.max(0, event.places - event.rsvps.length)}</strong>
+              </div>
+              <button class="button button-small rsvp-event-button" type="button" data-event-id="${event.id}">RSVP</button>
             </div>
-          </div>
-
-          <div class="event-actions">
-            <button class="button button-small rsvp-event-button" type="button" data-event-id="${event.id}">RSVP</button>
           </div>
 
           <div class="event-rsvp-section" id="public-rsvps-${event.id}">
