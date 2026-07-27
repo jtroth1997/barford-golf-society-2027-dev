@@ -144,6 +144,81 @@
     }
   }
 
+
+  const accountContent = document.querySelector("#accountContent");
+  const accountSignedOut = document.querySelector("#accountSignedOut");
+  const accountPageAccount = readAccount();
+  const accountPageSignedIn = localStorage.getItem(SESSION_KEY) === "yes" && Boolean(accountPageAccount);
+  let accountPagePhoto = accountPageAccount?.photo || "";
+
+  if (accountContent && accountSignedOut) {
+    accountContent.classList.toggle("hidden", !accountPageSignedIn);
+    accountSignedOut.classList.toggle("hidden", accountPageSignedIn);
+
+    if (accountPageSignedIn) {
+      setAvatar(document.querySelector("#accountHeroAvatar"), accountPageAccount);
+      setAvatar(document.querySelector("#accountPhotoPreview"), accountPageAccount);
+      document.querySelector("#accountHeroName").textContent = accountPageAccount.name;
+      document.querySelector("#accountName").value = accountPageAccount.name || "";
+      document.querySelector("#accountEmail").value = accountPageAccount.email || "";
+      document.querySelector("#accountPhone").value = accountPageAccount.phone || "";
+      document.querySelector("#accountHomeClub").value = accountPageAccount.homeClub || "";
+      document.querySelector("#accountHandicap").value = accountPageAccount.handicap || "18.4";
+      document.querySelector("#accountPreference").value = accountPageAccount.preference || "walker";
+      document.querySelector("#accountHandicapStat").textContent = accountPageAccount.handicap || "18.4";
+    }
+  }
+
+  document.querySelector("#accountPhotoInput")?.addEventListener("change", async event => {
+    const file = event.target.files?.[0];
+    if (!file) return;
+    const status = document.querySelector("#accountSaveStatus");
+    try {
+      if (status) status.textContent = "Preparing your photo…";
+      accountPagePhoto = await resizePhoto(file);
+      const previewAccount = { ...(accountPageAccount || demoAccount), photo: accountPagePhoto };
+      setAvatar(document.querySelector("#accountPhotoPreview"), previewAccount);
+      if (status) status.textContent = "Photo ready — press Save changes.";
+    } catch (error) {
+      if (status) status.textContent = error.message;
+    }
+  });
+
+  document.querySelector("#removeAccountPhoto")?.addEventListener("click", () => {
+    accountPagePhoto = "";
+    const previewAccount = { ...(accountPageAccount || demoAccount), photo: "" };
+    setAvatar(document.querySelector("#accountPhotoPreview"), previewAccount);
+    document.querySelector("#accountSaveStatus").textContent = "Photo removed — press Save changes.";
+  });
+
+  document.querySelector("#accountProfileForm")?.addEventListener("submit", event => {
+    event.preventDefault();
+    const updatedAccount = {
+      ...(accountPageAccount || demoAccount),
+      name: document.querySelector("#accountName").value.trim(),
+      email: document.querySelector("#accountEmail").value.trim(),
+      phone: document.querySelector("#accountPhone").value.trim(),
+      homeClub: document.querySelector("#accountHomeClub").value.trim(),
+      handicap: document.querySelector("#accountHandicap").value,
+      preference: document.querySelector("#accountPreference").value,
+      photo: accountPagePhoto
+    };
+    try {
+      remember(updatedAccount);
+      setAvatar(document.querySelector("#accountHeroAvatar"), updatedAccount);
+      document.querySelector("#accountHeroName").textContent = updatedAccount.name;
+      document.querySelector("#accountHandicapStat").textContent = updatedAccount.handicap || "—";
+      document.querySelector("#accountSaveStatus").textContent = "Your changes have been saved.";
+    } catch {
+      document.querySelector("#accountSaveStatus").textContent = "The photo is too large to save on this preview device.";
+    }
+  });
+
+  document.querySelector("#accountSignOut")?.addEventListener("click", () => {
+    localStorage.removeItem(SESSION_KEY);
+    window.location.reload();
+  });
+
   document.querySelector("#memberSignOut")?.addEventListener("click", () => {
     localStorage.removeItem(SESSION_KEY);
     window.location.reload();
