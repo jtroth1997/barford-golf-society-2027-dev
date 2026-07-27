@@ -6,12 +6,10 @@ document.querySelectorAll(".menu-button").forEach(menuButton => {
     ? document.getElementById(navigationId)
     : menuButton.closest(".site-header")?.querySelector(".site-nav");
   if (!navigation) return;
-
   const closeMenu = () => {
     navigation.classList.remove("is-open");
     menuButton.setAttribute("aria-expanded", "false");
   };
-
   menuButton.addEventListener("click", event => {
     event.stopPropagation();
     const open = navigation.classList.toggle("is-open");
@@ -85,6 +83,53 @@ if (basketBtn && basketPanel) basketBtn.addEventListener("click", () => {
   basketPanel.classList.toggle("hidden");
   if (!basketPanel.classList.contains("hidden")) basketPanel.scrollIntoView({behavior:"smooth",block:"start"});
 });
+
+const eventCards = document.querySelectorAll(".compact-event-card");
+if (eventCards.length) {
+  const videoSearches = ["The Belfry Derby Course", "Forest of Arden golf course", "The Warwickshire golf course"];
+  let selectedEventButton = null;
+  const dialog = document.createElement("dialog");
+  dialog.style.cssText = "width:min(92vw,500px);border:0;border-radius:20px;padding:0;box-shadow:0 24px 70px rgba(0,0,0,.3)";
+  dialog.innerHTML = `<form method="dialog" style="display:grid;gap:12px;padding:24px"><div style="display:flex;justify-content:space-between;gap:12px"><div><p class="eyebrow">Reserve your place</p><h2 id="quickRsvpTitle">Event RSVP</h2></div><button type="button" id="quickRsvpClose" aria-label="Close" style="border:0;background:none;font-size:2rem">×</button></div><input name="name" autocomplete="name" placeholder="Your full name" required style="min-height:48px;padding:10px;border:1px solid #ccd8d2;border-radius:10px;font:inherit"><input name="phone" autocomplete="tel" placeholder="Mobile number" required style="min-height:48px;padding:10px;border:1px solid #ccd8d2;border-radius:10px;font:inherit"><select name="playing" style="min-height:48px;padding:10px;border:1px solid #ccd8d2;border-radius:10px;font:inherit"><option>Walking</option><option>Buggy required</option><option>Happy to share a buggy</option></select><p class="muted">Preview only — saved on this device until the live database is connected.</p><p id="quickRsvpStatus" role="status"></p><button class="button" type="submit">Save RSVP</button></form>`;
+  body.appendChild(dialog);
+  const closeDialog = () => dialog.close();
+  dialog.querySelector("#quickRsvpClose").addEventListener("click", closeDialog);
+  dialog.querySelector("form").addEventListener("submit", event => {
+    event.preventDefault();
+    const data = Object.fromEntries(new FormData(event.currentTarget));
+    data.event = dialog.querySelector("#quickRsvpTitle").textContent;
+    try { localStorage.setItem("bgs-2027-preview-rsvp", JSON.stringify(data)); } catch (_) {}
+    dialog.querySelector("#quickRsvpStatus").textContent = "RSVP saved on this device ✓";
+    if (selectedEventButton) selectedEventButton.textContent = "RSVP saved ✓";
+    setTimeout(closeDialog, 800);
+  });
+  eventCards.forEach((card,index) => {
+    const eventName = card.querySelector("h3")?.textContent || "Event RSVP";
+    card.querySelector(".rsvp-event-button")?.addEventListener("click", event => {
+      selectedEventButton = event.currentTarget;
+      dialog.querySelector("#quickRsvpTitle").textContent = eventName;
+      dialog.querySelector("#quickRsvpStatus").textContent = "";
+      dialog.showModal();
+    });
+    const buttons = [...card.querySelectorAll(".event-button-row button")];
+    buttons[0]?.addEventListener("click", () => window.open(`https://www.youtube.com/results?search_query=${encodeURIComponent(videoSearches[index] || eventName)}`, "_blank", "noopener"));
+    buttons[1]?.addEventListener("click", event => {
+      let details = card.querySelector(".quick-event-details");
+      if (!details) {
+        details = document.createElement("div");
+        details.className = "quick-event-details";
+        details.style.cssText = "margin-top:12px;padding:14px;border-radius:12px;background:#f2f7f4";
+        const summary = card.querySelector(".event-summary-row")?.textContent.trim() || "";
+        const description = card.querySelector(".event-description")?.textContent || "";
+        details.textContent = `${description} · ${summary}`;
+        event.currentTarget.closest(".event-button-row").after(details);
+      } else details.hidden = !details.hidden;
+      const open = !details.hidden;
+      event.currentTarget.textContent = open ? "Hide details" : "More details";
+      event.currentTarget.setAttribute("aria-expanded", String(open));
+    });
+  });
+}
 
 const reducedMotion = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
 if (!reducedMotion) {
