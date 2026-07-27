@@ -285,6 +285,8 @@ function renderStatistics() {
 
 function setView(name) {
   state.activeView=name;
+  const showcase=$("#leaderboardShowcase");
+  if(showcase)showcase.hidden=name!=="leaderboard";
   $$(".nav-tab").forEach(b=>b.classList.toggle("is-active",b.dataset.view===name));
   $$(".view").forEach(v=>{const active=v.id===`${name}View`;v.hidden=!active;v.classList.toggle("is-active",active)});
   const titles={leaderboard:["Leaderboard","Best five rounds count towards the season total."],rounds:["Rounds","Every player, handicap and adjustment in a phone-friendly view."],handicaps:["Handicap History","See how handicaps move throughout the season."],statistics:["Statistics","Performance summaries for every member."]};
