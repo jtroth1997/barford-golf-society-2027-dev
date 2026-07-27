@@ -3,6 +3,7 @@
   border-color: #98d2b2;
   color: #0b5937;
 }
+.rsvp-event-button{touch-action:manipulation}.rsvp-event-button:active{transform:scale(.98)}
 
 .beta-payment-admin {
   margin-top: 1.5rem;
