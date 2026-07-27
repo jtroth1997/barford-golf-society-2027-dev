@@ -404,3 +404,45 @@
 .account-signed-out{padding:34px;border:1px solid var(--line);border-radius:22px;background:#fff;box-shadow:var(--shadow-sm)}.account-signed-out h2{margin-bottom:8px}
 @media(max-width:900px){.account-layout{grid-template-columns:1fr}.account-side{grid-template-columns:repeat(2,1fr)}.profile-panel{grid-column:1/-1}}
 @media(max-width:650px){.account-hero{padding:32px 0 68px}.account-hero-inner{align-items:flex-start;flex-direction:column}.account-hero-inner>.button{width:100%}.account-identity{align-items:flex-start}.account-avatar{width:68px;height:68px;flex-basis:68px}.account-layout{margin-top:-34px}.account-section-heading{color:var(--green-950)}.account-stat-grid{grid-template-columns:repeat(2,1fr)}.account-stat-grid article{padding:16px}.performance-chart{gap:7px}.account-round-list>div{grid-template-columns:50px minmax(0,1fr) 55px}.account-round-list em{display:none}.achievement-grid{grid-template-columns:1fr}.account-side{grid-template-columns:1fr}.profile-panel{grid-column:auto}}
+
+
+/* Live homepage event countdown */
+.event-countdown{
+  display:grid;
+  grid-template-columns:auto minmax(0,1fr) auto;
+  align-items:center;
+  gap:15px;
+  margin:18px 0 0;
+  padding:16px 18px;
+  overflow:hidden;
+  position:relative;
+  border:1px solid rgba(225,190,114,.5);
+  border-radius:18px;
+  color:#fff;
+  background:
+    radial-gradient(circle at 85% 0,rgba(225,190,114,.22),transparent 35%),
+    linear-gradient(135deg,var(--green-1000),var(--green-800));
+  box-shadow:0 14px 34px rgba(3,29,20,.18);
+}
+.event-countdown::after{content:"";position:absolute;right:-28px;bottom:-48px;width:150px;height:150px;border:1px solid rgba(255,255,255,.08);border-radius:50%}
+.countdown-icon{display:grid;place-items:center;width:52px;height:52px;border:1px solid rgba(255,255,255,.14);border-radius:16px;background:rgba(255,255,255,.08);font-size:1.6rem}
+.countdown-copy span,.countdown-copy strong,.countdown-copy small{display:block}
+.countdown-copy span{color:var(--gold-400);font-size:.67rem;font-weight:900;letter-spacing:.1em;text-transform:uppercase}
+.countdown-copy strong{margin:2px 0;font-family:"Playfair Display",Georgia,serif;font-size:1.35rem}
+.countdown-copy small{color:#c9d9d0;font-size:.74rem}
+.countdown-units{display:flex;gap:7px;position:relative;z-index:1}
+.countdown-units div{min-width:58px;padding:8px 9px;text-align:center;border:1px solid rgba(255,255,255,.11);border-radius:12px;background:rgba(255,255,255,.08)}
+.countdown-units strong,.countdown-units span{display:block}
+.countdown-units strong{color:var(--gold-400);font-size:1.25rem;line-height:1}
+.countdown-units span{margin-top:3px;color:#d3dfd8;font-size:.58rem;font-weight:800;text-transform:uppercase;letter-spacing:.04em}
+.event-countdown.is-today{border-color:var(--gold-400);background:linear-gradient(125deg,#7c5913,#bd8b25)}
+.event-countdown.is-today .countdown-copy span,.event-countdown.is-today .countdown-units strong{color:#fff6d8}
+.event-countdown.is-today .countdown-copy small{color:#fff4d2}
+.event-countdown.is-today .countdown-units{display:none}
+@media(max-width:650px){
+  .event-countdown{grid-template-columns:auto minmax(0,1fr);gap:11px;padding:13px}
+  .countdown-icon{width:44px;height:44px;border-radius:13px;font-size:1.35rem}
+  .countdown-copy strong{font-size:1.15rem}
+  .countdown-units{grid-column:1/-1;display:grid;grid-template-columns:repeat(3,1fr)}
+  .countdown-units div{min-width:0}
+}
