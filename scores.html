@@ -13,6 +13,7 @@
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="assets/css/styles.css?v=fast3">
   <link rel="stylesheet" href="assets/css/scores.css?v=7">
+  <link rel="stylesheet" href="assets/css/mobile-menu-fix.css?v=1">
 </head>
 <body>
   <a class="skip-link" href="#main-content">Skip to scores</a>
@@ -67,10 +68,7 @@
 
     <section id="roundsView" class="view" hidden>
       <div class="section-heading">
-        <div>
-          <p class="eyebrow">Round-by-round</p>
-          <h3>Round results</h3>
-        </div>
+        <div><p class="eyebrow">Round-by-round</p><h3>Round results</h3></div>
       </div>
       <div class="round-tabs" id="roundTabs" role="tablist" aria-label="Select round"></div>
       <div id="roundSummary" class="round-summary"></div>
@@ -79,33 +77,18 @@
 
     <section id="handicapsView" class="view" hidden>
       <div class="section-heading">
-        <div>
-          <p class="eyebrow">Season movement</p>
-          <h3>Handicap history</h3>
-        </div>
+        <div><p class="eyebrow">Season movement</p><h3>Handicap history</h3></div>
       </div>
-      <label class="field">
-        <span>Player</span>
-        <select id="handicapPlayerSelect"></select>
-      </label>
-      <article class="chart-card">
-        <div id="handicapChart" class="handicap-chart" role="img" aria-label="Handicap progression chart"></div>
-      </article>
+      <label class="field"><span>Player</span><select id="handicapPlayerSelect"></select></label>
+      <article class="chart-card"><div id="handicapChart" class="handicap-chart" role="img" aria-label="Handicap progression chart"></div></article>
       <div id="handicapTimeline" class="timeline"></div>
     </section>
 
     <section id="statisticsView" class="view" hidden>
-      <div class="section-heading">
-        <div>
-          <p class="eyebrow">Player performance</p>
-          <h3>Statistics</h3>
-        </div>
-      </div>
+      <div class="section-heading"><div><p class="eyebrow">Player performance</p><h3>Statistics</h3></div></div>
       <div id="statisticsGrid" class="statistics-grid"></div>
     </section>
   </main>
-
-  
 
   <dialog id="confirmDialog" class="confirm-dialog">
     <form method="dialog">
@@ -130,7 +113,7 @@
     </article>
   </template>
 
-  <script src="assets/js/app.js?v=fast3" defer></script>
+  <script src="assets/js/app.js?v=fast4" defer></script>
   <script type="module" src="assets/js/scores.js?v=7"></script>
 </body>
 </html>
