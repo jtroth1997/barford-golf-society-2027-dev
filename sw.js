@@ -1,8 +1,8 @@
-const CACHE_NAME = "barford-golf-rapid-v7";
+const CACHE_NAME = "barford-golf-rapid-v8";
 const CORE = [
   "./","./index.html","./payment-beta.html","./events.html","./scores.html","./gallery.html","./account.html","./worldevents.html","./shop.html","./about.html",
   "./assets/css/styles.css?v=fast3","./assets/css/payment-beta.css?v=2","./assets/css/payment-beta-shared.css?v=beta2","./assets/css/accessible-mobile.css?v=rapid1","./assets/css/events.css","./assets/css/scores.css?v=7","./assets/css/members.css","./assets/css/gallery.css",
-  "./assets/js/app.js?v=rapid9","./assets/js/payment-beta.js?v=2","./assets/js/payment-beta-shared.js?v=beta5","./assets/js/accessible-mobile.js?v=rapid2","./assets/js/member-session.js","./assets/js/scores.js?v=7","./assets/js/scores-data.js","./assets/js/handicap-engine.js",
+  "./assets/js/app.js?v=rapid10","./assets/js/payment-beta.js?v=2","./assets/js/payment-beta-shared.js?v=beta6","./assets/js/accessible-mobile.js?v=rapid2","./assets/js/member-session.js","./assets/js/scores.js?v=7","./assets/js/scores-data.js","./assets/js/handicap-engine.js",
   "./assets/images/barford-golf-society-logo.png"
 ];
 self.addEventListener("install", event => {
