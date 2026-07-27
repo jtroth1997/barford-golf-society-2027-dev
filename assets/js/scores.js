@@ -288,7 +288,9 @@ function setView(name) {
   $$(".nav-tab").forEach(b=>b.classList.toggle("is-active",b.dataset.view===name));
   $$(".view").forEach(v=>{const active=v.id===`${name}View`;v.hidden=!active;v.classList.toggle("is-active",active)});
   const titles={leaderboard:["Leaderboard","Best five rounds count towards the season total."],rounds:["Rounds","Every player, handicap and adjustment in a phone-friendly view."],handicaps:["Handicap History","See how handicaps move throughout the season."],statistics:["Statistics","Performance summaries for every member."]};
-  $("#heroTitle").textContent=titles[name][0];$("#heroSubtitle").textContent=titles[name][1];
+  const heroTitle=$("#heroTitle"),heroSubtitle=$("#heroSubtitle");
+  if(heroTitle)heroTitle.textContent=titles[name][0];
+  if(heroSubtitle)heroSubtitle.textContent=titles[name][1];
   if(name==="handicaps")renderHandicapHistory();if(name==="statistics")renderStatistics();
 }
 
