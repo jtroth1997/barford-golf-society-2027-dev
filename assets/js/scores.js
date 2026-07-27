@@ -1,6 +1,6 @@
 import { ScoresData } from "./scores-data.js";
 import { rankPlayers, calculatePlayerStatistics } from "./handicap-engine.js";
-import { AdminDashboard } from "./scores-admin.js";
+
 
 const state = {
   data: null,
@@ -291,6 +291,6 @@ $("#playerSearch").addEventListener("input",event=>{state.search=event.target.va
 $("#handicapPlayerSelect").addEventListener("change",event=>{state.selectedPlayerId=event.target.value;renderHandicapHistory()});
 window.addEventListener("scores:data-changed",refresh);
 
-const admin = new AdminDashboard({ dataService: ScoresData, onChanged: refresh });
-$("#adminEntry").addEventListener("click",()=>admin.open());
+
+
 refresh();
