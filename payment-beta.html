@@ -32,16 +32,10 @@
     <div class="payment-warning" role="note"><strong>Committee demonstration only</strong><span>No real payment will be taken. Do not enter genuine card information.</span></div>
 
     <div id="paymentChoices" class="payment-choice-list">
-      <h2>How would you like to RSVP?</h2>
-      <button id="reserveWithoutPayment" class="payment-choice" type="button">
-        <span><strong>Reserve my place</strong><small>Join the playing list and pay later</small></span><b>£0 now</b>
-      </button>
-      <button class="payment-choice recommended" type="button" data-payment-choice="deposit">
-        <span><em>Recommended</em><strong>Secure my place with £5</strong><small>Non-refundable place deposit</small></span><b>£5</b>
-      </button>
-      <p id="depositBalance" class="choice-note">£40.00 remains due</p>
-      <button class="payment-choice" type="button" data-payment-choice="full">
-        <span><strong id="fullPaymentLabel">Pay £45.00 in full</strong><small>Nothing else to pay for this event</small></span><b>Full</b>
+      <h2 id="checkoutActionTitle">Confirm your RSVP</h2>
+      <p id="checkoutActionCopy">A £5 non-refundable deposit confirms your place and is deducted from the event total.</p>
+      <button id="continueToPayment" class="payment-choice recommended" type="button">
+        <span><em id="paymentChoiceBadge">RSVP deposit</em><strong id="paymentChoiceTitle">Pay £5 to confirm my place</strong><small id="paymentChoiceNote">£40.00 will remain to pay</small></span><b id="paymentChoiceAmount">£5</b>
       </button>
     </div>
 
@@ -56,12 +50,6 @@
     </div>
     <p id="paymentProgress" class="payment-progress" role="status" aria-live="polite"></p>
     <a class="payment-back" href="events.html">← Return to events</a>
-  </section>
-
-  <section id="reservationSuccess" class="payment-result-card hidden" aria-live="polite">
-    <span class="result-icon success">✓</span><p class="eyebrow">Place reserved</p><h1>You’re on the playing list</h1>
-    <p>Your place for <strong id="reservedEvent">Season Opener</strong> is held. Your account will show <strong id="reservedBalance">£45.00</strong> still to pay.</p>
-    <div class="result-actions"><a class="button button-primary" href="events.html">Return to events</a><a class="button button-outline" href="account.html">View My Account</a></div>
   </section>
 
   <section id="paymentSuccess" class="payment-result-card hidden" aria-live="polite">
