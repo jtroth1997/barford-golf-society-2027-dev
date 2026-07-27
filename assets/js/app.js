@@ -1,6 +1,11 @@
 
 
 const body = document.body;
+if ("serviceWorker" in navigator) {
+  window.addEventListener("load", () => {
+    navigator.serviceWorker.register("./sw.js?v=rapid2").catch(() => {});
+  }, { once:true });
+}
 document.querySelectorAll(".menu-button").forEach(menuButton => {
   const navigationId = menuButton.getAttribute("aria-controls");
   const navigation = navigationId ? document.getElementById(navigationId) : menuButton.closest(".site-header")?.querySelector(".site-nav");
