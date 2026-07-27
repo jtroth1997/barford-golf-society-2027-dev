@@ -12,6 +12,7 @@
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=Playfair+Display:wght@700&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="assets/css/styles.css">
+  <link rel="stylesheet" href="assets/css/gallery.css">
   
 </head>
 <body>
@@ -42,6 +43,12 @@
   <div class="toolbar"><div><p class="eyebrow">Share a moment</p><h2>Upload your golf photos</h2></div><button class="button button-small admin-toggle" data-target="galleryAdmin">Approve uploads</button></div>
   <form class="upload-card demo-form"><input type="file" accept="image/*" multiple><button class="button button-primary" type="submit">Upload photos</button><p class="form-status"></p></form>
 </section>
+<section id="event-day-photos" class="section event-day-gallery-section">
+  <div class="shell">
+    <div class="section-heading"><div><p class="eyebrow">Event day uploads</p><h2>Photos from today</h2><p class="muted">Confirmed photographs taken from the member dashboard appear here.</p></div><span id="eventPhotoCount" class="status-pill">0 photos</span></div>
+    <div id="eventDayGallery" class="event-day-photo-grid"><div class="empty-state">No event-day photos have been added on this device yet.</div></div>
+  </div>
+</section>
 <section class="section section-soft"><div class="shell"><div class="section-heading"><div><p class="eyebrow">Latest photos</p><h2>Society gallery</h2></div></div><div class="gallery-grid"><div class="gallery-placeholder">Photo 1</div><div class="gallery-placeholder tall">Photo 2</div><div class="gallery-placeholder">Photo 3</div><div class="gallery-placeholder wide">Photo 4</div><div class="gallery-placeholder">Photo 5</div></div></div></section>
 <section id="galleryAdmin" class="section shell admin-panel hidden"><div class="admin-heading"><div><p class="eyebrow">Administration preview</p><h2>Approve uploads</h2></div><span class="status-pill">No live storage connected</span></div><div class="empty-state">Pending uploads will appear here once the separate 2027 gallery is connected.</div></section>
 </main>
@@ -52,6 +59,7 @@
   </div>
 </footer>
 <script src="assets/js/app.js" defer></script>
+<script src="assets/js/event-camera.js" defer></script>
 
 </body>
 </html>
