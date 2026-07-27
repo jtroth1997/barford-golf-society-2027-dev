@@ -1612,11 +1612,11 @@ main{
   opacity:0;
   position:relative;
   z-index:8;
-  animation:realNameHoverSlam 1.15s cubic-bezier(.1,.84,.18,1.22) both;
+  animation:realNameHoverSlam .82s cubic-bezier(.1,.84,.18,1.22) both;
 }
-.leaderboard-cinematic .top-position-3 .player-name{animation-delay:2s}
-.leaderboard-cinematic .top-position-2 .player-name{animation-delay:3.15s}
-.leaderboard-cinematic .top-position-1 .player-name{animation-delay:4.3s}
+.leaderboard-cinematic .top-position-3 .player-name{animation-delay:1.35s}
+.leaderboard-cinematic .top-position-2 .player-name{animation-delay:2.15s}
+.leaderboard-cinematic .top-position-1 .player-name{animation-delay:2.95s}
 .top-three-row::after{
   content:"";
   position:absolute;
@@ -1626,12 +1626,12 @@ main{
   border-radius:15px;
   opacity:0;
 }
-.leaderboard-cinematic .top-position-3::after{animation:realRowImpact .55s 2.9s both}
-.leaderboard-cinematic .top-position-2::after{animation:realRowImpact .55s 4.05s both}
-.leaderboard-cinematic .top-position-1::after{animation:realRowImpact .65s 5.2s both}
+.leaderboard-cinematic .top-position-3::after{animation:realRowImpact .42s 2.02s both}
+.leaderboard-cinematic .top-position-2::after{animation:realRowImpact .42s 2.82s both}
+.leaderboard-cinematic .top-position-1::after{animation:realRowImpact .48s 3.62s both}
 .top-position-1{border-color:#d9bb68;background:linear-gradient(90deg,#fffaf0,#fff)}
 @keyframes realNameHoverSlam{
-  0%{opacity:0;transform:translateY(-120px) scale(4);filter:blur(8px)}
+  0%{opacity:0;transform:translateY(-120px) scale(4);filter:blur(3px)}
   22%{opacity:1;transform:translateY(-58px) scale(1.45);filter:none;text-shadow:0 12px 28px rgba(3,45,34,.38)}
   56%{opacity:1;transform:translateY(-58px) scale(1.45);text-shadow:0 12px 28px rgba(3,45,34,.38)}
   74%{opacity:1;transform:translateY(10px) scale(1.7)}
@@ -1646,7 +1646,7 @@ main{
 .leaderboard-cinematic .ranking-motion{
   position:relative;
   z-index:2;
-  animation:rankingShuffle 1.25s cubic-bezier(.2,.82,.2,1) var(--move-delay) both;
+  animation:rankingShuffle .82s cubic-bezier(.2,.82,.2,1) var(--move-delay) both;
 }
 .leaderboard-cinematic .ranking-motion.moved-up{animation-name:rankingShuffleUp}
 .leaderboard-cinematic .ranking-motion.moved-down{animation-name:rankingShuffleDown}
@@ -1704,3 +1704,6 @@ main{
 @media(prefers-reduced-motion:reduce){
   .top-three-row .player-name,.top-three-row::after,.ranking-motion,.movement-badge{animation:none!important;opacity:1!important;transform:none!important}
 }
+
+/* Compositor hints used only during the one-time reveal. */
+.leaderboard-cinematic .ranking-motion,.leaderboard-cinematic .top-three-row .player-name{will-change:transform,opacity;backface-visibility:hidden}
