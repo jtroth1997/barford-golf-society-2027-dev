@@ -3,6 +3,7 @@
   const PAYMENT_STORAGE = "bgs-2027-payment-beta";
   const RSVP_STORAGE = "bgs-2027-event-commitments";
   const DEMO_SEEDED = "bgs-2027-three-event-demo";
+  const DEMO_RESET = "bgs-2027-payment-demo-reset-v1";
   const read = key => {
     try { return JSON.parse(localStorage.getItem(key) || "[]"); }
     catch (_) { return []; }
@@ -12,19 +13,11 @@
     "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;", "'": "&#39;"
   })[character]);
   const money = value => `£${Number(value || 0).toFixed(2)}`;
-  if (!localStorage.getItem(DEMO_SEEDED) && !localStorage.getItem(RSVP_STORAGE)) {
-    const demoTime = new Date().toISOString();
-    localStorage.setItem(RSVP_STORAGE, JSON.stringify([
-      { eventId:"season-opener", eventName:"Season Opener", venue:"The Belfry – Derby Course", eventDate:"2027-03-26", fullAmount:45, memberName:"Jack Troth", status:"deposit_paid", amountPaid:5, balanceDue:40, updatedAt:demoTime },
-      { eventId:"captain-s-day", eventName:"Captain's Day", venue:"Forest of Arden", eventDate:"2027-05-28", fullAmount:50, memberName:"Jack Troth", status:"paid", amountPaid:50, balanceDue:0, updatedAt:demoTime },
-      { eventId:"summer-stableford", eventName:"Summer Stableford", venue:"The Warwickshire", eventDate:"2027-07-30", fullAmount:48, memberName:"Jack Troth", status:"deposit_paid", amountPaid:5, balanceDue:43, updatedAt:demoTime }
-    ]));
-    localStorage.setItem(PAYMENT_STORAGE, JSON.stringify([
-      { eventId:"season-opener", eventName:"Season Opener", venue:"The Belfry – Derby Course", eventDate:"2027-03-26", fullAmount:45, memberName:"Jack Troth", method:"Apple Pay", reference:"BGS-DEMO-1001", paymentType:"deposit", amount:5, status:"paid", paidAt:demoTime },
-      { eventId:"captain-s-day", eventName:"Captain's Day", venue:"Forest of Arden", eventDate:"2027-05-28", fullAmount:50, memberName:"Jack Troth", method:"Test card", reference:"BGS-DEMO-1002", paymentType:"full", amount:50, status:"paid", paidAt:demoTime },
-      { eventId:"summer-stableford", eventName:"Summer Stableford", venue:"The Warwickshire", eventDate:"2027-07-30", fullAmount:48, memberName:"Jack Troth", method:"Google Pay", reference:"BGS-DEMO-1003", paymentType:"deposit", amount:5, status:"paid", paidAt:demoTime }
-    ]));
+  if (!localStorage.getItem(DEMO_RESET)) {
+    localStorage.removeItem(PAYMENT_STORAGE);
+    localStorage.removeItem(RSVP_STORAGE);
     localStorage.setItem(DEMO_SEEDED, "1");
+    localStorage.setItem(DEMO_RESET, "1");
   }
   const monthNumber = { JAN:"01", FEB:"02", MAR:"03", APR:"04", MAY:"05", JUN:"06", JUL:"07", AUG:"08", SEP:"09", OCT:"10", NOV:"11", DEC:"12" };
   const cardDate = card => {
