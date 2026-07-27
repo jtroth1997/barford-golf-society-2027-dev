@@ -3,7 +3,7 @@
 const body = document.body;
 if ("serviceWorker" in navigator) {
   window.addEventListener("load", () => {
-    navigator.serviceWorker.register("./sw.js?v=rapid6").catch(() => {});
+    navigator.serviceWorker.register("./sw.js?v=rapid7").catch(() => {});
   }, { once:true });
 }
 document.querySelectorAll(".menu-button").forEach(menuButton => {
