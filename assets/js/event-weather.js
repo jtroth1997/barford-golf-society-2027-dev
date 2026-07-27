@@ -5,108 +5,124 @@
   if (!panel) return;
 
   const eventDate = panel.dataset.eventDate;
+  const teeTime = panel.dataset.teeTime || "09:00";
+  const roundHours = Number(panel.dataset.roundHours || 4);
   const latitude = panel.dataset.latitude;
   const longitude = panel.dataset.longitude;
-  const updated = document.querySelector("#weatherUpdated");
   const summary = document.querySelector("#weatherSummary");
-  const unavailable = document.querySelector("#weatherUnavailable");
-  const hours = document.querySelector("#weatherHours");
+  const tip = document.querySelector("#weatherTip");
+  const updated = document.querySelector("#weatherUpdated");
   let lastUpdated = null;
 
   const dayMs = 86400000;
-  const dateAtNoon = value => new Date(`${value}T12:00:00`);
-  const daysUntil = () => Math.ceil((dateAtNoon(eventDate) - new Date()) / dayMs);
+  const daysUntil = () => Math.ceil((new Date(`${eventDate}T12:00:00`) - new Date()) / dayMs);
 
-  const codeInfo = code => {
-    if (code === 0) return ["Sunny", "☀️"];
-    if ([1,2].includes(code)) return ["Sunny intervals", "🌤️"];
-    if (code === 3) return ["Cloudy", "☁️"];
-    if ([45,48].includes(code)) return ["Foggy", "🌫️"];
-    if ([51,53,55,56,57].includes(code)) return ["Drizzle", "🌦️"];
-    if ([61,63,65,66,67,80,81,82].includes(code)) return ["Rain", "🌧️"];
-    if ([71,73,75,77,85,86].includes(code)) return ["Snow", "🌨️"];
-    if ([95,96,99].includes(code)) return ["Thunderstorms", "⛈️"];
-    return ["Mixed conditions", "🌥️"];
+  const weather = code => {
+    if (code === 0) return {label:"Sunny", icon:"☀️", wet:false};
+    if ([1,2].includes(code)) return {label:"Sunny intervals", icon:"🌤️", wet:false};
+    if (code === 3) return {label:"Cloudy", icon:"☁️", wet:false};
+    if ([45,48].includes(code)) return {label:"Foggy", icon:"🌫️", wet:false};
+    if ([51,53,55,56,57].includes(code)) return {label:"Drizzle", icon:"🌦️", wet:true};
+    if ([61,63,65,66,67,80,81,82].includes(code)) return {label:"Rain", icon:"🌧️", wet:true};
+    if ([71,73,75,77,85,86].includes(code)) return {label:"Snow", icon:"🌨️", wet:true};
+    if ([95,96,99].includes(code)) return {label:"Thunderstorms", icon:"⛈️", wet:true};
+    return {label:"Mixed", icon:"🌥️", wet:false};
   };
 
-  const combinedCondition = (code, wind, rainChance) => {
-    const [base] = codeInfo(code);
-    const windText = wind >= 30 ? "windy" : wind >= 20 ? "breezy" : "";
-    const rainText = rainChance >= 60 && !/Rain|Drizzle|Thunder/.test(base) ? "rain likely" : "";
-    return [base, rainText, windText].filter(Boolean).join(" and ");
-  };
-
-  const ageText = () => {
+  const updateAge = () => {
     if (!lastUpdated) return;
     const minutes = Math.max(0, Math.floor((Date.now() - lastUpdated.getTime()) / 60000));
     updated.textContent = minutes < 1 ? "Updated just now" : minutes === 1 ? "Updated 1 minute ago" : `Updated ${minutes} minutes ago`;
   };
 
-  const showUnavailable = message => {
-    unavailable.classList.remove("hidden");
-    hours.classList.add("hidden");
-    summary.innerHTML = `<span class="weather-icon" aria-hidden="true">◷</span><div><strong>Forecast not available yet</strong><small>${message}</small></div>`;
+  const unavailable = message => {
+    summary.innerHTML = '<span class="weather-icon" aria-hidden="true">◷</span><strong>Not available yet</strong>';
+    tip.textContent = message;
     updated.textContent = "Waiting for the reliable forecast window";
   };
 
-  const render = data => {
-    const indexes = data.hourly.time.map((time, index) => ({time,index}))
-      .filter(item => item.time.startsWith(eventDate) && Number(item.time.slice(11,13)) >= 8 && Number(item.time.slice(11,13)) <= 14);
+  const makeTip = points => {
+    const midpoint = Math.max(1, Math.floor(points.length / 2));
+    const front = points.slice(0, midpoint);
+    const back = points.slice(midpoint);
+    const max = (items, key) => Math.max(...items.map(item => item[key]));
+    const avg = (items, key) => items.reduce((sum,item) => sum + item[key], 0) / items.length;
+    const frontRain = max(front, "rain");
+    const backRain = max(back, "rain");
+    const frontWind = avg(front, "wind");
+    const backWind = avg(back, "wind");
+    const minTemp = Math.min(...points.map(item => item.temp));
+    const maxTemp = Math.max(...points.map(item => item.temp));
 
-    if (!indexes.length) {
-      showUnavailable("Hourly event data has not been released");
+    if (frontRain < 40 && backRain >= 55) return "Rain may arrive halfway through your round, so take a waterproof jacket.";
+    if (frontRain >= 55) return "Rain is likely around your tee time, so take waterproofs and a towel.";
+    if (backWind >= 20 && backWind >= frontWind + 5) return "It is due to get windy on the second half of your round, so take a jumper or light jacket.";
+    if (Math.max(...points.map(item => item.wind)) >= 25) return "Strong winds are expected during your round, so a light jacket may be useful.";
+    if (maxTemp - minTemp >= 4 && points[points.length - 1].temp < points[0].temp) return "It should turn cooler as you play, so keep a jumper in your bag.";
+    if (minTemp <= 9) return "It will feel cool during your round, so take a jumper or light jacket.";
+    if (maxTemp >= 22) return "It should feel warm during your round, so take water and sun protection.";
+    return "Conditions should stay fairly settled throughout your round.";
+  };
+
+  const render = data => {
+    const teeHour = Number(teeTime.slice(0,2));
+    const endHour = teeHour + roundHours;
+    const points = data.hourly.time.map((time,index) => ({
+      time,
+      hour:Number(time.slice(11,13)),
+      temp:data.hourly.temperature_2m[index],
+      rain:data.hourly.precipitation_probability[index],
+      wind:data.hourly.wind_speed_10m[index],
+      code:data.hourly.weather_code[index]
+    })).filter(point => point.time.startsWith(eventDate) && point.hour >= teeHour && point.hour <= endHour);
+
+    if (!points.length) {
+      unavailable("The hourly forecast for your tee time has not been released yet.");
       return;
     }
 
-    const first = indexes[0].index;
-    const condition = combinedCondition(data.hourly.weather_code[first], data.hourly.wind_speed_10m[first], data.hourly.precipitation_probability[first]);
-    const [,icon] = codeInfo(data.hourly.weather_code[first]);
-
-    summary.innerHTML = `<span class="weather-icon" aria-hidden="true">${icon}</span><div><strong>${condition}</strong><small>${Math.round(data.hourly.temperature_2m[first])}°C · ${Math.round(data.hourly.precipitation_probability[first])}% rain · ${Math.round(data.hourly.wind_speed_10m[first])} mph wind</small></div>`;
-    hours.innerHTML = indexes.map(({time,index}) => {
-      const [,hourIcon] = codeInfo(data.hourly.weather_code[index]);
-      const label = combinedCondition(data.hourly.weather_code[index], data.hourly.wind_speed_10m[index], data.hourly.precipitation_probability[index]);
-      return `<div class="weather-hour"><time>${time.slice(11,16)}</time><span class="hour-icon" aria-hidden="true">${hourIcon}</span><strong>${Math.round(data.hourly.temperature_2m[index])}°</strong><small>${label}<br>${Math.round(data.hourly.precipitation_probability[index])}% rain · ${Math.round(data.hourly.wind_speed_10m[index])} mph</small></div>`;
-    }).join("");
-
-    unavailable.classList.add("hidden");
-    hours.classList.remove("hidden");
+    const tee = points[0];
+    const condition = weather(tee.code);
+    const extra = tee.wind >= 20 ? " · Breezy" : tee.rain >= 55 && !condition.wet ? " · Rain possible" : "";
+    summary.innerHTML = `<span class="weather-icon" aria-hidden="true">${condition.icon}</span><strong>${Math.round(tee.temp)}°C · ${condition.label}${extra}</strong>`;
+    tip.textContent = makeTip(points);
     lastUpdated = new Date();
-    ageText();
+    updateAge();
   };
 
   const load = async () => {
     const remaining = daysUntil();
     if (remaining > 16) {
-      showUnavailable("Available from 10 March 2027");
+      unavailable("Accurate tee-time advice will appear automatically from 10 March 2027.");
       return;
     }
     if (remaining < 0) {
-      showUnavailable("This event has already taken place");
+      unavailable("This event has already taken place.");
       return;
     }
 
     try {
       const params = new URLSearchParams({
         latitude, longitude,
-        hourly: "temperature_2m,precipitation_probability,weather_code,wind_speed_10m",
-        temperature_unit: "celsius",
-        wind_speed_unit: "mph",
-        timezone: "Europe/London",
-        start_date: eventDate,
-        end_date: eventDate,
-        models: "best_match"
+        hourly:"temperature_2m,precipitation_probability,weather_code,wind_speed_10m",
+        temperature_unit:"celsius",
+        wind_speed_unit:"mph",
+        timezone:"Europe/London",
+        start_date:eventDate,
+        end_date:eventDate,
+        models:"best_match"
       });
       const response = await fetch(`https://api.open-meteo.com/v1/forecast?${params}`, {cache:"no-store"});
       if (!response.ok) throw new Error("Weather request failed");
       render(await response.json());
     } catch {
+      summary.innerHTML = '<span class="weather-icon" aria-hidden="true">!</span><strong>Update unavailable</strong>';
+      tip.textContent = "The site will try the weather service again automatically.";
       updated.textContent = "Unable to update right now";
-      summary.innerHTML = '<span class="weather-icon" aria-hidden="true">!</span><div><strong>Weather temporarily unavailable</strong><small>The site will try again automatically.</small></div>';
     }
   };
 
   load();
   setInterval(load, 10 * 60 * 1000);
-  setInterval(ageText, 60 * 1000);
+  setInterval(updateAge, 60 * 1000);
 })();
