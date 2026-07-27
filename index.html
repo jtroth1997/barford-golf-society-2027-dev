@@ -12,6 +12,7 @@
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=Playfair+Display:wght@700&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="assets/css/styles.css">
+  <link rel="stylesheet" href="assets/css/members.css">
   
 </head>
 <body>
@@ -37,6 +38,51 @@
   </div>
 </header>
 <main id="main-content">
+<section id="memberHomeDashboard" class="member-home-dashboard hidden" aria-label="Member dashboard">
+  <div class="dashboard-welcome">
+    <div class="shell dashboard-welcome-inner">
+      <div><p class="eyebrow eyebrow-light">Member dashboard</p><h1 id="homeWelcome">Welcome back</h1><p>Everything you need for your next Barford Golf Society event.</p></div>
+      <div class="dashboard-member"><div class="member-avatar" id="homeInitials" aria-hidden="true">JT</div><div><strong id="homeMemberName">Jack Troth</strong><span>2027 Member</span></div></div>
+    </div>
+  </div>
+  <div class="dashboard-content shell">
+    <article class="next-event-dashboard">
+      <div class="dashboard-event-top">
+        <div class="dashboard-date"><span>MAR</span><strong>26</strong><small>2027</small></div>
+        <div class="dashboard-event-title"><p class="eyebrow">Your next event</p><h2>Season Opener</h2><p class="dashboard-course">The Belfry – Derby Course</p></div>
+        <span class="dashboard-status">You’re playing</span>
+      </div>
+      <div class="dashboard-event-facts">
+        <div><span>First tee</span><strong>09:00</strong></div><div><span>Your tee time</span><strong>09:12</strong></div>
+        <div><span>Arrival by</span><strong>08:15</strong></div><div><span>Payment</span><strong class="paid-text">Paid</strong></div>
+      </div>
+      <div class="playing-group">
+        <div class="playing-group-heading"><div><p class="eyebrow">Your fourball</p><h3>Who you’re playing with</h3></div><span>Tee 1 · 09:12</span></div>
+        <div class="fourball-grid">
+          <div class="fourball-member you"><span id="fourballInitials">JT</span><div><strong id="fourballMemberName">Jack Troth</strong><small>You</small></div></div>
+          <div class="fourball-member"><span>DS</span><div><strong>David Smith</strong><small>Handicap 16</small></div></div>
+          <div class="fourball-member"><span>MT</span><div><strong>Mark Taylor</strong><small>Handicap 21</small></div></div>
+          <div class="fourball-member"><span>CB</span><div><strong>Chris Brown</strong><small>Handicap 14</small></div></div>
+        </div>
+      </div>
+      <div class="directions-panel">
+        <div><p class="eyebrow">Directions</p><h3>Navigate to The Belfry</h3><p>Lichfield Road, Wishaw, Sutton Coldfield, B76 9PR</p></div>
+        <div class="map-buttons">
+          <a class="map-button apple" href="https://maps.apple.com/?daddr=The%20Belfry%2C%20Lichfield%20Road%2C%20Wishaw%2C%20Sutton%20Coldfield%20B76%209PR" target="_blank" rel="noopener"><span></span>Apple Maps</a>
+          <a class="map-button google" href="https://www.google.com/maps/dir/?api=1&amp;destination=The%20Belfry%2C%20Lichfield%20Road%2C%20Wishaw%2C%20Sutton%20Coldfield%20B76%209PR" target="_blank" rel="noopener"><span>G</span>Google Maps</a>
+          <a class="map-button waze" href="https://www.waze.com/ul?q=The%20Belfry%2C%20Lichfield%20Road%2C%20Wishaw%2C%20Sutton%20Coldfield%20B76%209PR&amp;navigate=yes" target="_blank" rel="noopener"><span>W</span>Waze</a>
+        </div>
+      </div>
+    </article>
+    <aside class="dashboard-side">
+      <article class="dashboard-card"><p class="eyebrow">Season snapshot</p><div class="snapshot-grid"><div><strong>18.4</strong><span>Handicap</span></div><div><strong>4th</strong><span>Position</span></div><div><strong>0/7</strong><span>Events played</span></div><div><strong>—</strong><span>Best score</span></div></div></article>
+      <article class="dashboard-card"><p class="eyebrow">Quick access</p><nav class="dashboard-links" aria-label="Member quick links"><a href="events.html"><span>View all events</span><b>→</b></a><a href="scores.html"><span>Scores and standings</span><b>→</b></a><a href="gallery.html"><span>Member gallery</span><b>→</b></a><a href="shop.html"><span>Society shop</span><b>→</b></a></nav></article>
+      <article class="dashboard-card dashboard-note"><p class="eyebrow">Event note</p><h3>Meet in the clubhouse</h3><p>Breakfast is available from 08:00. Please be ready at the first tee ten minutes before your allocated time.</p></article>
+      <button id="memberSignOut" class="button button-outline dashboard-signout" type="button">Sign out on this device</button>
+    </aside>
+  </div>
+</section>
+<div id="publicHome">
 <section class="hero">
   <div class="shell hero-grid">
     <div class="hero-copy">
@@ -104,6 +150,7 @@
 <section class="section shell">
   <div class="cta-panel"><div><p class="eyebrow eyebrow-light">Ready for the next season?</p><h2>Join Barford Golf Society</h2><p>Register your interest for the 2027 season and receive future event updates.</p></div><a class="button button-gold" href="signup.html">Register interest</a></div>
 </section>
+</div>
 </main>
 <footer class="site-footer">
   <div class="shell footer-inner">
@@ -112,6 +159,7 @@
   </div>
 </footer>
 <script src="assets/js/app.js" defer></script>
+<script src="assets/js/member-session.js" defer></script>
 
 </body>
 </html>
