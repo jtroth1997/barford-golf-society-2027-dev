@@ -2,7 +2,7 @@
 (() => {
   "use strict";
 
-  const STORAGE_KEY = "bgs-2027-events-demo-v2";
+  const STORAGE_KEY = "bgs-2027-events-demo-v3";
 
   const seed = {
     events: [
@@ -229,7 +229,7 @@
       <div class="admin-rsvp-row">
         <div>
           <strong>${escapeHtml(rsvp.name)}</strong>
-          <div class="muted">${escapeHtml(rsvp.buggy)} buggy · ${escapeHtml(rsvp.teeTime)}</div>
+          <div class="muted">${escapeHtml(rsvp.buggy || "No")} buggy · ${escapeHtml(rsvp.teeTime || "No preference")}</div>
         </div>
 
         <label class="payment-toggle">
