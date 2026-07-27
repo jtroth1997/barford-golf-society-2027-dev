@@ -47,36 +47,26 @@
   </nav>
 
   <main id="main-content">
-    <section class="hero">
-      <div>
-        <p class="eyebrow">Season overview</p>
-        <h2 id="heroTitle">Leaderboard</h2>
-        <p id="heroSubtitle">Best five rounds count towards the season total.</p>
-      </div>
-      
-    </section>
-    
-
-    <section class="search-panel" aria-label="Player search">
-      <label for="playerSearch">Find a player</label>
-      <div class="search-control">
-        <span aria-hidden="true">⌕</span>
-        <input id="playerSearch" type="search" inputmode="search" autocomplete="off" placeholder="Type a player name">
-      </div>
-    </section>
-
-    <div id="statusMessage" class="status-message" role="status" aria-live="polite"></div>
-
-    <section id="leaderboardView" class="view is-active" aria-labelledby="heroTitle">
-      <div class="section-heading">
+    <section id="leaderboardView" class="view is-active leaderboard-first" aria-labelledby="leaderboardHeading">
+      <div class="section-heading leaderboard-heading">
         <div>
           <p class="eyebrow">Current standings</p>
           <h3 id="leaderboardHeading">Leaderboard</h3>
+          <p>Best five rounds count towards the season total.</p>
         </div>
         <span class="season-chip" id="seasonChip">2027</span>
       </div>
+      <div id="leaderboardPodium" class="leaderboard-podium" aria-label="Top three players"></div>
       <div class="leaderboard-round-tabs" id="leaderboardRoundTabs" role="tablist" aria-label="Leaderboard after round"></div>
       <div class="leaderboard-context" id="leaderboardContext"></div>
+      <section class="search-panel compact-search" aria-label="Player search">
+        <label for="playerSearch">Find a player</label>
+        <div class="search-control">
+          <span aria-hidden="true">⌕</span>
+          <input id="playerSearch" type="search" inputmode="search" autocomplete="off" placeholder="Type a player name">
+        </div>
+      </section>
+      <div id="statusMessage" class="status-message" role="status" aria-live="polite"></div>
       <div id="leaderboardList" class="leaderboard-list"></div>
     </section>
 
