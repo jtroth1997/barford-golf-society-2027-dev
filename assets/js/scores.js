@@ -74,6 +74,20 @@ function renderLeaderboardRoundTabs() {
   });
 }
 
+function renderLeaderboardPodium(players) {
+  const podium = $("#leaderboardPodium");
+  const medals = ["🥇", "🥈", "🥉"];
+  podium.innerHTML = players.slice(0, 3).map((player, index) => `
+    <article class="podium-player podium-position-${index + 1}">
+      <span class="podium-place">${index + 1}</span>
+      <span class="podium-medal" aria-hidden="true">${medals[index]}</span>
+      <strong>${escapeHtml(player.name)}</strong>
+      <span class="podium-points"><b>${player.statistics.seasonPoints}</b> points</span>
+      <small>Handicap ${player.statistics.currentHandicap}</small>
+    </article>
+  `).join("");
+}
+
 function renderLeaderboard() {
   const list = $("#leaderboardList");
   list.innerHTML = "";
@@ -92,8 +106,9 @@ function renderLeaderboard() {
     ? `<strong>${escapeHtml(selectedRound.name)} standings</strong><span>Season totals include completed rounds up to and including this round.</span>`
     : `<strong>No completed rounds yet</strong><span>The leaderboard will appear after scores are calculated and saved.</span>`;
 
-  const ranked = rankPlayers(state.data.players, roundsForStandings, state.data.achievements)
-    .filter(player => player.name.toLowerCase().includes(state.search));
+  const allRanked = rankPlayers(state.data.players, roundsForStandings, state.data.achievements);
+  renderLeaderboardPodium(allRanked);
+  const ranked = allRanked.filter(player => player.name.toLowerCase().includes(state.search));
 
   ranked.forEach(player => {
     const node = $("#leaderboardCardTemplate").content.cloneNode(true);
