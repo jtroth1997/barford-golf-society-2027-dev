@@ -1,0 +1,82 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+  <meta name="theme-color" content="#063d2a">
+  <meta name="description" content="Barford Golf Society payment demonstration">
+  <title>Test Payment | Barford Golf Society</title>
+  <link rel="stylesheet" href="assets/css/styles.css?v=fast3">
+  <link rel="stylesheet" href="assets/css/accessible-mobile.css?v=rapid1">
+  <link rel="stylesheet" href="assets/css/payment-beta.css?v=1">
+</head>
+<body class="payment-beta-page">
+<header class="site-header">
+  <div class="shell header-inner">
+    <a class="brand" href="index.html" aria-label="Barford Golf Society home"><img src="assets/images/barford-golf-society-logo.png" alt="Barford Golf Society"></a>
+    <span class="payment-test-pill">TEST MODE</span>
+  </div>
+</header>
+
+<main id="main-content" class="payment-shell">
+  <section id="paymentCheckout" class="payment-checkout-card">
+    <div class="payment-heading">
+      <div><p class="eyebrow">Secure payment demonstration</p><h1>Pay for your event</h1></div>
+      <span class="secure-mark" aria-label="Secure test checkout">🔒 Test checkout</span>
+    </div>
+
+    <div class="payment-event-summary">
+      <div><span>Event</span><strong id="paymentEventName">Season Opener</strong><small id="paymentVenue">The Belfry – Derby Course</small></div>
+      <strong id="paymentAmount">£45.00</strong>
+    </div>
+
+    <div class="payment-member-row"><span>Paying as</span><strong id="paymentMember">Jack Troth</strong></div>
+
+    <div class="payment-warning" role="note">
+      <strong>Committee demonstration only</strong>
+      <span>No real payment will be taken. Do not enter genuine card information.</span>
+    </div>
+
+    <div class="payment-methods" aria-label="Test payment methods">
+      <button class="wallet-button apple-pay" type="button" data-method="Apple Pay"><span aria-hidden="true"></span> Pay</button>
+      <button class="wallet-button google-pay" type="button" data-method="Google Pay"><span aria-hidden="true">G</span> Pay</button>
+      <button class="wallet-button card-pay" type="button" data-method="Test card">Complete test card payment</button>
+    </div>
+
+    <details class="test-controls">
+      <summary>Committee testing options</summary>
+      <button id="simulateDecline" class="button button-outline" type="button">Simulate a declined payment</button>
+    </details>
+
+    <p id="paymentProgress" class="payment-progress" role="status" aria-live="polite"></p>
+    <a class="payment-back" href="events.html">← Return to events without paying</a>
+  </section>
+
+  <section id="paymentSuccess" class="payment-result-card hidden" aria-live="polite">
+    <span class="result-icon success">✓</span>
+    <p class="eyebrow">Test payment successful</p>
+    <h1>Payment received</h1>
+    <p><strong id="successAmount">£45.00</strong> has been marked as paid for <strong id="successEvent">Season Opener</strong>.</p>
+    <dl>
+      <div><dt>Member</dt><dd id="successMember">Jack Troth</dd></div>
+      <div><dt>Method</dt><dd id="successMethod">Test card</dd></div>
+      <div><dt>Reference</dt><dd id="successReference">BGS-TEST</dd></div>
+    </dl>
+    <div class="result-actions">
+      <a class="button button-primary" href="events.html">Return to events</a>
+      <a class="button button-outline" href="admin.html">View in Admin</a>
+    </div>
+  </section>
+
+  <section id="paymentDeclined" class="payment-result-card hidden" aria-live="polite">
+    <span class="result-icon failed">!</span>
+    <p class="eyebrow">Test payment declined</p>
+    <h1>Payment was not completed</h1>
+    <p>No payment status has been changed. A real member would be able to try again or use another payment method.</p>
+    <button id="tryPaymentAgain" class="button button-primary" type="button">Try payment again</button>
+  </section>
+</main>
+
+<script src="assets/js/payment-beta.js?v=1" defer></script>
+</body>
+</html>
