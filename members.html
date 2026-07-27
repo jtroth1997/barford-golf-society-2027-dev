@@ -38,91 +38,88 @@
   </div>
 </header>
 
-<main id="main-content">
-  <section class="members-hero">
-    <div class="shell members-hero-grid">
+<main id="main-content" class="member-dashboard-page">
+  <section class="dashboard-welcome">
+    <div class="shell dashboard-welcome-inner">
       <div>
-        <p class="eyebrow eyebrow-light">Member account</p>
-        <h1>Your details, ready when you RSVP</h1>
-        <p>Create an account once. When you RSVP to an event, your name, email and phone number can be filled automatically.</p>
+        <p class="eyebrow eyebrow-light">Member dashboard</p>
+        <h1>Welcome back, Jack</h1>
+        <p>Everything you need for your next Barford Golf Society event.</p>
       </div>
-      <div class="member-benefit-card">
-        <strong>Simple RSVP</strong>
-        <span>Click RSVP, choose buggy and preferred tee time, then confirm.</span>
+      <div class="dashboard-member">
+        <div class="member-avatar" aria-hidden="true">JT</div>
+        <div><strong>Jack Troth</strong><span>2027 Member</span></div>
       </div>
     </div>
   </section>
 
-  <section class="section shell">
-    <div id="loggedOutView" class="member-auth-grid">
-      <article class="member-card">
-        <p class="eyebrow">New member</p>
-        <h2>Create your account</h2>
-        <form id="registerForm" class="member-form">
-          <label>Full name<input id="registerName" name="name" required autocomplete="name"></label>
-          <label>Email address<input id="registerEmail" name="email" type="email" required autocomplete="email"></label>
-          <label>Mobile number<input id="registerPhone" name="phone" type="tel" required autocomplete="tel"></label>
-          <label>Password<input id="registerPassword" name="password" type="password" required minlength="6" autocomplete="new-password"></label>
-          <label class="check-row">
-            <input id="registerConsent" type="checkbox" required>
-            <span>I agree to receive event and tee-time updates from Barford Golf Society.</span>
-          </label>
-          <button class="button button-small full-button" type="submit">Create account</button>
-          <p id="registerStatus" class="form-status" aria-live="polite"></p>
-        </form>
-      </article>
-
-      <article class="member-card">
-        <p class="eyebrow">Existing member</p>
-        <h2>Log in</h2>
-        <form id="loginForm" class="member-form">
-          <label>Email address<input id="loginEmail" type="email" required autocomplete="email"></label>
-          <label>Password<input id="loginPassword" type="password" required autocomplete="current-password"></label>
-          <button class="button button-small full-button" type="submit">Log in</button>
-          <p id="loginStatus" class="form-status" aria-live="polite"></p>
-        </form>
-      </article>
-    </div>
-
-    <div id="loggedInView" class="hidden">
-      <div class="member-dashboard-heading">
-        <div>
-          <p class="eyebrow">My account</p>
-          <h2 id="welcomeHeading">Welcome</h2>
+  <section class="dashboard-content shell">
+    <article class="next-event-dashboard">
+      <div class="dashboard-event-top">
+        <div class="dashboard-date"><span>MAR</span><strong>26</strong><small>2027</small></div>
+        <div class="dashboard-event-title">
+          <p class="eyebrow">Your next event</p>
+          <h2>Season Opener</h2>
+          <p class="dashboard-course">The Belfry – Derby Course</p>
         </div>
-        <button id="logoutButton" class="button button-outline" type="button">Log out</button>
+        <span class="dashboard-status">You’re playing</span>
       </div>
 
-      <div class="member-dashboard-grid">
-        <article class="member-card member-summary">
-          <div class="member-avatar" id="memberInitials" aria-hidden="true">BG</div>
-          <div>
-            <h3 id="memberName"></h3>
-            <p id="memberEmail"></p>
-            <p id="memberPhone"></p>
-          </div>
-        </article>
-
-        <article class="member-card">
-          <p class="eyebrow">Account details</p>
-          <h3>Update your information</h3>
-          <form id="profileForm" class="member-form">
-            <label>Full name<input id="profileName" required autocomplete="name"></label>
-            <label>Email address<input id="profileEmail" type="email" required autocomplete="email"></label>
-            <label>Mobile number<input id="profilePhone" type="tel" required autocomplete="tel"></label>
-            <button class="button button-small full-button" type="submit">Save changes</button>
-            <p id="profileStatus" class="form-status" aria-live="polite"></p>
-          </form>
-        </article>
-
-        <article class="member-card member-rsvp-card">
-          <p class="eyebrow">Next step</p>
-          <h3>Ready to play?</h3>
-          <p>Open Events and select RSVP. You will be treated as playing and only need to choose buggy and preferred tee time.</p>
-          <a class="button button-gold full-button" href="events.html">View events</a>
-        </article>
+      <div class="dashboard-event-facts">
+        <div><span>First tee</span><strong>09:00</strong></div>
+        <div><span>Your tee time</span><strong>09:12</strong></div>
+        <div><span>Arrival by</span><strong>08:15</strong></div>
+        <div><span>Payment</span><strong class="paid-text">Paid</strong></div>
       </div>
-    </div>
+
+      <div class="playing-group">
+        <div class="playing-group-heading">
+          <div><p class="eyebrow">Your fourball</p><h3>Who you’re playing with</h3></div>
+          <span>Tee 1 · 09:12</span>
+        </div>
+        <div class="fourball-grid">
+          <div class="fourball-member you"><span>JT</span><div><strong>Jack Troth</strong><small>You</small></div></div>
+          <div class="fourball-member"><span>DS</span><div><strong>David Smith</strong><small>Handicap 16</small></div></div>
+          <div class="fourball-member"><span>MJ</span><div><strong>Mark Taylor</strong><small>Handicap 21</small></div></div>
+          <div class="fourball-member"><span>CB</span><div><strong>Chris Brown</strong><small>Handicap 14</small></div></div>
+        </div>
+      </div>
+
+      <div class="directions-panel">
+        <div><p class="eyebrow">Directions</p><h3>Navigate to The Belfry</h3><p>Lichfield Road, Wishaw, Sutton Coldfield, B76 9PR</p></div>
+        <div class="map-buttons">
+          <a class="map-button apple" href="https://maps.apple.com/?daddr=The%20Belfry%2C%20Lichfield%20Road%2C%20Wishaw%2C%20Sutton%20Coldfield%20B76%209PR" target="_blank" rel="noopener"><span></span>Apple Maps</a>
+          <a class="map-button google" href="https://www.google.com/maps/dir/?api=1&amp;destination=The%20Belfry%2C%20Lichfield%20Road%2C%20Wishaw%2C%20Sutton%20Coldfield%20B76%209PR" target="_blank" rel="noopener"><span>G</span>Google Maps</a>
+          <a class="map-button waze" href="https://www.waze.com/ul?q=The%20Belfry%2C%20Lichfield%20Road%2C%20Wishaw%2C%20Sutton%20Coldfield%20B76%209PR&amp;navigate=yes" target="_blank" rel="noopener"><span>W</span>Waze</a>
+        </div>
+      </div>
+    </article>
+
+    <aside class="dashboard-side">
+      <article class="dashboard-card">
+        <p class="eyebrow">Season snapshot</p>
+        <div class="snapshot-grid">
+          <div><strong>18.4</strong><span>Handicap</span></div>
+          <div><strong>4th</strong><span>Season position</span></div>
+          <div><strong>0/7</strong><span>Events played</span></div>
+          <div><strong>—</strong><span>Best score</span></div>
+        </div>
+      </article>
+      <article class="dashboard-card">
+        <p class="eyebrow">Quick access</p>
+        <nav class="dashboard-links" aria-label="Member quick links">
+          <a href="events.html"><span>View all events</span><b>→</b></a>
+          <a href="scores.html"><span>Scores and standings</span><b>→</b></a>
+          <a href="gallery.html"><span>Member gallery</span><b>→</b></a>
+          <a href="shop.html"><span>Society shop</span><b>→</b></a>
+        </nav>
+      </article>
+      <article class="dashboard-card dashboard-note">
+        <p class="eyebrow">Event note</p>
+        <h3>Meet in the clubhouse</h3>
+        <p>Breakfast is available from 08:00. Please be ready at the first tee ten minutes before your allocated time.</p>
+      </article>
+    </aside>
   </section>
 </main>
 
@@ -134,6 +131,5 @@
 </footer>
 
 <script src="assets/js/app.js" defer></script>
-<script src="assets/js/members.js" defer></script>
 </body>
 </html>
