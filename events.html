@@ -12,6 +12,7 @@
   <link rel="stylesheet" href="assets/css/events.css">
   <link rel="stylesheet" href="assets/css/tee-organiser.css">
   <link rel="stylesheet" href="assets/css/accessible-mobile.css?v=rapid1">
+  <link rel="stylesheet" href="assets/css/payment-beta-shared.css?v=beta1">
 </head>
 <body>
 <a class="skip-link" href="#main-content">Skip to content</a>
@@ -217,5 +218,6 @@
 <script data-mobile-nav-lock>
 window.addEventListener("DOMContentLoaded",()=>document.querySelectorAll(".mobile-quick-nav").forEach(nav=>{const links=nav.querySelectorAll("a");const item=links[links.length-1];if(!item)return;item.href="account.html";item.innerHTML='<span class="quick-icon" aria-hidden="true">●</span><span>My Account</span>';item.classList.toggle("active",location.pathname.endsWith("/account.html"));if(location.pathname.endsWith("/account.html"))item.setAttribute("aria-current","page");else item.removeAttribute("aria-current");}));
 </script>
+<script src="assets/js/payment-beta-shared.js?v=beta1" defer></script>
 </body>
 </html>
