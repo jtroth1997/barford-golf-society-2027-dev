@@ -15,6 +15,7 @@
         price: "£TBC",
         places: 24,
         teeTimes: "09:00",
+        courseVideo: "https://www.youtube.com/watch?v=dQw4w9WgXcQ",
         rsvps: [
           { id:"r1", name:"David Smith", email:"david@example.com", phone:"07111 111111", buggy:"No", teeTime:"Early", paid:true },
           { id:"r2", name:"Steve Jones", email:"steve@example.com", phone:"07222 222222", buggy:"Yes", teeTime:"Middle", paid:false },
@@ -31,6 +32,7 @@
         price: "£TBC",
         places: 24,
         teeTimes: "09:15",
+        courseVideo: "https://www.youtube.com/watch?v=dQw4w9WgXcQ",
         rsvps: [
           { id:"r5", name:"Paul Roberts", email:"paul@example.com", phone:"07555 555555", buggy:"No", teeTime:"Early", paid:true },
           { id:"r6", name:"Andy Green", email:"andy@example.com", phone:"07666 666666", buggy:"Yes", teeTime:"Middle", paid:false }
@@ -83,32 +85,50 @@
     list.innerHTML = data.events.map(event => {
       const date = formatDate(event.date);
       return `
-        <article class="event-card-enhanced">
-          <div class="date-badge">
+        <article class="event-card-enhanced compact-event-card">
+          <div class="event-date-block">
             <span>${date.month}</span>
             <strong>${date.day}</strong>
+            <small>${new Date(`${event.date}T12:00:00`).getFullYear()}</small>
           </div>
 
-          <div>
-            <p class="event-label">${escapeHtml(event.name)}</p>
-            <h3>${escapeHtml(event.venue)}</h3>
-            <p>${escapeHtml(event.description)}</p>
-            <div class="event-price-line"><span class="chip">${escapeHtml(event.price)}</span></div>
-            <div class="event-meta-strip">
-              <div class="event-meta-item">
-                <span>First tee time</span>
-                <strong>${escapeHtml(event.teeTimes)}</strong>
+          <div class="event-main">
+            <div class="event-title-row">
+              <div>
+                <p class="event-label">${escapeHtml(event.name)}</p>
+                <h3>${escapeHtml(event.venue)}</h3>
               </div>
-              <div class="event-meta-item">
-                <span>Slots available</span>
-                <strong>${Math.max(0, event.places - event.rsvps.length)}</strong>
-              </div>
+              <span class="event-price">${escapeHtml(event.price)}</span>
+            </div>
+
+            <div class="event-summary-row">
+              <span><b>First tee</b> ${escapeHtml(event.teeTimes)}</span>
+              <span><b>Slots available</b> ${Math.max(0, event.places - event.rsvps.length)}/${event.places}</span>
+            </div>
+
+            <p class="event-description">${escapeHtml(event.description)}</p>
+
+            <div class="event-button-row">
               <button class="button button-small rsvp-event-button" type="button" data-event-id="${event.id}">RSVP</button>
+              ${event.courseVideo ? `<button class="button button-outline course-video-button" type="button" data-video="${escapeHtml(event.courseVideo)}">Course video</button>` : ""}
+              <button class="button button-outline event-details-button" type="button" data-event-id="${event.id}">More details</button>
+            </div>
+
+            <div class="event-more-details hidden" id="event-details-${event.id}">
+              <div class="detail-grid">
+                <span><b>Date</b>${escapeHtml(date.long)}</span>
+                <span><b>Places</b>${event.rsvps.length}/${event.places} booked</span>
+                <span><b>Tee times</b>${escapeHtml(event.teeTimes)}</span>
+                <span><b>Price</b>${escapeHtml(event.price)}</span>
+              </div>
             </div>
           </div>
 
-          <div class="event-rsvp-section" id="public-rsvps-${event.id}">
-            <div class="rsvp-list-heading"><h4>Players attending</h4><span>${event.rsvps.length} player${event.rsvps.length === 1 ? "" : "s"}</span></div>
+          <aside class="event-rsvp-section">
+            <div class="rsvp-list-heading">
+              <h4>Players attending</h4>
+              <span>${event.rsvps.length}</span>
+            </div>
             <div class="public-rsvp-list">
               ${event.rsvps.map(rsvp => `
                 <div class="public-rsvp-row">
@@ -117,7 +137,7 @@
                 </div>
               `).join("") || `<p class="muted">No RSVPs yet.</p>`}
             </div>
-          </div>
+          </aside>
         </article>
       `;
     }).join("");
@@ -126,6 +146,22 @@
   };
 
   const bindPublicButtons = () => {
+
+    document.querySelectorAll(".event-details-button").forEach(button => {
+      button.addEventListener("click", () => {
+        const panel = document.querySelector(`#event-details-${button.dataset.eventId}`);
+        const hidden = panel.classList.toggle("hidden");
+        button.textContent = hidden ? "More details" : "Hide details";
+      });
+    });
+
+    document.querySelectorAll(".course-video-button").forEach(button => {
+      button.addEventListener("click", () => {
+        window.open(button.dataset.video, "_blank", "noopener,noreferrer");
+      });
+    });
+
+
     document.querySelectorAll(".rsvp-event-button").forEach(button => {
       button.addEventListener("click", () => {
         document.querySelector("#rsvpEvent").value = button.dataset.eventId;
