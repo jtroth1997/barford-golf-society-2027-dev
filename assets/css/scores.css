@@ -72,8 +72,9 @@ main{width:min(1120px,100%);margin:auto;padding:18px 16px 64px}
 
 /* Podium-first leaderboard */
 .leaderboard-first{animation:none}
+.leaderboard-showcase{width:min(1120px,100%);margin:0 auto;padding:10px 16px 0}
 .leaderboard-heading{margin-top:2px}
-.leaderboard-heading h3{font-family:Georgia,serif;font-size:clamp(2rem,5vw,3.35rem);line-height:1}
+.leaderboard-heading h2{margin:0;font-family:Georgia,serif;font-size:clamp(2rem,5vw,3.35rem);line-height:1}
 .leaderboard-heading p:last-child{margin:6px 0 0;color:var(--muted);font-size:.86rem}
 .leaderboard-podium{
   display:grid;
@@ -106,11 +107,11 @@ main{width:min(1120px,100%);margin:auto;padding:18px 16px 64px}
   text-align:center;
   background:linear-gradient(180deg,rgba(255,255,255,.14),rgba(255,255,255,.06));
   transform-origin:bottom center;
-  animation:podiumSlam .72s cubic-bezier(.16,.9,.3,1.18) both;
+  animation:podiumRise .38s ease-out both;
 }
-.podium-position-1{grid-area:first;min-height:178px;border-color:rgba(231,196,99,.62);background:linear-gradient(180deg,rgba(198,168,91,.35),rgba(255,255,255,.08));animation-delay:.52s}
-.podium-position-2{grid-area:second;min-height:146px;animation-delay:.25s}
-.podium-position-3{grid-area:third;min-height:124px;animation-delay:.08s}
+.podium-position-1{grid-area:first;min-height:178px;border-color:rgba(231,196,99,.62);background:linear-gradient(180deg,rgba(198,168,91,.35),rgba(255,255,255,.08))}
+.podium-position-2{grid-area:second;min-height:146px}
+.podium-position-3{grid-area:third;min-height:124px}
 .podium-place{
   position:absolute;
   top:9px;
@@ -123,7 +124,7 @@ main{width:min(1120px,100%);margin:auto;padding:18px 16px 64px}
   color:var(--emerald-950);
   background:var(--gold);
   font-weight:900;
-  animation:positionImpact .45s .9s both;
+  opacity:0;
 }
 .podium-medal{position:absolute;top:9px;right:10px;font-size:1.5rem}
 .podium-player>strong{
@@ -133,17 +134,33 @@ main{width:min(1120px,100%);margin:auto;padding:18px 16px 64px}
   white-space:nowrap;
   font-family:Georgia,serif;
   font-size:clamp(.94rem,2.1vw,1.32rem);
-  animation:nameSlam .5s cubic-bezier(.12,.8,.2,1.3) both;
+  position:relative;
+  z-index:2;
+  opacity:0;
+  animation:nameHoverSlam 1.05s cubic-bezier(.12,.82,.2,1.2) both;
 }
-.podium-position-1>strong{animation-delay:1s}.podium-position-2>strong{animation-delay:.7s}.podium-position-3>strong{animation-delay:.45s}
+.podium-position-3>strong{animation-delay:.2s}
+.podium-position-2>strong{animation-delay:1.3s}
+.podium-position-1>strong{animation-delay:2.4s}
+.podium-position-3 .podium-place{animation:positionImpact .42s 1.02s both}
+.podium-position-2 .podium-place{animation:positionImpact .42s 2.12s both}
+.podium-position-1 .podium-place{animation:positionImpact .42s 3.22s both}
 .podium-points{color:#dce9e2;font-size:.72rem}.podium-points b{color:var(--gold);font-size:1.3rem}.podium-player small{color:#c4d7cd;font-size:.64rem}
 .compact-search{display:grid;grid-template-columns:auto minmax(220px,420px);align-items:center;gap:14px;margin:12px 0}.compact-search label{margin:0;white-space:nowrap}
-@keyframes podiumSlam{0%{opacity:0;transform:translateY(-120px) scale(1.12)}72%{opacity:1;transform:translateY(8px) scale(.98)}86%{transform:translateY(-4px) scale(1.01)}100%{opacity:1;transform:none}}
-@keyframes nameSlam{0%{opacity:0;transform:translateX(-100px) skewX(-12deg)}72%{opacity:1;transform:translateX(5px) skewX(2deg)}100%{opacity:1;transform:none}}
+@keyframes podiumRise{from{opacity:0;transform:translateY(25px)}to{opacity:1;transform:none}}
+@keyframes nameHoverSlam{
+  0%{opacity:0;transform:translateY(-105px) scale(.88);filter:blur(3px)}
+  18%{opacity:1;transform:translateY(-72px) scale(1.08);filter:none}
+  56%{opacity:1;transform:translateY(-72px) scale(1.08)}
+  76%{opacity:1;transform:translateY(9px) scale(1.16)}
+  88%{transform:translateY(-5px) scale(.98)}
+  100%{opacity:1;transform:none}
+}
 @keyframes positionImpact{0%{opacity:0;transform:scale(3.5);filter:blur(3px)}70%{opacity:1;transform:scale(.82)}100%{opacity:1;transform:scale(1);filter:none}}
 @media(max-width:560px){
   .primary-nav{padding-block:7px}
   main{padding-top:8px}
+  .leaderboard-showcase{padding:5px 8px 0}
   .leaderboard-heading{margin:4px 2px 8px}
   .leaderboard-heading h3{font-size:2.05rem}
   .leaderboard-heading p:last-child{font-size:.72rem}
