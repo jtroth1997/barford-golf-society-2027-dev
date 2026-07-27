@@ -443,3 +443,61 @@
     align-items:center;
   }
 }
+
+
+/* Mobile-first 2027 example event refinements */
+.event-heading-copy h3{
+  margin:0;
+  color:var(--green-950);
+  font-size:1.45rem;
+}
+.event-venue{
+  margin:5px 0 0;
+  color:var(--muted);
+  font-weight:700;
+}
+.event-heading-actions{
+  display:flex;
+  align-items:center;
+  gap:8px;
+  flex:0 0 auto;
+}
+.event-heading-actions .rsvp-event-button{
+  min-height:42px;
+  padding:9px 18px;
+}
+.event-summary-row span:last-child{
+  color:#0c5b38;
+  font-weight:800;
+}
+@media(max-width:560px){
+  .event-title-row{
+    display:grid;
+    grid-template-columns:minmax(0,1fr) auto;
+    align-items:start;
+    gap:10px;
+  }
+  .event-heading-actions{
+    display:grid;
+    justify-items:end;
+    gap:7px;
+  }
+  .event-heading-actions .rsvp-event-button{
+    min-width:84px;
+    min-height:40px;
+    padding:8px 14px;
+  }
+  .event-heading-copy h3{
+    font-size:1.18rem;
+  }
+  .event-venue{
+    font-size:.86rem;
+    line-height:1.35;
+  }
+  .event-price{
+    font-size:.8rem;
+  }
+  .compact-event-card .public-rsvp-row{
+    padding:10px;
+  }
+}
