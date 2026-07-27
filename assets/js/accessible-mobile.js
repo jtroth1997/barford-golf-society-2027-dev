@@ -61,7 +61,7 @@
       ["index.html", "⌂", "Home"],
       ["events.html", "◷", "Events"],
       ["scores.html", "★", "Scores"],
-      ["gallery.html", "▦", "Photos"]
+      ["account.html", "●", "My Account"]
     ];
     const current = currentPage;
     quickNav.innerHTML = items.map(([href, icon, label]) =>
