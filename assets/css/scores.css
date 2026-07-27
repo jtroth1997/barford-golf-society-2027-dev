@@ -1608,15 +1608,15 @@ main{
 .points-block span{font-size:.62rem}
 .expand-indicator{font-size:1rem}
 .top-three-row{position:relative;overflow:visible;z-index:3}
-.top-three-row .player-name{
+.leaderboard-cinematic .top-three-row .player-name{
   opacity:0;
   position:relative;
   z-index:8;
-  animation:realNameHoverSlam 1.05s cubic-bezier(.12,.82,.2,1.2) both;
+  animation:realNameHoverSlam 1.15s cubic-bezier(.1,.84,.18,1.22) both;
 }
-.top-position-3 .player-name{animation-delay:.15s}
-.top-position-2 .player-name{animation-delay:1.25s}
-.top-position-1 .player-name{animation-delay:2.35s}
+.leaderboard-cinematic .top-position-3 .player-name{animation-delay:2s}
+.leaderboard-cinematic .top-position-2 .player-name{animation-delay:3.15s}
+.leaderboard-cinematic .top-position-1 .player-name{animation-delay:4.3s}
 .top-three-row::after{
   content:"";
   position:absolute;
@@ -1626,16 +1626,16 @@ main{
   border-radius:15px;
   opacity:0;
 }
-.top-position-3::after{animation:realRowImpact .5s .95s both}
-.top-position-2::after{animation:realRowImpact .5s 2.05s both}
-.top-position-1::after{animation:realRowImpact .5s 3.15s both}
+.leaderboard-cinematic .top-position-3::after{animation:realRowImpact .55s 2.9s both}
+.leaderboard-cinematic .top-position-2::after{animation:realRowImpact .55s 4.05s both}
+.leaderboard-cinematic .top-position-1::after{animation:realRowImpact .65s 5.2s both}
 .top-position-1{border-color:#d9bb68;background:linear-gradient(90deg,#fffaf0,#fff)}
 @keyframes realNameHoverSlam{
-  0%{opacity:0;transform:translateY(-90px) scale(.85);filter:blur(3px)}
-  18%{opacity:1;transform:translateY(-52px) scale(1.12);filter:none;text-shadow:0 8px 18px rgba(3,45,34,.25)}
-  55%{opacity:1;transform:translateY(-52px) scale(1.12);text-shadow:0 8px 18px rgba(3,45,34,.25)}
-  76%{opacity:1;transform:translateY(7px) scale(1.18)}
-  88%{transform:translateY(-3px) scale(.98)}
+  0%{opacity:0;transform:translateY(-120px) scale(4);filter:blur(8px)}
+  22%{opacity:1;transform:translateY(-58px) scale(1.45);filter:none;text-shadow:0 12px 28px rgba(3,45,34,.38)}
+  56%{opacity:1;transform:translateY(-58px) scale(1.45);text-shadow:0 12px 28px rgba(3,45,34,.38)}
+  74%{opacity:1;transform:translateY(10px) scale(1.7)}
+  84%{transform:translateY(-5px) scale(.9)}
   100%{opacity:1;transform:none;text-shadow:none}
 }
 @keyframes realRowImpact{
@@ -1643,6 +1643,35 @@ main{
   40%{opacity:1;transform:scale(1);border-color:var(--gold);box-shadow:0 0 28px rgba(198,168,91,.55)}
   100%{opacity:0;transform:scale(1);border-color:transparent;box-shadow:none}
 }
+.leaderboard-cinematic .ranking-motion{
+  position:relative;
+  z-index:2;
+  animation:rankingShuffle 1.25s cubic-bezier(.2,.82,.2,1) var(--move-delay) both;
+}
+.leaderboard-cinematic .ranking-motion.moved-up{animation-name:rankingShuffleUp}
+.leaderboard-cinematic .ranking-motion.moved-down{animation-name:rankingShuffleDown}
+.movement-badge{display:inline-flex;align-items:center;justify-content:center;padding:1px 5px;border-radius:999px;font-size:.58rem;font-weight:900}
+.movement-badge.up{color:#08663d;background:#dff4e8}
+.movement-badge.down{color:#9b392d;background:#fbe4df}
+.leaderboard-cinematic .movement-badge{opacity:0;animation:movementBadgePop .55s 1.45s cubic-bezier(.12,.85,.2,1.35) forwards}
+@keyframes rankingShuffle{
+  0%{transform:translateY(var(--move-from));filter:brightness(.9);box-shadow:0 12px 28px rgba(3,45,34,.18)}
+  72%{transform:translateY(-3px);filter:brightness(1.04)}
+  100%{transform:none;filter:none}
+}
+@keyframes rankingShuffleUp{
+  0%{transform:translateY(var(--move-from));border-color:#78c99f;box-shadow:0 16px 35px rgba(17,133,78,.28)}
+  65%{transform:translateY(-7px) scale(1.012);border-color:#2d9b63}
+  82%{transform:translateY(3px)}
+  100%{transform:none}
+}
+@keyframes rankingShuffleDown{
+  0%{transform:translateY(var(--move-from));border-color:#e3a096;box-shadow:0 15px 32px rgba(166,40,40,.22)}
+  65%{transform:translateY(6px) scale(.992);border-color:#c9685b}
+  82%{transform:translateY(-2px)}
+  100%{transform:none}
+}
+@keyframes movementBadgePop{0%{opacity:0;transform:scale(2.8) rotate(-9deg)}70%{opacity:1;transform:scale(.84) rotate(2deg)}100%{opacity:1;transform:none}}
 .leaderboard-first + .primary-nav{position:static;display:flex;justify-content:center;margin:18px -16px 0;border-top:1px solid var(--line)}
 @media(max-width:719px){
   #main-content{padding:6px 8px 64px}
@@ -1673,5 +1702,5 @@ main{
   .leaderboard-first + .primary-nav{margin-inline:-8px;justify-content:flex-start;overflow-x:auto}
 }
 @media(prefers-reduced-motion:reduce){
-  .top-three-row .player-name,.top-three-row::after{animation:none!important;opacity:1!important}
+  .top-three-row .player-name,.top-three-row::after,.ranking-motion,.movement-badge{animation:none!important;opacity:1!important;transform:none!important}
 }
