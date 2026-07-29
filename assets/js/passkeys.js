@@ -1,6 +1,11 @@
 (() => {
   "use strict";
-  const endpoint = `${window.BARFORD_SUPABASE?.url}/functions/v1/passkeys`;
+  const config = window.BARFORD_2027_CONFIG;
+  if (!config) {
+    console.error("The isolated 2027 account configuration is unavailable.");
+    return;
+  }
+  const endpoint = `${config.supabaseUrl}/functions/v1/passkeys`;
   const encode = value => {
     const bytes = value instanceof ArrayBuffer ? new Uint8Array(value) : new Uint8Array(value.buffer);
     let binary = "";
@@ -17,7 +22,7 @@
       method: "POST",
       headers: {
         "Content-Type": "application/json",
-        apikey: window.BARFORD_SUPABASE.publishableKey,
+        apikey: config.supabasePublishableKey,
         ...(accessToken ? { Authorization: `Bearer ${accessToken}` } : {})
       },
       body: JSON.stringify(body)
