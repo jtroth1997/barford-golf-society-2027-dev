@@ -53,9 +53,6 @@
 
   window.BarfordPasskeys = {
     supported: Boolean(window.PublicKeyCredential && navigator.credentials),
-    async createAccount({ fullName, email, phone, password }) {
-      return request("create-account", { fullName, email, phone, password });
-    },
     async register() {
       const { data: { session } } = await window.BarfordSupabase.auth.getSession();
       if (!session) throw new Error("Please sign in before adding this device.");
