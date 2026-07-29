@@ -97,8 +97,6 @@
     section.appendChild(button);
   });
 
-  if (document.body.querySelector(".media-card")) document.body.classList.add("world-simplified");
-
   const scoreList = document.querySelector("#leaderboardList");
   if (scoreList) {
     const skip = document.createElement("button");
