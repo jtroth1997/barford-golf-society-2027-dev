@@ -263,17 +263,22 @@
     if (!session) return;
     document.getElementById("publicHome")?.classList.add("hidden");
     document.getElementById("memberHomeDashboard")?.classList.remove("hidden");
-    const { data: profile } = await client.from("profiles").select("*").eq("id", session.user.id).single();
-    const name = profile?.full_name || session.user.user_metadata?.full_name || "Member";
+    const knownName = session.user.user_metadata?.full_name || "Member";
+    set("dashboardFirstName", knownName.split(/\s+/)[0]);
+    set("dashboardFullName", knownName);
+
+    const profilePromise = client.from("profiles").select("*").eq("id", session.user.id).single();
+    const corePromise = Promise.all([loadNextEvent(), loadPayments()]);
+    const [{ data: profile }] = await Promise.all([profilePromise, corePromise]);
+    const name = profile?.full_name || knownName;
     set("dashboardFirstName", name.split(/\s+/)[0]);
     set("dashboardFullName", name);
     set("dashboardMembershipStatus", profile?.is_admin ? "2027 member · Administrator" : "2027 member");
-    await Promise.all([
-      profile ? setAvatar(profile) : Promise.resolve(),
-      loadLegacyStats(),
-      loadNextEvent(),
-      loadPayments()
-    ]);
+    if (profile) setAvatar(profile);
+
+    const loadPreviousSeason = () => loadLegacyStats();
+    if ("requestIdleCallback" in window) requestIdleCallback(loadPreviousSeason, { timeout: 1200 });
+    else setTimeout(loadPreviousSeason, 100);
   };
 
   document.querySelectorAll("[data-rsvp]").forEach(button => button.addEventListener("click", () => saveRsvp(button.dataset.rsvp)));
