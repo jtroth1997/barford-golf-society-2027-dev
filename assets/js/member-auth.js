@@ -43,12 +43,13 @@
     button.textContent = "Creating account…";
     message("#signupStatus", "");
 
-    try {
-      await window.BarfordPasskeys.createAccount({ fullName, email, phone, password });
-    } catch (error) {
-      message("#signupStatus", error.message === "A user with this email address has already been registered"
-        ? "An account already exists for that email. Use My Account to sign in."
-        : error.message, true);
+    const { data, error } = await client.auth.signUp({
+      email,
+      password,
+      options: { data: { full_name: fullName, phone } }
+    });
+    if (error) {
+      message("#signupStatus", error.message, true);
       button.disabled = false;
       button.textContent = "Create my account";
       return;
@@ -57,6 +58,7 @@
     localStorage.setItem("barford-login-email", email);
     sessionStorage.setItem("barford-first-login", "1");
     sessionStorage.setItem("barford-use-passkey", usePasskey ? "1" : "0");
+    if (data.session) await client.auth.signOut();
     window.location.href = "account.html?account=created";
   });
 
