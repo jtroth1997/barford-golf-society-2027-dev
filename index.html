@@ -9,7 +9,7 @@
   <link rel="stylesheet" href="assets/css/styles.css?v=fast3">
   <link rel="stylesheet" href="assets/css/members.css">
   
-  <link rel="stylesheet" href="assets/css/accessible-mobile.css?v=mobile4">
+  <link rel="stylesheet" href="assets/css/accessible-mobile.css?v=camera2">
 </head>
 <body>
 <a class="skip-link" href="#main-content">Skip to content</a>
@@ -49,6 +49,15 @@
         <div class="dashboard-event-title"><p class="eyebrow">Your next event</p><h2>Season Opener</h2><p class="dashboard-course">The Belfry – Derby Course</p></div>
         <span class="dashboard-status">You’re playing</span>
       </div>
+      <div id="eventDayCameraTab" class="event-camera-banner" data-event-date="2026-07-27">
+        <button id="openEventCamera" class="event-camera-action" type="button">
+          <span class="camera-tab-icon" aria-hidden="true">📷</span>
+          <span class="camera-banner-copy"><strong>Take a photo</strong><small>Add a moment from today to the society gallery</small></span>
+          <span class="camera-optional">Optional</span>
+          <span class="camera-arrow" aria-hidden="true">›</span>
+        </button>
+        <input id="eventCameraInput" class="camera-file-input" type="file" accept="image/*" capture="environment">
+      </div>
       <section id="eventCountdown" class="event-countdown" data-event-date="2026-07-27" data-tee-time="09:12" aria-label="Countdown to next event">
         <div class="countdown-icon" aria-hidden="true">⛳</div>
         <div class="countdown-copy"><span id="countdownEyebrow">Next event countdown</span><strong id="countdownHeadline">Calculating…</strong><small id="countdownSubline">Season Opener · The Belfry</small></div>
@@ -58,15 +67,6 @@
           <div><strong id="countdownMinutes">—</strong><span>Mins</span></div>
         </div>
       </section>
-      <div id="eventDayCameraTab" class="event-camera-banner hidden" data-event-date="2026-07-27">
-        <button id="openEventCamera" class="event-camera-action" type="button">
-          <span class="camera-tab-icon" aria-hidden="true">📷</span>
-          <span class="camera-banner-copy"><strong>Take a photo</strong><small>Add a moment from today to the society gallery</small></span>
-          <span class="camera-optional">Optional</span>
-          <span class="camera-arrow" aria-hidden="true">›</span>
-        </button>
-        <input id="eventCameraInput" class="camera-file-input" type="file" accept="image/*" capture="environment">
-      </div>
       <div class="dashboard-event-facts">
         <div><span>First tee</span><strong>09:00</strong></div><div><span>Your tee time</span><strong>09:12</strong></div>
         <div><span>Arrival by</span><strong>08:15</strong></div><div><span>Payment</span><strong class="paid-text">Paid</strong></div>
@@ -200,7 +200,7 @@
 <script src="assets/js/member-session.js" defer></script>
 <script src="assets/js/event-countdown.js" defer></script>
 <script src="assets/js/event-weather.js" defer></script>
-<script src="assets/js/event-camera.js" defer></script>
+<script src="assets/js/event-camera.js?v=2" defer></script>
 
 <script src="assets/js/accessible-mobile.js?v=mobile4" defer></script>
 <script data-mobile-nav-lock>
