@@ -9,7 +9,7 @@
   <link rel="stylesheet" href="assets/css/styles.css?v=fast3">
   <link rel="stylesheet" href="assets/css/members.css">
   
-  <link rel="stylesheet" href="assets/css/accessible-mobile.css?v=camera2">
+  <link rel="stylesheet" href="assets/css/accessible-mobile.css?v=camera3">
 </head>
 <body>
 <a class="skip-link" href="#main-content">Skip to content</a>
@@ -34,6 +34,19 @@
     </nav>
   </div>
 </header>
+<div class="demo-camera-strip" aria-label="Event-day photo">
+  <div class="shell">
+    <div id="eventDayCameraTab" class="event-camera-banner" data-event-date="2026-07-27">
+      <button id="openEventCamera" class="event-camera-action" type="button">
+        <span class="camera-tab-icon" aria-hidden="true">📷</span>
+        <span class="camera-banner-copy"><strong>Take a photo</strong><small>Add a moment from today to the society gallery</small></span>
+        <span class="camera-optional">Optional</span>
+        <span class="camera-arrow" aria-hidden="true">›</span>
+      </button>
+      <input id="eventCameraInput" class="camera-file-input" type="file" accept="image/*" capture="environment">
+    </div>
+  </div>
+</div>
 <main id="main-content">
 <section id="memberHomeDashboard" class="member-home-dashboard hidden" aria-label="Member dashboard">
   <div class="dashboard-welcome">
@@ -48,15 +61,6 @@
         <div class="dashboard-date"><span>JUL</span><strong>27</strong><small>2026</small></div>
         <div class="dashboard-event-title"><p class="eyebrow">Your next event</p><h2>Season Opener</h2><p class="dashboard-course">The Belfry – Derby Course</p></div>
         <span class="dashboard-status">You’re playing</span>
-      </div>
-      <div id="eventDayCameraTab" class="event-camera-banner" data-event-date="2026-07-27">
-        <button id="openEventCamera" class="event-camera-action" type="button">
-          <span class="camera-tab-icon" aria-hidden="true">📷</span>
-          <span class="camera-banner-copy"><strong>Take a photo</strong><small>Add a moment from today to the society gallery</small></span>
-          <span class="camera-optional">Optional</span>
-          <span class="camera-arrow" aria-hidden="true">›</span>
-        </button>
-        <input id="eventCameraInput" class="camera-file-input" type="file" accept="image/*" capture="environment">
       </div>
       <section id="eventCountdown" class="event-countdown" data-event-date="2026-07-27" data-tee-time="09:12" aria-label="Countdown to next event">
         <div class="countdown-icon" aria-hidden="true">⛳</div>
@@ -106,6 +110,7 @@
       <button id="memberSignOut" class="button button-outline dashboard-signout" type="button">Sign out on this device</button>
     </aside>
   </div>
+</section>
 <dialog id="photoReviewDialog" class="photo-review-dialog">
     <form method="dialog" class="photo-review-card">
       <div class="photo-review-heading"><div><p class="eyebrow">Review photo</p><h2>Happy with it?</h2></div><button class="photo-close" value="cancel" aria-label="Close">×</button></div>
@@ -118,7 +123,6 @@
       <a id="viewSavedPhoto" class="button button-small hidden" href="gallery.html#event-day-photos">View gallery</a>
     </form>
   </dialog>
-</section>
 <div id="publicHome">
 <section class="hero">
   <div class="shell hero-grid">
@@ -195,7 +199,7 @@
     <p>© <span id="year"></span> Barford Golf Society</p>
   </div>
 </footer>
-<script src="assets/js/app.js?v=mobile4" defer></script>
+<script src="assets/js/app.js?v=mobile5" defer></script>
 <script src="assets/js/demo-today.js?v=2" defer></script>
 <script src="assets/js/member-session.js" defer></script>
 <script src="assets/js/event-countdown.js" defer></script>
