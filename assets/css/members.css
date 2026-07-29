@@ -536,6 +536,43 @@
 .login-divider span { text-align: center; }
 .account-security-note { font-size: .88rem; margin-top: .75rem; }
 
+.member-home { background: #f3f7f4; min-height: 80vh; padding-bottom: 3rem; }
+.member-home-hero { padding: 3rem 0 4.75rem; background: linear-gradient(120deg,#052e20,#0b5a3e); color: #fff; }
+.member-home-hero h1 { margin: .25rem 0 .5rem; color: #fff; }
+.member-home-hero p:last-child { margin: 0; color: #dcebe4; font-size: 1.1rem; }
+.member-home-grid { display: grid; grid-template-columns: 1.25fr .75fr; gap: 1.25rem; margin-top: -2.5rem; }
+.dashboard-card { background: #fff; border: 1px solid #dbe5df; border-radius: 24px; padding: 1.5rem; box-shadow: 0 16px 40px rgba(5,46,32,.09); }
+.dashboard-passkey { grid-column: 1 / -1; display: grid; grid-template-columns: auto 1fr auto auto; align-items: center; gap: 1rem; border-color: #d6b45d; }
+.dashboard-passkey h2,.dashboard-next-event h2,.dashboard-season-review h2 { margin: .15rem 0 .35rem; }
+.dashboard-passkey p { margin: 0; }
+.dashboard-icon { display:grid;place-items:center;width:58px;height:58px;border-radius:50%;background:#e1f4eb;color:#075039;font-size:2rem;font-weight:800; }
+.dashboard-dismiss { border:0;background:transparent;text-decoration:underline;color:#53655c;cursor:pointer;font:inherit; }
+.dashboard-passkey .form-status { grid-column: 2 / -1; }
+.dashboard-next-event { grid-column: 2; grid-row: 2; }
+.dashboard-season-review { grid-column: 1; grid-row: 2 / span 2; }
+.dashboard-card-heading { display:flex;justify-content:space-between;gap:1rem;align-items:start; }
+.season-chip { padding:.45rem .75rem;border-radius:999px;background:#f7edcf;color:#735717;font-weight:800; }
+.legacy-stat-grid { display:grid;grid-template-columns:repeat(3,1fr);gap:.75rem;margin:1.25rem 0; }
+.legacy-stat-grid div { padding:1rem;border-radius:16px;background:#f4f7f5; }
+.legacy-stat-grid strong,.legacy-stat-grid span { display:block; }
+.legacy-stat-grid strong { color:#074b34;font-size:1.65rem; }
+.legacy-stat-grid span { color:#637168;font-size:.82rem;font-weight:700; }
+.legacy-feedback { padding:1rem;border-left:4px solid #d8ae4d;background:#fbf7eb;border-radius:0 12px 12px 0; }
+.dashboard-actions { display:grid;gap:.75rem;grid-column:2; }
+.dashboard-action { display:flex;justify-content:space-between;gap:1rem;padding:1.2rem;border-radius:18px;background:#073d2a;color:#fff;text-decoration:none; }
+.dashboard-action span { color:#dbe8e1; }
+@media (max-width: 760px) {
+  .member-home-hero { padding: 1.75rem 0 4rem; }
+  .member-home-grid { grid-template-columns:1fr; margin-top:-2rem; }
+  .dashboard-passkey,.dashboard-next-event,.dashboard-season-review,.dashboard-actions { grid-column:1;grid-row:auto; }
+  .dashboard-passkey { grid-template-columns:auto 1fr; }
+  .dashboard-passkey .button { grid-column:1 / -1; width:100%; }
+  .dashboard-dismiss { grid-column:1 / -1; min-height:44px; }
+  .dashboard-passkey .form-status { grid-column:1 / -1; }
+  .legacy-stat-grid { grid-template-columns:repeat(2,1fr); }
+  .dashboard-action { flex-direction:column;gap:.2rem; }
+}
+
 .season-review-panel {
   overflow: hidden;
   border-top: 5px solid #d8ae4d;
