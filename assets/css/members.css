@@ -535,6 +535,11 @@
 .login-divider::before,.login-divider::after { content: ""; height: 1px; flex: 1; background: #d6dfda; }
 .login-divider span { text-align: center; }
 .account-security-note { font-size: .88rem; margin-top: .75rem; }
+.device-choice { display:flex!important;align-items:flex-start;gap:.8rem;padding:1rem;border:2px solid #0a5138;border-radius:16px;background:#edf8f3;cursor:pointer; }
+.device-choice input { width:24px!important;height:24px!important;min-width:24px;margin:.1rem 0 0;accent-color:#0a5138; }
+.device-choice span,.device-choice strong,.device-choice small { display:block; }
+.device-choice strong { color:#073d2a;font-size:1rem; }
+.device-choice small { margin-top:.25rem;color:#53655c;line-height:1.35; }
 
 .member-home { background: #f3f7f4; min-height: 80vh; padding-bottom: 3rem; }
 .member-home-hero { padding: 3rem 0 4.75rem; background: linear-gradient(120deg,#052e20,#0b5a3e); color: #fff; }
