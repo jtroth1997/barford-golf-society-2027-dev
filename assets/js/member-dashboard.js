@@ -260,7 +260,12 @@
   const load = async () => {
     const result = await client.auth.getSession();
     session = result.data.session;
-    if (!session) return;
+    if (!session) {
+      document.documentElement.classList.remove("member-session-cached");
+      document.getElementById("publicHome")?.classList.remove("hidden");
+      document.getElementById("memberHomeDashboard")?.classList.add("hidden");
+      return;
+    }
     document.getElementById("publicHome")?.classList.add("hidden");
     document.getElementById("memberHomeDashboard")?.classList.remove("hidden");
     const knownName = session.user.user_metadata?.full_name || "Member";
