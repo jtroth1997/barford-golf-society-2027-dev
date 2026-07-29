@@ -29,7 +29,7 @@ const b64ToBytes = (value: string) => {
   const binary = atob(normal.padEnd(Math.ceil(normal.length / 4) * 4, "="));
   return Uint8Array.from(binary, character => character.charCodeAt(0));
 };
-const saveChallenge = async (challenge: string, userId: string, purpose: "register" | "login") => {
+const saveChallenge = async (challenge: string, userId: string | null, purpose: "register" | "login") => {
   await admin.from("passkey_challenges").delete().lt("expires_at", new Date().toISOString());
   const { error } = await admin.from("passkey_challenges").insert({
     challenge, user_id: userId, purpose, expires_at: new Date(Date.now() + 300_000).toISOString()
@@ -41,6 +41,11 @@ const takeChallenge = async (challenge: string, userId: string, purpose: "regist
     .eq("user_id", userId).eq("purpose", purpose).gt("expires_at", new Date().toISOString()).select().maybeSingle();
   if (!data) throw new Error("This request expired. Please try again.");
 };
+const takeLoginChallenge = async (challenge: string) => {
+  const { data } = await admin.from("passkey_challenges").delete().eq("challenge", challenge)
+    .eq("purpose", "login").is("user_id", null).gt("expires_at", new Date().toISOString()).select().maybeSingle();
+  if (!data) throw new Error("This sign-in request expired. Please try again.");
+};
 const authenticatedUser = async (request: Request) => {
   const token = request.headers.get("Authorization")?.replace(/^Bearer\s+/i, "");
   if (!token) throw new Error("Please sign in first.");
@@ -48,12 +53,6 @@ const authenticatedUser = async (request: Request) => {
   if (error || !data.user) throw new Error("Your session has expired. Please sign in again.");
   return data.user;
 };
-const findUser = async (email: string) => {
-  const { data, error } = await admin.auth.admin.listUsers({ page: 1, perPage: 1000 });
-  if (error) throw error;
-  return data.users.find(user => user.email?.toLowerCase() === email);
-};
-
 Deno.serve(async request => {
   if (request.method === "OPTIONS") return new Response("ok", { headers });
   try {
@@ -67,7 +66,7 @@ Deno.serve(async request => {
       const options = await generateRegistrationOptions({
         rpName, rpID, userName: user.email!, userDisplayName: profile?.full_name || user.email!,
         userID: new TextEncoder().encode(user.id), attestationType: "none",
-        authenticatorSelection: { residentKey: "preferred", userVerification: "required" },
+        authenticatorSelection: { residentKey: "required", userVerification: "required" },
         excludeCredentials: (credentials || []).map(item => ({ id: item.id, transports: item.transports as AuthenticatorTransport[] }))
       });
       await saveChallenge(options.challenge, user.id, "register");
@@ -93,29 +92,17 @@ Deno.serve(async request => {
     }
 
     if (action === "login-options") {
-      const email = String(body.email || "").trim().toLowerCase();
-      if (!email) throw new Error("Enter your email address first.");
-      const user = await findUser(email);
-      if (!user) throw new Error("No device sign-in is set up for that account.");
-      const { data: credentials } = await admin.from("passkey_credentials").select("id,transports").eq("user_id", user.id);
-      if (!credentials?.length) throw new Error("No device sign-in is set up for that account.");
-      const options = await generateAuthenticationOptions({
-        rpID, userVerification: "required",
-        allowCredentials: credentials.map(item => ({ id: item.id, transports: item.transports as AuthenticatorTransport[] }))
-      });
-      await saveChallenge(options.challenge, user.id, "login");
+      const options = await generateAuthenticationOptions({ rpID, userVerification: "required" });
+      await saveChallenge(options.challenge, null, "login");
       return json(options);
     }
 
     if (action === "login-verify") {
-      const email = String(body.email || "").trim().toLowerCase();
-      const user = await findUser(email);
-      if (!user) throw new Error("Device sign-in was not recognised.");
-      const { data: stored } = await admin.from("passkey_credentials").select("*").eq("id", body.credential.id).eq("user_id", user.id).single();
+      const { data: stored } = await admin.from("passkey_credentials").select("*").eq("id", body.credential.id).single();
       if (!stored) throw new Error("Device sign-in was not recognised.");
       const verification = await verifyAuthenticationResponse({
         response: body.credential,
-        expectedChallenge: async challenge => { await takeChallenge(challenge, user.id, "login"); return true; },
+        expectedChallenge: async challenge => { await takeLoginChallenge(challenge); return true; },
         expectedOrigin, expectedRPID: rpID, requireUserVerification: true,
         credential: {
           id: stored.id, publicKey: b64ToBytes(stored.public_key), counter: Number(stored.counter),
@@ -126,6 +113,9 @@ Deno.serve(async request => {
       await admin.from("passkey_credentials").update({
         counter: verification.authenticationInfo.newCounter, last_used_at: new Date().toISOString()
       }).eq("id", stored.id);
+      const { data: userData, error: userError } = await admin.auth.admin.getUserById(stored.user_id);
+      const email = userData.user?.email;
+      if (userError || !email) throw userError || new Error("The member account could not be found.");
       const { data: link, error } = await admin.auth.admin.generateLink({ type: "magiclink", email });
       if (error || !link.properties.hashed_token) throw error || new Error("Secure session could not be created.");
       return json({ tokenHash: link.properties.hashed_token });
