@@ -43,6 +43,21 @@ button:focus-visible,a:focus-visible,input:focus-visible,select:focus-visible,te
 }
 .site-message.show{transform:translate(-50%,0);opacity:1}
 .mobile-only{display:none}
+.event-is-today{border-color:#3f9c68!important;box-shadow:0 12px 34px rgba(15,74,52,.14)!important}
+.event-today-pill{
+  display:inline-flex;
+  align-items:center;
+  justify-content:center;
+  min-height:30px;
+  padding:5px 10px;
+  border-radius:999px;
+  background:#dff4e7;
+  color:#0f5b36;
+  font-size:.74rem;
+  font-weight:900;
+  letter-spacing:.08em;
+  text-transform:uppercase;
+}
 
 @media(max-width:850px){
   html{font-size:17px;scroll-padding-top:72px}
