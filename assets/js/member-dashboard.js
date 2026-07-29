@@ -60,6 +60,7 @@
 
   const showStats = (stats, season = 2026) => {
     document.getElementById("seasonDashboardCard")?.classList.remove("is-unavailable");
+    document.getElementById("seasonDashboardCard")?.classList.remove("is-awaiting-match");
     show("dashboardRetry2026", false);
     set("legacyPlayerName", stats.name);
     set("legacyPosition", stats.position ? `#${stats.position}` : "N/A");
@@ -136,9 +137,11 @@
         set("legacyPlayerName", "Confirm your 2026 player name");
         set("legacyFeedback", "Once confirmed, your previous-season figures will stay here until the first 2027 results are published.");
         show("legacyMatchPrompt");
+        document.getElementById("seasonDashboardCard")?.classList.add("is-awaiting-match");
         return;
       }
       if (data?.status === "declined") {
+        document.getElementById("seasonDashboardCard")?.classList.remove("is-awaiting-match");
         set("legacyPlayerName", "2026 results not linked");
         set("legacyFeedback", "No problem—your dashboard will begin building from your first 2027 event.");
         return;
@@ -175,6 +178,7 @@
       return;
     }
     show("legacyMatchPrompt", false);
+    document.getElementById("seasonDashboardCard")?.classList.remove("is-awaiting-match");
     if (confirmed && data?.stats) showStats(data.stats);
     else {
       set("legacyPlayerName", "2026 results not linked");
