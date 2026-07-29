@@ -62,8 +62,30 @@
       return;
     }
 
+    const dialog = $("#passkeySetupDialog");
+    if (dialog && window.BarfordPasskeys?.supported) {
+      button.textContent = "Account created";
+      dialog.showModal();
+      return;
+    }
     window.location.href = "account.html";
   });
+
+  $("#setupPasskeyAfterSignup")?.addEventListener("click", async event => {
+    const button = event.currentTarget;
+    button.disabled = true;
+    button.textContent = "Waiting for your device…";
+    try {
+      await window.BarfordPasskeys.register();
+      message("#signupPasskeyStatus", "Device sign-in is ready.");
+      window.setTimeout(() => { window.location.href = "account.html"; }, 650);
+    } catch (error) {
+      message("#signupPasskeyStatus", error.name === "NotAllowedError" ? "Setup was cancelled. You can add it later." : error.message, true);
+      button.disabled = false;
+      button.textContent = "Set up device sign-in";
+    }
+  });
+  $("#skipPasskeyAfterSignup")?.addEventListener("click", () => { window.location.href = "account.html"; });
 
   const loginForm = $("#accountLoginForm");
   loginForm?.addEventListener("submit", async event => {
@@ -84,6 +106,43 @@
       return;
     }
     window.location.reload();
+  });
+
+  $("#accountPasskeyLogin")?.addEventListener("click", async event => {
+    const button = event.currentTarget;
+    if (!window.BarfordPasskeys?.supported) {
+      message("#accountLoginStatus", "This browser does not support device sign-in. Please use email and password.", true);
+      return;
+    }
+    button.disabled = true;
+    button.textContent = "Waiting for your device…";
+    try {
+      await window.BarfordPasskeys.login($("#accountLoginEmail").value);
+      window.location.reload();
+    } catch (error) {
+      message("#accountLoginStatus", error.name === "NotAllowedError" ? "Device sign-in was cancelled." : error.message, true);
+      button.disabled = false;
+      button.innerHTML = '<span aria-hidden="true">⌁</span> Use Face ID or device sign-in';
+    }
+  });
+
+  $("#accountAddPasskey")?.addEventListener("click", async event => {
+    const button = event.currentTarget;
+    if (!window.BarfordPasskeys?.supported) {
+      message("#accountPasskeyStatus", "This browser does not support device sign-in.", true);
+      return;
+    }
+    button.disabled = true;
+    button.textContent = "Waiting for your device…";
+    try {
+      await window.BarfordPasskeys.register();
+      message("#accountPasskeyStatus", "This device is ready for quick secure sign-in.");
+      button.textContent = "Device added";
+    } catch (error) {
+      message("#accountPasskeyStatus", error.name === "NotAllowedError" ? "Setup was cancelled." : error.message, true);
+      button.disabled = false;
+      button.innerHTML = '<span aria-hidden="true">⌁</span> Add this device';
+    }
   });
 
   const loadAccount = async () => {
