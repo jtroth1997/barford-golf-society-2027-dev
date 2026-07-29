@@ -3,15 +3,24 @@
 const body = document.body;
 if ("serviceWorker" in navigator) {
   window.addEventListener("load", () => {
-    navigator.serviceWorker.register("./sw.js?v=rapid15").catch(() => {});
+    navigator.serviceWorker.register("./sw.js?v=mobile3").catch(() => {});
   }, { once:true });
 }
 document.querySelectorAll(".menu-button").forEach(menuButton => {
   const navigationId = menuButton.getAttribute("aria-controls");
   const navigation = navigationId ? document.getElementById(navigationId) : menuButton.closest(".site-header")?.querySelector(".site-nav");
   if (!navigation) return;
-  const closeMenu = () => { navigation.classList.remove("is-open"); menuButton.setAttribute("aria-expanded", "false"); };
-  menuButton.addEventListener("click", event => { event.stopPropagation(); const open = navigation.classList.toggle("is-open"); menuButton.setAttribute("aria-expanded", String(open)); });
+  const closeMenu = () => {
+    navigation.classList.remove("is-open");
+    menuButton.setAttribute("aria-expanded", "false");
+    body.classList.remove("mobile-menu-open");
+  };
+  menuButton.addEventListener("click", event => {
+    event.stopPropagation();
+    const open = navigation.classList.toggle("is-open");
+    menuButton.setAttribute("aria-expanded", String(open));
+    body.classList.toggle("mobile-menu-open", open);
+  });
   navigation.querySelectorAll("a").forEach(link => link.addEventListener("click", closeMenu));
   document.addEventListener("click", event => { if (!navigation.contains(event.target) && !menuButton.contains(event.target)) closeMenu(); });
   document.addEventListener("keydown", event => { if (event.key === "Escape") { closeMenu(); menuButton.focus(); } });
