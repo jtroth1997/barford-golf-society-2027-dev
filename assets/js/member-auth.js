@@ -68,7 +68,7 @@
       dialog.showModal();
       return;
     }
-    window.location.href = "account.html";
+    window.location.href = "index.html";
   });
 
   $("#setupPasskeyAfterSignup")?.addEventListener("click", async event => {
@@ -78,14 +78,14 @@
     try {
       await window.BarfordPasskeys.register();
       message("#signupPasskeyStatus", "Device sign-in is ready.");
-      window.setTimeout(() => { window.location.href = "account.html"; }, 650);
+      window.setTimeout(() => { window.location.href = "index.html"; }, 650);
     } catch (error) {
       message("#signupPasskeyStatus", error.name === "NotAllowedError" ? "Setup was cancelled. You can add it later." : error.message, true);
       button.disabled = false;
       button.textContent = "Set up device sign-in";
     }
   });
-  $("#skipPasskeyAfterSignup")?.addEventListener("click", () => { window.location.href = "account.html"; });
+  $("#skipPasskeyAfterSignup")?.addEventListener("click", () => { window.location.href = "index.html"; });
 
   const loginForm = $("#accountLoginForm");
   loginForm?.addEventListener("submit", async event => {
@@ -105,7 +105,7 @@
       button.textContent = "Sign in";
       return;
     }
-    window.location.reload();
+    window.location.href = "index.html";
   });
 
   $("#accountPasskeyLogin")?.addEventListener("click", async event => {
