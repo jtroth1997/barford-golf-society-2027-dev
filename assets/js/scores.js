@@ -92,7 +92,10 @@ function renderLeaderboard() {
     ? `<strong>${escapeHtml(selectedRound.name)} standings</strong><span>Season totals include completed rounds up to and including this round.</span>`
     : `<strong>No completed rounds yet</strong><span>The leaderboard will appear after scores are calculated and saved.</span>`;
 
-  const allRanked = rankPlayers(state.data.players, roundsForStandings, state.data.achievements);
+  const eligiblePlayers = state.data.players.filter(player =>
+    !selectedRound || Number(player.fromRound || 1) <= Number(selectedRound.number)
+  );
+  const allRanked = rankPlayers(eligiblePlayers, roundsForStandings, state.data.achievements);
   const ranked = allRanked.filter(player => player.name.toLowerCase().includes(state.search));
   const previousRanked = rankPlayers(
     state.data.players,
