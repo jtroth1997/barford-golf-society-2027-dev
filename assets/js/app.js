@@ -2,16 +2,11 @@
 
 const body = document.body;
 if ("serviceWorker" in navigator) {
-  window.addEventListener("load", async () => {
-    try {
-      const registrations = await navigator.serviceWorker.getRegistrations();
-      await Promise.all(registrations.map(registration => registration.unregister()));
-      if ("caches" in window) {
-        const keys = await caches.keys();
-        await Promise.all(keys.filter(key => key.startsWith("barford-golf-")).map(key => caches.delete(key)));
-      }
-    } catch (_) {}
-  }, { once:true });
+  window.addEventListener("load", () => {
+    const register = () => navigator.serviceWorker.register("./sw.js").catch(() => {});
+    if ("requestIdleCallback" in window) requestIdleCallback(register, { timeout: 2000 });
+    else setTimeout(register, 250);
+  }, { once: true });
 }
 document.querySelectorAll(".menu-button").forEach(menuButton => {
   const navigationId = menuButton.getAttribute("aria-controls");
