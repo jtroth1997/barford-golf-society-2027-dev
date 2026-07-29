@@ -70,7 +70,8 @@
 
   if (cameraTab) {
     const previewMode = new URLSearchParams(location.search).get("preview") === "event-day";
-    cameraTab.classList.toggle("hidden", !(localDate() === cameraTab.dataset.eventDate || previewMode));
+    const demoMode = document.body.classList.contains("demo-event-today");
+    cameraTab.classList.toggle("hidden", !(demoMode || localDate() === cameraTab.dataset.eventDate || previewMode));
   }
 
   document.querySelector("#openEventCamera")?.addEventListener("click", () => cameraInput.click());
