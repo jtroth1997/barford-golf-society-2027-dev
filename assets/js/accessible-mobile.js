@@ -22,7 +22,7 @@
   }
   if (currentPage === "events.html") {
     const preview = document.querySelector(".events-toolbar .muted");
-    if (preview) preview.textContent = "Example events for the 2027 season.";
+    if (preview) preview.textContent = "The 2027 calendar is ready for the committee to add the first event.";
   }
   if (currentPage === "index.html") {
     document.querySelectorAll('a[href="events.html"]').forEach(link => {
