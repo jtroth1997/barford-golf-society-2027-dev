@@ -16,7 +16,7 @@
   <link rel="preconnect" href="https://xspzmthygrajzktydvvj.supabase.co" crossorigin>
   <link rel="preconnect" href="https://cdn.jsdelivr.net" crossorigin>
   <link rel="stylesheet" href="assets/css/styles.css?v=live1">
-  <link rel="stylesheet" href="assets/css/members.css?v=dashboard4">
+  <link rel="stylesheet" href="assets/css/members.css?v=rsvp1">
   <link rel="stylesheet" href="assets/css/accessible-mobile.css?v=mobile4">
   <style>
     .member-session-cached #publicHome{display:none!important}
@@ -136,13 +136,31 @@
   </section>
   </div>
 </main>
+<dialog id="dashboardRsvpDialog" class="member-rsvp-dialog">
+  <form id="dashboardRsvpForm">
+    <button id="dashboardRsvpClose" class="dialog-close" type="button" aria-label="Close">×</button>
+    <p class="eyebrow">Confirm your RSVP</p>
+    <h2>I’m playing</h2>
+    <p>Tell the organiser how you plan to play. You can change this later.</p>
+    <fieldset>
+      <legend>Will you be walking or using a buggy?</legend>
+      <div class="rsvp-choice-grid">
+        <label><input type="radio" name="travel" value="walking" checked><span><strong>Walking</strong><small>I’ll walk the course</small></span></label>
+        <label><input type="radio" name="travel" value="buggy"><span><strong>Buggy</strong><small>Please group me with buggy players</small></span></label>
+      </div>
+    </fieldset>
+    <label class="rsvp-time-field">Preferred tee time <span>Optional</span><input id="dashboardPreferredTeeTime" type="time"><small>We’ll try to accommodate this, but it cannot be guaranteed.</small></label>
+    <div class="dashboard-button-row"><button class="button button-primary" type="submit">Confirm I’m playing</button><button id="dashboardRsvpCancel" class="button button-outline" type="button">Cancel</button></div>
+    <p id="dashboardRsvpDialogStatus" class="form-status" aria-live="polite"></p>
+  </form>
+</dialog>
 <footer class="site-footer"><div class="shell footer-inner"><div class="footer-brand"><img decoding="async" loading="lazy" src="assets/images/barford-golf-society-logo.png" alt=""><span>Barford Golf Society</span></div><p>© <span id="year"></span> Barford Golf Society</p></div></footer>
 <script src="assets/js/app.js?v=speed2" defer></script>
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2" defer></script>
 <script src="assets/js/supabase-config.js?v=live1" defer></script>
 <script src="assets/js/supabase-client.js?v=live1" defer></script>
 <script src="assets/js/passkeys.js?v=onboarding3" defer></script>
-<script src="assets/js/member-dashboard.js?v=speed2" defer></script>
+<script src="assets/js/member-dashboard.js?v=rsvp1" defer></script>
 <script src="assets/js/accessible-mobile.js?v=mobile4" defer></script>
 <script data-mobile-nav-lock>
 window.addEventListener("DOMContentLoaded",()=>document.querySelectorAll(".mobile-quick-nav").forEach(nav=>{const links=nav.querySelectorAll("a");const item=links[links.length-1];if(!item)return;item.href="account.html";item.innerHTML='<span class="quick-icon" aria-hidden="true">●</span><span>My Account</span>';item.classList.toggle("active",location.pathname.endsWith("/account.html"));if(location.pathname.endsWith("/account.html"))item.setAttribute("aria-current","page");else item.removeAttribute("aria-current");}));
