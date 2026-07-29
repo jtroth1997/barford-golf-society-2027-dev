@@ -2,8 +2,15 @@
 
 const body = document.body;
 if ("serviceWorker" in navigator) {
-  window.addEventListener("load", () => {
-    navigator.serviceWorker.register("./sw.js?v=mobile5").catch(() => {});
+  window.addEventListener("load", async () => {
+    try {
+      const registrations = await navigator.serviceWorker.getRegistrations();
+      await Promise.all(registrations.map(registration => registration.unregister()));
+      if ("caches" in window) {
+        const keys = await caches.keys();
+        await Promise.all(keys.filter(key => key.startsWith("barford-golf-")).map(key => caches.delete(key)));
+      }
+    } catch (_) {}
   }, { once:true });
 }
 document.querySelectorAll(".menu-button").forEach(menuButton => {
