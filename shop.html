@@ -1,62 +1,7 @@
 <!doctype html>
 <html lang="en">
-<head>
-  <meta charset="utf-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1">
-  <meta name="description" content="Barford Golf Society 2027 website">
-  <meta name="theme-color" content="#063d2a">
-  <title>Shop | Barford Golf Society</title>
-  <link rel="stylesheet" href="assets/css/styles.css?v=fast3">
-  
-  <link rel="stylesheet" href="assets/css/accessible-mobile.css?v=mobile4">
-</head>
-<body>
-<a class="skip-link" href="#main-content">Skip to content</a>
-<header class="site-header">
-  <div class="shell header-inner">
-    <a class="brand" href="index.html" aria-label="Barford Golf Society home">
-      <img decoding="async" fetchpriority="high" src="assets/images/barford-golf-society-logo.png" alt="Barford Golf Society">
-    </a>
-    <button class="menu-button" type="button" aria-expanded="false" aria-controls="primary-navigation">
-      <span class="sr-only">Open menu</span><span></span><span></span><span></span>
-    </button>
-    <nav id="primary-navigation" class="site-nav" aria-label="Primary navigation">
-      <a class="" href="index.html">Home</a>
-<a class="" href="events.html">Events</a>
-<a class="" href="worldevents.html">World Events</a>
-<a class="" href="scores.html">Scores</a>
-<a class="active" href="shop.html" aria-current="page">Shop</a>
-<a class="" href="gallery.html">Gallery</a>
-<a class="" href="about.html">About Us</a>
-<a class="" href="account.html">My Account</a>
-<a class="" href="admin.html">Admin</a>
-    </nav>
-  </div>
-</header>
-<main id="main-content">
-<section class="page-hero shop"><div class="shell"><p class="eyebrow">Society merchandise</p><h1>Golf shop</h1><p>Browse society products and reserve items for collection.</p></div></section>
-<section class="section shell">
-  <div class="toolbar"><div><p class="eyebrow">Products</p><h2>Golf essentials</h2></div><div class="button-row"><button class="button button-outline" id="basketBtn">🛒 Basket (<span id="basketCount">0</span>)</button></div></div>
-  <div class="product-grid">
-    <article class="product-card"><div class="product-image">BGS</div><div><h3>Society golf balls</h3><p>Premium golf balls with Barford branding.</p><strong>£12.00</strong><button class="button button-small add-to-basket">Add to basket</button></div></article>
-    <article class="product-card"><div class="product-image">BGS</div><div><h3>Society cap</h3><p>Classic cap in society green.</p><strong>£18.00</strong><button class="button button-small add-to-basket">Add to basket</button></div></article>
-    <article class="product-card"><div class="product-image">BGS</div><div><h3>Golf towel</h3><p>Embroidered towel for your golf bag.</p><strong>£15.00</strong><button class="button button-small add-to-basket">Add to basket</button></div></article>
-  </div>
-</section>
-<section id="basketPanel" class="section section-soft hidden"><div class="shell narrow"><p class="eyebrow">Your basket</p><h2>Reserve items</h2><div class="form-card"><p id="basketSummary">Your basket is empty.</p><h3>Total: <span id="basketTotal">£0.00</span></h3><input placeholder="Your name"><select><option>Collection method</option><option>Collect at next event</option><option>Arrange separately</option></select><button class="button button-primary demo-action">Reserve items</button></div></div></section>
-
-</main>
-<footer class="site-footer">
-  <div class="shell footer-inner">
-    <div class="footer-brand"><img decoding="async" loading="lazy" src="assets/images/barford-golf-society-logo.png" alt=""><span>Barford Golf Society</span></div>
-    <p>© <span id="year"></span> Barford Golf Society</p>
-  </div>
-</footer>
-<script src="assets/js/app.js?v=mobile4" defer></script>
-
-<script src="assets/js/accessible-mobile.js?v=mobile4" defer></script>
-<script data-mobile-nav-lock>
-window.addEventListener("DOMContentLoaded",()=>document.querySelectorAll(".mobile-quick-nav").forEach(nav=>{const links=nav.querySelectorAll("a");const item=links[links.length-1];if(!item)return;item.href="account.html";item.innerHTML='<span class="quick-icon" aria-hidden="true">●</span><span>My Account</span>';item.classList.toggle("active",location.pathname.endsWith("/account.html"));if(location.pathname.endsWith("/account.html"))item.setAttribute("aria-current","page");else item.removeAttribute("aria-current");}));
-</script>
-</body>
-</html>
+<head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover"><meta name="theme-color" content="#063d2a"><title>Shop | Barford Golf Society</title><link rel="stylesheet" href="assets/css/styles.css?v=live1"><link rel="stylesheet" href="assets/css/accessible-mobile.css?v=mobile4"></head>
+<body><a class="skip-link" href="#main-content">Skip to content</a>
+<header class="site-header"><div class="shell header-inner"><a class="brand" href="index.html"><img src="assets/images/barford-golf-society-logo.png" alt="Barford Golf Society"></a><button class="menu-button" type="button" aria-expanded="false" aria-controls="primary-navigation"><span class="sr-only">Open menu</span><span></span><span></span><span></span></button><nav id="primary-navigation" class="site-nav"><a href="index.html">Home</a><a href="events.html">Events</a><a href="worldevents.html">World Events</a><a href="scores.html">Scores</a><a class="active" href="shop.html">Shop</a><a href="gallery.html">Gallery</a><a href="about.html">About Us</a><a href="account.html">My Account</a><a href="admin.html">Admin</a></nav></div></header>
+<main id="main-content"><section class="page-hero shop"><div class="shell"><p class="eyebrow">Society merchandise</p><h1>Golf shop</h1><p>Official Barford Golf Society products and collection information.</p></div></section><section class="section shell"><article class="empty-state account-panel"><p class="eyebrow">No products yet</p><h2>The shop is currently empty</h2><p>Products will appear here when the committee makes them available.</p></article></section></main>
+<footer class="site-footer"><div class="shell footer-inner"><div class="footer-brand"><img src="assets/images/barford-golf-society-logo.png" alt=""><span>Barford Golf Society</span></div><p>© <span id="year"></span> Barford Golf Society</p></div></footer><script src="assets/js/app.js?v=live1" defer></script><script src="assets/js/accessible-mobile.js?v=mobile4" defer></script></body></html>
