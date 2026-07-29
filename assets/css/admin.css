@@ -2,7 +2,7 @@
 @media(max-width:900px){.admin-login-layout,.admin-columns{grid-template-columns:1fr}.admin-actions{grid-template-columns:repeat(2,1fr)}}@media(max-width:700px){.admin-stats{grid-template-columns:repeat(2,1fr)}.admin-toolbar,.admin-heading{align-items:flex-start;flex-direction:column}.admin-actions{grid-template-columns:1fr}.invite-result{grid-template-columns:1fr}.admin-list article{grid-template-columns:auto 1fr auto}.admin-list article>div:nth-of-type(2){grid-column:2}.status{grid-column:2}.admin-heading .button{width:100%}}
 
 .admin-account-list{display:grid;margin-top:18px}
-.admin-account-row{display:grid;grid-template-columns:auto minmax(0,1fr) auto minmax(170px,auto);align-items:center;gap:14px;padding:15px 0;border-bottom:1px solid var(--line)}
+.admin-account-row{display:grid;grid-template-columns:auto minmax(0,1fr) auto minmax(190px,auto) minmax(170px,auto);align-items:center;gap:12px;padding:15px 0;border-bottom:1px solid var(--line)}
 .admin-account-row:last-child{border-bottom:0}
 .admin-account-name strong,.admin-account-name small{display:block}.admin-account-name small{margin-top:2px;color:var(--muted)}
 .status.member{background:#edf2ef;color:#516159}
