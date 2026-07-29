@@ -35,24 +35,16 @@
   </div>
 </header>
 <main id="main-content">
-<section class="page-hero signup"><div class="shell"><p class="eyebrow">Membership</p><h1>Join Barford Golf Society</h1><p>Register your interest for a friendly, social season of golf.</p></div></section>
-<section class="section shell"><div class="signup-grid"><div><p class="eyebrow">Become a member</p><h2>Start your next golf season with us</h2><p>Complete the form and a society organiser will contact you with membership information.</p><ul class="check-list"><li>Welcoming to different abilities</li><li>Eight society days each season</li><li>Friendly competition and social events</li></ul></div><form id="memberSignupForm" class="form-card member-create-form">
-  <div class="profile-photo-picker">
-    <div id="signupPhotoPreview" class="profile-photo-preview" aria-hidden="true"><span>+</span></div>
-    <div class="profile-photo-copy">
-      <strong>Add a profile photo</strong>
-      <p>This will appear beside your name in four-balls and on your member dashboard.</p>
-      <label class="button button-outline photo-picker-button" for="signupPhoto">Choose photo</label>
-      <input id="signupPhoto" class="profile-photo-input" type="file" accept="image/*" capture="user">
-      <button id="removeSignupPhoto" class="photo-remove hidden" type="button">Remove photo</button>
-      <small>Optional — you can add or change it later.</small>
-    </div>
-  </div>
+<section class="page-hero signup"><div class="shell"><p class="eyebrow">2027 member account</p><h1>Set up your account</h1><p>Create your secure Barford Golf Society login. It only takes a minute.</p></div></section>
+<section class="section shell"><div class="signup-grid"><div><p class="eyebrow">Simple setup</p><h2>Your golf, all in one place</h2><p>This is the real 2027 member system, completely separate from the current 2026 website.</p><ul class="check-list"><li>Stay signed in on your device</li><li>Manage your profile and golf information</li><li>Access events, tee times and scores</li></ul></div><form id="memberSignupForm" class="form-card member-create-form">
   <label>Full name<input id="signupName" type="text" required autocomplete="name" placeholder="Your full name"></label>
   <label>Email address<input id="signupEmail" type="email" required autocomplete="email" placeholder="name@example.com"></label>
-  <label>Phone number<input id="signupPhone" type="tel" required autocomplete="tel" placeholder="07..."></label>
-  <button class="button button-primary" type="submit">Create member account</button>
-  <p class="form-status" aria-live="polite"></p>
+  <label>Create password<input id="signupPassword" type="password" required minlength="8" autocomplete="new-password" placeholder="At least 8 characters"></label>
+  <label>Confirm password<input id="signupPasswordConfirm" type="password" required minlength="8" autocomplete="new-password" placeholder="Type it again"></label>
+  <label>Mobile number <span class="optional-label">Optional</span><input id="signupPhone" type="tel" autocomplete="tel" placeholder="07..."></label>
+  <button class="button button-primary full-button" type="submit">Create my account</button>
+  <p class="account-helper">No email confirmation or committee approval needed.</p>
+  <p id="signupStatus" class="form-status" aria-live="polite"></p>
 </form></div></section>
 
 </main>
@@ -63,7 +55,10 @@
   </div>
 </footer>
 <script src="assets/js/app.js?v=mobile4" defer></script>
-<script src="assets/js/member-session.js" defer></script>
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2" defer></script>
+<script src="assets/js/supabase-config.js?v=live1" defer></script>
+<script src="assets/js/supabase-client.js?v=live1" defer></script>
+<script src="assets/js/member-auth.js?v=live1" defer></script>
 
 <script src="assets/js/accessible-mobile.js?v=mobile4" defer></script>
 <script data-mobile-nav-lock>
