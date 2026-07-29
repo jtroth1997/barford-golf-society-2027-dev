@@ -69,6 +69,14 @@ button:focus-visible,a:focus-visible,input:focus-visible,select:focus-visible,te
   border:2px solid #d0a34d;
   box-shadow:0 12px 30px rgba(157,116,41,.2);
 }
+.demo-camera-strip{
+  position:relative;
+  z-index:90;
+  padding:12px 0;
+  background:#f6edd8;
+  border-bottom:1px solid #dfc98f;
+}
+.demo-camera-strip .event-camera-banner{margin:0}
 .demo-event-today .event-camera-action .camera-tab-icon{
   animation:demoCameraNudge 5s ease-in-out infinite;
 }
@@ -191,6 +199,8 @@ button:focus-visible,a:focus-visible,input:focus-visible,select:focus-visible,te
   .mobile-only{display:block}
   .site-footer{padding:26px 0 22px!important}
   .footer-inner{gap:14px;align-items:flex-start}
+  .demo-camera-strip{padding:8px 0}
+  .demo-camera-strip .shell{width:min(100% - 16px,1180px)}
 
   /* Member home: one clear task at a time */
   .dashboard-welcome{padding:24px 0!important}
