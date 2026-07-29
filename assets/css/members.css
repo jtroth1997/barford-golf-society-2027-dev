@@ -446,3 +446,167 @@
   .countdown-units{grid-column:1/-1;display:grid;grid-template-columns:repeat(3,1fr)}
   .countdown-units div{min-width:0}
 }
+.optional-label {
+  color: #66736c;
+  font-size: .82rem;
+  font-weight: 600;
+}
+
+.account-helper {
+  margin: -.25rem 0 0;
+  color: #5f6d65;
+  font-size: .9rem;
+  text-align: center;
+}
+
+.account-login-form {
+  display: grid;
+  gap: 1rem;
+  max-width: 480px;
+  margin: 1.5rem auto;
+  text-align: left;
+}
+
+.account-signup-link {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: .75rem;
+  flex-wrap: wrap;
+  margin-top: 1rem;
+}
+
+.demo-preview-link {
+  margin-top: 1.5rem;
+  border: 0;
+  background: none;
+  color: #627068;
+  text-decoration: underline;
+  cursor: pointer;
+}
+
+.passkey-dialog {
+  width: min(92vw, 430px);
+  padding: 0;
+  border: 0;
+  border-radius: 28px;
+  box-shadow: 0 28px 80px rgba(0, 25, 16, .35);
+}
+
+.passkey-dialog::backdrop { background: rgba(0, 24, 16, .72); }
+.passkey-dialog form { position: relative; padding: 2rem; text-align: center; }
+.passkey-dialog h2 { margin: .4rem 0 .75rem; }
+.passkey-dialog .button { margin-top: .75rem; }
+.passkey-dialog small { display: block; margin-top: 1rem; color: #637168; }
+.dialog-close {
+  position: absolute;
+  top: .75rem;
+  right: .75rem;
+  width: 44px;
+  height: 44px;
+  border: 0;
+  border-radius: 50%;
+  background: #edf2ef;
+  font-size: 1.7rem;
+  cursor: pointer;
+}
+.passkey-icon {
+  display: grid;
+  place-items: center;
+  width: 72px;
+  height: 72px;
+  margin: 0 auto 1rem;
+  border-radius: 50%;
+  background: #dff4e9;
+  color: #064d35;
+  font-size: 2.6rem;
+  font-weight: 800;
+}
+
+.button-passkey {
+  background: #edf8f3;
+  border: 2px solid #0a5138;
+  color: #073d2a;
+  justify-content: center;
+}
+.button-passkey:hover { background: #dff2e9; }
+.button-passkey span { font-size: 1.45em; line-height: 0; margin-right: .35rem; }
+.login-divider { display: flex; align-items: center; gap: .75rem; margin: 1.15rem 0; color: #637168; font-size: .9rem; }
+.login-divider::before,.login-divider::after { content: ""; height: 1px; flex: 1; background: #d6dfda; }
+.login-divider span { text-align: center; }
+.account-security-note { font-size: .88rem; margin-top: .75rem; }
+
+.season-review-panel {
+  overflow: hidden;
+  border-top: 5px solid #d8ae4d;
+}
+
+.review-year {
+  padding: .4rem .75rem;
+  border-radius: 999px;
+  background: #f7edcf;
+  color: #725513;
+  font-weight: 800;
+}
+
+.season-review-summary {
+  margin: .5rem 0 1.25rem;
+  color: #4e5d55;
+  font-size: 1.05rem;
+  line-height: 1.6;
+}
+
+.demo-data-note {
+  display: inline-flex;
+  margin: 0 0 .75rem;
+  padding: .35rem .65rem;
+  border-radius: 999px;
+  background: #fff4cc;
+  color: #6e5414;
+  font-size: .78rem;
+  font-weight: 800;
+}
+
+.season-review-grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: .75rem;
+}
+
+.season-review-grid > div,
+.review-highlight > div {
+  padding: 1rem;
+  border-radius: 16px;
+  background: #f4f7f5;
+}
+
+.season-review-grid span,
+.review-highlight span {
+  display: block;
+  color: #68756e;
+  font-size: .8rem;
+  font-weight: 700;
+}
+
+.season-review-grid strong {
+  display: block;
+  margin-top: .3rem;
+  color: #073c2a;
+  font-family: "Playfair Display", serif;
+  font-size: 1.6rem;
+}
+
+.review-highlight {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: .75rem;
+  margin-top: .75rem;
+}
+
+.review-highlight strong { display: block; margin-top: .35rem; color: #073c2a; }
+
+@media (max-width: 650px) {
+  .season-review-grid { grid-template-columns: repeat(2, 1fr); }
+  .review-highlight { grid-template-columns: 1fr; }
+  .passkey-dialog form { padding: 1.75rem 1.25rem; }
+}
