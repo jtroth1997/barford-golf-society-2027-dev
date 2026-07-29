@@ -42,24 +42,14 @@
   <label>Create password<input id="signupPassword" type="password" required minlength="8" autocomplete="new-password" placeholder="At least 8 characters"></label>
   <label>Confirm password<input id="signupPasswordConfirm" type="password" required minlength="8" autocomplete="new-password" placeholder="Type it again"></label>
   <label>Mobile number <span class="optional-label">Optional</span><input id="signupPhone" type="tel" autocomplete="tel" placeholder="07..."></label>
+  <label class="device-choice">
+    <input id="signupUsePasskey" type="checkbox" checked>
+    <span><strong>Use Face ID or device sign-in</strong><small>Recommended — you will set this up securely when you first log in.</small></span>
+  </label>
   <button class="button button-primary full-button" type="submit">Create my account</button>
-  <p class="account-helper">No email confirmation or committee approval needed. After setup, you can add Face ID, fingerprint or your device security for quicker sign-in.</p>
+  <p class="account-helper">No email confirmation or committee approval needed. You will be sent to My Account to log in securely.</p>
   <p id="signupStatus" class="form-status" aria-live="polite"></p>
 </form></div></section>
-
-<dialog id="passkeySetupDialog" class="passkey-dialog">
-  <form method="dialog">
-    <button class="dialog-close" value="cancel" aria-label="Not now">×</button>
-    <div class="passkey-icon" aria-hidden="true">⌁</div>
-    <p class="eyebrow">Quick secure sign-in</p>
-    <h2>Use Face ID or your device?</h2>
-    <p>Your phone will offer Face ID, Touch ID, fingerprint, Windows Hello or its normal screen lock. Barford never receives your biometric information.</p>
-    <button id="setupPasskeyAfterSignup" class="button button-primary full-button" type="button">Set up device sign-in</button>
-    <button id="skipPasskeyAfterSignup" class="button button-outline full-button" value="cancel">Not now</button>
-    <p id="signupPasskeyStatus" class="form-status" aria-live="polite"></p>
-    <small>You can add this later in My Account. Email and password will always remain available.</small>
-  </form>
-</dialog>
 
 </main>
 <footer class="site-footer">
@@ -72,8 +62,8 @@
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2" defer></script>
 <script src="assets/js/supabase-config.js?v=live1" defer></script>
 <script src="assets/js/supabase-client.js?v=live1" defer></script>
-<script src="assets/js/passkeys.js?v=live3" defer></script>
-<script src="assets/js/member-auth.js?v=live3" defer></script>
+<script src="assets/js/passkeys.js?v=onboarding1" defer></script>
+<script src="assets/js/member-auth.js?v=onboarding1" defer></script>
 
 <script src="assets/js/accessible-mobile.js?v=mobile4" defer></script>
 <script data-mobile-nav-lock>
