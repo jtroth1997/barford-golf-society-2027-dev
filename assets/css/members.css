@@ -566,6 +566,34 @@
 .dashboard-actions { display:grid;gap:.75rem;grid-column:2; }
 .dashboard-action { display:flex;justify-content:space-between;gap:1rem;padding:1.2rem;border-radius:18px;background:#073d2a;color:#fff;text-decoration:none; }
 .dashboard-action span { color:#dbe8e1; }
+.dashboard-profile-summary{grid-column:1/-1;display:grid;grid-template-columns:auto 1fr auto;align-items:center;gap:1rem}
+.dashboard-profile-summary h2{margin:.1rem 0}.dashboard-profile-summary p{margin:0;color:var(--muted)}
+.dashboard-profile-summary .member-avatar{width:68px;height:68px;flex-basis:68px}
+.dashboard-next-event{grid-column:1;grid-row:auto}
+.dashboard-season-review{grid-column:1;grid-row:auto}
+.dashboard-payments{grid-column:2;grid-row:auto}
+.dashboard-actions{grid-column:2}
+.dashboard-event-facts{display:grid;grid-template-columns:repeat(3,1fr);gap:.65rem;margin:1.1rem 0}
+.dashboard-event-facts div{padding:.8rem;border-radius:13px;background:#f4f7f5}
+.dashboard-event-facts span,.dashboard-event-facts strong{display:block}
+.dashboard-event-facts span{color:#65736b;font-size:.74rem;font-weight:800}
+.dashboard-event-facts strong{margin-top:.15rem;color:#063d2a}
+.dashboard-button-row{display:flex;flex-wrap:wrap;gap:.65rem;margin:.75rem 0}
+.dashboard-count{display:grid;place-items:center;min-width:42px;height:42px;border-radius:50%;background:#f4e9c8;color:#6d5112;font-size:1.2rem}
+.dashboard-payment-list{display:grid;margin-top:1rem}
+.dashboard-payment-list article{display:grid;grid-template-columns:minmax(0,1fr) auto auto;align-items:center;gap:.75rem;padding:.9rem 0;border-bottom:1px solid var(--line)}
+.dashboard-payment-list article:last-child{border-bottom:0}.dashboard-payment-list strong,.dashboard-payment-list small{display:block}
+.dashboard-payment-list small{margin-top:.2rem;color:var(--muted)}
+.dashboard-payment-list b{color:#8a6110}
+.dashboard-good{display:flex;align-items:center;gap:.8rem;padding:1rem;border-radius:14px;background:#eaf7ef}
+.dashboard-good>span{display:grid;place-items:center;width:38px;height:38px;border-radius:50%;color:#fff;background:#188554;font-weight:900}
+.dashboard-good strong,.dashboard-good small{display:block}.dashboard-good small{color:#557066}
+.dashboard-highlight-row{display:grid;grid-template-columns:repeat(3,1fr);gap:.65rem;margin:0 0 1rem}
+.dashboard-highlight-row>div{display:grid;grid-template-columns:auto 1fr;column-gap:.5rem;padding:.8rem;border:1px solid #e2e9e5;border-radius:14px}
+.dashboard-highlight-row>div>span{grid-row:1/3;font-size:1.35rem}.dashboard-highlight-row strong,.dashboard-highlight-row small{display:block}
+.dashboard-highlight-row small{color:var(--muted);font-size:.7rem}
+.dashboard-live-source{display:flex;align-items:center;gap:.4rem;color:#637168}
+.dashboard-live-source span{width:8px;height:8px;border-radius:50%;background:#27a36a}
 @media (max-width: 760px) {
   .member-home-hero { padding: 1.75rem 0 4rem; }
   .member-home-grid { grid-template-columns:1fr; margin-top:-2rem; }
@@ -576,6 +604,15 @@
   .dashboard-passkey .form-status { grid-column:1 / -1; }
   .legacy-stat-grid { grid-template-columns:repeat(2,1fr); }
   .dashboard-action { flex-direction:column;gap:.2rem; }
+  .dashboard-profile-summary{grid-template-columns:auto 1fr}
+  .dashboard-profile-summary .button{grid-column:1/-1;width:100%}
+  .dashboard-event-facts{grid-template-columns:1fr 1fr}
+  .dashboard-event-facts div:last-child{grid-column:1/-1}
+  .dashboard-button-row{display:grid;grid-template-columns:1fr}
+  .dashboard-button-row .button{width:100%}
+  .dashboard-payment-list article{grid-template-columns:1fr auto}
+  .dashboard-payment-list .button{grid-column:1/-1;width:100%}
+  .dashboard-highlight-row{grid-template-columns:1fr}
 }
 
 .season-review-panel {
