@@ -135,10 +135,10 @@
       return;
     }
     const { data, error } = await client.from("rsvps")
-      .select("id,status,payment_status,buggy_requested,guest_name,profiles(full_name,phone,playing_preference)")
+      .select("id,status,payment_status,buggy_requested,preferred_tee_time,guest_name,profiles(full_name,phone,playing_preference)")
       .eq("event_id", eventId).order("created_at");
     if (error) { setStatus("#adminRsvpStatus", error.message); return; }
-    const row = item => `<article><div><strong>${escapeHtml(item.profiles?.full_name || item.guest_name || "Guest")}</strong><small>${escapeHtml(item.profiles?.phone || "No phone")} · ${item.buggy_requested ? "Buggy requested" : "Walking"} · ${escapeHtml(item.payment_status)}</small></div><button class="danger-link" type="button" data-remove-rsvp="${item.id}">Remove</button></article>`;
+    const row = item => `<article><div><strong>${escapeHtml(item.profiles?.full_name || item.guest_name || "Guest")}</strong><small>${escapeHtml(item.profiles?.phone || "No phone")} · ${item.buggy_requested ? "Buggy requested" : "Walking"}${item.preferred_tee_time ? ` · prefers ${escapeHtml(String(item.preferred_tee_time).slice(0, 5))}` : ""} · ${escapeHtml(item.payment_status)}</small></div><button class="danger-link" type="button" data-remove-rsvp="${item.id}">Remove</button></article>`;
     const active = (data || []).filter(item => item.status === "playing");
     const reserves = (data || []).filter(item => item.status === "reserve");
     playing.innerHTML = active.length ? active.map(row).join("") : "<p>No confirmed players.</p>";
