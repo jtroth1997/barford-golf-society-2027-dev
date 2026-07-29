@@ -36,11 +36,41 @@
   </section>
 
   <section id="accountSignedOut" class="section shell hidden">
-    <div class="account-signed-out"><h2>Your account is not open on this device</h2><p>Create an account or use the preview to see the new account area.</p><div class="button-row"><a class="button button-primary" href="signup.html">Create account</a><button id="rememberMemberDevice" class="button button-outline" type="button">Preview as Jack</button></div></div>
+    <div class="account-signed-out">
+      <p class="eyebrow">Member login</p>
+      <h2>Open My Account</h2>
+      <p>Enter the email and password used when you created your account.</p>
+      <form id="accountLoginForm" class="account-login-form">
+        <label>Email address<input id="accountLoginEmail" type="email" autocomplete="email" required></label>
+        <label>Password<input id="accountLoginPassword" type="password" autocomplete="current-password" required></label>
+        <button class="button button-primary full-button" type="submit">Sign in</button>
+        <p id="accountLoginStatus" class="form-status" aria-live="polite"></p>
+      </form>
+      <div class="account-signup-link"><span>Not set up yet?</span><a class="button button-outline" href="signup.html">Create account</a></div>
+      <button id="rememberMemberDevice" class="demo-preview-link" type="button">Preview as Jack</button>
+    </div>
   </section>
 
   <div id="accountContent" class="shell account-layout">
     <section class="account-main">
+      <article class="account-panel season-review-panel">
+        <div class="account-panel-heading"><div><p class="eyebrow">Previous season</p><h2>Your 2026 season review</h2></div><span class="review-year">2026</span></div>
+        <p class="demo-data-note">Demo review · ready for the final 2026 scores import</p>
+        <p id="reviewSummary" class="season-review-summary">Your previous results will appear here.</p>
+        <div class="season-review-grid">
+          <div><span>Final position</span><strong id="reviewPosition">—</strong></div>
+          <div><span>Total points</span><strong id="reviewTotal">—</strong></div>
+          <div><span>Events played</span><strong id="reviewEvents">—</strong></div>
+          <div><span>Best round</span><strong id="reviewBest">—</strong></div>
+          <div><span>Average points</span><strong id="reviewAverage">—</strong></div>
+          <div><span>Wins / podiums</span><strong id="reviewPodiums">—</strong></div>
+        </div>
+        <div class="review-highlight">
+          <div><span>Handicap journey</span><strong id="reviewHandicap">—</strong></div>
+          <div><span>Best venue</span><strong id="reviewVenue">—</strong></div>
+        </div>
+      </article>
+
       <div class="account-section-heading"><div><p class="eyebrow">Season overview</p><h2>How you’re doing</h2></div><span>2027 season</span></div>
       <div class="account-stat-grid">
         <article><span>Current handicap</span><strong id="accountHandicapStat">18.4</strong><small>Starting handicap 20.1</small></article>
@@ -106,13 +136,18 @@
       <article class="account-panel">
         <p class="eyebrow">Account & device</p><h3>Remembered on this device</h3><p class="account-muted">You will continue to see your personalised event dashboard automatically whenever you return.</p><button id="accountSignOut" class="button button-outline full-button" type="button">Sign out on this device</button>
       </article>
+
+      <article class="account-panel">
+        <p class="eyebrow">Quick login preview</p><h3>Face ID or fingerprint</h3><p id="passkeyAccountStatus" class="account-muted">Preview how quick login will work when the 2027 database and final domain are connected.</p><button id="accountPasskeyButton" class="button button-outline full-button" type="button">Preview quick login setup</button>
+      </article>
     </aside>
   </div>
 </main>
 
 <footer class="site-footer"><div class="shell footer-inner"><div class="footer-brand"><img decoding="async" loading="lazy" src="assets/images/barford-golf-society-logo.png" alt=""><span>Barford Golf Society</span></div><p>© <span id="year"></span> Barford Golf Society</p></div></footer>
 <script src="assets/js/app.js?v=mobile4" defer></script>
-<script src="assets/js/member-session.js" defer></script>
+<script src="assets/js/member-data.js?v=account1" defer></script>
+<script src="assets/js/member-session.js?v=account1" defer></script>
 <script src="assets/js/accessible-mobile.js?v=mobile4" defer></script>
 <script data-mobile-nav-lock>
 window.addEventListener("DOMContentLoaded",()=>document.querySelectorAll(".mobile-quick-nav").forEach(nav=>{const links=nav.querySelectorAll("a");const item=links[links.length-1];if(!item)return;item.href="account.html";item.innerHTML='<span class="quick-icon" aria-hidden="true">●</span><span>My Account</span>';item.classList.toggle("active",location.pathname.endsWith("/account.html"));if(location.pathname.endsWith("/account.html"))item.setAttribute("aria-current","page");else item.removeAttribute("aria-current");}));
