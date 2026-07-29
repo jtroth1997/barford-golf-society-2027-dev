@@ -9,6 +9,24 @@ create table if not exists public.admin_role_audit (
   created_at timestamptz not null default now()
 );
 
+create table if not exists public.legacy_member_links (
+  member_id uuid primary key references public.profiles(id) on delete cascade,
+  legacy_name text unique,
+  confirmed boolean not null default false,
+  declined_at timestamptz,
+  updated_at timestamptz not null default now()
+);
+alter table public.legacy_member_links enable row level security;
+drop policy if exists "Members read own legacy link" on public.legacy_member_links;
+create policy "Members read own legacy link" on public.legacy_member_links
+  for select to authenticated using (member_id = auth.uid() or public.is_admin());
+drop policy if exists "Members create own legacy link" on public.legacy_member_links;
+create policy "Members create own legacy link" on public.legacy_member_links
+  for insert to authenticated with check (member_id = auth.uid());
+drop policy if exists "Members update own legacy link" on public.legacy_member_links;
+create policy "Members update own legacy link" on public.legacy_member_links
+  for update to authenticated using (member_id = auth.uid()) with check (member_id = auth.uid());
+
 alter table public.admin_role_audit enable row level security;
 
 drop policy if exists "Admins read role history" on public.admin_role_audit;
