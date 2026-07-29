@@ -59,15 +59,13 @@
       if (!credential) throw new Error("Device sign-in was cancelled.");
       await request("register-verify", { credential: registrationJSON(credential) }, session.access_token);
     },
-    async login(email) {
-      if (!email) throw new Error("Enter your email address first, then tap device sign-in.");
-      const normalEmail = email.trim().toLowerCase();
-      const options = await request("login-options", { email: normalEmail });
+    async login() {
+      const options = await request("login-options");
       options.challenge = decode(options.challenge);
       options.allowCredentials = (options.allowCredentials || []).map(item => ({ ...item, id: decode(item.id) }));
       const credential = await navigator.credentials.get({ publicKey: options });
       if (!credential) throw new Error("Device sign-in was cancelled.");
-      const result = await request("login-verify", { email: normalEmail, credential: authenticationJSON(credential) });
+      const result = await request("login-verify", { credential: authenticationJSON(credential) });
       const { error } = await window.BarfordSupabase.auth.verifyOtp({ token_hash: result.tokenHash, type: "magiclink" });
       if (error) throw error;
     }
