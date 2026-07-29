@@ -117,7 +117,7 @@
     button.disabled = true;
     button.textContent = "Waiting for your device…";
     try {
-      await window.BarfordPasskeys.login($("#accountLoginEmail").value);
+      await window.BarfordPasskeys.login();
       window.location.reload();
     } catch (error) {
       message("#accountLoginStatus", error.name === "NotAllowedError" ? "Device sign-in was cancelled." : error.message, true);
