@@ -59,6 +59,8 @@
   };
 
   const showStats = (stats, season = 2026) => {
+    document.getElementById("seasonDashboardCard")?.classList.remove("is-unavailable");
+    show("dashboardRetry2026", false);
     set("legacyPlayerName", stats.name);
     set("legacyPosition", stats.position ? `#${stats.position}` : "N/A");
     set("legacyPoints", stats.points ?? "N/A");
@@ -152,7 +154,9 @@
     } catch (error) {
       console.warn("The read-only 2026 season summary could not be loaded.", error);
       set("legacyPlayerName", "2026 data temporarily unavailable");
-      set("legacyFeedback", "Your 2027 account is working. The current-season summary could not be reached just now, so please try again later.");
+      set("legacyFeedback", "Your account is working, but the previous-season connection needs another try.");
+      document.getElementById("seasonDashboardCard")?.classList.add("is-unavailable");
+      show("dashboardRetry2026");
     }
   };
 
@@ -271,6 +275,14 @@
   document.querySelectorAll("[data-rsvp]").forEach(button => button.addEventListener("click", () => saveRsvp(button.dataset.rsvp)));
   document.getElementById("legacyMatchYes")?.addEventListener("click", () => answerLegacyMatch(true));
   document.getElementById("legacyMatchNo")?.addEventListener("click", () => answerLegacyMatch(false));
+  document.getElementById("dashboardRetry2026")?.addEventListener("click", event => {
+    event.currentTarget.disabled = true;
+    event.currentTarget.textContent = "Loading…";
+    loadLegacyStats().finally(() => {
+      event.currentTarget.disabled = false;
+      event.currentTarget.textContent = "Try loading again";
+    });
+  });
   document.getElementById("dashboardAddPasskey")?.addEventListener("click", async event => {
     const button = event.currentTarget;
     button.disabled = true;
