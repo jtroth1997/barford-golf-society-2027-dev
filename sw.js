@@ -1,8 +1,8 @@
-const CACHE_NAME = "barford-golf-demo-camera-v2";
+const CACHE_NAME = "barford-golf-demo-camera-v3";
 const CORE = [
   "./","./index.html","./events.html","./scores.html","./gallery.html","./account.html","./worldevents.html","./shop.html","./about.html","./admin.html","./signup.html","./payment-beta.html",
-  "./assets/css/styles.css?v=fast3","./assets/css/accessible-mobile.css?v=camera2","./assets/css/events.css","./assets/css/tee-organiser.css","./assets/css/scores.css?v=7","./assets/css/mobile-menu-fix.css?v=1","./assets/css/members.css","./assets/css/gallery.css","./assets/css/admin.css","./assets/css/payment-beta.css?v=3","./assets/css/payment-beta-shared.css?v=beta4",
-  "./assets/js/app.js?v=mobile4","./assets/js/accessible-mobile.js?v=mobile4","./assets/js/demo-today.js?v=2","./assets/js/member-session.js","./assets/js/event-countdown.js","./assets/js/event-weather.js","./assets/js/event-camera.js?v=2","./assets/js/admin.js","./assets/js/scores.js?v=7","./assets/js/scores-data.js","./assets/js/handicap-engine.js","./assets/js/payment-beta.js?v=4","./assets/js/payment-beta-shared.js?v=beta11",
+  "./assets/css/styles.css?v=fast3","./assets/css/accessible-mobile.css?v=camera3","./assets/css/events.css","./assets/css/tee-organiser.css","./assets/css/scores.css?v=7","./assets/css/mobile-menu-fix.css?v=1","./assets/css/members.css","./assets/css/gallery.css","./assets/css/admin.css","./assets/css/payment-beta.css?v=3","./assets/css/payment-beta-shared.css?v=beta4",
+  "./assets/js/app.js?v=mobile5","./assets/js/accessible-mobile.js?v=mobile4","./assets/js/demo-today.js?v=2","./assets/js/member-session.js","./assets/js/event-countdown.js","./assets/js/event-weather.js","./assets/js/event-camera.js?v=2","./assets/js/admin.js","./assets/js/scores.js?v=7","./assets/js/scores-data.js","./assets/js/handicap-engine.js","./assets/js/payment-beta.js?v=4","./assets/js/payment-beta-shared.js?v=beta11",
   "./assets/images/barford-golf-society-logo.png"
 ];
 
@@ -33,12 +33,10 @@ self.addEventListener("fetch", event => {
 
   if (request.mode === "navigate") {
     const canonical = new Request(`${url.origin}${url.pathname}`, { credentials:"same-origin" });
-    const cachedPromise = caches.match(canonical, { ignoreSearch:true });
     const networkPromise = (event.preloadResponse || Promise.resolve(null))
       .then(preloaded => preloaded || fetch(request))
       .then(response => store(canonical, response));
-    event.respondWith(cachedPromise.then(cached => cached || networkPromise).catch(() => caches.match("./index.html")));
-    event.waitUntil(networkPromise.catch(() => undefined));
+    event.respondWith(networkPromise.catch(() => caches.match(canonical, { ignoreSearch:true }).then(cached => cached || caches.match("./index.html"))));
     return;
   }
 
