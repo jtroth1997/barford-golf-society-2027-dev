@@ -9,7 +9,7 @@
   <link rel="stylesheet" href="assets/css/styles.css?v=fast3">
   <link rel="stylesheet" href="assets/css/members.css">
   
-  <link rel="stylesheet" href="assets/css/accessible-mobile.css?v=rapid2">
+  <link rel="stylesheet" href="assets/css/accessible-mobile.css?v=mobile3">
 </head>
 <body>
 <a class="skip-link" href="#main-content">Skip to content</a>
@@ -195,13 +195,13 @@
     <p>© <span id="year"></span> Barford Golf Society</p>
   </div>
 </footer>
-<script src="assets/js/app.js?v=rapid17" defer></script>
+<script src="assets/js/app.js?v=mobile3" defer></script>
 <script src="assets/js/member-session.js" defer></script>
 <script src="assets/js/event-countdown.js" defer></script>
 <script src="assets/js/event-weather.js" defer></script>
 <script src="assets/js/event-camera.js" defer></script>
 
-<script src="assets/js/accessible-mobile.js?v=rapid2" defer></script>
+<script src="assets/js/accessible-mobile.js?v=mobile3" defer></script>
 <script data-mobile-nav-lock>
 window.addEventListener("DOMContentLoaded",()=>document.querySelectorAll(".mobile-quick-nav").forEach(nav=>{const links=nav.querySelectorAll("a");const item=links[links.length-1];if(!item)return;item.href="account.html";item.innerHTML='<span class="quick-icon" aria-hidden="true">●</span><span>My Account</span>';item.classList.toggle("active",location.pathname.endsWith("/account.html"));if(location.pathname.endsWith("/account.html"))item.setAttribute("aria-current","page");else item.removeAttribute("aria-current");}));
 </script>
