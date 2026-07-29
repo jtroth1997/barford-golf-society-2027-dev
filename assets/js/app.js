@@ -3,7 +3,7 @@
 const body = document.body;
 if ("serviceWorker" in navigator) {
   window.addEventListener("load", () => {
-    const register = () => navigator.serviceWorker.register("./sw.js").catch(() => {});
+    const register = () => navigator.serviceWorker.register("./sw.js?v=speed2").catch(() => {});
     if ("requestIdleCallback" in window) requestIdleCallback(register, { timeout: 2000 });
     else setTimeout(register, 250);
   }, { once: true });
@@ -49,3 +49,19 @@ mobileNav.innerHTML = `
   <a href="account.html" class="${currentPage==="account.html"?"active":""}">●<span>My Account</span></a>
 `;
 body.appendChild(mobileNav);
+
+const warmedPages = new Set();
+const warmPage = link => {
+  const url = new URL(link.href, location.href);
+  if (url.origin !== location.origin || warmedPages.has(url.href)) return;
+  warmedPages.add(url.href);
+  fetch(url.href, { credentials: "same-origin", priority: "low" }).catch(() => {});
+};
+document.addEventListener("pointerover", event => {
+  const link = event.target.closest("a[href]");
+  if (link) warmPage(link);
+}, { passive: true });
+document.addEventListener("touchstart", event => {
+  const link = event.target.closest("a[href]");
+  if (link) warmPage(link);
+}, { passive: true });
