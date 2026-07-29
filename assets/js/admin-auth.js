@@ -22,7 +22,7 @@
   const loadAccounts = async () => {
     const list = document.querySelector("#adminAccountList");
     const { data: accounts, error } = await client.from("profiles")
-      .select("id,full_name,email,photo_url,is_admin,created_at")
+      .select("id,full_name,email,photo_url,is_admin,leaderboard_active,leaderboard_from_round,created_at")
       .order("full_name");
     if (error) {
       list.innerHTML = `<p class="form-status error">${error.message}</p>`;
@@ -34,6 +34,10 @@
         <span class="admin-avatar">${escapeHtml(initials(account.full_name))}</span>
         <div class="admin-account-name"><strong>${escapeHtml(account.full_name)}</strong><small>${escapeHtml(account.email)}</small></div>
         <span class="status ${account.is_admin ? "active" : "member"}">${account.is_admin ? "Administrator" : "Member"}</span>
+        <label class="admin-access-toggle leaderboard-toggle">
+          <input type="checkbox" data-leaderboard-id="${escapeHtml(account.id)}" data-leaderboard-name="${escapeHtml(account.full_name)}" ${account.leaderboard_active !== false ? "checked" : ""}>
+          <span>${account.leaderboard_active !== false ? `Leaderboard · from round ${account.leaderboard_from_round || 1}` : "Add to leaderboard"}</span>
+        </label>
         <label class="admin-access-toggle">
           <input type="checkbox" data-admin-id="${escapeHtml(account.id)}" data-admin-name="${escapeHtml(account.full_name)}" ${account.is_admin ? "checked" : ""} ${account.id === signedInProfile.id ? "disabled" : ""}>
           <span>${account.is_admin ? "Admin access on" : "Give admin access"}</span>
@@ -59,6 +63,25 @@
       confirmButton.disabled = true;
       document.querySelector("#adminAccessDialogStatus").textContent = "";
       dialog.showModal();
+    }));
+    list.querySelectorAll("[data-leaderboard-id]").forEach(input => input.addEventListener("change", async event => {
+      const control = event.currentTarget;
+      const makeActive = control.checked;
+      control.disabled = true;
+      const { error: membershipError } = await client.rpc("set_member_leaderboard_access", {
+        target_user_id: control.dataset.leaderboardId,
+        make_active: makeActive
+      });
+      if (membershipError) {
+        control.checked = !makeActive;
+        control.disabled = false;
+        document.querySelector("#adminAccountStatus").textContent = membershipError.message;
+        return;
+      }
+      document.querySelector("#adminAccountStatus").textContent = makeActive
+        ? `${control.dataset.leaderboardName} has joined from the next eligible round.`
+        : `${control.dataset.leaderboardName} has been removed from future leaderboard participation. Historical scores are preserved.`;
+      await loadAccounts();
     }));
   };
 
