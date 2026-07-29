@@ -1,6 +1,6 @@
 <!doctype html>
 <html lang="en">
-<head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover"><meta name="theme-color" content="#063d2a"><title>Admin | Barford Golf Society</title><link rel="stylesheet" href="assets/css/styles.css?v=live1"><link rel="stylesheet" href="assets/css/admin.css?v=dashboard1"><link rel="stylesheet" href="assets/css/accessible-mobile.css?v=mobile4"></head>
+<head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover"><meta name="theme-color" content="#063d2a"><title>Admin | Barford Golf Society</title><link rel="stylesheet" href="assets/css/styles.css?v=live1"><link rel="stylesheet" href="assets/css/admin.css?v=controls1"><link rel="stylesheet" href="assets/css/accessible-mobile.css?v=mobile4"></head>
 <body>
 <header class="site-header"><div class="shell header-inner"><a class="brand" href="index.html"><img src="assets/images/barford-golf-society-logo.png" alt="Barford Golf Society"></a><button class="menu-button" type="button" aria-expanded="false" aria-controls="primary-navigation"><span class="sr-only">Open menu</span><span></span><span></span><span></span></button><nav id="primary-navigation" class="site-nav"><a href="index.html">Home</a><a href="events.html">Events</a><a href="scores.html">Scores</a><a href="gallery.html">Gallery</a><a href="account.html">My Account</a><a class="active" href="admin.html">Admin</a></nav></div></header>
 <main class="admin-page">
@@ -11,11 +11,96 @@
   </section>
   <section id="adminDashboard" class="admin-dashboard shell hidden">
     <div class="admin-card admin-toolbar"><div><p class="eyebrow">2027 administration</p><h2>Admin access confirmed</h2><p>The new database is connected and ready for real society information.</p></div><button id="adminSignOut" class="button button-outline">Sign out</button></div>
-    <section class="admin-card"><p class="eyebrow">Getting started</p><h3>No society data has been added yet</h3><p>Create the first event, add the 2027 member roster and import the gallery using the secure controls as they are activated.</p></section>
+    <nav class="admin-section-nav" aria-label="Admin sections">
+      <button class="active" type="button" data-admin-view="events">Events</button>
+      <button type="button" data-admin-view="scores">Scores</button>
+      <button type="button" data-admin-view="gallery">Gallery</button>
+      <button type="button" data-admin-view="content">Shop & trips</button>
+      <button type="button" data-admin-view="members">Members</button>
+    </nav>
+
+    <section class="admin-view" data-admin-panel="events">
+      <div class="admin-control-grid">
+        <section class="admin-card">
+          <div class="admin-heading"><div><p class="eyebrow">Event calendar</p><h3>Create or edit an event</h3></div><span id="adminEventCount" class="access-pill">0 events</span></div>
+          <form id="adminEventForm" class="admin-form-grid">
+            <input id="adminEventId" type="hidden">
+            <label>Event name<input id="adminEventName" required></label>
+            <label>Course / venue<input id="adminEventVenue" required></label>
+            <label class="wide">Address<input id="adminEventAddress"></label>
+            <label>Date<input id="adminEventDate" type="date" required></label>
+            <label>First tee<input id="adminEventFirstTee" type="time"></label>
+            <label>Price (£)<input id="adminEventPrice" type="number" min="0" step=".01"></label>
+            <label>Maximum players<input id="adminEventCapacity" type="number" min="1"></label>
+            <label class="wide">Course video link<input id="adminEventVideo" type="url"></label>
+            <label class="wide">Notes<textarea id="adminEventNotes" rows="3"></textarea></label>
+            <div class="admin-form-actions wide"><button class="button button-primary" type="submit">Save event</button><button id="adminEventReset" class="button button-outline" type="button">Clear form</button></div>
+          </form>
+          <p id="adminEventStatus" class="form-status" aria-live="polite"></p>
+        </section>
+        <section class="admin-card">
+          <p class="eyebrow">Published events</p><h3>Manage events</h3>
+          <div id="adminEventList" class="admin-compact-list"><p>Loading events…</p></div>
+        </section>
+      </div>
+
+      <section class="admin-card">
+        <div class="admin-heading"><div><p class="eyebrow">Players and reserves</p><h3>Manage RSVPs and dropouts</h3></div><select id="adminRsvpEvent"><option value="">Select event</option></select></div>
+        <div class="admin-two-columns"><div><h4>Playing list</h4><div id="adminPlayingList" class="admin-compact-list"><p>Select an event.</p></div></div><div><h4>Reserve list</h4><div id="adminReserveList" class="admin-compact-list"><p>Select an event.</p></div></div></div>
+        <p id="adminRsvpStatus" class="form-status" aria-live="polite"></p>
+      </section>
+
+      <section class="admin-card">
+        <div class="admin-heading"><div><p class="eyebrow">Tee-time organiser</p><h3>Generate and edit groups</h3><p>Buggy players first, then one group of three walkers when needed, followed by fourballs.</p></div><select id="adminTeeEvent"><option value="">Select event</option></select></div>
+        <div class="admin-inline-fields"><label>Start time<input id="adminTeeStart" type="time" value="09:00"></label><label>Gap in minutes<input id="adminTeeGap" type="number" min="5" value="8"></label><button id="adminGenerateTeeTimes" class="button button-primary" type="button">Generate tee times</button></div>
+        <div id="adminTeePreview" class="admin-tee-preview"><p>Select an event to see its groups.</p></div>
+        <div class="admin-form-actions"><button id="adminSaveTeeTimes" class="button button-primary" type="button" disabled>Save tee times</button><button id="adminWhatsAppTeeTimes" class="button button-outline" type="button">Copy WhatsApp message</button></div>
+        <p id="adminTeeStatus" class="form-status" aria-live="polite"></p>
+      </section>
+    </section>
+
+    <section class="admin-view hidden" data-admin-panel="scores">
+      <section class="admin-card">
+        <div class="admin-heading"><div><p class="eyebrow">Rounds and results</p><h3>2027 score administration</h3><p>Create rounds, enter results and lock a completed round.</p></div><div class="admin-form-actions"><button id="adminExportLeaderboard" class="button button-outline" type="button">Export leaderboard CSV</button><button id="adminClearScores" class="button button-outline danger-link" type="button">Clear season scores</button></div></div>
+        <form id="adminRoundForm" class="admin-inline-fields">
+          <label>Round number<input id="adminRoundNumber" type="number" min="1" required></label>
+          <label>Round name<input id="adminRoundName" placeholder="Round 1" required></label>
+          <label>Date played<input id="adminRoundDate" type="date"></label>
+          <button class="button button-primary" type="submit">Create round</button>
+        </form>
+        <div id="adminRoundList" class="admin-compact-list"></div>
+        <p id="adminRoundStatus" class="form-status" aria-live="polite"></p>
+      </section>
+      <section class="admin-card">
+        <div class="admin-heading"><div><p class="eyebrow">Score entry</p><h3>Enter or amend a round</h3></div><select id="adminScoreRound"><option value="">Select round</option></select></div>
+        <div id="adminScoreEditor" class="admin-score-editor"><p>Select a round.</p></div>
+        <button id="adminSaveScores" class="button button-primary" type="button" disabled>Save all scores</button>
+        <p id="adminScoreStatus" class="form-status" aria-live="polite"></p>
+      </section>
+    </section>
+
+    <section class="admin-view hidden" data-admin-panel="gallery">
+      <section class="admin-card">
+        <div class="admin-heading"><div><p class="eyebrow">Photo moderation</p><h3>Gallery uploads</h3><p>Approve suitable photographs or remove an upload.</p></div><span id="adminGalleryCount" class="access-pill">Loading…</span></div>
+        <div id="adminGalleryList" class="admin-gallery-grid"><p>Loading gallery…</p></div>
+        <p id="adminGalleryStatus" class="form-status" aria-live="polite"></p>
+      </section>
+    </section>
+
+    <section class="admin-view hidden" data-admin-panel="content">
+      <div class="admin-control-grid">
+        <section class="admin-card"><p class="eyebrow">Society shop</p><h3>Products</h3><form id="adminProductForm" class="admin-form-grid"><label>Product name<input id="adminProductName" required></label><label>Price (£)<input id="adminProductPrice" type="number" min="0" step=".01" required></label><label>Stock<input id="adminProductStock" type="number" min="0" value="0"></label><label class="wide">Description<textarea id="adminProductDescription"></textarea></label><button class="button button-primary wide" type="submit">Add product</button></form><div id="adminProductList" class="admin-compact-list"></div></section>
+        <section class="admin-card"><p class="eyebrow">World golf trips</p><h3>Trip events and votes</h3><form id="adminTripForm" class="admin-form-grid"><label class="wide">Trip name<input id="adminTripName" required></label><label class="wide">Video link<input id="adminTripVideo" type="url"></label><button class="button button-primary wide" type="submit">Create trip</button></form><div id="adminTripList" class="admin-compact-list"></div></section>
+      </div>
+      <p id="adminContentStatus" class="form-status" aria-live="polite"></p>
+    </section>
+
+    <section class="admin-view hidden" data-admin-panel="members">
     <section class="admin-card">
       <div class="admin-heading"><div><p class="eyebrow">Member controls</p><h3>Leaderboard and admin access</h3><p>New accounts join the leaderboard automatically from their next eligible round. You can pause leaderboard participation or change admin access here.</p></div><span id="adminAccountCount" class="access-pill">Loading…</span></div>
       <div id="adminAccountList" class="admin-account-list" aria-live="polite"><p>Loading member accounts…</p></div>
       <p id="adminAccountStatus" class="form-status" aria-live="polite"></p>
+    </section>
     </section>
   </section>
   <section id="adminDenied" class="section shell hidden"><article class="admin-card"><p class="eyebrow">Access restricted</p><h2>This account is not an administrator</h2><p>Your member account is working, but it has not been granted committee access.</p><a class="button button-outline" href="account.html">Return to My Account</a></article></section>
@@ -33,6 +118,6 @@
   </form>
 </dialog>
 <footer class="site-footer"><div class="shell footer-inner"><div class="footer-brand"><img src="assets/images/barford-golf-society-logo.png" alt=""><span>Barford Golf Society</span></div><p>© <span id="year"></span> Barford Golf Society</p></div></footer>
-<script src="assets/js/app.js?v=speed1" defer></script><script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2" defer></script><script src="assets/js/supabase-config.js?v=live1" defer></script><script src="assets/js/supabase-client.js?v=live1" defer></script><script src="assets/js/admin-auth.js?v=leaderboard1" defer></script><script src="assets/js/accessible-mobile.js?v=mobile4" defer></script>
+<script src="assets/js/app.js?v=speed2" defer></script><script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2" defer></script><script src="assets/js/supabase-config.js?v=live1" defer></script><script src="assets/js/supabase-client.js?v=live1" defer></script><script src="assets/js/admin-auth.js?v=controls1" defer></script><script src="assets/js/accessible-mobile.js?v=mobile4" defer></script>
 </body>
 </html>
