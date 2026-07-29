@@ -58,6 +58,20 @@ button:focus-visible,a:focus-visible,input:focus-visible,select:focus-visible,te
   letter-spacing:.08em;
   text-transform:uppercase;
 }
+@keyframes demoCameraNudge{
+  0%,82%,100%{transform:rotate(0) scale(1)}
+  86%{transform:rotate(-8deg) scale(1.08)}
+  90%{transform:rotate(8deg) scale(1.08)}
+  94%{transform:rotate(-5deg) scale(1.05)}
+  98%{transform:rotate(0) scale(1)}
+}
+.demo-event-today .event-camera-banner{
+  border:2px solid #d0a34d;
+  box-shadow:0 12px 30px rgba(157,116,41,.2);
+}
+.demo-event-today .event-camera-action .camera-tab-icon{
+  animation:demoCameraNudge 5s ease-in-out infinite;
+}
 
 @media(max-width:850px){
   html{font-size:17px;scroll-padding-top:72px}
