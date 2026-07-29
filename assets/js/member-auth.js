@@ -23,6 +23,17 @@
     element.textContent = initials(profile?.full_name);
   };
 
+  const renderProfilePhoto = async (element, profile) => {
+    if (!element) return;
+    setAvatar(element, profile);
+    element.classList.remove("has-photo");
+    if (!profile?.photo_url) return;
+    const { data } = await client.storage.from("profile-images").createSignedUrl(profile.photo_url, 3600);
+    if (!data?.signedUrl) return;
+    element.innerHTML = `<img src="${data.signedUrl}" alt="">`;
+    element.classList.add("has-photo");
+  };
+
   const signupForm = $("#memberSignupForm");
   signupForm?.addEventListener("submit", async event => {
     event.preventDefault();
@@ -184,9 +195,86 @@
     $("#accountHomeClub").value = profile.home_club || "";
     $("#accountHandicap").value = profile.handicap ?? "";
     $("#accountPreference").value = profile.playing_preference || "walker";
+    await Promise.all([
+      renderProfilePhoto($("#accountHeroAvatar"), profile),
+      renderProfilePhoto($("#accountPhotoPreview"), profile)
+    ]);
+    $("#removeAccountPhoto")?.classList.toggle("hidden", !profile.photo_url);
+    $("#accountPhotoInput").dataset.currentPath = profile.photo_url || "";
+  };
+
+  $("#accountPhotoInput")?.addEventListener("change", async event => {
+    const file = event.target.files?.[0];
+    if (!file) return;
+    if (!["image/jpeg", "image/png", "image/webp"].includes(file.type)) {
+      message("#accountPhotoStatus", "Please choose a JPG, PNG or WebP image.", true);
+      event.target.value = "";
+      return;
+    }
+    if (file.size > 5 * 1024 * 1024) {
+      message("#accountPhotoStatus", "That photo is larger than 5 MB. Please choose a smaller one.", true);
+      event.target.value = "";
+      return;
+    }
+    const { data: { user } } = await client.auth.getUser();
+    if (!user) return;
+    message("#accountPhotoStatus", "Uploading your photo…");
+    const extension = file.type.split("/")[1] === "jpeg" ? "jpg" : file.type.split("/")[1];
+    const path = `${user.id}/profile-${Date.now()}.${extension}`;
+    const oldPath = event.target.dataset.currentPath;
+    const { error: uploadError } = await client.storage.from("profile-images").upload(path, file, {
+      cacheControl: "3600",
+      upsert: false,
+      contentType: file.type
+    });
+    if (uploadError) {
+      message("#accountPhotoStatus", uploadError.message, true);
+      return;
+    }
+    const { error: profileError } = await client.from("profiles")
+      .update({ photo_url: path, updated_at: new Date().toISOString() })
+      .eq("id", user.id);
+    if (profileError) {
+      await client.storage.from("profile-images").remove([path]);
+      message("#accountPhotoStatus", profileError.message, true);
+      return;
+    }
+    if (oldPath) await client.storage.from("profile-images").remove([oldPath]);
+    const profile = { full_name: $("#accountName").value, photo_url: path };
+    await Promise.all([
+      renderProfilePhoto($("#accountHeroAvatar"), profile),
+      renderProfilePhoto($("#accountPhotoPreview"), profile)
+    ]);
+    event.target.dataset.currentPath = path;
+    $("#removeAccountPhoto")?.classList.remove("hidden");
+    message("#accountPhotoStatus", "Profile photo saved.");
+  });
+
+  $("#removeAccountPhoto")?.addEventListener("click", async event => {
+    const input = $("#accountPhotoInput");
+    const path = input?.dataset.currentPath;
+    const { data: { user } } = await client.auth.getUser();
+    if (!user || !path) return;
+    event.currentTarget.disabled = true;
+    const { error } = await client.from("profiles")
+      .update({ photo_url: null, updated_at: new Date().toISOString() })
+      .eq("id", user.id);
+    if (error) {
+      message("#accountPhotoStatus", error.message, true);
+      event.currentTarget.disabled = false;
+      return;
+    }
+    await client.storage.from("profile-images").remove([path]);
+    const profile = { full_name: $("#accountName").value };
     setAvatar($("#accountHeroAvatar"), profile);
     setAvatar($("#accountPhotoPreview"), profile);
-  };
+    $("#accountHeroAvatar")?.classList.remove("has-photo");
+    $("#accountPhotoPreview")?.classList.remove("has-photo");
+    input.dataset.currentPath = "";
+    event.currentTarget.classList.add("hidden");
+    event.currentTarget.disabled = false;
+    message("#accountPhotoStatus", "Profile photo removed.");
+  });
 
   $("#accountProfileForm")?.addEventListener("submit", async event => {
     event.preventDefault();
