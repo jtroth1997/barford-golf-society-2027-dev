@@ -27,7 +27,9 @@ security definer
 set search_path = public
 as $$
 begin
-  if new.is_admin is distinct from old.is_admin and not public.is_admin() then
+  if new.is_admin is distinct from old.is_admin
+    and session_user not in ('postgres', 'supabase_admin')
+    and not public.is_admin() then
     raise exception 'Administrator access can only be changed by an administrator.';
   end if;
   return new;
