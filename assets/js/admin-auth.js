@@ -13,6 +13,7 @@
   let signedInProfile;
   let pendingChange;
   let adminEvents = [];
+  let adminRounds = [];
   let teeGroups = [];
 
   const initials = name => String(name || "BG").split(/\s+/).filter(Boolean).slice(0, 2)
@@ -51,6 +52,7 @@
     document.querySelector("#adminEventCount").textContent = `${adminEvents.length} event${adminEvents.length === 1 ? "" : "s"}`;
     document.querySelector("#adminRsvpEvent").innerHTML = eventOptions();
     document.querySelector("#adminTeeEvent").innerHTML = eventOptions();
+    refreshRoundEventOptions();
     const list = document.querySelector("#adminEventList");
     list.innerHTML = adminEvents.length ? adminEvents.map(event => `
       <article>
@@ -112,7 +114,16 @@
     const query = id ? client.from("events").update(payload).eq("id", id) : client.from("events").insert(payload);
     const { error } = await query;
     setStatus("#adminEventStatus", error ? error.message : id ? "Event updated." : "Event created.");
-    if (!error) { resetEventForm(); await loadEvents(); }
+    if (!error) {
+      if (id) {
+        await client.from("rounds").update({
+          name: payload.name,
+          played_on: payload.event_date
+        }).eq("event_id", id);
+      }
+      resetEventForm();
+      await Promise.all([loadEvents(), loadRounds()]);
+    }
   });
   document.querySelector("#adminEventReset")?.addEventListener("click", resetEventForm);
 
@@ -187,14 +198,30 @@
     setStatus("#adminTeeStatus", "WhatsApp tee-time message copied.");
   });
 
+  const refreshRoundEventOptions = () => {
+    const select = document.querySelector("#adminRoundEvent");
+    if (!select) return;
+    const linkedEventIds = new Set(adminRounds.map(round => round.event_id).filter(Boolean));
+    const availableEvents = adminEvents.filter(event =>
+      !linkedEventIds.has(event.id) && event.status !== "cancelled"
+    );
+    select.innerHTML = `<option value="">Select event</option>${availableEvents.map(event =>
+      `<option value="${event.id}">${escapeHtml(event.name)} · ${escapeHtml(event.event_date)}</option>`
+    ).join("")}`;
+    const nextNumber = Math.max(0, ...adminRounds.map(round => Number(round.round_number) || 0)) + 1;
+    document.querySelector("#adminRoundNumber").value = nextNumber;
+  };
+
   const loadRounds = async () => {
-    const { data, error } = await client.from("rounds").select("*").eq("season", 2027).order("round_number");
+    const { data, error } = await client.from("rounds").select("*,events(name,venue,event_date)").eq("season", 2027).order("round_number");
     if (error) { setStatus("#adminRoundStatus", error.message); return; }
     const rounds = data || [];
+    adminRounds = rounds;
+    refreshRoundEventOptions();
     document.querySelector("#adminScoreRound").innerHTML = `<option value="">Select round</option>${rounds.map(round =>
-      `<option value="${round.id}">${escapeHtml(round.name)}</option>`).join("")}`;
+      `<option value="${round.id}">Round ${round.round_number} · ${escapeHtml(round.events?.name || round.name)}</option>`).join("")}`;
     const list = document.querySelector("#adminRoundList");
-    list.innerHTML = rounds.length ? rounds.map(round => `<article><div><strong>${escapeHtml(round.name)}</strong><small>${escapeHtml(round.played_on || "Date not set")} · ${round.locked ? "Locked" : "Open"}</small></div><button type="button" data-lock-round="${round.id}" data-locked="${round.locked}">${round.locked ? "Unlock" : "Lock round"}</button></article>`).join("") : "<p>No rounds created.</p>";
+    list.innerHTML = rounds.length ? rounds.map(round => `<article><div><strong>Round ${round.round_number} · ${escapeHtml(round.events?.name || round.name)}</strong><small>${escapeHtml(round.events?.event_date || round.played_on || "Date not set")} · ${escapeHtml(round.events?.venue || "")} · ${round.locked ? "Locked" : "Open"}</small></div><button type="button" data-lock-round="${round.id}" data-locked="${round.locked}">${round.locked ? "Unlock" : "Lock round"}</button></article>`).join("") : "<p>No rounds created. Choose a published event above to make Round 1.</p>";
     list.querySelectorAll("[data-lock-round]").forEach(button => button.addEventListener("click", async () => {
       const locked = button.dataset.locked !== "true";
       const { error: lockError } = await client.from("rounds").update({ locked }).eq("id", button.dataset.lockRound);
@@ -204,15 +231,22 @@
   };
   document.querySelector("#adminRoundForm")?.addEventListener("submit", async event => {
     event.preventDefault();
+    const eventId = document.querySelector("#adminRoundEvent").value;
+    const linkedEvent = adminEvents.find(item => item.id === eventId);
+    if (!linkedEvent) {
+      setStatus("#adminRoundStatus", "Choose a published event first.");
+      return;
+    }
     const payload = {
+      event_id: linkedEvent.id,
       season: 2027,
       round_number: Number(document.querySelector("#adminRoundNumber").value),
-      name: document.querySelector("#adminRoundName").value.trim(),
-      played_on: document.querySelector("#adminRoundDate").value || null
+      name: linkedEvent.name,
+      played_on: linkedEvent.event_date
     };
     const { error } = await client.from("rounds").insert(payload);
-    setStatus("#adminRoundStatus", error ? error.message : "Round created.");
-    if (!error) { event.currentTarget.reset(); await loadRounds(); }
+    setStatus("#adminRoundStatus", error ? error.message : `Round ${payload.round_number} is now ${linkedEvent.name} on ${linkedEvent.event_date}.`);
+    if (!error) await loadRounds();
   });
 
   const loadScoreEditor = async roundId => {
