@@ -598,6 +598,10 @@
 .dashboard-season-review.is-unavailable .legacy-stat-grid,
 .dashboard-season-review.is-unavailable .dashboard-highlight-row,
 .dashboard-season-review.is-unavailable .dashboard-live-source{display:none}
+.dashboard-season-review.is-awaiting-match .legacy-stat-grid,
+.dashboard-season-review.is-awaiting-match .dashboard-highlight-row,
+.dashboard-season-review.is-awaiting-match .legacy-feedback,
+.dashboard-season-review.is-awaiting-match .dashboard-live-source{display:none}
 .dashboard-season-review.is-unavailable #dashboardRetry2026{width:100%;margin-top:10px}
 .mobile-dashboard-welcome{display:flex;align-items:center;gap:18px}
 .mobile-dashboard-welcome>.member-avatar{display:none}
