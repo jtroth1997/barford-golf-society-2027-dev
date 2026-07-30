@@ -235,6 +235,8 @@
     show("dashboardRsvpActions");
   };
 
+  const teeWindowLabel = value => ({ first: "First", middle: "Middle", end: "End" })[value] || "Middle";
+
   const saveRsvp = async (status, preferences = {}) => {
     if (!nextEvent) return;
     const statusLine = document.getElementById("dashboardRsvpStatus");
@@ -245,7 +247,7 @@
       status,
       payment_status: currentRsvp?.payment_status || "payment_due",
       buggy_requested: status === "playing" ? preferences.travel === "buggy" : Boolean(currentRsvp?.buggy_requested),
-      preferred_tee_time: status === "playing" ? preferences.preferredTeeTime || null : currentRsvp?.preferred_tee_time || null,
+      preferred_tee_time: status === "playing" ? preferences.teeWindow || "middle" : currentRsvp?.preferred_tee_time || null,
       updated_at: new Date().toISOString()
     };
     const { data, error } = await client.from("rsvps").upsert(payload, { onConflict: "event_id,member_id" }).select().single();
@@ -256,7 +258,7 @@
     currentRsvp = data;
     set("dashboardRsvpBadge", status === "playing" ? "You’re playing" : "Not playing");
     if (statusLine) statusLine.textContent = status === "playing"
-      ? `You are on the playing list · ${data.buggy_requested ? "Buggy" : "Walking"}${data.preferred_tee_time ? ` · preferred tee time ${String(data.preferred_tee_time).slice(0, 5)}` : ""}.`
+      ? `You are on the playing list · ${data.buggy_requested ? "Buggy" : "Walking"} · ${teeWindowLabel(data.preferred_tee_time)} tee-time preference.`
       : "The committee now knows you cannot attend.";
     await loadPayments();
     return data;
@@ -297,8 +299,11 @@
     const buggy = rsvpDialog?.querySelector('[name="travel"][value="buggy"]');
     if (walking) walking.checked = !currentRsvp?.buggy_requested;
     if (buggy) buggy.checked = Boolean(currentRsvp?.buggy_requested);
-    const preferred = document.getElementById("dashboardPreferredTeeTime");
-    if (preferred) preferred.value = currentRsvp?.preferred_tee_time ? String(currentRsvp.preferred_tee_time).slice(0, 5) : "";
+    const savedWindow = ["first", "middle", "end"].includes(currentRsvp?.preferred_tee_time)
+      ? currentRsvp.preferred_tee_time
+      : "middle";
+    const preferred = rsvpDialog?.querySelector(`[name="teeWindow"][value="${savedWindow}"]`);
+    if (preferred) preferred.checked = true;
     rsvpDialog?.showModal();
   });
   document.querySelector('[data-rsvp="not_playing"]')?.addEventListener("click", () => saveRsvp("not_playing"));
@@ -309,9 +314,10 @@
     const submit = event.currentTarget.querySelector('[type="submit"]');
     submit.disabled = true;
     submit.textContent = "Saving…";
-    const travel = new FormData(event.currentTarget).get("travel");
-    const preferredTeeTime = document.getElementById("dashboardPreferredTeeTime").value;
-    const saved = await saveRsvp("playing", { travel, preferredTeeTime });
+    const formData = new FormData(event.currentTarget);
+    const travel = formData.get("travel");
+    const teeWindow = formData.get("teeWindow");
+    const saved = await saveRsvp("playing", { travel, teeWindow });
     submit.disabled = false;
     submit.textContent = "Confirm I’m playing";
     if (saved) rsvpDialog?.close();
