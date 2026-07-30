@@ -135,10 +135,11 @@
       return;
     }
     const { data, error } = await client.from("rsvps")
-      .select("id,status,payment_status,buggy_requested,preferred_tee_time,guest_name,profiles(full_name,phone,playing_preference)")
+      .select("id,status,payment_status,buggy_requested,preferred_tee_time,guest_name,profiles(full_name,phone)")
       .eq("event_id", eventId).order("created_at");
     if (error) { setStatus("#adminRsvpStatus", error.message); return; }
-    const row = item => `<article><div><strong>${escapeHtml(item.profiles?.full_name || item.guest_name || "Guest")}</strong><small>${escapeHtml(item.profiles?.phone || "No phone")} · ${item.buggy_requested ? "Buggy requested" : "Walking"}${item.preferred_tee_time ? ` · prefers ${escapeHtml(String(item.preferred_tee_time).slice(0, 5))}` : ""} · ${escapeHtml(item.payment_status)}</small></div><button class="danger-link" type="button" data-remove-rsvp="${item.id}">Remove</button></article>`;
+    const preferenceLabel = value => ({ first: "First", middle: "Middle", end: "End" })[value] || "Middle";
+    const row = item => `<article><div><strong>${escapeHtml(item.profiles?.full_name || item.guest_name || "Guest")}</strong><small>${escapeHtml(item.profiles?.phone || "No phone")} · ${item.buggy_requested ? "Buggy requested" : "Walking"} · prefers ${preferenceLabel(item.preferred_tee_time)} · ${escapeHtml(item.payment_status)}</small></div><button class="danger-link" type="button" data-remove-rsvp="${item.id}">Remove</button></article>`;
     const active = (data || []).filter(item => item.status === "playing");
     const reserves = (data || []).filter(item => item.status === "reserve");
     playing.innerHTML = active.length ? active.map(row).join("") : "<p>No confirmed players.</p>";
@@ -152,32 +153,99 @@
   document.querySelector("#adminRsvpEvent")?.addEventListener("change", event => loadRsvps(event.target.value));
 
   const minutesToTime = total => `${String(Math.floor(total / 60) % 24).padStart(2, "0")}:${String(total % 60).padStart(2, "0")}`;
-  const groupPlayers = players => {
-    const buggy = players.filter(item => item.buggy_requested || item.profiles?.playing_preference === "buggy");
-    const walkers = players.filter(item => !buggy.includes(item));
-    const groups = [];
-    while (buggy.length) groups.push(buggy.splice(0, 4));
-    if (walkers.length % 2 === 1 && walkers.length >= 3) groups.push(walkers.splice(0, 3));
-    while (walkers.length) groups.push(walkers.splice(0, 4));
-    return groups;
+  const teeWindowRank = value => ({ first: 0, middle: 1, end: 2 })[value] ?? 1;
+  const teeWindowName = value => ({ first: "First", middle: "Middle", end: "End" })[value] || "Middle";
+  const pairingKey = (first, second) => [first, second].sort().join("|");
+
+  const buildPairingHistory = rows => {
+    const savedGroups = new Map();
+    (rows || []).forEach(row => {
+      if (!row.member_id) return;
+      const key = `${row.event_id}|${row.tee_time}`;
+      if (!savedGroups.has(key)) savedGroups.set(key, []);
+      savedGroups.get(key).push(row.member_id);
+    });
+    const pairings = new Map();
+    savedGroups.forEach(members => {
+      for (let first = 0; first < members.length; first += 1) {
+        for (let second = first + 1; second < members.length; second += 1) {
+          const key = pairingKey(members[first], members[second]);
+          pairings.set(key, (pairings.get(key) || 0) + 1);
+        }
+      }
+    });
+    return pairings;
+  };
+
+  const groupSizes = count => {
+    const sizes = [];
+    let remaining = count;
+    if (remaining % 2 === 1 && remaining >= 3) {
+      sizes.push(3);
+      remaining -= 3;
+    }
+    while (remaining > 0) {
+      sizes.push(Math.min(4, remaining));
+      remaining -= 4;
+    }
+    return sizes;
+  };
+
+  const mixCohort = (players, pairings) => {
+    const remaining = [...players].sort((first, second) =>
+      teeWindowRank(first.preferred_tee_time) - teeWindowRank(second.preferred_tee_time) ||
+      String(first.profiles?.full_name || first.guest_name || "").localeCompare(String(second.profiles?.full_name || second.guest_name || ""))
+    );
+    return groupSizes(remaining.length).map(size => {
+      const group = [remaining.shift()];
+      while (group.length < size && remaining.length) {
+        let bestIndex = 0;
+        let bestScore = Infinity;
+        remaining.forEach((candidate, index) => {
+          const preferredDistance = group.reduce((total, member) =>
+            total + Math.abs(teeWindowRank(candidate.preferred_tee_time) - teeWindowRank(member.preferred_tee_time)), 0);
+          const repeatPairings = group.reduce((total, member) => {
+            if (!candidate.member_id || !member.member_id) return total;
+            return total + (pairings.get(pairingKey(candidate.member_id, member.member_id)) || 0);
+          }, 0);
+          const score = preferredDistance * 1000 + repeatPairings * 10 + index / 1000;
+          if (score < bestScore) {
+            bestScore = score;
+            bestIndex = index;
+          }
+        });
+        group.push(remaining.splice(bestIndex, 1)[0]);
+      }
+      return group.filter(Boolean);
+    });
+  };
+
+  const groupPlayers = (players, pairings) => {
+    const buggy = players.filter(item => item.buggy_requested);
+    const walkers = players.filter(item => !item.buggy_requested);
+    return [...mixCohort(buggy, pairings), ...mixCohort(walkers, pairings)];
   };
   document.querySelector("#adminGenerateTeeTimes")?.addEventListener("click", async () => {
     const eventId = document.querySelector("#adminTeeEvent").value;
     if (!eventId) { setStatus("#adminTeeStatus", "Select an event first."); return; }
-    const { data, error } = await client.from("rsvps")
-      .select("member_id,guest_name,buggy_requested,profiles(full_name,phone,playing_preference)")
-      .eq("event_id", eventId).eq("status", "playing");
+    const [{ data, error }, { data: history, error: historyError }] = await Promise.all([
+      client.from("rsvps")
+        .select("member_id,guest_name,buggy_requested,preferred_tee_time,profiles(full_name,phone)")
+        .eq("event_id", eventId).eq("status", "playing"),
+      client.from("tee_times").select("event_id,tee_time,member_id").neq("event_id", eventId)
+    ]);
     if (error) { setStatus("#adminTeeStatus", error.message); return; }
+    const pairings = historyError ? new Map() : buildPairingHistory(history);
     const [hours, minutes] = document.querySelector("#adminTeeStart").value.split(":").map(Number);
     const gap = Number(document.querySelector("#adminTeeGap").value) || 8;
-    teeGroups = groupPlayers([...(data || [])]).map((players, index) => ({
+    teeGroups = groupPlayers([...(data || [])], pairings).map((players, index) => ({
       time: minutesToTime(hours * 60 + minutes + index * gap), players
     }));
     document.querySelector("#adminTeePreview").innerHTML = teeGroups.length ? teeGroups.map((group, index) => `
-      <article><strong>${group.time}</strong><span>Group ${index + 1}</span><div>${group.players.map(player => `<b>${escapeHtml(player.profiles?.full_name || player.guest_name || "Guest")}${player.buggy_requested ? " · buggy" : ""}</b>`).join("")}</div></article>
+      <article><strong>${group.time}</strong><span>Group ${index + 1}</span><div>${group.players.map(player => `<b>${escapeHtml(player.profiles?.full_name || player.guest_name || "Guest")}${player.buggy_requested ? " · buggy" : ""} · ${teeWindowName(player.preferred_tee_time)}</b>`).join("")}</div></article>
     `).join("") : "<p>No confirmed players to organise.</p>";
     document.querySelector("#adminSaveTeeTimes").disabled = !teeGroups.length;
-    setStatus("#adminTeeStatus", teeGroups.length ? "Preview ready. Check the groups before saving." : "");
+    setStatus("#adminTeeStatus", teeGroups.length ? "Preview ready. Buggy groups are first, tee-window requests are applied, and previous pairings are minimised." : "");
   });
   document.querySelector("#adminSaveTeeTimes")?.addEventListener("click", async () => {
     const eventId = document.querySelector("#adminTeeEvent").value;
