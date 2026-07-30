@@ -386,23 +386,38 @@
 
   const loadAccounts = async () => {
     const list = document.querySelector("#adminAccountList");
-    const { data: accounts, error } = await client.from("profiles")
-      .select("id,full_name,email,phone,photo_url,is_admin,leaderboard_active,leaderboard_from_round,committee_contacted,created_at")
+    const accountCount = document.querySelector("#adminAccountCount");
+    accountCount.textContent = "Loading…";
+
+    const coreColumns = "id,full_name,email,phone,photo_url,is_admin,leaderboard_active,leaderboard_from_round,created_at";
+    let contactedAvailable = true;
+    let result = await client.from("profiles")
+      .select(`${coreColumns},committee_contacted`)
       .order("full_name");
-    if (error) {
-      list.innerHTML = `<p class="form-status error">${error.message}</p>`;
+
+    if (result.error && /committee_contacted|column .* does not exist/i.test(result.error.message || "")) {
+      contactedAvailable = false;
+      result = await client.from("profiles").select(coreColumns).order("full_name");
+    }
+
+    if (result.error) {
+      accountCount.textContent = "Could not load";
+      list.innerHTML = '<p class="form-status error">Member accounts could not be loaded. Please refresh the page.</p>';
+      setStatus("#adminAccountStatus", result.error.message);
       return;
     }
-    document.querySelector("#adminAccountCount").textContent = `${accounts.length} account${accounts.length === 1 ? "" : "s"}`;
+
+    const accounts = result.data || [];
+    accountCount.textContent = `${accounts.length} account${accounts.length === 1 ? "" : "s"}`;
     list.innerHTML = accounts.map(account => `
       <article class="admin-account-row">
         <span class="admin-avatar">${escapeHtml(initials(account.full_name))}</span>
         <div class="admin-account-name"><strong>${escapeHtml(account.full_name)}</strong><small>${escapeHtml(account.email)} · ${escapeHtml(account.phone || "No phone")}</small></div>
         <span class="status ${account.is_admin ? "active" : "member"}">${account.is_admin ? "Administrator" : "Member"}</span>
-        <label class="admin-access-toggle">
+        ${contactedAvailable ? `<label class="admin-access-toggle">
           <input type="checkbox" data-contacted-id="${escapeHtml(account.id)}" ${account.committee_contacted ? "checked" : ""}>
           <span>${account.committee_contacted ? "Contacted" : "Mark contacted"}</span>
-        </label>
+        </label>` : ""}
         <label class="admin-access-toggle leaderboard-toggle">
           <input type="checkbox" data-leaderboard-id="${escapeHtml(account.id)}" data-leaderboard-name="${escapeHtml(account.full_name)}" ${account.leaderboard_active !== false ? "checked" : ""}>
           <span>${account.leaderboard_active !== false ? `Leaderboard · from round ${account.leaderboard_from_round || 1}` : "Add to leaderboard"}</span>
@@ -412,6 +427,12 @@
           <span>${account.is_admin ? "Admin access on" : "Give admin access"}</span>
         </label>
       </article>`).join("");
+    if (!contactedAvailable) {
+      setStatus("#adminAccountStatus", "Admin and leaderboard controls are ready. Run admin-controls-add-on.sql to also enable the contacted marker.");
+    } else {
+      setStatus("#adminAccountStatus", "");
+    }
+
     list.querySelectorAll("[data-admin-id]").forEach(input => input.addEventListener("change", event => {
       const control = event.currentTarget;
       pendingChange = {
