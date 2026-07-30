@@ -9,6 +9,12 @@
   const status = document.querySelector("#galleryUploadStatus");
   const lightbox = document.querySelector("#galleryLightbox");
   const lightboxImage = document.querySelector("#galleryLightboxImage");
+  const previousButton = document.querySelector("#galleryPrevious");
+  const nextButton = document.querySelector("#galleryNext");
+  const lightboxCount = document.querySelector("#galleryLightboxCount");
+  let activePhotos = [];
+  let activeIndex = 0;
+  let touchStartX = 0;
   const legacyPhotos = Array.from({ length: 26 }, (_, index) => ({
     url: `assets/images/gallery-2026/legacy-${String(index + 1).padStart(2, "0")}.webp`,
     caption: "Barford Golf Society 2026 photograph"
@@ -17,6 +23,19 @@
     status.textContent = text;
     status.classList.toggle("error", error);
   };
+  const showPhoto = index => {
+    if (!activePhotos.length) return;
+    activeIndex = (index + activePhotos.length) % activePhotos.length;
+    const photo = activePhotos[activeIndex];
+    lightboxImage.src = photo.url;
+    lightboxImage.alt = photo.caption;
+    lightboxCount.textContent = `${activeIndex + 1} of ${activePhotos.length}`;
+  };
+  const openPhoto = index => {
+    showPhoto(index);
+    if (!lightbox.open) lightbox.showModal();
+  };
+  const movePhoto = direction => showPhoto(activeIndex + direction);
   const loadGallery = async () => {
     const { data, error } = await client.from("gallery_photos")
       .select("id,storage_path,caption,taken_at,created_at").eq("approved", true)
@@ -27,6 +46,7 @@
       caption: photo.caption || "Barford Golf Society photograph"
     }));
     const photos = [...currentPhotos, ...legacyPhotos];
+    activePhotos = photos;
 
     count.textContent = `${photos.length} photo${photos.length === 1 ? "" : "s"}`;
     if (!photos.length) {
@@ -45,14 +65,25 @@
       image.src = photo.url;
       image.alt = photo.caption;
       button.append(image);
-      button.addEventListener("click", () => {
-        lightboxImage.src = photo.url;
-        lightboxImage.alt = image.alt;
-        lightbox.showModal();
-      });
+      button.addEventListener("click", () => openPhoto(index));
       grid.append(button);
     });
   };
+  previousButton?.addEventListener("click", () => movePhoto(-1));
+  nextButton?.addEventListener("click", () => movePhoto(1));
+  lightbox?.addEventListener("keydown", event => {
+    if (event.key === "ArrowLeft") movePhoto(-1);
+    if (event.key === "ArrowRight") movePhoto(1);
+  });
+  lightbox?.addEventListener("touchstart", event => {
+    touchStartX = event.changedTouches[0]?.clientX || 0;
+  }, { passive: true });
+  lightbox?.addEventListener("touchend", event => {
+    const distance = (event.changedTouches[0]?.clientX || 0) - touchStartX;
+    if (Math.abs(distance) < 45) return;
+    movePhoto(distance > 0 ? -1 : 1);
+  }, { passive: true });
+
   const initialise = async () => {
     if (!client) return;
     const { data: { session } } = await client.auth.getSession();
