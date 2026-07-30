@@ -9,6 +9,10 @@
   const status = document.querySelector("#galleryUploadStatus");
   const lightbox = document.querySelector("#galleryLightbox");
   const lightboxImage = document.querySelector("#galleryLightboxImage");
+  const legacyPhotos = Array.from({ length: 26 }, (_, index) => ({
+    url: `assets/images/gallery-2026/legacy-${String(index + 1).padStart(2, "0")}.webp`,
+    caption: "Barford Golf Society 2026 photograph"
+  }));
   const showStatus = (text, error = false) => {
     status.textContent = text;
     status.classList.toggle("error", error);
@@ -17,30 +21,32 @@
     const { data, error } = await client.from("gallery_photos")
       .select("id,storage_path,caption,taken_at,created_at").eq("approved", true)
       .order("created_at", { ascending: false });
-    if (error) {
-      grid.innerHTML = '<div class="empty-state">The gallery could not be loaded. Please try again.</div>';
-      count.textContent = "Unavailable";
+
+    const currentPhotos = error ? [] : (data || []).map(photo => ({
+      url: client.storage.from(config.galleryBucket).getPublicUrl(photo.storage_path).data.publicUrl,
+      caption: photo.caption || "Barford Golf Society photograph"
+    }));
+    const photos = [...currentPhotos, ...legacyPhotos];
+
+    count.textContent = `${photos.length} photo${photos.length === 1 ? "" : "s"}`;
+    if (!photos.length) {
+      grid.innerHTML = '<div class="empty-state"><strong>No photos yet</strong><span>New society photos will appear here.</span></div>';
       return;
     }
-    count.textContent = `${data.length} photo${data.length === 1 ? "" : "s"}`;
-    if (!data.length) {
-      grid.innerHTML = '<div class="empty-state"><strong>No photos yet</strong><span>The existing society gallery will appear here after it has been copied.</span></div>';
-      return;
-    }
+
     grid.innerHTML = "";
-    data.forEach((photo, index) => {
-      const publicUrl = client.storage.from(config.galleryBucket).getPublicUrl(photo.storage_path).data.publicUrl;
+    photos.forEach((photo, index) => {
       const button = document.createElement("button");
       button.className = "gallery-live-photo";
       button.type = "button";
       const image = document.createElement("img");
-      image.loading = index < 6 ? "eager" : "lazy";
+      image.loading = index < 4 ? "eager" : "lazy";
       image.decoding = "async";
-      image.src = publicUrl;
-      image.alt = photo.caption || "Barford Golf Society photograph";
+      image.src = photo.url;
+      image.alt = photo.caption;
       button.append(image);
       button.addEventListener("click", () => {
-        lightboxImage.src = publicUrl;
+        lightboxImage.src = photo.url;
         lightboxImage.alt = image.alt;
         lightbox.showModal();
       });
