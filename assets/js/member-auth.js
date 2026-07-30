@@ -15,6 +15,9 @@
     return;
   }
 
+  const isIPhone = /iPhone|iPod/i.test(navigator.userAgent);
+  const faceIdReady = () => localStorage.getItem("barford-passkey-offered") === "complete";
+
   const initials = name => String(name || "BG").split(/\s+/).filter(Boolean).slice(0, 2)
     .map(part => part[0].toUpperCase()).join("");
 
@@ -43,7 +46,6 @@
     const phone = $("#signupPhone").value.trim();
     const password = $("#signupPassword").value;
     const confirmation = $("#signupPasswordConfirm").value;
-    const usePasskey = $("#signupUsePasskey")?.checked !== false;
 
     if (password !== confirmation) {
       message("#signupStatus", "Those passwords do not match. Please try again.", true);
@@ -68,19 +70,15 @@
 
     localStorage.setItem("barford-login-email", email);
     sessionStorage.setItem("barford-first-login", "1");
-    sessionStorage.setItem("barford-use-passkey", usePasskey ? "1" : "0");
     if (data.session) await client.auth.signOut();
     window.location.href = "account.html?account=created";
   });
 
   const loginForm = $("#accountLoginForm");
-  const passkeyChoice = $("#loginUsePasskey");
   const passwordLoginButton = $("#accountPasswordLoginButton");
-  const updateLoginButton = () => {
-    if (passwordLoginButton) passwordLoginButton.textContent = passkeyChoice?.checked ? "Sign in and set up Face ID" : "Sign in";
+  const resetLoginButton = () => {
+    if (passwordLoginButton) passwordLoginButton.textContent = "Sign in";
   };
-  passkeyChoice?.addEventListener("change", updateLoginButton);
-  updateLoginButton();
 
   loginForm?.addEventListener("submit", async event => {
     event.preventDefault();
@@ -96,23 +94,21 @@
     if (error) {
       message("#accountLoginStatus", "Email or password not recognised.", true);
       button.disabled = false;
-      updateLoginButton();
+      resetLoginButton();
       return;
     }
-    if (passkeyChoice?.checked) {
-      button.textContent = "Confirm on your device…";
+    if (isIPhone && window.BarfordPasskeys?.supported && !faceIdReady()) {
+      button.textContent = "Set up Face ID…";
       try {
         await window.BarfordPasskeys.register();
         localStorage.setItem("barford-passkey-offered", "complete");
       } catch (passkeyError) {
-        message("#accountLoginStatus", passkeyError.name === "NotAllowedError"
-          ? "Face ID setup was cancelled. You are still signed in and can set it up later."
-          : `You are signed in. Device setup was not completed: ${passkeyError.message}`, true);
-        await new Promise(resolve => setTimeout(resolve, 1400));
+        if (passkeyError.name !== "NotAllowedError") {
+          console.warn("Face ID setup was not completed.", passkeyError);
+        }
       }
     }
     sessionStorage.removeItem("barford-first-login");
-    sessionStorage.removeItem("barford-use-passkey");
     window.location.href = "index.html";
   });
 
@@ -130,26 +126,7 @@
     } catch (error) {
       message("#accountLoginStatus", error.name === "NotAllowedError" ? "Device sign-in was cancelled." : error.message, true);
       button.disabled = false;
-      button.innerHTML = '<span aria-hidden="true">⌁</span> Sign in with Face ID or device';
-    }
-  });
-
-  $("#accountAddPasskey")?.addEventListener("click", async event => {
-    const button = event.currentTarget;
-    if (!window.BarfordPasskeys?.supported) {
-      message("#accountPasskeyStatus", "This browser does not support device sign-in.", true);
-      return;
-    }
-    button.disabled = true;
-    button.textContent = "Waiting for your device…";
-    try {
-      await window.BarfordPasskeys.register();
-      message("#accountPasskeyStatus", "This device is ready for quick secure sign-in.");
-      button.textContent = "Device added";
-    } catch (error) {
-      message("#accountPasskeyStatus", error.name === "NotAllowedError" ? "Setup was cancelled." : error.message, true);
-      button.disabled = false;
-      button.innerHTML = '<span aria-hidden="true">⌁</span> Add this device';
+      button.innerHTML = '<span aria-hidden="true">⌁</span> Sign in with Face ID';
     }
   });
 
@@ -164,13 +141,16 @@
     if (!session) {
       const firstLogin = sessionStorage.getItem("barford-first-login") === "1" ||
         new URLSearchParams(window.location.search).get("account") === "created";
+      const showFaceId = isIPhone && window.BarfordPasskeys?.supported && faceIdReady();
+      $("#accountPasskeyLogin")?.classList.toggle("hidden", !showFaceId);
+      $("#accountLoginDivider")?.classList.toggle("hidden", !showFaceId);
       const savedEmail = localStorage.getItem("barford-login-email");
       if (savedEmail && $("#accountLoginEmail")) $("#accountLoginEmail").value = savedEmail;
       if (firstLogin) {
-        $("#accountLoginHeading").textContent = "Account created — secure your login";
-        $("#accountLoginIntro").textContent = "Enter your email and password once. Face ID or device sign-in is already selected for the quickest future login.";
-        if (passkeyChoice) passkeyChoice.checked = sessionStorage.getItem("barford-use-passkey") !== "0";
-        updateLoginButton();
+        $("#accountLoginHeading").textContent = "Account created — sign in";
+        $("#accountLoginIntro").textContent = isIPhone
+          ? "Enter your email and password once. Your iPhone will then ask whether to set up Face ID for future logins."
+          : "Enter your email and password to open your account.";
         $("#accountLoginPassword")?.focus();
       }
       return;
