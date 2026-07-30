@@ -377,3 +377,22 @@ th{background:linear-gradient(135deg,var(--green-1000),var(--green-800));color:#
 .video-intro video{
   transform:translateZ(0);
 }
+
+
+/* Quiet, shuffled society-photo backdrop on the homepage. */
+.home-photo-page{background:#eef3f0}
+.home-photo-page #main-content{position:relative;isolation:isolate;overflow:hidden}
+.home-photo-backdrop{position:fixed;z-index:-1;inset:0;overflow:hidden;pointer-events:none;background:#edf3ef}
+.home-photo-backdrop::after{content:"";position:absolute;inset:0;background:linear-gradient(rgba(242,247,244,.84),rgba(246,248,247,.9))}
+.home-photo-backdrop span{position:absolute;inset:-3%;background-position:center;background-size:cover;opacity:0;filter:saturate(.78) contrast(.9);transform:scale(1.03);transition:opacity 1.5s ease}
+.home-photo-backdrop span.active{opacity:.2}
+.home-photo-page .member-home{background:rgba(243,247,244,.84)}
+.home-photo-page #publicHome{background:rgba(246,248,247,.82)}
+.home-photo-page .hero{background:linear-gradient(120deg,rgba(5,46,32,.9),rgba(10,83,57,.86))}
+.home-photo-page .section-soft{background:rgba(239,244,241,.9)}
+@media(max-width:760px){
+  .home-photo-backdrop span{background-position:center}
+  .home-photo-backdrop span.active{opacity:.17}
+  .home-photo-page .member-home{background:rgba(243,247,244,.86)}
+}
+@media(prefers-reduced-motion:reduce){.home-photo-backdrop span{transition:none}}
