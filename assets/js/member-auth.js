@@ -163,7 +163,7 @@
     $("#accountRoundsPlayed").textContent = String(played.length);
     $("#accountAveragePoints").textContent = average ?? "N/A";
     $("#accountBestPoints").textContent = best ?? "N/A";
-    $("#accountCurrentHandicap").textContent = latestHandicap ?? $("#accountHandicap")?.value || "N/A";
+    $("#accountCurrentHandicap").textContent = latestHandicap ?? ($("#accountHandicap")?.value || "N/A");
 
     if (!scores.length) {
       list.innerHTML = '<p class="account-round-empty">Your round-by-round scores will appear here when results are published.</p>';
