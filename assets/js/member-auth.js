@@ -18,6 +18,14 @@
   const isIPhone = /iPhone|iPod/i.test(navigator.userAgent);
   const faceIdReady = () => localStorage.getItem("barford-passkey-offered") === "complete";
 
+  const escapeHtml = value => String(value ?? "")
+    .replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;")
+    .replace(/"/g, "&quot;").replace(/'/g, "&#039;");
+  const friendlyDate = value => value
+    ? new Intl.DateTimeFormat("en-GB", { day: "numeric", month: "short", year: "numeric" })
+      .format(new Date(`${value}T12:00:00`))
+    : "Date not announced";
+
   const initials = name => String(name || "BG").split(/\s+/).filter(Boolean).slice(0, 2)
     .map(part => part[0].toUpperCase()).join("");
 
@@ -130,6 +138,67 @@
     }
   });
 
+  const loadMemberScores = async memberId => {
+    const list = $("#accountRoundList");
+    if (!list) return;
+    const { data, error } = await client
+      .from("scores")
+      .select("points,handicap_used,next_handicap,dnp,winner,runner_up,third_place,nearest_pin,longest_drive,rounds(round_number,name,played_on,events(name,venue,event_date))")
+      .eq("member_id", memberId);
+
+    if (error) {
+      message("#accountScoresStatus", "Your scores could not be loaded. Please refresh the page.", true);
+      return;
+    }
+
+    const scores = (data || []).sort((a, b) =>
+      Number(a.rounds?.round_number || 0) - Number(b.rounds?.round_number || 0));
+    const played = scores.filter(score => !score.dnp && Number.isFinite(Number(score.points)));
+    const best = played.length ? Math.max(...played.map(score => Number(score.points))) : null;
+    const average = played.length
+      ? (played.reduce((total, score) => total + Number(score.points), 0) / played.length).toFixed(1)
+      : null;
+    const latestHandicap = [...scores].reverse().find(score => score.next_handicap != null)?.next_handicap;
+
+    $("#accountRoundsPlayed").textContent = String(played.length);
+    $("#accountAveragePoints").textContent = average ?? "N/A";
+    $("#accountBestPoints").textContent = best ?? "N/A";
+    $("#accountCurrentHandicap").textContent = latestHandicap ?? $("#accountHandicap")?.value || "N/A";
+
+    if (!scores.length) {
+      list.innerHTML = '<p class="account-round-empty">Your round-by-round scores will appear here when results are published.</p>';
+      return;
+    }
+
+    list.innerHTML = scores.map(score => {
+      const round = score.rounds || {};
+      const event = round.events || {};
+      const honours = [
+        score.winner ? "Winner" : "",
+        score.runner_up ? "Runner-up" : "",
+        score.third_place ? "Third" : "",
+        score.nearest_pin ? "Nearest pin" : "",
+        score.longest_drive ? "Longest drive" : ""
+      ].filter(Boolean);
+      return `<article class="account-round-row">
+        <div class="account-round-number">R${escapeHtml(round.round_number || "—")}</div>
+        <div class="account-round-course">
+          <strong>${escapeHtml(event.name || round.name || "Society round")}</strong>
+          <small>${escapeHtml(friendlyDate(event.event_date || round.played_on))}${event.venue ? ` · ${escapeHtml(event.venue)}` : ""}</small>
+          ${honours.length ? `<span class="account-round-honours">${honours.map(item => `<b>${escapeHtml(item)}</b>`).join("")}</span>` : ""}
+        </div>
+        <div class="account-round-score">
+          <strong>${score.dnp ? "DNP" : score.points ?? "—"}</strong>
+          <span>${score.dnp ? "Did not play" : "Points"}</span>
+        </div>
+        <div class="account-round-handicap">
+          <strong>${score.handicap_used ?? "—"}</strong>
+          <span>Handicap</span>
+        </div>
+      </article>`;
+    }).join("");
+  };
+
   const loadAccount = async () => {
     const signedOut = $("#accountSignedOut");
     const content = $("#accountContent");
@@ -174,10 +243,10 @@
     $("#accountPhone").value = profile.phone || "";
     $("#accountHomeClub").value = profile.home_club || "";
     $("#accountHandicap").value = profile.handicap ?? "";
-    $("#accountPreference").value = profile.playing_preference || "walker";
     await Promise.all([
       renderProfilePhoto($("#accountHeroAvatar"), profile),
-      renderProfilePhoto($("#accountPhotoPreview"), profile)
+      renderProfilePhoto($("#accountPhotoPreview"), profile),
+      loadMemberScores(session.user.id)
     ]);
     $("#removeAccountPhoto")?.classList.toggle("hidden", !profile.photo_url);
     $("#accountPhotoInput").dataset.currentPath = profile.photo_url || "";
@@ -266,7 +335,6 @@
       phone: $("#accountPhone").value.trim() || null,
       home_club: $("#accountHomeClub").value.trim() || null,
       handicap: $("#accountHandicap").value || null,
-      playing_preference: $("#accountPreference").value,
       updated_at: new Date().toISOString()
     };
     const { error } = await client.from("profiles").update(changes).eq("id", user.id);
