@@ -7,7 +7,7 @@
   <meta name="theme-color" content="#063d2a">
   <title>My Account | Barford Golf Society</title>
   <link rel="stylesheet" href="assets/css/styles.css?v=fast3">
-  <link rel="stylesheet" href="assets/css/members.css?v=dashboard4">
+  <link rel="stylesheet" href="assets/css/members.css?v=account5">
   <link rel="stylesheet" href="assets/css/accessible-mobile.css?v=mobile4">
 </head>
 <body>
@@ -51,48 +51,49 @@
     </div>
   </section>
 
-  <div id="accountContent" class="shell account-layout">
-    <section class="account-main">
-      <article class="account-panel account-empty-season">
-        <p class="eyebrow">2027 season</p>
-        <h2>Your season starts here</h2>
-        <p>Your event attendance, tee times, payments, scores and handicap progress will appear here as they are added.</p>
-        <div class="account-empty-links">
-          <a class="button button-primary" href="events.html">View events</a>
-          <a class="button button-outline" href="scores.html">View leaderboard</a>
-        </div>
-      </article>
-    </section>
-
-    <aside class="account-side">
-      <article class="account-panel profile-panel">
-        <div class="account-panel-heading"><div><p class="eyebrow">Profile</p><h3>Your information</h3></div></div>
-        <form id="accountProfileForm" class="account-profile-form">
-          <div class="account-photo-editor">
-            <div id="accountPhotoPreview" class="profile-photo-preview"><span>BG</span></div>
-            <div>
-              <label class="button button-outline photo-picker-button" for="accountPhotoInput">Add or change photo</label>
-              <input id="accountPhotoInput" class="profile-photo-input" type="file" accept="image/jpeg,image/png,image/webp">
-              <button id="removeAccountPhoto" class="photo-remove hidden" type="button">Remove photo</button>
-              <small>Shown on your dashboard and with your four-ball. JPG, PNG or WebP up to 5 MB.</small>
-              <p id="accountPhotoStatus" class="form-status" aria-live="polite"></p>
-            </div>
+  <div id="accountContent" class="shell account-details-layout">
+    <section class="account-panel profile-panel">
+      <div class="account-panel-heading"><div><p class="eyebrow">My details</p><h2>Your information</h2></div></div>
+      <form id="accountProfileForm" class="account-profile-form">
+        <div class="account-photo-editor">
+          <div id="accountPhotoPreview" class="profile-photo-preview"><span>BG</span></div>
+          <div>
+            <label class="button button-outline photo-picker-button" for="accountPhotoInput">Add or change photo</label>
+            <input id="accountPhotoInput" class="profile-photo-input" type="file" accept="image/jpeg,image/png,image/webp">
+            <button id="removeAccountPhoto" class="photo-remove hidden" type="button">Remove photo</button>
+            <small>Shown on your dashboard and with your four-ball. JPG, PNG or WebP up to 5 MB.</small>
+            <p id="accountPhotoStatus" class="form-status" aria-live="polite"></p>
           </div>
+        </div>
+        <div class="account-form-grid">
           <label>Full name<input id="accountName" type="text" autocomplete="name" required></label>
           <label>Email address<input id="accountEmail" type="email" autocomplete="email" required></label>
           <label>Phone number<input id="accountPhone" type="tel" autocomplete="tel" required></label>
           <label>Home club<input id="accountHomeClub" type="text" placeholder="Optional"></label>
           <label>Handicap index<input id="accountHandicap" type="number" min="0" max="54" step=".1"></label>
-          <label>Playing preference<select id="accountPreference"><option value="walker">Walker</option><option value="buggy">Buggy requested</option><option value="either">No preference</option></select></label>
-          <button class="button button-primary full-button" type="submit">Save changes</button>
-          <p id="accountSaveStatus" class="form-status" aria-live="polite"></p>
-        </form>
-      </article>
+        </div>
+        <button class="button button-primary full-button" type="submit">Save my details</button>
+        <p id="accountSaveStatus" class="form-status" aria-live="polite"></p>
+      </form>
+    </section>
 
-      <article class="account-panel">
-        <button id="accountSignOut" class="button button-outline full-button" type="button">Sign out</button>
-      </article>
-    </aside>
+    <section class="account-panel account-scores-panel">
+      <div class="account-panel-heading"><div><p class="eyebrow">2027 season</p><h2>My scores and rounds</h2></div><a class="text-link" href="scores.html">Full leaderboard →</a></div>
+      <div class="account-score-summary" aria-label="Your season summary">
+        <div><strong id="accountRoundsPlayed">0</strong><span>Rounds played</span></div>
+        <div><strong id="accountAveragePoints">N/A</strong><span>Average points</span></div>
+        <div><strong id="accountBestPoints">N/A</strong><span>Best score</span></div>
+        <div><strong id="accountCurrentHandicap">N/A</strong><span>Current handicap</span></div>
+      </div>
+      <div id="accountRoundList" class="account-round-list">
+        <p class="account-round-empty">Your round-by-round scores will appear here when results are published.</p>
+      </div>
+      <p id="accountScoresStatus" class="form-status" aria-live="polite"></p>
+    </section>
+
+    <div class="account-signout">
+      <button id="accountSignOut" class="button button-outline" type="button">Sign out</button>
+    </div>
   </div>
 </main>
 
@@ -102,7 +103,7 @@
 <script src="assets/js/supabase-config.js?v=live1" defer></script>
 <script src="assets/js/supabase-client.js?v=live1" defer></script>
 <script src="assets/js/passkeys.js?v=faceid1" defer></script>
-<script src="assets/js/member-auth.js?v=faceid1" defer></script>
+<script src="assets/js/member-auth.js?v=account5" defer></script>
 <script src="assets/js/accessible-mobile.js?v=mobile4" defer></script>
 <script data-mobile-nav-lock>
 window.addEventListener("DOMContentLoaded",()=>document.querySelectorAll(".mobile-quick-nav").forEach(nav=>{const links=nav.querySelectorAll("a");const item=links[links.length-1];if(!item)return;item.href="account.html";item.innerHTML='<span class="quick-icon" aria-hidden="true">●</span><span>My Account</span>';item.classList.toggle("active",location.pathname.endsWith("/account.html"));if(location.pathname.endsWith("/account.html"))item.setAttribute("aria-current","page");else item.removeAttribute("aria-current");}));
