@@ -178,17 +178,14 @@
   };
 
   const groupSizes = count => {
-    const sizes = [];
-    let remaining = count;
-    if (remaining % 2 === 1 && remaining >= 3) {
-      sizes.push(3);
-      remaining -= 3;
-    }
-    while (remaining > 0) {
-      sizes.push(Math.min(4, remaining));
-      remaining -= 4;
-    }
-    return sizes;
+    if (count <= 4) return count ? [count] : [];
+    const numberOfGroups = Math.ceil(count / 4);
+    if (count < numberOfGroups * 3) return [3, count - 3];
+    const threeballs = numberOfGroups * 4 - count;
+    return [
+      ...Array(threeballs).fill(3),
+      ...Array(numberOfGroups - threeballs).fill(4)
+    ];
   };
 
   const mixCohort = (players, pairings) => {
@@ -232,10 +229,14 @@
       client.from("rsvps")
         .select("member_id,guest_name,buggy_requested,preferred_tee_time,profiles(full_name,phone)")
         .eq("event_id", eventId).eq("status", "playing"),
-      client.from("tee_times").select("event_id,tee_time,member_id").neq("event_id", eventId)
+      client.from("tee_times").select("event_id,tee_time,member_id,events(event_date)").neq("event_id", eventId)
     ]);
     if (error) { setStatus("#adminTeeStatus", error.message); return; }
-    const pairings = historyError ? new Map() : buildPairingHistory(history);
+    const selectedEvent = adminEvents.find(item => item.id === eventId);
+    const previousGroups = (history || []).filter(row =>
+      row.events?.event_date && selectedEvent?.event_date && row.events.event_date < selectedEvent.event_date
+    );
+    const pairings = historyError ? new Map() : buildPairingHistory(previousGroups);
     const [hours, minutes] = document.querySelector("#adminTeeStart").value.split(":").map(Number);
     const gap = Number(document.querySelector("#adminTeeGap").value) || 8;
     teeGroups = groupPlayers([...(data || [])], pairings).map((players, index) => ({
