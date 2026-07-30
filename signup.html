@@ -42,10 +42,6 @@
   <label>Create password<input id="signupPassword" type="password" required minlength="8" autocomplete="new-password" placeholder="At least 8 characters"></label>
   <label>Confirm password<input id="signupPasswordConfirm" type="password" required minlength="8" autocomplete="new-password" placeholder="Type it again"></label>
   <label>Mobile number <span class="optional-label">Optional</span><input id="signupPhone" type="tel" autocomplete="tel" placeholder="07..."></label>
-  <label class="device-choice">
-    <input id="signupUsePasskey" type="checkbox" checked>
-    <span><strong>Use Face ID or device sign-in</strong><small>Recommended — you will set this up securely when you first log in.</small></span>
-  </label>
   <button class="button button-primary full-button" type="submit">Create my account</button>
   <p class="account-helper">No email confirmation or committee approval needed. You will be sent to My Account to log in securely.</p>
   <p id="signupStatus" class="form-status" aria-live="polite"></p>
@@ -62,8 +58,8 @@
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2" defer></script>
 <script src="assets/js/supabase-config.js?v=live1" defer></script>
 <script src="assets/js/supabase-client.js?v=live1" defer></script>
-<script src="assets/js/passkeys.js?v=onboarding3" defer></script>
-<script src="assets/js/member-auth.js?v=onboarding3" defer></script>
+<script src="assets/js/passkeys.js?v=faceid1" defer></script>
+<script src="assets/js/member-auth.js?v=faceid1" defer></script>
 
 <script src="assets/js/accessible-mobile.js?v=mobile4" defer></script>
 <script data-mobile-nav-lock>
