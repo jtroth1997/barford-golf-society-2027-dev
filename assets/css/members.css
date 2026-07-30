@@ -758,3 +758,43 @@
   .member-rsvp-dialog .dashboard-button-row{display:grid;grid-template-columns:1fr}
   .member-rsvp-dialog .button{width:100%}
 }
+
+
+/* My Account: editable details, personal scoring record and final sign-out action. */
+.account-details-layout{display:grid;gap:20px;padding-block:28px 42px}
+.account-details-layout>.account-panel{width:100%}
+.account-form-grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:14px}
+.account-scores-panel{overflow:hidden}
+.account-score-summary{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:10px;margin:18px 0}
+.account-score-summary>div{padding:15px;border-radius:15px;background:#f2f6f3;text-align:center}
+.account-score-summary strong,.account-score-summary span{display:block}
+.account-score-summary strong{color:#063d2a;font-size:1.55rem}
+.account-score-summary span{margin-top:3px;color:#647169;font-size:.75rem;font-weight:800}
+.account-round-list{display:grid}
+.account-round-row{display:grid;grid-template-columns:48px minmax(0,1fr) 72px 72px;align-items:center;gap:12px;padding:14px 0;border-top:1px solid var(--line)}
+.account-round-number{display:grid;place-items:center;width:44px;height:44px;border-radius:13px;background:#073d2a;color:#fff;font-weight:900}
+.account-round-course strong,.account-round-course small,.account-round-score strong,.account-round-score span,.account-round-handicap strong,.account-round-handicap span{display:block}
+.account-round-course small{margin-top:3px;color:var(--muted)}
+.account-round-score,.account-round-handicap{text-align:center}
+.account-round-score strong,.account-round-handicap strong{color:#073d2a;font-size:1.25rem}
+.account-round-score span,.account-round-handicap span{color:var(--muted);font-size:.68rem;font-weight:800}
+.account-round-honours{display:flex;flex-wrap:wrap;gap:5px;margin-top:7px}
+.account-round-honours b{padding:3px 7px;border-radius:999px;background:#f7edcf;color:#735717;font-size:.65rem}
+.account-round-empty{margin:0;padding:18px;border-radius:14px;background:#f3f6f4;color:var(--muted);text-align:center}
+.account-signout{display:flex;justify-content:center;padding-top:10px}
+.account-signout .button{min-width:180px}
+@media(max-width:650px){
+  .account-details-layout{gap:12px;padding:12px 12px calc(8rem + env(safe-area-inset-bottom))}
+  .account-form-grid{grid-template-columns:1fr}
+  .account-score-summary{grid-template-columns:repeat(2,1fr);gap:7px}
+  .account-score-summary>div{padding:11px 7px}
+  .account-score-summary strong{font-size:1.3rem}
+  .account-round-row{grid-template-columns:42px minmax(0,1fr) 54px;gap:8px;padding:12px 0}
+  .account-round-number{width:38px;height:38px;border-radius:11px;font-size:.78rem}
+  .account-round-course strong{font-size:.88rem}
+  .account-round-course small{font-size:.68rem;line-height:1.3}
+  .account-round-score strong{font-size:1.15rem}
+  .account-round-handicap{display:none}
+  .account-signout{padding-top:12px}
+  .account-signout .button{width:100%;min-height:50px}
+}
