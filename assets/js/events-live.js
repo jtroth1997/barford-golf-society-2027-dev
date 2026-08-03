@@ -30,6 +30,23 @@
   };
 
   const friendlyTime = value => value ? String(value).slice(0, 5) : "To be confirmed";
+  const videoEmbedUrl = value => {
+    try {
+      const url = new URL(value);
+      if (url.hostname.includes("youtu.be")) return `https://www.youtube.com/embed/${url.pathname.slice(1)}`;
+      if (url.hostname.includes("youtube.com")) {
+        const id = url.searchParams.get("v") || url.pathname.split("/").filter(Boolean).pop();
+        return id ? `https://www.youtube.com/embed/${id}` : value;
+      }
+      if (url.hostname.includes("vimeo.com") && !url.hostname.includes("player.")) {
+        const id = url.pathname.split("/").filter(Boolean).pop();
+        return id ? `https://player.vimeo.com/video/${id}` : value;
+      }
+      return value;
+    } catch {
+      return value;
+    }
+  };
   const friendlyPrice = value => value == null || value === ""
     ? "Price TBC"
     : Number(value) === 0 ? "Free" : `£${Number(value).toFixed(2)}`;
@@ -52,7 +69,7 @@
       ? `<p class="event-description">${escapeHtml(event.notes)}</p>`
       : "";
     const video = event.course_video_url
-      ? `<a class="button button-outline" href="${escapeHtml(event.course_video_url)}" target="_blank" rel="noopener">Course video</a>`
+      ? `<button class="button button-outline" type="button" data-course-video="${escapeHtml(event.course_video_url)}" data-course-name="${escapeHtml(event.name)}">Course video</button>`
       : "";
 
     return `
@@ -122,6 +139,27 @@
     if (summary) {
       summary.textContent = `${events.length} upcoming event${events.length === 1 ? "" : "s"} published.`;
     }
+
+    const videoDialog = document.querySelector("#courseVideoDialog");
+    const videoFrame = document.querySelector("#courseVideoFrame");
+    const videoTitle = document.querySelector("#courseVideoTitle");
+    const closeVideo = () => {
+      videoDialog?.close();
+      if (videoFrame) videoFrame.src = "";
+    };
+    list.querySelectorAll("[data-course-video]").forEach(button => {
+      button.addEventListener("click", () => {
+        if (!videoDialog || !videoFrame) return;
+        videoTitle.textContent = button.dataset.courseName || "Course video";
+        videoFrame.src = videoEmbedUrl(button.dataset.courseVideo);
+        videoDialog.showModal();
+      });
+    });
+    document.querySelector("#courseVideoClose")?.addEventListener("click", closeVideo);
+    document.querySelector("#courseVideoDone")?.addEventListener("click", closeVideo);
+    videoDialog?.addEventListener("click", event => {
+      if (event.target === videoDialog) closeVideo();
+    });
 
     list.querySelectorAll("[data-event-details]").forEach(button => {
       button.addEventListener("click", () => {
