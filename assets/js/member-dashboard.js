@@ -205,7 +205,7 @@
       <article>
         <div><strong>${escapeHtml(item.events.name)}</strong><small>${escapeHtml(friendlyDate(item.events.event_date))}</small></div>
         <b>${escapeHtml(money(item.events.price))}</b>
-        <a class="button button-small" href="events.html#event-${encodeURIComponent(item.event_id)}">View payment</a>
+        <a class="button button-small" href="payments.html?event=${encodeURIComponent(item.event_id)}">View payment</a>
       </article>`).join("");
   };
 
@@ -235,7 +235,7 @@
     show("dashboardRsvpActions");
   };
 
-  const teeWindowLabel = value => ({ first: "First", middle: "Middle", end: "End" })[value] || "Middle";
+  const teeWindowLabel = value => ({ dont_mind: "Don’t mind", first: "Early", middle: "Middle", end: "Last" })[value] || "Don’t mind";
 
   const saveRsvp = async (status, preferences = {}) => {
     if (!nextEvent) return;
@@ -247,7 +247,7 @@
       status,
       payment_status: currentRsvp?.payment_status || "payment_due",
       buggy_requested: status === "playing" ? preferences.travel === "buggy" : Boolean(currentRsvp?.buggy_requested),
-      preferred_tee_time: status === "playing" ? preferences.teeWindow || "middle" : currentRsvp?.preferred_tee_time || null,
+      preferred_tee_time: status === "playing" ? preferences.teeWindow || "dont_mind" : currentRsvp?.preferred_tee_time || null,
       updated_at: new Date().toISOString()
     };
     const { data, error } = await client.from("rsvps").upsert(payload, { onConflict: "event_id,member_id" }).select().single();
@@ -299,9 +299,9 @@
     const buggy = rsvpDialog?.querySelector('[name="travel"][value="buggy"]');
     if (walking) walking.checked = !currentRsvp?.buggy_requested;
     if (buggy) buggy.checked = Boolean(currentRsvp?.buggy_requested);
-    const savedWindow = ["first", "middle", "end"].includes(currentRsvp?.preferred_tee_time)
+    const savedWindow = ["dont_mind", "first", "middle", "end"].includes(currentRsvp?.preferred_tee_time)
       ? currentRsvp.preferred_tee_time
-      : "middle";
+      : "dont_mind";
     const preferred = rsvpDialog?.querySelector(`[name="teeWindow"][value="${savedWindow}"]`);
     if (preferred) preferred.checked = true;
     rsvpDialog?.showModal();
