@@ -799,11 +799,11 @@
   .account-signout .button{width:100%;min-height:50px}
 }
 
-.rsvp-window-grid{grid-template-columns:repeat(3,1fr)}
+.rsvp-window-grid{grid-template-columns:repeat(4,1fr)}
 .rsvp-window-grid label>span{min-height:82px;text-align:center}
 .rsvp-window-note{display:block;margin-top:8px;color:var(--muted);font-weight:600;line-height:1.4}
 @media(max-width:560px){
-  .rsvp-window-grid{grid-template-columns:repeat(3,1fr)}
+  .rsvp-window-grid{grid-template-columns:repeat(2,1fr)}
   .rsvp-window-grid label>span{min-height:78px;padding:10px 6px}
   .rsvp-window-grid strong{font-size:.92rem}
   .rsvp-window-grid small{font-size:.65rem}
