@@ -205,7 +205,7 @@
       <article>
         <div><strong>${escapeHtml(item.events.name)}</strong><small>${escapeHtml(friendlyDate(item.events.event_date))}</small></div>
         <b>${escapeHtml(money(item.events.price))}</b>
-        <a class="button button-small" href="payments.html?event=${encodeURIComponent(item.event_id)}">View payment</a>
+        <a class="button button-small" href="payments.html?event=${encodeURIComponent(item.event_id)}">Make payment</a>
       </article>`).join("");
   };
 
