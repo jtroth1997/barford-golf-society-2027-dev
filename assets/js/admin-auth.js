@@ -138,7 +138,7 @@
       .select("id,status,payment_status,buggy_requested,preferred_tee_time,guest_name,profiles(full_name,phone)")
       .eq("event_id", eventId).order("created_at");
     if (error) { setStatus("#adminRsvpStatus", error.message); return; }
-    const preferenceLabel = value => ({ first: "First", middle: "Middle", end: "End" })[value] || "Middle";
+    const preferenceLabel = value => ({ dont_mind: "Don’t mind", first: "Early", middle: "Middle", end: "Last" })[value] || "Don’t mind";
     const row = item => `<article><div><strong>${escapeHtml(item.profiles?.full_name || item.guest_name || "Guest")}</strong><small>${escapeHtml(item.profiles?.phone || "No phone")} · ${item.buggy_requested ? "Buggy requested" : "Walking"} · prefers ${preferenceLabel(item.preferred_tee_time)} · ${escapeHtml(item.payment_status)}</small></div><button class="danger-link" type="button" data-remove-rsvp="${item.id}">Remove</button></article>`;
     const active = (data || []).filter(item => item.status === "playing");
     const reserves = (data || []).filter(item => item.status === "reserve");
@@ -153,8 +153,8 @@
   document.querySelector("#adminRsvpEvent")?.addEventListener("change", event => loadRsvps(event.target.value));
 
   const minutesToTime = total => `${String(Math.floor(total / 60) % 24).padStart(2, "0")}:${String(total % 60).padStart(2, "0")}`;
-  const teeWindowRank = value => ({ first: 0, middle: 1, end: 2 })[value] ?? 1;
-  const teeWindowName = value => ({ first: "First", middle: "Middle", end: "End" })[value] || "Middle";
+  const teeWindowRank = value => ({ first: 0, dont_mind: 1, middle: 1, end: 2 })[value] ?? 1;
+  const teeWindowName = value => ({ dont_mind: "Don’t mind", first: "Early", middle: "Middle", end: "Last" })[value] || "Don’t mind";
   const pairingKey = (first, second) => [first, second].sort().join("|");
 
   const buildPairingHistory = rows => {
@@ -199,8 +199,10 @@
         let bestIndex = 0;
         let bestScore = Infinity;
         remaining.forEach((candidate, index) => {
-          const preferredDistance = group.reduce((total, member) =>
-            total + Math.abs(teeWindowRank(candidate.preferred_tee_time) - teeWindowRank(member.preferred_tee_time)), 0);
+          const preferredDistance = group.reduce((total, member) => {
+            if (candidate.preferred_tee_time === "dont_mind" || member.preferred_tee_time === "dont_mind") return total;
+            return total + Math.abs(teeWindowRank(candidate.preferred_tee_time) - teeWindowRank(member.preferred_tee_time));
+          }, 0);
           const repeatPairings = group.reduce((total, member) => {
             if (!candidate.member_id || !member.member_id) return total;
             return total + (pairings.get(pairingKey(candidate.member_id, member.member_id)) || 0);
