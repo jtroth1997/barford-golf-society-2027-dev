@@ -6,6 +6,7 @@
   let session;
   let nextEvent;
   let currentRsvp;
+  let rsvpChoicesLocked = false;
   let legacyCandidate;
   const set = (id, value) => {
     const element = document.getElementById(id);
@@ -214,10 +215,13 @@
   const renderRsvpState = () => {
     const isPlaying = currentRsvp?.status === "playing";
     show("dashboardPlayingConfirmation", isPlaying);
-    show("dashboardRsvpActions", !isPlaying);
+    show("dashboardRsvpActions", !isPlaying && !rsvpChoicesLocked);
+    show("dashboardRsvpLockedNotice", rsvpChoicesLocked);
+    show("dashboardChangeRsvp", isPlaying && !rsvpChoicesLocked);
+    show("dashboardWithdrawRsvp", isPlaying && !rsvpChoicesLocked);
     set("dashboardRsvpBadge", isPlaying
-      ? "You’re playing"
-      : currentRsvp?.status === "not_playing" ? "Not playing" : "RSVP needed");
+      ? rsvpChoicesLocked ? "Tee times confirmed" : "You’re playing"
+      : currentRsvp?.status === "not_playing" ? "Not playing" : rsvpChoicesLocked ? "RSVP closed" : "RSVP needed");
     if (!isPlaying) return;
     set("dashboardPlayingTravel", currentRsvp.buggy_requested ? "Buggy requested" : "Walking");
     set("dashboardPlayingPreference", teeWindowLabel(currentRsvp.preferred_tee_time));
@@ -257,11 +261,13 @@
       return;
     }
     nextEvent = events[0];
-    const [{ data: rsvp }, { data: teeTime }] = await Promise.all([
+    const [{ data: rsvp }, { data: teeTime }, { data: choicesLocked }] = await Promise.all([
       client.from("rsvps").select("*").eq("event_id", nextEvent.id).eq("member_id", session.user.id).maybeSingle(),
-      client.from("tee_times").select("tee_time").eq("event_id", nextEvent.id).eq("member_id", session.user.id).maybeSingle()
+      client.from("tee_times").select("tee_time").eq("event_id", nextEvent.id).eq("member_id", session.user.id).maybeSingle(),
+      client.rpc("get_event_rsvp_lock_status", { target_event_id: nextEvent.id })
     ]);
     currentRsvp = rsvp;
+    rsvpChoicesLocked = Boolean(choicesLocked);
     set("dashboardEventName", nextEvent.name);
     set("dashboardEventDetail", `${nextEvent.venue}${nextEvent.address ? ` · ${nextEvent.address}` : ""}`);
     set("dashboardEventDate", friendlyDate(nextEvent.event_date));
@@ -274,6 +280,10 @@
   const saveRsvp = async (status, preferences = {}) => {
     if (!nextEvent) return;
     const statusLine = document.getElementById("dashboardRsvpStatus");
+    if (rsvpChoicesLocked) {
+      if (statusLine) statusLine.textContent = "Tee times have been produced, so your choices are locked. Please contact the committee.";
+      return null;
+    }
     if (statusLine) statusLine.textContent = "Saving your RSVP…";
     const payload = {
       event_id: nextEvent.id,
@@ -329,6 +339,10 @@
 
   const rsvpDialog = document.getElementById("dashboardRsvpDialog");
   const openRsvpDialog = () => {
+    if (rsvpChoicesLocked) {
+      set("dashboardRsvpStatus", "Tee times have been produced, so your choices are locked. Please contact the committee.");
+      return;
+    }
     const walking = rsvpDialog?.querySelector('[name="travel"][value="walking"]');
     const buggy = rsvpDialog?.querySelector('[name="travel"][value="buggy"]');
     if (walking) walking.checked = !currentRsvp?.buggy_requested;
