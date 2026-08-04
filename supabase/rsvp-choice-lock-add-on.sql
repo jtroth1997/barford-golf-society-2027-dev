@@ -28,12 +28,13 @@ as $$
 begin
   if exists (
       select 1 from public.tee_times
-      where event_id = old.event_id
+      where event_id = new.event_id
     )
     and not public.is_admin()
     and coalesce(auth.role(), '') <> 'service_role'
     and (
-      new.status is distinct from old.status
+      tg_op = 'INSERT'
+      or new.status is distinct from old.status
       or new.buggy_requested is distinct from old.buggy_requested
       or new.preferred_tee_time is distinct from old.preferred_tee_time
     ) then
@@ -45,5 +46,5 @@ $$;
 
 drop trigger if exists lock_member_rsvp_choices_after_tee_times on public.rsvps;
 create trigger lock_member_rsvp_choices_after_tee_times
-  before update on public.rsvps
+  before insert or update on public.rsvps
   for each row execute function public.lock_member_rsvp_choices_after_tee_times();
