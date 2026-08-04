@@ -214,14 +214,7 @@ function renderLeaderboard() {
          <span class="leaderboard-round-line"><span>Adjustment</span><strong class="change ${changeClass(selectedResult.adjustment)}">${formatChange(selectedResult.adjustment)}</strong></span>
          <span class="leaderboard-round-line"><span>Next-round handicap</span><strong>${selectedResult.nextHandicap}</strong></span>`
       : `<span class="leaderboard-round-line leaderboard-empty"><span>No result recorded for</span><strong>${escapeHtml(selectedRound?.name ?? "this round")}</strong></span>`;
-    if (positionChange !== 0) {
-      meta.insertAdjacentHTML(
-        "beforeend",
-        `<span class="movement-badge ${positionChange > 0 ? "up" : "down"}">
-          ${positionChange > 0 ? "▲" : "▼"} ${Math.abs(positionChange)}
-        </span>`
-      );
-    }
+
 
     node.querySelector(".player-points").textContent = player.statistics.seasonPoints;
     node.querySelector(".points-block span").textContent = "best 5 total";
