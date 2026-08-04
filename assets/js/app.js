@@ -85,6 +85,7 @@ document.addEventListener("DOMContentLoaded", () => {
     const target = event.target.closest("[data-profile-photo], [data-profile-owner=\"self\"]");
     if (target) openPhoto(target);
   });
+  document.addEventListener("profile-photo:open", event => openPhoto(event.target));
   document.addEventListener("keydown", event => {
     if ((event.key === "Enter" || event.key === " ") && event.target.matches("[data-profile-photo], [data-profile-owner=\"self\"]")) {
       event.preventDefault();
