@@ -1,4 +1,4 @@
-import { ScoresData } from "./scores-data.js";
+import { ScoresData } from "./scores-data.js?v=overview1";
 import { rankPlayers, calculatePlayerStatistics } from "./handicap-engine.js";
 
 
@@ -32,6 +32,7 @@ async function refresh() {
 }
 
 function renderAll() {
+  renderSeasonOverview();
   renderLeaderboardRoundTabs();
   renderLeaderboard();
   renderRoundTabs();
@@ -67,11 +68,77 @@ function renderLeaderboardRoundTabs() {
     button.setAttribute("aria-selected", String(round.id === state.selectedLeaderboardRoundId));
     button.addEventListener("click", () => {
       state.selectedLeaderboardRoundId = round.id;
+      renderSeasonOverview();
       renderLeaderboardRoundTabs();
       renderLeaderboard();
     });
     tabs.append(button);
   });
+}
+
+const SEASON_ROUNDS = 7;
+
+function friendlyDate(value) {
+  if (!value) return "Date to be announced";
+  const parsed = new Date(`${value}T12:00:00`);
+  return Number.isNaN(parsed.getTime())
+    ? value
+    : new Intl.DateTimeFormat("en-GB", { weekday: "short", day: "numeric", month: "short", year: "numeric" }).format(parsed);
+}
+
+function friendlyTime(value) {
+  if (!value) return "";
+  return String(value).slice(0, 5);
+}
+
+function renderSeasonOverview() {
+  const completed = getCompletedRounds();
+  const selectedRound = state.data.rounds.find(round => round.id === state.selectedLeaderboardRoundId)
+    || completed.at(-1)
+    || null;
+  const completedCount = Math.min(completed.length, SEASON_ROUNDS);
+  const displayedRound = selectedRound?.number || Math.min(completedCount + 1, SEASON_ROUNDS);
+
+  $("#seasonProgressTitle").textContent = selectedRound
+    ? `Round ${displayedRound} of ${SEASON_ROUNDS}`
+    : `Before Round ${displayedRound}`;
+  $("#seasonProgressCount").textContent = `${completedCount} of ${SEASON_ROUNDS} played`;
+  $("#seasonProgressBar").style.width = `${(completedCount / SEASON_ROUNDS) * 100}%`;
+  $(".season-progress-track").setAttribute("aria-valuenow", String(completedCount));
+
+  if (selectedRound) {
+    const results = selectedRound.results.filter(result => result && !result.dnp && Number.isFinite(result.points));
+    const winner = [...results].sort((a, b) => b.points - a.points)[0];
+    const winnerName = state.data.players.find(player => player.id === winner?.playerId)?.name;
+    $("#lastEventName").textContent = selectedRound.name;
+    $("#lastEventDetail").textContent = friendlyDate(selectedRound.date);
+    $("#lastEventHighlights").innerHTML = [
+      winnerName ? `<span><small>Winner</small><strong>${escapeHtml(winnerName)}</strong></span>` : "",
+      winner ? `<span><small>Winning score</small><strong>${winner.points} pts</strong></span>` : "",
+      `<span><small>Played</small><strong>${results.length} players</strong></span>`
+    ].join("");
+  } else {
+    $("#lastEventName").textContent = "No event played yet";
+    $("#lastEventDetail").textContent = "Round results will appear here once the scores are saved.";
+    $("#lastEventHighlights").innerHTML = "";
+  }
+
+  const next = state.data.nextEvent;
+  if (next) {
+    const location = [next.venue, next.address].filter(Boolean).join(" · ");
+    const firstTee = friendlyTime(next.first_tee_time);
+    $("#nextEventName").textContent = next.name || "Next event";
+    $("#nextEventDetail").textContent = [friendlyDate(next.event_date), location].filter(Boolean).join(" · ");
+    $("#nextEventHighlights").innerHTML = [
+      `<span><small>Up next</small><strong>Round ${Math.min(completedCount + 1, SEASON_ROUNDS)}</strong></span>`,
+      firstTee ? `<span><small>First tee</small><strong>${escapeHtml(firstTee)}</strong></span>` : "",
+      Number.isFinite(Number(next.price)) ? `<span><small>Price</small><strong>£${Number(next.price).toFixed(2)}</strong></span>` : ""
+    ].join("");
+  } else {
+    $("#nextEventName").textContent = "Next event not announced";
+    $("#nextEventDetail").textContent = "The committee will publish the next event here.";
+    $("#nextEventHighlights").innerHTML = "";
+  }
 }
 
 function renderLeaderboard() {
@@ -89,7 +156,7 @@ function renderLeaderboard() {
     : "Leaderboard";
 
   $("#leaderboardContext").innerHTML = selectedRound
-    ? `<strong>${escapeHtml(selectedRound.name)} standings</strong><span>Season totals include completed rounds up to and including this round.</span>`
+    ? `<strong>${escapeHtml(selectedRound.name)} standings</strong><span>Best five rounds count towards the total. Tap a player to see their full round history.</span>`
     : `<strong>No completed rounds yet</strong><span>The leaderboard will appear after scores are calculated and saved.</span>`;
 
   const eligiblePlayers = state.data.players.filter(player =>
@@ -142,9 +209,9 @@ function renderLeaderboard() {
 
     const meta = node.querySelector(".player-meta");
     meta.innerHTML = selectedResult
-      ? `<span class="leaderboard-round-line"><span>Played off</span><strong>${selectedResult.handicapUsed}</strong></span>
-         <span class="leaderboard-round-line"><span>Score</span><strong>${selectedResult.dnp ? "DNP" : selectedResult.points}</strong></span>
-         <span class="leaderboard-round-line"><span>Adjustment</span><strong class="change ${changeClass(selectedResult.adjustment)}">${formatChange(selectedResult.adjustment)}</strong></span>
+      ? `<span class="leaderboard-round-line"><span>Round HCP</span><strong>${selectedResult.handicapUsed}</strong></span>
+         <span class="leaderboard-round-line"><span>Points</span><strong>${selectedResult.dnp ? "DNP" : selectedResult.points}</strong></span>
+         <span class="leaderboard-round-line"><span>Adj</span><strong class="change ${changeClass(selectedResult.adjustment)}">${formatChange(selectedResult.adjustment)}</strong></span>
          <span class="leaderboard-round-line"><span>Next HCP</span><strong>${selectedResult.nextHandicap}</strong></span>`
       : `<span class="leaderboard-round-line leaderboard-empty"><span>No result recorded</span><strong>${escapeHtml(selectedRound?.name ?? "This round")}</strong></span>`;
     if (positionChange !== 0) {
@@ -157,6 +224,7 @@ function renderLeaderboard() {
     }
 
     node.querySelector(".player-points").textContent = player.statistics.seasonPoints;
+    node.querySelector(".player-wins").textContent = player.statistics.wins || 0;
 
     summary.setAttribute(
       "aria-label",
