@@ -241,7 +241,7 @@
       players.innerHTML = teeGroup.map((player, index) => {
         const name = player.full_name || player.guest_name || "Guest player";
         return `<article class="tee-group-player ${player.is_you ? "is-you" : ""}">
-          <div class="tee-group-avatar" data-tee-avatar="${index}">${escapeHtml(initials(name))}</div>
+          <button class="tee-group-avatar" data-tee-avatar="${index}" type="button" aria-label="View ${escapeHtml(name)} profile photo">${escapeHtml(initials(name))}</button>
           <strong>${escapeHtml(name)}${player.is_you ? " (You)" : ""}</strong>
           <small>${player.buggy_requested ? "Buggy" : "Walking"}</small>
         </article>`;
@@ -253,6 +253,8 @@
         if (data?.signedUrl && avatar) {
           avatar.innerHTML = `<img src="${escapeHtml(data.signedUrl)}" alt="">`;
           avatar.classList.add("has-photo");
+          avatar.dataset.profilePhoto = data.signedUrl;
+          if (player.is_you) avatar.dataset.profileOwner = "self";
         }
       });
     }
