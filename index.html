@@ -16,7 +16,7 @@
   <link rel="preconnect" href="https://xspzmthygrajzktydvvj.supabase.co" crossorigin>
   <link rel="preconnect" href="https://cdn.jsdelivr.net" crossorigin>
   <link rel="stylesheet" href="assets/css/styles.css?v=homephotos1">
-  <link rel="stylesheet" href="assets/css/members.css?v=teegroup1">
+  <link rel="stylesheet" href="assets/css/members.css?v=eventday2">
   <link rel="stylesheet" href="assets/css/accessible-mobile.css?v=mobile4">
   <style>
     .member-session-cached #publicHome{display:none!important}
@@ -70,8 +70,8 @@
             <div><span>Playing</span><strong id="dashboardDayTravel">—</strong></div>
           </div>
           <div class="tee-group-actions">
-            <button id="dashboardLockedSeePlayers" class="button button-primary" type="button">See everyone playing</button>
-            <a id="dashboardEventDirections" class="button button-outline" href="#" target="_blank" rel="noopener">Directions to course</a>
+            <button id="dashboardLockedSeePlayers" class="button button-primary" type="button">See the other tee times for this event</button>
+            <button id="dashboardEventDirections" class="button button-outline" type="button">Directions to course</button>
           </div>
         </section>
         <section id="dashboardPlayingConfirmation" class="dashboard-playing-confirmation hidden" aria-live="polite">
@@ -81,7 +81,7 @@
             <div><span>Tee-time request</span><strong id="dashboardPlayingPreference">Don’t mind</strong></div>
           </div>
           <div class="playing-confirmation-actions">
-            <button id="dashboardSeePlayers" class="button button-primary" type="button">See who else is playing this event</button>
+            <button id="dashboardSeePlayers" class="button button-primary" type="button">See the other tee times for this event</button>
             <button id="dashboardChangeRsvp" class="button button-outline" type="button">Change my choices</button>
             <button id="dashboardWithdrawRsvp" class="button button-outline" type="button" data-rsvp="not_playing">I can’t play</button>
           </div>
@@ -167,12 +167,26 @@
 </main>
 <dialog id="dashboardPlayersDialog" class="member-rsvp-dialog event-players-dialog">
   <form method="dialog" class="event-players-panel">
-    <button class="dialog-close" value="cancel" aria-label="Close playing list">×</button>
-    <p class="eyebrow">Confirmed players</p>
-    <h2>Who else is playing?</h2>
-    <p id="dashboardPlayersSummary">Loading the playing list…</p>
+    <button class="dialog-close" value="cancel" aria-label="Close tee times">×</button>
+    <p class="eyebrow">Published tee times</p>
+    <h2>Other tee times for this event</h2>
+    <p id="dashboardPlayersSummary">Loading the tee times…</p>
     <div id="dashboardPlayersList" class="event-players-list" aria-live="polite"></div>
     <button class="button button-primary" value="cancel">Close</button>
+  </form>
+</dialog>
+<dialog id="dashboardDirectionsDialog" class="member-rsvp-dialog directions-dialog">
+  <form method="dialog" class="event-players-panel">
+    <button class="dialog-close" value="cancel" aria-label="Close directions options">×</button>
+    <p class="eyebrow">Directions to the course</p>
+    <h2>Choose your satnav app</h2>
+    <p id="dashboardDirectionsDestination">Pick the app you normally use.</p>
+    <div class="satnav-options">
+      <a id="dashboardAppleMaps" class="satnav-option" href="#" target="_blank" rel="noopener"><strong>Apple Maps</strong><small>Open turn-by-turn directions</small></a>
+      <a id="dashboardGoogleMaps" class="satnav-option" href="#" target="_blank" rel="noopener"><strong>Google Maps</strong><small>Open turn-by-turn directions</small></a>
+      <a id="dashboardWaze" class="satnav-option" href="#" target="_blank" rel="noopener"><strong>Waze</strong><small>Open live traffic navigation</small></a>
+    </div>
+    <button class="button button-outline" value="cancel">Cancel</button>
   </form>
 </dialog>
 <dialog id="dashboardRsvpDialog" class="member-rsvp-dialog">
@@ -209,7 +223,7 @@
 <script src="assets/js/supabase-client.js?v=live1" defer></script>
 <script src="assets/js/passkeys.js?v=faceid1" defer></script>
 <script src="assets/js/home-photos.js?v=1" defer></script>
-<script src="assets/js/member-dashboard.js?v=teegroup1" defer></script>
+<script src="assets/js/member-dashboard.js?v=eventday2" defer></script>
 <script src="assets/js/accessible-mobile.js?v=mobile4" defer></script>
 <script data-mobile-nav-lock>
 window.addEventListener("DOMContentLoaded",()=>document.querySelectorAll(".mobile-quick-nav").forEach(nav=>{const links=nav.querySelectorAll("a");const item=links[links.length-1];if(!item)return;item.href="account.html";item.innerHTML='<span class="quick-icon" aria-hidden="true">●</span><span>My Account</span>';item.classList.toggle("active",location.pathname.endsWith("/account.html"));if(location.pathname.endsWith("/account.html"))item.setAttribute("aria-current","page");else item.removeAttribute("aria-current");}));
