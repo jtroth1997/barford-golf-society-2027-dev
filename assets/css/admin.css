@@ -36,3 +36,16 @@
 
 #adminRsvpEditForm>label{display:grid;gap:7px;margin-top:14px;font-weight:800}
 #adminRsvpEditForm select{width:100%;min-height:50px;padding:10px 12px;border:1px solid var(--line);border-radius:11px;background:#fff;font:inherit}
+
+.admin-score-help{margin:-4px 0 16px;color:var(--muted);line-height:1.5}
+.admin-score-row .calculated-score-field{
+  background:#eef4f1;
+  color:var(--emerald-900);
+  font-weight:800;
+  cursor:not-allowed;
+  border-color:#cddbd4;
+}
+.admin-score-row .calculated-score-field:focus{
+  outline:2px solid rgba(198,168,91,.45);
+  outline-offset:2px;
+}
