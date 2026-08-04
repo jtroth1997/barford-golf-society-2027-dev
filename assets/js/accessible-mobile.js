@@ -97,23 +97,6 @@
     section.appendChild(button);
   });
 
-  const scoreList = document.querySelector("#leaderboardList");
-  if (scoreList) {
-    const skip = document.createElement("button");
-    skip.className = "button button-outline score-skip-button";
-    skip.type = "button";
-    skip.textContent = "Skip leaderboard animation";
-    skip.addEventListener("click", () => {
-      scoreList.classList.remove("leaderboard-cinematic");
-      scoreList.querySelectorAll(".leaderboard-cinematic,.ranking-motion").forEach(el => {
-        el.classList.remove("leaderboard-cinematic", "ranking-motion", "moved-up", "moved-down");
-      });
-      skip.hidden = true;
-    });
-    scoreList.before(skip);
-    setTimeout(() => { skip.hidden = true; }, 5000);
-  }
-
   const accountLayout = document.querySelector(".account-layout");
   if (accountLayout) {
     const main = accountLayout.querySelector(".account-main");

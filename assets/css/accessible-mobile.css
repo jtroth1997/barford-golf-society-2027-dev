@@ -289,7 +289,6 @@ button:focus-visible,a:focus-visible,input:focus-visible,select:focus-visible,te
   }
   .primary-nav .nav-tab{min-width:max-content;font-size:.88rem!important;padding:9px 12px!important}
   .leaderboard-cinematic .top-three-row .player-name{animation-duration:.65s!important}
-  .score-skip-button{width:100%;margin-bottom:8px}
   .compact-search{padding:12px!important;margin-top:12px!important}
 
   /* Account: four headline numbers, sections opened deliberately */

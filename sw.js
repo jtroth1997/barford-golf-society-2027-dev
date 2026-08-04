@@ -1,4 +1,4 @@
-const CACHE = "barford-golf-2027-speed-v25";
+const CACHE = "barford-golf-2027-speed-v26";
 const CORE = [
   "./",
   "./index.html",
@@ -17,7 +17,7 @@ const CORE = [
   "./assets/css/members.css?v=rsvp1",
   "./assets/css/members.css?v=teeclick2",
   "./assets/css/members.css?v=account5",
-  "./assets/css/accessible-mobile.css?v=mobile4",
+  "./assets/css/accessible-mobile.css?v=mobile5",
   "./assets/css/events.css?v=video1",
   "./assets/css/scores.css?v=league5",
   "./assets/css/gallery.css?v=swipe1",
@@ -34,7 +34,7 @@ const CORE = [
   "./assets/js/handicap-engine.js",
   "./assets/js/gallery-live.js?v=swipe1",
   "./assets/js/home-photos.js?v=1",
-  "./assets/js/accessible-mobile.js?v=mobile4",
+  "./assets/js/accessible-mobile.js?v=mobile5",
   "./assets/js/supabase-config.js?v=live1",
   "./assets/js/supabase-client.js?v=live1",
   "./assets/images/barford-golf-society-logo.png"
