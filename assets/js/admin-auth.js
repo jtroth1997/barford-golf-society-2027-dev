@@ -15,6 +15,8 @@
   let adminEvents = [];
   let adminRounds = [];
   let teeGroups = [];
+  let editingRsvp;
+  let currentRsvpEventId;
 
   const initials = name => String(name || "BG").split(/\s+/).filter(Boolean).slice(0, 2)
     .map(part => part[0].toUpperCase()).join("");
@@ -128,6 +130,7 @@
   document.querySelector("#adminEventReset")?.addEventListener("click", resetEventForm);
 
   const loadRsvps = async eventId => {
+    currentRsvpEventId = eventId;
     const playing = document.querySelector("#adminPlayingList");
     const reserve = document.querySelector("#adminReserveList");
     if (!eventId) {
@@ -139,11 +142,21 @@
       .eq("event_id", eventId).order("created_at");
     if (error) { setStatus("#adminRsvpStatus", error.message); return; }
     const preferenceLabel = value => ({ dont_mind: "Don’t mind", first: "Early", middle: "Middle", end: "Last" })[value] || "Don’t mind";
-    const row = item => `<article><div><strong>${escapeHtml(item.profiles?.full_name || item.guest_name || "Guest")}</strong><small>${escapeHtml(item.profiles?.phone || "No phone")} · ${item.buggy_requested ? "Buggy requested" : "Walking"} · prefers ${preferenceLabel(item.preferred_tee_time)} · ${escapeHtml(item.payment_status)}</small></div><button class="danger-link" type="button" data-remove-rsvp="${item.id}">Remove</button></article>`;
+    const row = item => `<article><div><strong>${escapeHtml(item.profiles?.full_name || item.guest_name || "Guest")}</strong><small>${escapeHtml(item.profiles?.phone || "No phone")} · ${item.buggy_requested ? "Buggy requested" : "Walking"} · prefers ${preferenceLabel(item.preferred_tee_time)} · ${escapeHtml(item.payment_status)}</small></div><div class="admin-row-actions"><button type="button" data-edit-rsvp="${item.id}">Change</button><button class="danger-link" type="button" data-remove-rsvp="${item.id}">Remove</button></div></article>`;
     const active = (data || []).filter(item => item.status === "playing");
     const reserves = (data || []).filter(item => item.status === "reserve");
     playing.innerHTML = active.length ? active.map(row).join("") : "<p>No confirmed players.</p>";
     reserve.innerHTML = reserves.length ? reserves.map(row).join("") : "<p>No reserves.</p>";
+    document.querySelectorAll("[data-edit-rsvp]").forEach(button => button.addEventListener("click", () => {
+      editingRsvp = (data || []).find(item => item.id === button.dataset.editRsvp);
+      if (!editingRsvp) return;
+      document.querySelector("#adminRsvpEditMember").textContent = editingRsvp.profiles?.full_name || editingRsvp.guest_name || "Guest";
+      document.querySelector("#adminRsvpEditTravel").value = editingRsvp.buggy_requested ? "buggy" : "walking";
+      document.querySelector("#adminRsvpEditPreference").value = ["dont_mind", "first", "middle", "end"].includes(editingRsvp.preferred_tee_time)
+        ? editingRsvp.preferred_tee_time : "dont_mind";
+      setStatus("#adminRsvpEditStatus", "");
+      document.querySelector("#adminRsvpEditDialog")?.showModal();
+    }));
     document.querySelectorAll("[data-remove-rsvp]").forEach(button => button.addEventListener("click", async () => {
       const { error: removeError } = await client.from("rsvps").update({ status: "cancelled", updated_at: new Date().toISOString() }).eq("id", button.dataset.removeRsvp);
       setStatus("#adminRsvpStatus", removeError ? removeError.message : "Player removed. Regenerate tee times when ready.");
@@ -151,6 +164,30 @@
     }));
   };
   document.querySelector("#adminRsvpEvent")?.addEventListener("change", event => loadRsvps(event.target.value));
+
+  const closeRsvpEdit = () => document.querySelector("#adminRsvpEditDialog")?.close();
+  document.querySelector("#adminRsvpEditClose")?.addEventListener("click", closeRsvpEdit);
+  document.querySelector("#adminRsvpEditCancel")?.addEventListener("click", closeRsvpEdit);
+  document.querySelector("#adminRsvpEditForm")?.addEventListener("submit", async event => {
+    event.preventDefault();
+    if (!editingRsvp) return;
+    const button = event.currentTarget.querySelector('[type="submit"]');
+    button.disabled = true;
+    button.textContent = "Saving…";
+    const changes = {
+      buggy_requested: document.querySelector("#adminRsvpEditTravel").value === "buggy",
+      preferred_tee_time: document.querySelector("#adminRsvpEditPreference").value,
+      updated_at: new Date().toISOString()
+    };
+    const { error } = await client.from("rsvps").update(changes).eq("id", editingRsvp.id);
+    button.disabled = false;
+    button.textContent = "Save change";
+    setStatus("#adminRsvpEditStatus", error ? error.message : "RSVP choices updated. Amend the saved tee-time group if needed.");
+    if (!error) {
+      await loadRsvps(currentRsvpEventId);
+      setTimeout(closeRsvpEdit, 700);
+    }
+  });
 
   const minutesToTime = total => `${String(Math.floor(total / 60) % 24).padStart(2, "0")}:${String(total % 60).padStart(2, "0")}`;
   const teeWindowRank = value => ({ first: 0, dont_mind: 1, middle: 1, end: 2 })[value] ?? 1;
