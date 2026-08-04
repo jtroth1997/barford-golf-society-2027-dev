@@ -16,7 +16,7 @@
   <link rel="preconnect" href="https://xspzmthygrajzktydvvj.supabase.co" crossorigin>
   <link rel="preconnect" href="https://cdn.jsdelivr.net" crossorigin>
   <link rel="stylesheet" href="assets/css/styles.css?v=homephotos1">
-  <link rel="stylesheet" href="assets/css/members.css?v=locked1">
+  <link rel="stylesheet" href="assets/css/members.css?v=teegroup1">
   <link rel="stylesheet" href="assets/css/accessible-mobile.css?v=mobile4">
   <style>
     .member-session-cached #publicHome{display:none!important}
@@ -52,6 +52,28 @@
           <div><span>Your tee time</span><strong id="dashboardTeeTime">Not announced</strong></div>
           <div><span>Event price</span><strong id="dashboardEventPrice">—</strong></div>
         </div>
+        <section id="dashboardTeeGroup" class="dashboard-tee-group hidden" aria-live="polite">
+          <div class="tee-group-header">
+            <div><p class="eyebrow">Your event-day group</p><h3 id="dashboardConfirmedTeeTime">Tee time confirmed</h3></div>
+            <span id="dashboardConfirmedTeeNumber" class="tee-number-chip">Starting tee</span>
+          </div>
+          <p class="tee-group-intro">You’re playing with</p>
+          <div id="dashboardTeeGroupPlayers" class="tee-group-players"></div>
+          <div class="tee-group-day-details">
+            <div><span>Event</span><strong id="dashboardDayEvent">—</strong></div>
+            <div><span>Date</span><strong id="dashboardDayDate">—</strong></div>
+            <div><span>Course</span><strong id="dashboardDayVenue">—</strong></div>
+            <div><span>Address</span><strong id="dashboardDayAddress">—</strong></div>
+            <div><span>Your tee time</span><strong id="dashboardDayTeeTime">—</strong></div>
+            <div><span>Starting tee</span><strong id="dashboardDayTeeNumber">—</strong></div>
+            <div><span>Group size</span><strong id="dashboardDayGroupSize">—</strong></div>
+            <div><span>Playing</span><strong id="dashboardDayTravel">—</strong></div>
+          </div>
+          <div class="tee-group-actions">
+            <button id="dashboardLockedSeePlayers" class="button button-primary" type="button">See everyone playing</button>
+            <a id="dashboardEventDirections" class="button button-outline" href="#" target="_blank" rel="noopener">Directions to course</a>
+          </div>
+        </section>
         <section id="dashboardPlayingConfirmation" class="dashboard-playing-confirmation hidden" aria-live="polite">
           <div class="playing-confirmation-heading"><span aria-hidden="true">✓</span><div><strong>You’re playing this event</strong><small>Your RSVP has been saved.</small></div></div>
           <div class="playing-request-grid">
@@ -187,7 +209,7 @@
 <script src="assets/js/supabase-client.js?v=live1" defer></script>
 <script src="assets/js/passkeys.js?v=faceid1" defer></script>
 <script src="assets/js/home-photos.js?v=1" defer></script>
-<script src="assets/js/member-dashboard.js?v=locked1" defer></script>
+<script src="assets/js/member-dashboard.js?v=teegroup1" defer></script>
 <script src="assets/js/accessible-mobile.js?v=mobile4" defer></script>
 <script data-mobile-nav-lock>
 window.addEventListener("DOMContentLoaded",()=>document.querySelectorAll(".mobile-quick-nav").forEach(nav=>{const links=nav.querySelectorAll("a");const item=links[links.length-1];if(!item)return;item.href="account.html";item.innerHTML='<span class="quick-icon" aria-hidden="true">●</span><span>My Account</span>';item.classList.toggle("active",location.pathname.endsWith("/account.html"));if(location.pathname.endsWith("/account.html"))item.setAttribute("aria-current","page");else item.removeAttribute("aria-current");}));
