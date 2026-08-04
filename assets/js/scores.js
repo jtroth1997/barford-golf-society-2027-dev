@@ -156,7 +156,7 @@ function renderLeaderboard() {
     : "Leaderboard";
 
   $("#leaderboardContext").innerHTML = selectedRound
-    ? `<strong>${escapeHtml(selectedRound.name)} standings</strong><span>Best five rounds count towards the total. Tap a player to see their full round history.</span>`
+    ? `<strong>${escapeHtml(selectedRound.name)} standings</strong><span>Your five highest round scores count. From Round 6 onwards, a better score automatically replaces your lowest counting score. Tap a player for their full history.</span>`
     : `<strong>No completed rounds yet</strong><span>The leaderboard will appear after scores are calculated and saved.</span>`;
 
   const eligiblePlayers = state.data.players.filter(player =>
@@ -209,11 +209,11 @@ function renderLeaderboard() {
 
     const meta = node.querySelector(".player-meta");
     meta.innerHTML = selectedResult
-      ? `<span class="leaderboard-round-line"><span>Round HCP</span><strong>${selectedResult.handicapUsed}</strong></span>
-         <span class="leaderboard-round-line"><span>Points</span><strong>${selectedResult.dnp ? "DNP" : selectedResult.points}</strong></span>
-         <span class="leaderboard-round-line"><span>Adj</span><strong class="change ${changeClass(selectedResult.adjustment)}">${formatChange(selectedResult.adjustment)}</strong></span>
-         <span class="leaderboard-round-line"><span>Next HCP</span><strong>${selectedResult.nextHandicap}</strong></span>`
-      : `<span class="leaderboard-round-line leaderboard-empty"><span>No result recorded</span><strong>${escapeHtml(selectedRound?.name ?? "This round")}</strong></span>`;
+      ? `<span class="leaderboard-round-line"><span>Round score</span><strong>${selectedResult.dnp ? "DNP" : selectedResult.points}</strong></span>
+         <span class="leaderboard-round-line"><span>Playing handicap</span><strong>${selectedResult.handicapUsed}</strong></span>
+         <span class="leaderboard-round-line"><span>Adjustment</span><strong class="change ${changeClass(selectedResult.adjustment)}">${formatChange(selectedResult.adjustment)}</strong></span>
+         <span class="leaderboard-round-line"><span>Next-round handicap</span><strong>${selectedResult.nextHandicap}</strong></span>`
+      : `<span class="leaderboard-round-line leaderboard-empty"><span>No result recorded for</span><strong>${escapeHtml(selectedRound?.name ?? "this round")}</strong></span>`;
     if (positionChange !== 0) {
       meta.insertAdjacentHTML(
         "beforeend",
@@ -224,7 +224,7 @@ function renderLeaderboard() {
     }
 
     node.querySelector(".player-points").textContent = player.statistics.seasonPoints;
-    node.querySelector(".player-wins").textContent = player.statistics.wins || 0;
+    node.querySelector(".points-block span").textContent = "best 5 total";
 
     summary.setAttribute(
       "aria-label",
