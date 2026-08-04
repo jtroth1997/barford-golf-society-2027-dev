@@ -43,6 +43,10 @@
       avatars.forEach(avatar => {
         avatar.innerHTML = `<img src="${data.signedUrl}" alt="">`;
         avatar.classList.add("has-photo");
+          avatar.dataset.profilePhoto = data.signedUrl;
+          avatar.tabIndex = 0;
+          avatar.setAttribute("role", "button");
+          avatar.setAttribute("aria-label", `View ${player.full_name || player.guest_name || "player"} profile photo`);
       });
     }
   };
@@ -299,11 +303,10 @@
         const [time, teeNumber] = key.split("|");
         return `<section class="event-tee-time-group">
           <div class="event-tee-time-heading"><strong>${escapeHtml(time)}</strong><span>Tee ${escapeHtml(teeNumber)} · Group ${groupIndex + 1}</span></div>
-          <div>${players.map((player, playerIndex) => `<article class="${player.is_you ? "is-you" : ""}">
+          <ul class="event-tee-player-list">${players.map((player, playerIndex) => `<li class="${player.is_you ? "is-you" : ""}">
             <div class="event-tee-avatar" data-all-tee-avatar="${groupIndex}-${playerIndex}">${escapeHtml(initials(player.full_name))}</div>
             <strong>${escapeHtml(player.full_name)}${player.is_you ? " (You)" : ""}</strong>
-            <small>${player.buggy_requested ? "Buggy" : "Walking"}</small>
-          </article>`).join("")}</div>
+          </li>`).join("")}</ul>
         </section>`;
       }).join("") : "<p>No tee times have been published yet.</p>";
       [...groups.values()].forEach((players, groupIndex) => players.forEach(async (player, playerIndex) => {
@@ -313,6 +316,10 @@
         if (signed?.signedUrl && avatar) {
           avatar.innerHTML = `<img src="${escapeHtml(signed.signedUrl)}" alt="">`;
           avatar.classList.add("has-photo");
+          avatar.dataset.profilePhoto = signed.signedUrl;
+          avatar.tabIndex = 0;
+          avatar.setAttribute("role", "button");
+          avatar.setAttribute("aria-label", `View ${player.full_name || "player"} profile photo`);
         }
       }));
     }
