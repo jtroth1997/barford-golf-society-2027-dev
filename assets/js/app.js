@@ -45,7 +45,7 @@ mobileNav.setAttribute("aria-label","Quick navigation");
 mobileNav.innerHTML = `
   <a href="index.html" class="${currentPage==="index.html"?"active":""}">⌂<span>Home</span></a>
   <a href="events.html" class="${currentPage==="events.html"?"active":""}">◷<span>Events</span></a>
-  <a href="scores.html" class="${currentPage==="scores.html"?"active":""}">★<span>Scores</span></a>
+  <a href="scores.html" class="${currentPage==="scores.html"?"active":""}">★<span>League Table</span></a>
   <a href="account.html" class="${currentPage==="account.html"?"active":""}">●<span>My Account</span></a>
 `;
 body.appendChild(mobileNav);
