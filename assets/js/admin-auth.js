@@ -357,51 +357,177 @@
     if (!error) await loadRounds();
   });
 
+  const roundAverage = scores => {
+    const sorted = [...scores].sort((a, b) => a - b);
+    const included = sorted.length > 4 ? sorted.slice(1, -1) : sorted;
+    return Math.round(included.reduce((sum, score) => sum + score, 0) / included.length);
+  };
+  const baseHandicapAdjustment = (points, average) => {
+    const difference = points - average;
+    if (difference >= 10) return -4;
+    if (difference >= 8) return -3;
+    if (difference >= 6) return -2;
+    if (difference >= 4) return -1;
+    if (difference >= 2) return -0.5;
+    if (difference >= -1) return 0;
+    if (difference >= -3) return 0.5;
+    if (difference >= -5) return 1;
+    if (difference >= -7) return 2;
+    if (difference >= -9) return 3;
+    return 4;
+  };
+  const handicapMultiplier = handicap => handicap <= 9 ? 0.5 : handicap <= 18 ? 0.75 : handicap <= 28 ? 1 : 1.25;
+  const handicapOutcome = (handicap, points, average) => {
+    const raw = baseHandicapAdjustment(points, average) * handicapMultiplier(handicap);
+    const adjustment = Math.max(-3, Math.min(2, Math.round(raw)));
+    return { adjustment, nextHandicap: Math.max(0, handicap + adjustment) };
+  };
+  const scoreNumber = (row, field) => {
+    const value = row.querySelector(`[data-field="${field}"]`)?.value;
+    return value === "" || value == null ? null : Number(value);
+  };
+  const recalculateScoreEditor = ({ preserveSaved = false } = {}) => {
+    const rows = [...document.querySelectorAll("[data-score-member]")];
+    const playedRows = rows.filter(row => {
+      const points = scoreNumber(row, "points");
+      return !row.querySelector('[data-field="dnp"]').checked && Number.isFinite(points) && points > 0;
+    });
+    if (playedRows.length < 4) {
+      if (!preserveSaved) rows.forEach(row => {
+        const dnp = row.querySelector('[data-field="dnp"]').checked || scoreNumber(row, "points") === 0;
+        if (dnp) {
+          row.querySelector('[data-field="dnp"]').checked = true;
+          row.querySelector('[data-field="adjustment"]').value = "";
+          row.querySelector('[data-field="next_handicap"]').value = scoreNumber(row, "handicap_used") ?? "";
+        } else {
+          row.querySelector('[data-field="adjustment"]').value = "";
+          row.querySelector('[data-field="next_handicap"]').value = "";
+        }
+      });
+      setStatus("#adminScoreStatus", "Enter points for at least 4 players to calculate the round handicaps.");
+      return null;
+    }
+
+    const average = roundAverage(playedRows.map(row => scoreNumber(row, "points")));
+    rows.forEach(row => {
+      const handicap = scoreNumber(row, "handicap_used");
+      const points = scoreNumber(row, "points");
+      const dnpInput = row.querySelector('[data-field="dnp"]');
+      if (points === 0) dnpInput.checked = true;
+      if (dnpInput.checked) {
+        row.querySelector('[data-field="adjustment"]').value = "";
+        row.querySelector('[data-field="next_handicap"]').value = Number.isFinite(handicap) ? handicap : "";
+        return;
+      }
+      if (!Number.isFinite(handicap) || !Number.isFinite(points)) {
+        row.querySelector('[data-field="adjustment"]').value = "";
+        row.querySelector('[data-field="next_handicap"]').value = "";
+        return;
+      }
+      const result = handicapOutcome(handicap, points, average);
+      row.querySelector('[data-field="adjustment"]').value = result.adjustment;
+      row.querySelector('[data-field="next_handicap"]').value = result.nextHandicap;
+    });
+
+    const topScore = Math.max(...playedRows.map(row => scoreNumber(row, "points")));
+    const leaders = playedRows.filter(row => scoreNumber(row, "points") === topScore);
+    rows.forEach(row => {
+      const winner = row.querySelector('[data-field="winner"]');
+      if (leaders.length === 1) winner.checked = row === leaders[0];
+      else if (!leaders.includes(row)) winner.checked = false;
+    });
+    setStatus(
+      "#adminScoreStatus",
+      leaders.length > 1
+        ? `Round average: ${average}. The top score is tied — select the winner before saving.`
+        : `Round average: ${average}. Adjustments and next handicaps are calculated automatically.`
+    );
+    return { average, leaders };
+  };
+
   const loadScoreEditor = async roundId => {
     const editor = document.querySelector("#adminScoreEditor");
     if (!roundId) { editor.innerHTML = "<p>Select a round.</p>"; return; }
-    const [{ data: round }, { data: players }, { data: scores }] = await Promise.all([
+    const [{ data: round }, { data: players }, { data: scores }, { data: history }] = await Promise.all([
       client.from("rounds").select("round_number,locked").eq("id", roundId).single(),
       client.from("profiles").select("id,full_name,handicap,leaderboard_from_round").eq("leaderboard_active", true).order("full_name"),
-      client.from("scores").select("*").eq("round_id", roundId)
+      client.from("scores").select("*").eq("round_id", roundId),
+      client.from("scores").select("member_id,round_id,next_handicap")
     ]);
     const eligible = (players || []).filter(player => Number(player.leaderboard_from_round || 1) <= Number(round?.round_number || 1));
     const byMember = new Map((scores || []).map(score => [score.member_id, score]));
+    const roundNumbers = new Map(adminRounds.map(item => [item.id, Number(item.round_number)]));
+    const previousHandicap = new Map();
+    (history || [])
+      .filter(score => Number(roundNumbers.get(score.round_id)) < Number(round?.round_number) && Number.isFinite(Number(score.next_handicap)))
+      .sort((a, b) => Number(roundNumbers.get(a.round_id)) - Number(roundNumbers.get(b.round_id)))
+      .forEach(score => previousHandicap.set(score.member_id, Number(score.next_handicap)));
+
     editor.innerHTML = eligible.length ? eligible.map(player => {
       const score = byMember.get(player.id) || {};
+      const startingHandicap = score.handicap_used ?? previousHandicap.get(player.id) ?? player.handicap ?? "";
       return `<article class="admin-score-row" data-score-member="${player.id}">
         <strong>${escapeHtml(player.full_name)}</strong>
-        <label>HCP<input data-field="handicap_used" type="number" step=".1" value="${score.handicap_used ?? player.handicap ?? ""}"></label>
+        <label>Starting HCP<input data-field="handicap_used" type="number" min="0" step=".1" value="${startingHandicap}"></label>
         <label>Points<input data-field="points" type="number" min="0" value="${score.points ?? ""}"></label>
-        <label>Adjustment<input data-field="adjustment" type="number" step=".5" value="${score.adjustment ?? ""}"></label>
-        <label>Next HCP<input data-field="next_handicap" type="number" step=".1" value="${score.next_handicap ?? ""}"></label>
+        <label>Adjustment<input data-field="adjustment" class="calculated-score-field" type="number" step=".5" value="${score.adjustment ?? ""}" readonly aria-readonly="true"></label>
+        <label>Next HCP<input data-field="next_handicap" class="calculated-score-field" type="number" step=".1" value="${score.next_handicap ?? ""}" readonly aria-readonly="true"></label>
         <label class="score-check"><input data-field="dnp" type="checkbox" ${score.dnp ? "checked" : ""}> DNP</label>
         <label class="score-check"><input data-field="winner" type="checkbox" ${score.winner ? "checked" : ""}> Winner</label>
       </article>`;
     }).join("") : "<p>No eligible leaderboard players for this round.</p>";
     document.querySelector("#adminSaveScores").disabled = Boolean(round?.locked) || !eligible.length;
-    setStatus("#adminScoreStatus", round?.locked ? "Unlock this round before changing scores." : "");
+    if (round?.locked) {
+      setStatus("#adminScoreStatus", "Unlock this round before changing scores.");
+    } else {
+      recalculateScoreEditor({ preserveSaved: true });
+    }
   };
+  document.querySelector("#adminScoreEditor")?.addEventListener("input", event => {
+    if (event.target.matches('[data-field="handicap_used"], [data-field="points"]')) recalculateScoreEditor();
+  });
+  document.querySelector("#adminScoreEditor")?.addEventListener("change", event => {
+    if (event.target.matches('[data-field="dnp"]')) {
+      const row = event.target.closest("[data-score-member]");
+      if (event.target.checked && row.querySelector('[data-field="points"]').value === "") {
+        row.querySelector('[data-field="points"]').value = "0";
+      }
+      recalculateScoreEditor();
+    }
+  });
   document.querySelector("#adminScoreRound")?.addEventListener("change", event => loadScoreEditor(event.target.value));
   document.querySelector("#adminSaveScores")?.addEventListener("click", async () => {
     const roundId = document.querySelector("#adminScoreRound").value;
+    const calculation = recalculateScoreEditor();
+    if (!calculation) return;
+    if (calculation.leaders.length > 1) {
+      const selectedWinners = calculation.leaders.filter(row => row.querySelector('[data-field="winner"]').checked);
+      if (selectedWinners.length !== 1) {
+        setStatus("#adminScoreStatus", "The top score is tied. Select exactly one winner before saving.");
+        return;
+      }
+    }
     const rows = [...document.querySelectorAll("[data-score-member]")].map(row => {
-      const value = name => row.querySelector(`[data-field="${name}"]`).value;
-      const number = name => value(name) === "" ? null : Number(value(name));
+      const dnp = row.querySelector('[data-field="dnp"]').checked;
       return {
         round_id: roundId,
         member_id: row.dataset.scoreMember,
-        handicap_used: number("handicap_used"),
-        points: number("points"),
-        adjustment: number("adjustment"),
-        next_handicap: number("next_handicap"),
-        dnp: row.querySelector('[data-field="dnp"]').checked,
+        handicap_used: scoreNumber(row, "handicap_used"),
+        points: dnp ? null : scoreNumber(row, "points"),
+        adjustment: dnp ? null : scoreNumber(row, "adjustment"),
+        next_handicap: scoreNumber(row, "next_handicap"),
+        dnp,
         winner: row.querySelector('[data-field="winner"]').checked,
         updated_at: new Date().toISOString()
       };
     });
     const { error } = await client.from("scores").upsert(rows, { onConflict: "round_id,member_id" });
-    setStatus("#adminScoreStatus", error ? error.message : "All round scores saved.");
+    if (error) {
+      setStatus("#adminScoreStatus", error.message);
+      return;
+    }
+    setStatus("#adminScoreStatus", "All scores, adjustments and next handicaps have been saved.");
+    await loadScoreEditor(roundId);
   });
   document.querySelector("#adminExportLeaderboard")?.addEventListener("click", async () => {
     const { data } = await client.rpc("get_2027_leaderboard_snapshot");
