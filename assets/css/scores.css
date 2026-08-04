@@ -1707,3 +1707,81 @@ main{
 
 /* Compositor hints used only during the one-time reveal. */
 .leaderboard-cinematic .ranking-motion,.leaderboard-cinematic .top-three-row .player-name{will-change:transform,opacity;backface-visibility:hidden}
+
+
+/* 2027 season overview and clear member leaderboard */
+.season-progress-card{
+  margin:18px 0 20px;padding:22px;border:1px solid var(--line);border-radius:20px;
+  background:linear-gradient(145deg,#fff,#f5f8f6);box-shadow:0 10px 28px rgba(3,45,34,.07)
+}
+.season-progress-heading{display:flex;align-items:end;justify-content:space-between;gap:16px;margin-bottom:14px}
+.season-progress-heading h3{margin:2px 0 0;font-size:clamp(1.2rem,2.2vw,1.65rem);color:var(--emerald-950)}
+.season-progress-heading strong{color:var(--emerald-800);white-space:nowrap}
+.season-progress-track{height:10px;overflow:hidden;border-radius:999px;background:#dce2df}
+.season-progress-track span{display:block;width:0;height:100%;border-radius:inherit;background:linear-gradient(90deg,#d7ae36,var(--gold));transition:width .5s ease}
+.event-context-grid{display:grid;grid-template-columns:1fr 1fr;gap:14px;margin-top:20px}
+.event-context-card{min-width:0;padding:18px;border-radius:16px;border:1px solid var(--line);background:#fff}
+.event-context-card.next-event{background:var(--emerald-950);border-color:var(--emerald-950);color:#fff}
+.context-label{display:block;margin-bottom:7px;color:#a77b18;font-size:.76rem;font-weight:800;letter-spacing:.12em;text-transform:uppercase}
+.next-event .context-label{color:#e5c66f}
+.event-context-card h3{margin:0 0 6px;font-size:1.18rem}
+.event-context-card p{margin:0;color:var(--muted);line-height:1.45}
+.next-event p{color:#d5e3dd}
+.event-highlight-row{display:flex;flex-wrap:wrap;gap:8px;margin-top:14px}
+.event-highlight-row span{min-width:94px;padding:8px 10px;border-radius:10px;background:#f1f5f3}
+.next-event .event-highlight-row span{background:rgba(255,255,255,.11)}
+.event-highlight-row small,.event-highlight-row strong{display:block}
+.event-highlight-row small{margin-bottom:2px;color:var(--muted);font-size:.68rem;font-weight:800;text-transform:uppercase}
+.next-event .event-highlight-row small{color:#bfd3ca}
+.event-highlight-row strong{font-size:.88rem}
+.leaderboard-column-headings,.player-card-summary{
+  display:grid;grid-template-columns:64px minmax(170px,1fr) repeat(4,minmax(76px,100px)) minmax(70px,90px) 62px 28px;
+  gap:10px;align-items:center
+}
+.leaderboard-column-headings{padding:11px 16px;border-radius:12px 12px 0 0;background:var(--emerald-950);color:#e1bd55;font-size:.72rem;font-weight:850;letter-spacing:.04em;text-transform:uppercase}
+.player-card-summary{width:100%;padding:14px 16px;text-align:left}
+.player-card{border-radius:0}
+.player-card + .player-card{margin-top:0;border-top:0}
+.player-card:last-child{border-radius:0 0 14px 14px}
+.player-main{min-width:0}
+.player-name{display:block;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.player-meta{display:contents}
+.leaderboard-round-line{display:flex;min-width:0;align-items:center}
+.leaderboard-round-line span{display:none}
+.leaderboard-round-line strong{font-size:1rem;color:var(--ink)}
+.leaderboard-empty{grid-column:3/span 4;color:var(--muted)}
+.leaderboard-empty span{display:block}
+.points-block,.wins-block{text-align:center}
+.points-block strong,.wins-block strong{display:block;font-size:1.12rem;color:var(--emerald-900)}
+.points-block span,.wins-block span{display:none}
+.movement-badge{position:absolute;margin-top:28px}
+.compact-search{margin-top:20px}
+
+@media (max-width:900px){
+  .leaderboard-column-headings,.player-card-summary{grid-template-columns:52px minmax(145px,1fr) repeat(4,minmax(58px,1fr)) 64px 48px 24px;gap:6px}
+  .leaderboard-column-headings,.player-card-summary{padding-left:10px;padding-right:10px}
+}
+@media (max-width:760px){
+  .season-progress-card{padding:16px;margin-inline:-2px}
+  .season-progress-heading{align-items:start}
+  .season-progress-heading strong{font-size:.85rem}
+  .event-context-grid{grid-template-columns:1fr}
+  .leaderboard-column-headings{display:none}
+  .player-card{margin-bottom:10px!important;border:1px solid var(--line)!important;border-radius:14px!important}
+  .player-card-summary{grid-template-columns:42px minmax(0,1fr) auto auto 24px;gap:9px;padding:14px}
+  .player-meta{grid-column:1/-1;display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:6px;margin-top:4px}
+  .leaderboard-round-line{display:block;padding:8px 5px;border-radius:9px;background:#f1f5f3;text-align:center}
+  .leaderboard-round-line span{display:block;margin-bottom:3px;color:var(--muted);font-size:.64rem;font-weight:800;text-transform:uppercase}
+  .leaderboard-round-line strong{font-size:.88rem}
+  .leaderboard-empty{grid-column:1/-1;text-align:left}
+  .points-block span,.wins-block span{display:block;color:var(--muted);font-size:.62rem;font-weight:800;text-transform:uppercase}
+  .points-block strong,.wins-block strong{font-size:1rem}
+  .movement-badge{position:static;margin:0;align-self:center}
+}
+@media (max-width:420px){
+  .season-progress-heading{display:block}
+  .season-progress-heading strong{display:block;margin-top:6px}
+  .event-highlight-row span{flex:1}
+  .player-card-summary{grid-template-columns:36px minmax(0,1fr) auto auto 20px;padding:12px 9px}
+  .player-meta{gap:4px}
+}
