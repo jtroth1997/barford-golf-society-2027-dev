@@ -65,3 +65,29 @@ document.addEventListener("touchstart", event => {
   const link = event.target.closest("a[href]");
   if (link) warmPage(link);
 }, { passive: true });
+
+
+// Enlarge profile photos consistently anywhere they appear.
+document.addEventListener("DOMContentLoaded", () => {
+  const dialog = document.createElement("dialog");
+  dialog.className = "profile-photo-lightbox";
+  dialog.setAttribute("aria-label", "Profile photo");
+  dialog.innerHTML = '<form method="dialog"><button class="profile-photo-lightbox-close" value="cancel" aria-label="Close profile photo">×</button><img alt="Enlarged profile photo"><button class="button button-outline" value="cancel">Close</button></form>';
+  document.body.append(dialog);
+  const openPhoto = element => {
+    const source = element?.dataset?.profilePhoto || element?.querySelector?.("img")?.src;
+    if (!source) return;
+    dialog.querySelector("img").src = source;
+    dialog.showModal();
+  };
+  document.addEventListener("click", event => {
+    const target = event.target.closest("[data-profile-photo]");
+    if (target) openPhoto(target);
+  });
+  document.addEventListener("keydown", event => {
+    if ((event.key === "Enter" || event.key === " ") && event.target.matches("[data-profile-photo]")) {
+      event.preventDefault();
+      openPhoto(event.target);
+    }
+  });
+});
