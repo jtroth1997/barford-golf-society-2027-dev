@@ -15,7 +15,8 @@ const emptySeason = () => ({
   season: 2027,
   players: [],
   rounds: [],
-  achievements: []
+  achievements: [],
+  nextEvent: null
 });
 
 let snapshot = emptySeason();
@@ -26,9 +27,24 @@ const changed = () => window.dispatchEvent(new CustomEvent("scores:data-changed"
 export const ScoresData = {
   async getSnapshot() {
     if (window.BarfordSupabase && Date.now() - loadedAt > 30000) {
-      const { data, error } = await window.BarfordSupabase.rpc("get_2027_leaderboard_snapshot");
-      if (!error && data) {
-        snapshot = { ...emptySeason(), ...data };
+      const today = new Date();
+      const localToday = [today.getFullYear(), String(today.getMonth() + 1).padStart(2, "0"), String(today.getDate()).padStart(2, "0")].join("-");
+      const [snapshotResult, eventResult] = await Promise.all([
+        window.BarfordSupabase.rpc("get_2027_leaderboard_snapshot"),
+        window.BarfordSupabase
+          .from("events")
+          .select("id,name,venue,address,event_date,first_tee_time,price")
+          .eq("status", "scheduled")
+          .gte("event_date", localToday)
+          .order("event_date", { ascending: true })
+          .limit(1)
+      ]);
+      if (!snapshotResult.error && snapshotResult.data) {
+        snapshot = {
+          ...emptySeason(),
+          ...snapshotResult.data,
+          nextEvent: eventResult.error ? null : (eventResult.data?.[0] || null)
+        };
         loadedAt = Date.now();
       }
     }
