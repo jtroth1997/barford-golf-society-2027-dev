@@ -36,6 +36,7 @@
     avatars.forEach(avatar => {
       avatar.textContent = initials(profile.full_name);
       avatar.classList.remove("has-photo");
+      avatar.dataset.profileOwner = "self";
     });
     if (!profile.photo_url) return;
     const { data } = await client.storage.from("profile-images").createSignedUrl(profile.photo_url, 3600);
@@ -46,7 +47,8 @@
           avatar.dataset.profilePhoto = data.signedUrl;
           avatar.tabIndex = 0;
           avatar.setAttribute("role", "button");
-          avatar.setAttribute("aria-label", `View ${player.full_name || player.guest_name || "player"} profile photo`);
+          avatar.setAttribute("aria-label", `View or change ${profile.full_name || "your"} profile photo`);
+          avatar.dataset.profileOwner = "self";
       });
     }
   };
