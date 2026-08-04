@@ -8,6 +8,7 @@
   let currentRsvp;
   let rsvpChoicesLocked = false;
   let teeGroup = [];
+  let directionsDestination = "";
   let legacyCandidate;
   const set = (id, value) => {
     const element = document.getElementById(id);
@@ -251,11 +252,8 @@
     }
 
     const directions = document.getElementById("dashboardEventDirections");
-    if (directions) {
-      const destination = [nextEvent.venue, nextEvent.address].filter(Boolean).join(", ");
-      directions.href = `https://www.google.com/maps/dir/?api=1&destination=${encodeURIComponent(destination)}`;
-      directions.classList.toggle("hidden", !destination);
-    }
+    directionsDestination = [nextEvent.venue, nextEvent.address].filter(Boolean).join(", ");
+    directions?.classList.toggle("hidden", !directionsDestination);
   };
 
   const renderRsvpState = () => {
@@ -280,23 +278,54 @@
     if (!nextEvent || currentRsvp?.status !== "playing") return;
     const dialog = document.getElementById("dashboardPlayersDialog");
     const list = document.getElementById("dashboardPlayersList");
-    set("dashboardPlayersSummary", "Loading the playing list…");
+    set("dashboardPlayersSummary", "Loading the tee times…");
     if (list) list.innerHTML = "";
     dialog?.showModal();
-    const { data, error } = await client.rpc("get_event_playing_list", { target_event_id: nextEvent.id });
+    const { data, error } = await client.rpc("get_event_tee_times", { target_event_id: nextEvent.id });
     if (error) {
-      set("dashboardPlayersSummary", "The playing list could not be loaded. Please try again.");
+      set("dashboardPlayersSummary", "The tee times could not be loaded. Please try again.");
       return;
     }
-    const players = data || [];
-    set("dashboardPlayersSummary", `${players.length} confirmed player${players.length === 1 ? "" : "s"} for ${nextEvent.name}.`);
+    const rows = data || [];
+    const groups = new Map();
+    rows.forEach(player => {
+      const key = `${friendlyTime(player.tee_time)}|${player.tee_number || 1}`;
+      if (!groups.has(key)) groups.set(key, []);
+      groups.get(key).push(player);
+    });
+    set("dashboardPlayersSummary", rows.length ? `${groups.size} tee time${groups.size === 1 ? "" : "s"} published for ${nextEvent.name}.` : "Tee times have not been published yet.");
     if (list) {
-      list.innerHTML = players.length ? players.map((player, index) => `
-        <article class="${player.member_id === session.user.id ? "is-you" : ""}">
-          <span>${index + 1}</span>
-          <strong>${escapeHtml(player.full_name)}${player.member_id === session.user.id ? " (You)" : ""}</strong>
-        </article>`).join("") : "<p>No confirmed players yet.</p>";
+      list.innerHTML = groups.size ? [...groups.entries()].map(([key, players], groupIndex) => {
+        const [time, teeNumber] = key.split("|");
+        return `<section class="event-tee-time-group">
+          <div class="event-tee-time-heading"><strong>${escapeHtml(time)}</strong><span>Tee ${escapeHtml(teeNumber)} · Group ${groupIndex + 1}</span></div>
+          <div>${players.map((player, playerIndex) => `<article class="${player.is_you ? "is-you" : ""}">
+            <div class="event-tee-avatar" data-all-tee-avatar="${groupIndex}-${playerIndex}">${escapeHtml(initials(player.full_name))}</div>
+            <strong>${escapeHtml(player.full_name)}${player.is_you ? " (You)" : ""}</strong>
+            <small>${player.buggy_requested ? "Buggy" : "Walking"}</small>
+          </article>`).join("")}</div>
+        </section>`;
+      }).join("") : "<p>No tee times have been published yet.</p>";
+      [...groups.values()].forEach((players, groupIndex) => players.forEach(async (player, playerIndex) => {
+        if (!player.photo_url) return;
+        const { data: signed } = await client.storage.from("profile-images").createSignedUrl(player.photo_url, 3600);
+        const avatar = list.querySelector(`[data-all-tee-avatar="${groupIndex}-${playerIndex}"]`);
+        if (signed?.signedUrl && avatar) {
+          avatar.innerHTML = `<img src="${escapeHtml(signed.signedUrl)}" alt="">`;
+          avatar.classList.add("has-photo");
+        }
+      }));
     }
+  };
+
+  const openDirections = () => {
+    if (!directionsDestination) return;
+    const encoded = encodeURIComponent(directionsDestination);
+    set("dashboardDirectionsDestination", directionsDestination);
+    document.getElementById("dashboardAppleMaps").href = `https://maps.apple.com/?daddr=${encoded}&dirflg=d`;
+    document.getElementById("dashboardGoogleMaps").href = `https://www.google.com/maps/dir/?api=1&destination=${encoded}`;
+    document.getElementById("dashboardWaze").href = `https://waze.com/ul?q=${encoded}&navigate=yes`;
+    document.getElementById("dashboardDirectionsDialog")?.showModal();
   };
 
   const loadNextEvent = async () => {
@@ -418,6 +447,7 @@
   );
   document.getElementById("dashboardSeePlayers")?.addEventListener("click", loadPlayingList);
   document.getElementById("dashboardLockedSeePlayers")?.addEventListener("click", loadPlayingList);
+  document.getElementById("dashboardEventDirections")?.addEventListener("click", openDirections);
   document.getElementById("dashboardRsvpClose")?.addEventListener("click", () => rsvpDialog?.close());
   document.getElementById("dashboardRsvpCancel")?.addEventListener("click", () => rsvpDialog?.close());
   document.getElementById("dashboardRsvpForm")?.addEventListener("submit", async event => {
