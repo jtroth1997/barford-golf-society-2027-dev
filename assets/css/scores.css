@@ -1996,3 +1996,140 @@ main{
   .leaderboard-round-line strong { font-size:.84rem; }
   .points-block { width:62px; }
 }
+
+
+/* Premier-League-style standings table */
+.league-table-head,
+.player-card-summary {
+  display:grid !important;
+  grid-template-columns:52px minmax(190px,1fr) 64px 64px 64px 68px 76px;
+  align-items:center;
+}
+.league-table-head {
+  padding:11px 12px;
+  border-radius:14px 14px 0 0;
+  background:var(--emerald-950);
+  color:#f2ca5b;
+  font-size:.7rem;
+  font-weight:900;
+  letter-spacing:.04em;
+  text-transform:uppercase;
+}
+.league-table-head span:not(:nth-child(2)) { text-align:center; }
+.leaderboard-list {
+  display:block;
+  overflow:hidden;
+  border:1px solid #d8e2dc;
+  border-top:0;
+  border-radius:0 0 14px 14px;
+  background:#fff;
+}
+.player-card,
+.player-card.top-three-row {
+  margin:0;
+  border:0;
+  border-bottom:1px solid #e3e9e5;
+  border-radius:0;
+  background:#fff;
+  box-shadow:none;
+  overflow:hidden;
+}
+.player-card:nth-child(even) { background:#f7f9f8; }
+.player-card:last-child { border-bottom:0; }
+.player-card-summary {
+  width:100%;
+  min-height:58px;
+  padding:8px 12px;
+  gap:0;
+  border:0;
+  background:transparent;
+  text-align:left;
+}
+.rank-badge {
+  grid-column:1;
+  grid-row:1;
+  justify-self:center;
+  width:34px;
+  height:34px;
+  border-radius:50%;
+  font-size:.86rem;
+}
+.rank-badge.medal { font-size:1rem; }
+.player-main { display:contents !important; }
+.player-name {
+  grid-column:2;
+  grid-row:1;
+  min-width:0;
+  padding:0 8px;
+  color:var(--emerald-950);
+  font-size:.91rem;
+  font-weight:850;
+  line-height:1.15;
+  white-space:nowrap;
+  overflow:hidden;
+  text-overflow:ellipsis;
+}
+.player-meta { display:contents !important; }
+.leaderboard-round-line {
+  display:block !important;
+  min-width:0;
+  padding:0 3px;
+  border:0;
+  border-radius:0;
+  background:transparent;
+  text-align:center;
+}
+.leaderboard-round-line:nth-child(1) { grid-column:3; grid-row:1; }
+.leaderboard-round-line:nth-child(2) { grid-column:4; grid-row:1; }
+.leaderboard-round-line:nth-child(3) { grid-column:5; grid-row:1; }
+.leaderboard-round-line:nth-child(4) { grid-column:6; grid-row:1; }
+.leaderboard-round-line span { display:none !important; }
+.leaderboard-round-line strong {
+  display:block;
+  color:var(--ink);
+  font-size:.91rem;
+  font-weight:800;
+  line-height:1;
+}
+.points-block {
+  grid-column:7;
+  grid-row:1;
+  width:auto;
+  min-width:0;
+  min-height:0;
+  align-self:center;
+  display:block;
+  padding:0;
+  border-radius:0;
+  background:transparent;
+  text-align:center;
+}
+.points-block strong { color:var(--emerald-950); font-size:1rem; line-height:1; }
+.points-block span { display:none !important; }
+.expand-indicator,.movement-badge { display:none !important; }
+.player-details { border-top:1px solid #e0e7e3; background:#fbfcfb; }
+.player-card.is-open { background:#fffaf0; }
+
+@media(max-width:620px) {
+  .league-table-head,
+  .player-card-summary {
+    grid-template-columns:38px minmax(104px,1fr) 38px 40px 38px 42px 48px;
+  }
+  .league-table-head { padding:9px 5px; border-radius:11px 11px 0 0; font-size:.57rem; letter-spacing:0; }
+  .player-card-summary { min-height:52px; padding:7px 5px; }
+  .rank-badge { width:30px; height:30px; font-size:.72rem; }
+  .rank-badge.medal { font-size:.88rem; }
+  .player-name { padding:0 5px; font-size:.76rem; }
+  .leaderboard-round-line { padding:0 1px; }
+  .leaderboard-round-line strong { font-size:.76rem; }
+  .points-block strong { font-size:.82rem; }
+  .leaderboard-context span { font-size:.78rem; }
+}
+@media(max-width:380px) {
+  .league-table-head,
+  .player-card-summary {
+    grid-template-columns:34px minmax(88px,1fr) 34px 36px 34px 38px 43px;
+  }
+  .league-table-head { font-size:.52rem; }
+  .player-name,.leaderboard-round-line strong { font-size:.7rem; }
+}
