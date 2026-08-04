@@ -396,3 +396,12 @@ th{background:linear-gradient(135deg,var(--green-1000),var(--green-800));color:#
   .home-photo-page .member-home{background:rgba(243,247,244,.86)}
 }
 @media(prefers-reduced-motion:reduce){.home-photo-backdrop span{transition:none}}
+
+
+/* Click-to-enlarge profile photos */
+[data-profile-photo] { cursor: zoom-in; }
+.profile-photo-lightbox { width:min(92vw,560px); max-height:90vh; padding:0; border:0; border-radius:24px; background:#fff; box-shadow:0 30px 90px rgba(0,0,0,.45); }
+.profile-photo-lightbox::backdrop { background:rgba(2,22,16,.82); backdrop-filter:blur(5px); }
+.profile-photo-lightbox form { position:relative; display:grid; gap:16px; padding:18px; }
+.profile-photo-lightbox img { width:100%; max-height:70vh; object-fit:contain; border-radius:16px; background:#eef3f0; }
+.profile-photo-lightbox-close { position:absolute; z-index:2; top:26px; right:26px; width:44px; height:44px; border:0; border-radius:50%; background:rgba(255,255,255,.94); color:#032d22; font-size:1.8rem; line-height:1; }
