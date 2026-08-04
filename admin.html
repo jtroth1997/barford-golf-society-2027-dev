@@ -104,6 +104,19 @@
   </section>
   <section id="adminDenied" class="section shell hidden"><article class="admin-card"><p class="eyebrow">Access restricted</p><h2>This account is not an administrator</h2><p>Your member account is working, but it has not been granted committee access.</p><a class="button button-outline" href="account.html">Return to My Account</a></article></section>
 </main>
+<dialog id="adminRsvpEditDialog" class="admin-access-dialog">
+  <form id="adminRsvpEditForm">
+    <button id="adminRsvpEditClose" class="dialog-close" type="button" aria-label="Close">×</button>
+    <p class="eyebrow">Case-by-case change</p>
+    <h2>Change RSVP choices</h2>
+    <p id="adminRsvpEditMember"></p>
+    <label>Playing method<select id="adminRsvpEditTravel"><option value="walking">Walking</option><option value="buggy">Buggy requested</option></select></label>
+    <label>Tee-time preference<select id="adminRsvpEditPreference"><option value="dont_mind">Don’t mind</option><option value="first">Early</option><option value="middle">Middle</option><option value="end">Last</option></select></label>
+    <div class="admin-warning"><strong>Tee times may already have been produced.</strong><span>After saving this change, amend or regenerate the affected tee-time group if required.</span></div>
+    <div class="admin-dialog-actions"><button id="adminRsvpEditCancel" class="button button-outline" type="button">Cancel</button><button class="button button-primary" type="submit">Save change</button></div>
+    <p id="adminRsvpEditStatus" class="form-status" aria-live="polite"></p>
+  </form>
+</dialog>
 <dialog id="adminAccessDialog" class="admin-access-dialog">
   <form method="dialog">
     <button class="dialog-close" value="cancel" aria-label="Close">×</button>
@@ -117,6 +130,6 @@
   </form>
 </dialog>
 <footer class="site-footer"><div class="shell footer-inner"><div class="footer-brand"><img src="assets/images/barford-golf-society-logo.png" alt=""><span>Barford Golf Society</span></div><p>© <span id="year"></span> Barford Golf Society</p></div></footer>
-<script src="assets/js/app.js?v=speed2" defer></script><script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2" defer></script><script src="assets/js/supabase-config.js?v=live1" defer></script><script src="assets/js/supabase-client.js?v=live1" defer></script><script src="assets/js/admin-auth.js?v=preference1" defer></script><script src="assets/js/accessible-mobile.js?v=mobile4" defer></script>
+<script src="assets/js/app.js?v=speed2" defer></script><script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2" defer></script><script src="assets/js/supabase-config.js?v=live1" defer></script><script src="assets/js/supabase-client.js?v=live1" defer></script><script src="assets/js/admin-auth.js?v=rsvplock1" defer></script><script src="assets/js/accessible-mobile.js?v=mobile4" defer></script>
 </body>
 </html>
