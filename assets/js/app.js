@@ -72,20 +72,21 @@ document.addEventListener("DOMContentLoaded", () => {
   const dialog = document.createElement("dialog");
   dialog.className = "profile-photo-lightbox";
   dialog.setAttribute("aria-label", "Profile photo");
-  dialog.innerHTML = '<form method="dialog"><button class="profile-photo-lightbox-close" value="cancel" aria-label="Close profile photo">×</button><img alt="Enlarged profile photo"><button class="button button-outline" value="cancel">Close</button></form>';
+  dialog.innerHTML = '<form method="dialog"><button class="profile-photo-lightbox-close" value="cancel" aria-label="Close profile photo">×</button><img alt="Enlarged profile photo"><a class="button button-primary profile-photo-change hidden" href="account.html#profile-photo">Change profile picture</a><button class="button button-outline" value="cancel">Close</button></form>';
   document.body.append(dialog);
   const openPhoto = element => {
     const source = element?.dataset?.profilePhoto || element?.querySelector?.("img")?.src;
-    if (!source) return;
+    if (!source) { window.location.href = "account.html#profile-photo"; return; }
     dialog.querySelector("img").src = source;
+    dialog.querySelector(".profile-photo-change")?.classList.toggle("hidden", element.dataset.profileOwner !== "self");
     dialog.showModal();
   };
   document.addEventListener("click", event => {
-    const target = event.target.closest("[data-profile-photo]");
+    const target = event.target.closest("[data-profile-photo], [data-profile-owner=\"self\"]");
     if (target) openPhoto(target);
   });
   document.addEventListener("keydown", event => {
-    if ((event.key === "Enter" || event.key === " ") && event.target.matches("[data-profile-photo]")) {
+    if ((event.key === "Enter" || event.key === " ") && event.target.matches("[data-profile-photo], [data-profile-owner=\"self\"]")) {
       event.preventDefault();
       openPhoto(event.target);
     }
