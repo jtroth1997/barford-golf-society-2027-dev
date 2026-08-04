@@ -808,3 +808,53 @@
   .rsvp-window-grid strong{font-size:.92rem}
   .rsvp-window-grid small{font-size:.65rem}
 }
+
+
+/* Clear confirmed RSVP state and event playing list */
+.dashboard-playing-confirmation{
+  display:grid;
+  gap:14px;
+  margin:18px 0 12px;
+  padding:18px;
+  border:2px solid #9bc9ae;
+  border-radius:18px;
+  background:#edf8f2;
+}
+.playing-confirmation-heading{display:flex;align-items:center;gap:12px}
+.playing-confirmation-heading>span{
+  display:grid;
+  place-items:center;
+  width:42px;
+  height:42px;
+  flex:0 0 42px;
+  border-radius:50%;
+  color:#fff;
+  background:var(--green-700);
+  font-size:1.35rem;
+  font-weight:900;
+}
+.playing-confirmation-heading strong,.playing-confirmation-heading small{display:block}
+.playing-confirmation-heading strong{color:var(--green-950);font-size:1.15rem}
+.playing-confirmation-heading small{margin-top:2px;color:var(--muted)}
+.playing-request-grid{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+.playing-request-grid>div{padding:12px 14px;border:1px solid #cfe4d7;border-radius:13px;background:#fff}
+.playing-request-grid span,.playing-request-grid strong{display:block}
+.playing-request-grid span{color:var(--muted);font-size:.7rem;font-weight:800;text-transform:uppercase;letter-spacing:.05em}
+.playing-request-grid strong{margin-top:3px;color:var(--green-900)}
+.playing-confirmation-actions{display:grid;grid-template-columns:minmax(220px,1.5fr) 1fr 1fr;gap:8px}
+.playing-confirmation-actions .button{width:100%;min-height:48px}
+.event-players-panel{position:relative;display:grid;gap:16px;padding:28px}
+.event-players-panel h2{margin:0;font-size:clamp(2rem,6vw,3rem)}
+.event-players-panel>p{margin:0;color:var(--muted)}
+.event-players-list{display:grid;max-height:min(48vh,430px);overflow:auto;border-block:1px solid var(--line)}
+.event-players-list article{display:grid;grid-template-columns:38px minmax(0,1fr);align-items:center;gap:10px;padding:12px 4px;border-bottom:1px solid var(--line)}
+.event-players-list article:last-child{border-bottom:0}
+.event-players-list article>span{display:grid;place-items:center;width:32px;height:32px;border-radius:50%;background:var(--green-050);color:var(--green-800);font-weight:900}
+.event-players-list article.is-you{color:var(--green-800);background:#f2faf5}
+.event-players-list article.is-you>span{color:#fff;background:var(--green-700)}
+@media(max-width:760px){
+  .dashboard-playing-confirmation{padding:14px}
+  .playing-request-grid{grid-template-columns:1fr 1fr}
+  .playing-confirmation-actions{grid-template-columns:1fr}
+  .event-players-panel{padding:24px 18px}
+}
