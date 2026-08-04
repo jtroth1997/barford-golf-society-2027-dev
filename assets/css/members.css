@@ -926,3 +926,32 @@
 @media(max-width:460px) {
   .event-tee-player-list { grid-template-columns:1fr; }
 }
+
+
+/* Dashboard welcome profile picture */
+.mobile-dashboard-welcome { justify-content:space-between; width:100%; }
+.dashboard-welcome-copy { min-width:0; }
+.mobile-dashboard-welcome > .dashboard-welcome-avatar {
+  display:grid;
+  flex:0 0 82px;
+  width:82px;
+  height:82px;
+  padding:0;
+  border:3px solid rgba(225,190,114,.78);
+  border-radius:50%;
+  overflow:hidden;
+  background:var(--gold-400);
+  color:var(--green-1000);
+  box-shadow:0 10px 26px rgba(0,0,0,.22);
+  cursor:zoom-in;
+}
+.dashboard-welcome-avatar img { width:100%; height:100%; object-fit:cover; }
+@media(max-width:760px) {
+  .mobile-dashboard-welcome { align-items:center; }
+  .mobile-dashboard-welcome > .dashboard-welcome-avatar {
+    display:grid;
+    flex-basis:58px;
+    width:58px;
+    height:58px;
+  }
+}
