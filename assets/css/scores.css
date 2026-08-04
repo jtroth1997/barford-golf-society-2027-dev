@@ -1869,3 +1869,130 @@ main{
   .leaderboard-round-line strong { font-size:.84rem; }
   .points-block { width:64px; }
 }
+
+
+/* Phone-first leaderboard cards — replaces the legacy table presentation */
+.leaderboard-column-headings { display:none !important; }
+.leaderboard-list { display:grid; gap:12px; }
+.player-card {
+  border:1px solid #d9e3dd;
+  border-radius:18px;
+  background:#fff;
+  box-shadow:0 6px 18px rgba(3,45,34,.06);
+}
+.player-card-summary {
+  width:100%;
+  display:grid;
+  grid-template-columns:44px minmax(0,1fr) 92px;
+  grid-template-areas:"rank player total";
+  align-items:start;
+  gap:12px;
+  padding:14px;
+  border:0;
+  background:transparent;
+  text-align:left;
+}
+.rank-badge {
+  grid-area:rank;
+  width:40px;
+  height:40px;
+  align-self:start;
+}
+.player-main {
+  grid-area:player;
+  min-width:0;
+  display:grid;
+  gap:10px;
+}
+.player-name {
+  display:block;
+  color:var(--emerald-950);
+  font-size:1.05rem;
+  font-weight:900;
+  line-height:1.2;
+  white-space:normal;
+  overflow:visible;
+}
+.player-meta {
+  display:grid !important;
+  grid-template-columns:repeat(4,minmax(92px,1fr));
+  gap:7px;
+  margin:0;
+}
+.leaderboard-round-line {
+  display:grid !important;
+  gap:3px;
+  min-width:0;
+  padding:8px 9px;
+  border-radius:10px;
+  background:#f1f6f3;
+  text-align:left;
+}
+.leaderboard-round-line span {
+  display:block !important;
+  margin:0;
+  color:#65746d;
+  font-size:.67rem;
+  font-weight:850;
+  line-height:1.15;
+  text-transform:none;
+}
+.leaderboard-round-line strong {
+  display:block;
+  color:var(--emerald-950);
+  font-size:1rem;
+  line-height:1.1;
+}
+.points-block {
+  grid-area:total;
+  width:92px;
+  min-width:0;
+  align-self:stretch;
+  display:grid;
+  place-content:center;
+  padding:10px 6px;
+  border-radius:14px;
+  background:#f6ecd1;
+  text-align:center;
+}
+.points-block strong { display:block; color:var(--emerald-900); font-size:1.65rem; line-height:1; }
+.points-block span {
+  display:block !important;
+  max-width:none;
+  margin-top:5px;
+  color:#6b5b2e;
+  font-size:.61rem;
+  font-weight:900;
+  line-height:1.1;
+  text-transform:uppercase;
+}
+.expand-indicator { display:none !important; }
+.player-details { padding:14px; }
+
+@media(max-width:760px) {
+  .leaderboard-context { padding:12px 14px; }
+  .player-card-summary {
+    grid-template-columns:38px minmax(0,1fr) 70px;
+    gap:9px;
+    padding:12px 10px;
+  }
+  .rank-badge { width:34px; height:34px; font-size:.82rem; }
+  .rank-badge.medal { font-size:1rem; }
+  .player-name { font-size:.96rem; padding-top:2px; }
+  .player-meta { grid-template-columns:repeat(2,minmax(0,1fr)) !important; gap:6px; }
+  .leaderboard-round-line { padding:7px; }
+  .leaderboard-round-line span { font-size:.61rem; }
+  .leaderboard-round-line strong { font-size:.9rem; }
+  .points-block { width:70px; min-height:74px; padding:8px 4px; }
+  .points-block strong { font-size:1.35rem; }
+  .points-block span { font-size:.53rem; }
+}
+@media(max-width:380px) {
+  .player-card-summary { grid-template-columns:32px minmax(0,1fr) 62px; gap:7px; padding:10px 8px; }
+  .rank-badge { width:30px; height:30px; }
+  .player-meta { gap:5px; }
+  .leaderboard-round-line { padding:6px 5px; }
+  .leaderboard-round-line span { font-size:.56rem; }
+  .leaderboard-round-line strong { font-size:.84rem; }
+  .points-block { width:62px; }
+}
