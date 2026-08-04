@@ -858,3 +858,17 @@
   .playing-confirmation-actions{grid-template-columns:1fr}
   .event-players-panel{padding:24px 18px}
 }
+
+
+.dashboard-rsvp-locked{
+  display:grid;
+  gap:3px;
+  margin:14px 0;
+  padding:14px 16px;
+  border-left:4px solid var(--gold-500);
+  border-radius:0 13px 13px 0;
+  background:#fff7df;
+}
+.dashboard-rsvp-locked strong,.dashboard-rsvp-locked span{display:block}
+.dashboard-rsvp-locked strong{color:#6f5312}
+.dashboard-rsvp-locked span{color:var(--muted);font-size:.84rem;line-height:1.4}
