@@ -29,7 +29,7 @@
   };
   const timeValue = value => value ? String(value).slice(0, 5) : "";
   const eventOptions = () => `<option value="">Select event</option>${adminEvents.map(event =>
-    `<option value="${event.id}">${escapeHtml(event.name)} · ${escapeHtml(event.event_date)}</option>`
+    `<option value="${event.id}">Round ${event.round_number} · ${escapeHtml(event.name)} · ${escapeHtml(event.event_date)}</option>`
   ).join("")}`;
 
   document.querySelectorAll("[data-admin-view]").forEach(button => button.addEventListener("click", () => {
@@ -73,6 +73,7 @@
       document.querySelector("#adminEventVenue").value = event.venue || "";
       document.querySelector("#adminEventAddress").value = event.address || "";
       document.querySelector("#adminEventDate").value = event.event_date || "";
+      document.querySelector("#adminEventRound").value = event.round_number || "";
       document.querySelector("#adminEventFirstTee").value = timeValue(event.first_tee_time);
       document.querySelector("#adminEventPrice").value = event.price ?? "";
       document.querySelector("#adminEventCapacity").value = event.capacity ?? "";
@@ -104,6 +105,7 @@
       venue: document.querySelector("#adminEventVenue").value.trim(),
       address: document.querySelector("#adminEventAddress").value.trim() || null,
       event_date: document.querySelector("#adminEventDate").value,
+      round_number: Number(document.querySelector("#adminEventRound").value),
       first_tee_time: document.querySelector("#adminEventFirstTee").value || null,
       price: document.querySelector("#adminEventPrice").value || null,
       capacity: document.querySelector("#adminEventCapacity").value || null,
@@ -261,36 +263,70 @@
     const walkers = players.filter(item => !item.buggy_requested);
     return [...mixCohort(buggy, pairings), ...mixCohort(walkers, pairings)];
   };
+  const playerKey = player => player.member_id ? `member:${player.member_id}` : `guest:${String(player.guest_name || "").trim().toLowerCase()}`;
+  const preservePublishedGroups = (players, savedRows, pairings, startMinutes, gap) => {
+    if (!savedRows.length) return groupPlayers(players, pairings).map((group, index) => ({
+      time: minutesToTime(startMinutes + index * gap), players: group
+    }));
+    const available = new Map(players.map(player => [playerKey(player), player]));
+    const grouped = new Map();
+    savedRows.forEach(row => {
+      const key = `${row.tee_time}|${row.tee_number || 1}`;
+      if (!grouped.has(key)) grouped.set(key, { time: timeValue(row.tee_time), teeNumber: row.tee_number || 1, players: [] });
+      const player = available.get(playerKey(row));
+      if (player) {
+        grouped.get(key).players.push(player);
+        available.delete(playerKey(row));
+      }
+    });
+    const groups = [...grouped.values()].filter(group => group.players.length);
+    const newcomers = [...available.values()];
+    groups.forEach(group => {
+      while (group.players.length < 4 && newcomers.length) group.players.push(newcomers.shift());
+    });
+    while (groups.some(group => group.players.length < 3)) {
+      const short = groups.find(group => group.players.length < 3);
+      const donor = [...groups].reverse().find(group => group !== short && group.players.length > 3);
+      if (!donor) break;
+      short.players.push(donor.players.pop());
+    }
+    if (newcomers.length) {
+      const lastMinutes = groups.length ? groups.reduce((max, group) => {
+        const [h, m] = group.time.split(":").map(Number);
+        return Math.max(max, h * 60 + m);
+      }, startMinutes - gap) : startMinutes - gap;
+      groupPlayers(newcomers, pairings).forEach((players, index) => groups.push({
+        time: minutesToTime(lastMinutes + (index + 1) * gap), teeNumber: 1, players
+      }));
+    }
+    return groups;
+  };
+
   document.querySelector("#adminGenerateTeeTimes")?.addEventListener("click", async () => {
     const eventId = document.querySelector("#adminTeeEvent").value;
     if (!eventId) { setStatus("#adminTeeStatus", "Select an event first."); return; }
-    const [{ data, error }, { data: history, error: historyError }] = await Promise.all([
-      client.from("rsvps")
-        .select("member_id,guest_name,buggy_requested,preferred_tee_time,profiles(full_name,phone)")
-        .eq("event_id", eventId).eq("status", "playing"),
-      client.from("tee_times").select("event_id,tee_time,member_id,events(event_date)").neq("event_id", eventId)
+    const [{ data, error }, { data: history, error: historyError }, { data: savedRows, error: savedError }] = await Promise.all([
+      client.from("rsvps").select("member_id,guest_name,buggy_requested,preferred_tee_time,profiles(full_name,phone)").eq("event_id", eventId).eq("status", "playing"),
+      client.from("tee_times").select("event_id,tee_time,member_id,events(event_date)").neq("event_id", eventId),
+      client.from("tee_times").select("tee_time,tee_number,position,member_id,guest_name").eq("event_id", eventId).order("tee_time").order("position")
     ]);
     if (error) { setStatus("#adminTeeStatus", error.message); return; }
     const selectedEvent = adminEvents.find(item => item.id === eventId);
-    const previousGroups = (history || []).filter(row =>
-      row.events?.event_date && selectedEvent?.event_date && row.events.event_date < selectedEvent.event_date
-    );
+    const previousGroups = (history || []).filter(row => row.events?.event_date && selectedEvent?.event_date && row.events.event_date < selectedEvent.event_date);
     const pairings = historyError ? new Map() : buildPairingHistory(previousGroups);
     const [hours, minutes] = document.querySelector("#adminTeeStart").value.split(":").map(Number);
     const gap = Number(document.querySelector("#adminTeeGap").value) || 8;
-    teeGroups = groupPlayers([...(data || [])], pairings).map((players, index) => ({
-      time: minutesToTime(hours * 60 + minutes + index * gap), players
-    }));
+    teeGroups = preservePublishedGroups([...(data || [])], savedError ? [] : (savedRows || []), pairings, hours * 60 + minutes, gap);
     document.querySelector("#adminTeePreview").innerHTML = teeGroups.length ? teeGroups.map((group, index) => `
       <article><strong>${group.time}</strong><span>Group ${index + 1}</span><div>${group.players.map(player => `<b>${escapeHtml(player.profiles?.full_name || player.guest_name || "Guest")}${player.buggy_requested ? " · buggy" : ""} · ${teeWindowName(player.preferred_tee_time)}</b>`).join("")}</div></article>
     `).join("") : "<p>No confirmed players to organise.</p>";
     document.querySelector("#adminSaveTeeTimes").disabled = !teeGroups.length;
-    setStatus("#adminTeeStatus", teeGroups.length ? "Preview ready. Buggy groups are first, tee-window requests are applied, and previous pairings are minimised." : "");
+    setStatus("#adminTeeStatus", teeGroups.length ? (savedRows?.length ? "Preview ready. Existing groups and times have been kept wherever possible; only the minimum moves were made." : "Preview ready. Buggy groups are first, tee-window requests are applied, and previous pairings are minimised.") : "");
   });
   document.querySelector("#adminSaveTeeTimes")?.addEventListener("click", async () => {
     const eventId = document.querySelector("#adminTeeEvent").value;
     const rows = teeGroups.flatMap((group, groupIndex) => group.players.map((player, position) => ({
-      event_id: eventId, tee_time: group.time, tee_number: 1, position: position + 1,
+      event_id: eventId, tee_time: group.time, tee_number: group.teeNumber || 1, position: position + 1,
       member_id: player.member_id || null, guest_name: player.member_id ? null : player.guest_name
     })));
     const { error: deleteError } = await client.from("tee_times").delete().eq("event_id", eventId);
@@ -337,26 +373,6 @@
       if (!lockError) loadRounds();
     }));
   };
-  document.querySelector("#adminRoundForm")?.addEventListener("submit", async event => {
-    event.preventDefault();
-    const eventId = document.querySelector("#adminRoundEvent").value;
-    const linkedEvent = adminEvents.find(item => item.id === eventId);
-    if (!linkedEvent) {
-      setStatus("#adminRoundStatus", "Choose a published event first.");
-      return;
-    }
-    const payload = {
-      event_id: linkedEvent.id,
-      season: 2027,
-      round_number: Number(document.querySelector("#adminRoundNumber").value),
-      name: linkedEvent.name,
-      played_on: linkedEvent.event_date
-    };
-    const { error } = await client.from("rounds").insert(payload);
-    setStatus("#adminRoundStatus", error ? error.message : `Round ${payload.round_number} is now ${linkedEvent.name} on ${linkedEvent.event_date}.`);
-    if (!error) await loadRounds();
-  });
-
   const roundAverage = scores => {
     const sorted = [...scores].sort((a, b) => a - b);
     const included = sorted.length > 4 ? sorted.slice(1, -1) : sorted;
