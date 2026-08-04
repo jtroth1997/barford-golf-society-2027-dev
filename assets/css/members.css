@@ -955,3 +955,15 @@
     height:58px;
   }
 }
+
+
+/* Tee-group avatars are real, tappable controls */
+.tee-group-avatar {
+  padding:0;
+  border:3px solid #e6c866;
+  appearance:none;
+  cursor:pointer;
+}
+.tee-group-avatar.has-photo:hover,
+.tee-group-avatar.has-photo:focus-visible { transform:scale(1.06); box-shadow:0 0 0 4px rgba(230,200,102,.22); }
+.tee-group-avatar.has-photo { transition:transform .18s ease,box-shadow .18s ease; }
