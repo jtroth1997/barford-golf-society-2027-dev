@@ -1,4 +1,4 @@
-const CACHE = "barford-golf-2027-speed-v26";
+const CACHE = "barford-golf-2027-speed-v27";
 const CORE = [
   "./",
   "./index.html",
@@ -17,9 +17,9 @@ const CORE = [
   "./assets/css/members.css?v=rsvp1",
   "./assets/css/members.css?v=teeclick2",
   "./assets/css/members.css?v=account5",
-  "./assets/css/accessible-mobile.css?v=mobile5",
+  "./assets/css/accessible-mobile.css?v=mobile6",
   "./assets/css/events.css?v=video1",
-  "./assets/css/scores.css?v=league5",
+  "./assets/css/scores.css?v=league6",
   "./assets/css/gallery.css?v=swipe1",
   "./assets/css/admin.css?v=eventround1",
   "./assets/js/app.js?v=profilephoto2",
@@ -29,12 +29,12 @@ const CORE = [
   "./assets/js/admin-auth.js?v=controls4",
   "./assets/js/admin-auth.js?v=eventround1",
   "./assets/js/events-live.js?v=video1",
-  "./assets/js/scores.js?v=league5",
+  "./assets/js/scores.js?v=league6",
   "./assets/js/scores-data.js?v=overview1",
   "./assets/js/handicap-engine.js",
   "./assets/js/gallery-live.js?v=swipe1",
   "./assets/js/home-photos.js?v=1",
-  "./assets/js/accessible-mobile.js?v=mobile5",
+  "./assets/js/accessible-mobile.js?v=mobile6",
   "./assets/js/supabase-config.js?v=live1",
   "./assets/js/supabase-client.js?v=live1",
   "./assets/images/barford-golf-society-logo.png"

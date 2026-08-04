@@ -2235,7 +2235,7 @@ main{
   .player-card-summary { min-height:50px; padding:7px 3px; }
   .rank-badge { width:27px; height:27px; font-size:.68rem; }
   .rank-badge.medal { font-size:.78rem; }
-  .player-name { padding:0 4px; font-size:.72rem; }
+  .player-name { padding:0 4px; font-size:.69rem; letter-spacing:-.01em; }
   .leaderboard-round-line { padding:0 1px; }
   .leaderboard-round-line strong { font-size:.68rem; }
   .points-block strong { font-size:.84rem; }
