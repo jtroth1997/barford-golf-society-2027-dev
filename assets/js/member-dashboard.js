@@ -209,6 +209,43 @@
       </article>`).join("");
   };
 
+  const teeWindowLabel = value => ({ dont_mind: "Don’t mind", first: "Early", middle: "Middle", end: "Last" })[value] || "Don’t mind";
+
+  const renderRsvpState = () => {
+    const isPlaying = currentRsvp?.status === "playing";
+    show("dashboardPlayingConfirmation", isPlaying);
+    show("dashboardRsvpActions", !isPlaying);
+    set("dashboardRsvpBadge", isPlaying
+      ? "You’re playing"
+      : currentRsvp?.status === "not_playing" ? "Not playing" : "RSVP needed");
+    if (!isPlaying) return;
+    set("dashboardPlayingTravel", currentRsvp.buggy_requested ? "Buggy requested" : "Walking");
+    set("dashboardPlayingPreference", teeWindowLabel(currentRsvp.preferred_tee_time));
+  };
+
+  const loadPlayingList = async () => {
+    if (!nextEvent || currentRsvp?.status !== "playing") return;
+    const dialog = document.getElementById("dashboardPlayersDialog");
+    const list = document.getElementById("dashboardPlayersList");
+    set("dashboardPlayersSummary", "Loading the playing list…");
+    if (list) list.innerHTML = "";
+    dialog?.showModal();
+    const { data, error } = await client.rpc("get_event_playing_list", { target_event_id: nextEvent.id });
+    if (error) {
+      set("dashboardPlayersSummary", "The playing list could not be loaded. Please try again.");
+      return;
+    }
+    const players = data || [];
+    set("dashboardPlayersSummary", `${players.length} confirmed player${players.length === 1 ? "" : "s"} for ${nextEvent.name}.`);
+    if (list) {
+      list.innerHTML = players.length ? players.map((player, index) => `
+        <article class="${player.member_id === session.user.id ? "is-you" : ""}">
+          <span>${index + 1}</span>
+          <strong>${escapeHtml(player.full_name)}${player.member_id === session.user.id ? " (You)" : ""}</strong>
+        </article>`).join("") : "<p>No confirmed players yet.</p>";
+    }
+  };
+
   const loadNextEvent = async () => {
     const today = localDate();
     const { data: events, error } = await client.from("events")
@@ -230,12 +267,9 @@
     set("dashboardEventDate", friendlyDate(nextEvent.event_date));
     set("dashboardTeeTime", friendlyTime(teeTime?.tee_time));
     set("dashboardEventPrice", money(nextEvent.price));
-    set("dashboardRsvpBadge", rsvp?.status === "playing" ? "You’re playing" : rsvp?.status === "not_playing" ? "Not playing" : "RSVP needed");
     show("dashboardEventFacts");
-    show("dashboardRsvpActions");
+    renderRsvpState();
   };
-
-  const teeWindowLabel = value => ({ dont_mind: "Don’t mind", first: "Early", middle: "Middle", end: "Last" })[value] || "Don’t mind";
 
   const saveRsvp = async (status, preferences = {}) => {
     if (!nextEvent) return;
@@ -256,9 +290,9 @@
       return null;
     }
     currentRsvp = data;
-    set("dashboardRsvpBadge", status === "playing" ? "You’re playing" : "Not playing");
+    renderRsvpState();
     if (statusLine) statusLine.textContent = status === "playing"
-      ? `You are on the playing list · ${data.buggy_requested ? "Buggy" : "Walking"} · ${teeWindowLabel(data.preferred_tee_time)} tee-time preference.`
+      ? `Confirmed: you’re playing this event · ${data.buggy_requested ? "Buggy requested" : "Walking"} · ${teeWindowLabel(data.preferred_tee_time)} tee-time preference.`
       : "The committee now knows you cannot attend.";
     await loadPayments();
     return data;
@@ -294,7 +328,7 @@
   };
 
   const rsvpDialog = document.getElementById("dashboardRsvpDialog");
-  document.querySelector('[data-rsvp="playing"]')?.addEventListener("click", () => {
+  const openRsvpDialog = () => {
     const walking = rsvpDialog?.querySelector('[name="travel"][value="walking"]');
     const buggy = rsvpDialog?.querySelector('[name="travel"][value="buggy"]');
     if (walking) walking.checked = !currentRsvp?.buggy_requested;
@@ -305,8 +339,13 @@
     const preferred = rsvpDialog?.querySelector(`[name="teeWindow"][value="${savedWindow}"]`);
     if (preferred) preferred.checked = true;
     rsvpDialog?.showModal();
-  });
-  document.querySelector('[data-rsvp="not_playing"]')?.addEventListener("click", () => saveRsvp("not_playing"));
+  };
+  document.querySelector('[data-rsvp="playing"]')?.addEventListener("click", openRsvpDialog);
+  document.getElementById("dashboardChangeRsvp")?.addEventListener("click", openRsvpDialog);
+  document.querySelectorAll('[data-rsvp="not_playing"]').forEach(button =>
+    button.addEventListener("click", () => saveRsvp("not_playing"))
+  );
+  document.getElementById("dashboardSeePlayers")?.addEventListener("click", loadPlayingList);
   document.getElementById("dashboardRsvpClose")?.addEventListener("click", () => rsvpDialog?.close());
   document.getElementById("dashboardRsvpCancel")?.addEventListener("click", () => rsvpDialog?.close());
   document.getElementById("dashboardRsvpForm")?.addEventListener("submit", async event => {
