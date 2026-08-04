@@ -151,9 +151,7 @@ function renderLeaderboard() {
   const roundsForStandings = getLeaderboardRounds();
   const roundLabel = selectedRound ? `after ${selectedRound.name}` : "before the season starts";
 
-  $("#leaderboardHeading").textContent = selectedRound
-    ? `League Table after ${selectedRound.name}`
-    : "League Table";
+  $("#leaderboardHeading").textContent = "League Table";
   $("#leagueTableRound").textContent = selectedRound
     ? `Round ${selectedRound.number}`
     : "Awaiting Round 1";
