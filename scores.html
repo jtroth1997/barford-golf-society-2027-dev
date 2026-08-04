@@ -7,7 +7,7 @@
   <meta name="description" content="Barford Golf Society 2027 scores, handicaps and round results.">
   <title>Scores | Barford Golf Society 2027</title>
   <link rel="stylesheet" href="assets/css/styles.css?v=fast3">
-  <link rel="stylesheet" href="assets/css/scores.css?v=7">
+  <link rel="stylesheet" href="assets/css/scores.css?v=overview1">
   <link rel="stylesheet" href="assets/css/mobile-menu-fix.css?v=1">
   <link rel="stylesheet" href="assets/css/accessible-mobile.css?v=mobile4">
 </head>
@@ -42,9 +42,33 @@
         <div><p class="eyebrow">Current standings</p><h2 id="leaderboardHeading">Leaderboard</h2></div>
         <span class="season-chip" id="seasonChip">2027</span>
       </div>
+      <section class="season-progress-card" aria-labelledby="seasonProgressTitle">
+        <div class="season-progress-heading">
+          <div><p class="eyebrow">Season progress</p><h3 id="seasonProgressTitle">Before Round 1</h3></div>
+          <strong id="seasonProgressCount">0 of 7 played</strong>
+        </div>
+        <div class="season-progress-track" role="progressbar" aria-valuemin="0" aria-valuemax="7" aria-valuenow="0" aria-label="Season rounds completed"><span id="seasonProgressBar"></span></div>
+        <div class="event-context-grid">
+          <article id="lastEventCard" class="event-context-card completed-event">
+            <span class="context-label">Latest result</span>
+            <h3 id="lastEventName">No event played yet</h3>
+            <p id="lastEventDetail">Round results will appear here.</p>
+            <div id="lastEventHighlights" class="event-highlight-row"></div>
+          </article>
+          <article id="nextEventCard" class="event-context-card next-event">
+            <span class="context-label">Coming next</span>
+            <h3 id="nextEventName">Next event not announced</h3>
+            <p id="nextEventDetail">The committee will publish the next event here.</p>
+            <div id="nextEventHighlights" class="event-highlight-row"></div>
+          </article>
+        </div>
+      </section>
       <div class="leaderboard-round-tabs" id="leaderboardRoundTabs" role="tablist" aria-label="Leaderboard after round"></div>
-      <div id="leaderboardList" class="leaderboard-list"></div>
       <div class="leaderboard-context" id="leaderboardContext"></div>
+      <div class="leaderboard-column-headings" aria-hidden="true">
+        <span>Rank</span><span>Player</span><span>Round HCP</span><span>Points</span><span>Adj</span><span>Next HCP</span><span>Total</span><span>Wins</span><span></span>
+      </div>
+      <div id="leaderboardList" class="leaderboard-list"></div>
       <section class="search-panel compact-search" aria-label="Player search">
         <label for="playerSearch">Find a player</label>
         <div class="search-control">
@@ -102,7 +126,8 @@
       <button class="player-card-summary" type="button" aria-expanded="false">
         <span class="rank-badge"></span>
         <span class="player-main"><strong class="player-name"></strong><span class="player-meta"></span></span>
-        <span class="points-block"><strong class="player-points"></strong><span>points</span></span>
+        <span class="points-block"><strong class="player-points"></strong><span>total</span></span>
+        <span class="wins-block"><strong class="player-wins"></strong><span>wins</span></span>
         <span class="expand-indicator" aria-hidden="true">⌄</span>
       </button>
       <div class="player-details" hidden></div>
@@ -113,7 +138,7 @@
   <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2" defer></script>
   <script src="assets/js/supabase-config.js?v=live1" defer></script>
   <script src="assets/js/supabase-client.js?v=live1" defer></script>
-  <script type="module" src="assets/js/scores.js?v=live1"></script>
+  <script type="module" src="assets/js/scores.js?v=overview1"></script>
 <script src="assets/js/accessible-mobile.js?v=mobile4" defer></script>
 <script data-mobile-nav-lock>
 window.addEventListener("DOMContentLoaded",()=>document.querySelectorAll(".mobile-quick-nav").forEach(nav=>{const links=nav.querySelectorAll("a");const item=links[links.length-1];if(!item)return;item.href="account.html";item.innerHTML='<span class="quick-icon" aria-hidden="true">●</span><span>My Account</span>';item.classList.toggle("active",location.pathname.endsWith("/account.html"));if(location.pathname.endsWith("/account.html"))item.setAttribute("aria-current","page");else item.removeAttribute("aria-current");}));
