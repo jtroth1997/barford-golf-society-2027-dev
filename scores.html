@@ -7,7 +7,7 @@
   <meta name="description" content="Barford Golf Society 2027 leaderboard, handicaps and round results.">
   <title>Leaderboard | Barford Golf Society 2027</title>
   <link rel="stylesheet" href="assets/css/styles.css?v=fast3">
-  <link rel="stylesheet" href="assets/css/scores.css?v=premlayout1">
+  <link rel="stylesheet" href="assets/css/scores.css?v=league2">
   <link rel="stylesheet" href="assets/css/mobile-menu-fix.css?v=1">
   <link rel="stylesheet" href="assets/css/accessible-mobile.css?v=mobile4">
 </head>
@@ -65,10 +65,23 @@
       </section>
       <div class="leaderboard-round-tabs" id="leaderboardRoundTabs" role="tablist" aria-label="Leaderboard after round"></div>
       <div class="leaderboard-context" id="leaderboardContext"></div>
-      <div class="league-table-head" aria-hidden="true">
-        <span>Pos</span><span>Player</span><span>Rnd</span><span>HCP</span><span>Adj</span><span>Next</span><span>Total</span>
-      </div>
-      <div id="leaderboardList" class="leaderboard-list"></div>
+      <section class="league-table-panel" aria-label="Barford Golf Society league table">
+        <aside class="league-table-brand" aria-label="Barford Golf Society round">
+          <img src="assets/images/barford-golf-society-logo.png" alt="" width="64" height="64">
+          <div class="league-table-side-title">
+            <span>Barford</span>
+            <strong>League</strong>
+            <b id="leagueTableRound">Awaiting Round 1</b>
+          </div>
+          <small>2027</small>
+        </aside>
+        <div class="league-table-content">
+          <div class="league-table-head" aria-hidden="true">
+            <span>Pos</span><span>Player</span><span>Rnd</span><span>HCP</span><span>+/-</span><span>Next</span><span>Total</span>
+          </div>
+          <div id="leaderboardList" class="leaderboard-list"></div>
+        </div>
+      </section>
       <section class="search-panel compact-search" aria-label="Player search">
         <label for="playerSearch">Find a player</label>
         <div class="search-control">
@@ -137,7 +150,7 @@
   <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2" defer></script>
   <script src="assets/js/supabase-config.js?v=live1" defer></script>
   <script src="assets/js/supabase-client.js?v=live1" defer></script>
-  <script type="module" src="assets/js/scores.js?v=premlayout1"></script>
+  <script type="module" src="assets/js/scores.js?v=league2"></script>
 <script src="assets/js/accessible-mobile.js?v=mobile4" defer></script>
 <script data-mobile-nav-lock>
 window.addEventListener("DOMContentLoaded",()=>document.querySelectorAll(".mobile-quick-nav").forEach(nav=>{const links=nav.querySelectorAll("a");const item=links[links.length-1];if(!item)return;item.href="account.html";item.innerHTML='<span class="quick-icon" aria-hidden="true">●</span><span>My Account</span>';item.classList.toggle("active",location.pathname.endsWith("/account.html"));if(location.pathname.endsWith("/account.html"))item.setAttribute("aria-current","page");else item.removeAttribute("aria-current");}));

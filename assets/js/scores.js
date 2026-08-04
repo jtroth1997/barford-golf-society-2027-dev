@@ -154,6 +154,9 @@ function renderLeaderboard() {
   $("#leaderboardHeading").textContent = selectedRound
     ? `Leaderboard after ${selectedRound.name}`
     : "Leaderboard";
+  $("#leagueTableRound").textContent = selectedRound
+    ? `Round ${selectedRound.number}`
+    : "Awaiting Round 1";
 
   $("#leaderboardContext").innerHTML = selectedRound
     ? `<strong>${escapeHtml(selectedRound.name)} standings</strong><span>Your five highest round scores count. From Round 6 onwards, a better score automatically replaces your lowest counting score. Tap a player for their full history.</span>`
