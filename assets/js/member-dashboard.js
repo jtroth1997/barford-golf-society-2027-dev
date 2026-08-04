@@ -7,6 +7,7 @@
   let nextEvent;
   let currentRsvp;
   let rsvpChoicesLocked = false;
+  let teeGroup = [];
   let legacyCandidate;
   const set = (id, value) => {
     const element = document.getElementById(id);
@@ -212,9 +213,56 @@
 
   const teeWindowLabel = value => ({ dont_mind: "Don’t mind", first: "Early", middle: "Middle", end: "Last" })[value] || "Don’t mind";
 
+  const renderTeeGroup = () => {
+    if (!teeGroup.length || !nextEvent) return;
+    const ownSlot = teeGroup.find(player => player.is_you) || teeGroup[0];
+    const teeTime = friendlyTime(ownSlot.tee_time);
+    const teeNumber = ownSlot.tee_number ? `Tee ${ownSlot.tee_number}` : "Starting tee TBC";
+    set("dashboardConfirmedTeeTime", teeTime);
+    set("dashboardConfirmedTeeNumber", teeNumber);
+    set("dashboardDayEvent", nextEvent.name);
+    set("dashboardDayDate", friendlyDate(nextEvent.event_date));
+    set("dashboardDayVenue", nextEvent.venue || "Venue TBC");
+    set("dashboardDayAddress", nextEvent.address || "Address TBC");
+    set("dashboardDayTeeTime", teeTime);
+    set("dashboardDayTeeNumber", teeNumber);
+    set("dashboardDayGroupSize", `${teeGroup.length} player${teeGroup.length === 1 ? "" : "s"}`);
+    set("dashboardDayTravel", currentRsvp?.buggy_requested ? "Buggy requested" : "Walking");
+
+    const players = document.getElementById("dashboardTeeGroupPlayers");
+    if (players) {
+      players.innerHTML = teeGroup.map((player, index) => {
+        const name = player.full_name || player.guest_name || "Guest player";
+        return `<article class="tee-group-player ${player.is_you ? "is-you" : ""}">
+          <div class="tee-group-avatar" data-tee-avatar="${index}">${escapeHtml(initials(name))}</div>
+          <strong>${escapeHtml(name)}${player.is_you ? " (You)" : ""}</strong>
+          <small>${player.buggy_requested ? "Buggy" : "Walking"}</small>
+        </article>`;
+      }).join("");
+      teeGroup.forEach(async (player, index) => {
+        if (!player.photo_url) return;
+        const { data } = await client.storage.from("profile-images").createSignedUrl(player.photo_url, 3600);
+        const avatar = players.querySelector(`[data-tee-avatar="${index}"]`);
+        if (data?.signedUrl && avatar) {
+          avatar.innerHTML = `<img src="${escapeHtml(data.signedUrl)}" alt="">`;
+          avatar.classList.add("has-photo");
+        }
+      });
+    }
+
+    const directions = document.getElementById("dashboardEventDirections");
+    if (directions) {
+      const destination = [nextEvent.venue, nextEvent.address].filter(Boolean).join(", ");
+      directions.href = `https://www.google.com/maps/dir/?api=1&destination=${encodeURIComponent(destination)}`;
+      directions.classList.toggle("hidden", !destination);
+    }
+  };
+
   const renderRsvpState = () => {
     const isPlaying = currentRsvp?.status === "playing";
-    show("dashboardPlayingConfirmation", isPlaying);
+    const hasPublishedGroup = isPlaying && rsvpChoicesLocked && teeGroup.length > 0;
+    show("dashboardTeeGroup", hasPublishedGroup);
+    show("dashboardPlayingConfirmation", isPlaying && !hasPublishedGroup);
     show("dashboardRsvpActions", !isPlaying && !rsvpChoicesLocked);
     show("dashboardRsvpLockedNotice", rsvpChoicesLocked);
     show("dashboardChangeRsvp", isPlaying && !rsvpChoicesLocked);
@@ -225,6 +273,7 @@
     if (!isPlaying) return;
     set("dashboardPlayingTravel", currentRsvp.buggy_requested ? "Buggy requested" : "Walking");
     set("dashboardPlayingPreference", teeWindowLabel(currentRsvp.preferred_tee_time));
+    if (hasPublishedGroup) renderTeeGroup();
   };
 
   const loadPlayingList = async () => {
@@ -261,17 +310,25 @@
       return;
     }
     nextEvent = events[0];
-    const [{ data: rsvp }, { data: teeTime }, { data: choicesLocked }] = await Promise.all([
+    const [
+      { data: rsvp },
+      { data: teeTime },
+      { data: choicesLocked },
+      { data: groupRows, error: groupError }
+    ] = await Promise.all([
       client.from("rsvps").select("*").eq("event_id", nextEvent.id).eq("member_id", session.user.id).maybeSingle(),
-      client.from("tee_times").select("tee_time").eq("event_id", nextEvent.id).eq("member_id", session.user.id).maybeSingle(),
-      client.rpc("get_event_rsvp_lock_status", { target_event_id: nextEvent.id })
+      client.from("tee_times").select("tee_time,tee_number,position").eq("event_id", nextEvent.id).eq("member_id", session.user.id).maybeSingle(),
+      client.rpc("get_event_rsvp_lock_status", { target_event_id: nextEvent.id }),
+      client.rpc("get_my_event_tee_group", { target_event_id: nextEvent.id })
     ]);
     currentRsvp = rsvp;
     rsvpChoicesLocked = Boolean(choicesLocked);
+    teeGroup = groupError ? [] : (groupRows || []);
+    const ownSlot = teeGroup.find(player => player.is_you);
     set("dashboardEventName", nextEvent.name);
     set("dashboardEventDetail", `${nextEvent.venue}${nextEvent.address ? ` · ${nextEvent.address}` : ""}`);
     set("dashboardEventDate", friendlyDate(nextEvent.event_date));
-    set("dashboardTeeTime", friendlyTime(teeTime?.tee_time));
+    set("dashboardTeeTime", friendlyTime(ownSlot?.tee_time || teeTime?.tee_time));
     set("dashboardEventPrice", money(nextEvent.price));
     show("dashboardEventFacts");
     renderRsvpState();
@@ -360,6 +417,7 @@
     button.addEventListener("click", () => saveRsvp("not_playing"))
   );
   document.getElementById("dashboardSeePlayers")?.addEventListener("click", loadPlayingList);
+  document.getElementById("dashboardLockedSeePlayers")?.addEventListener("click", loadPlayingList);
   document.getElementById("dashboardRsvpClose")?.addEventListener("click", () => rsvpDialog?.close());
   document.getElementById("dashboardRsvpCancel")?.addEventListener("click", () => rsvpDialog?.close());
   document.getElementById("dashboardRsvpForm")?.addEventListener("submit", async event => {
