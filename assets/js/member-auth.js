@@ -43,6 +43,10 @@
     if (!data?.signedUrl) return;
     element.innerHTML = `<img src="${data.signedUrl}" alt="">`;
     element.classList.add("has-photo");
+    element.dataset.profilePhoto = data.signedUrl;
+    element.tabIndex = 0;
+    element.setAttribute("role", "button");
+    element.setAttribute("aria-label", `View ${profile.full_name || "member"} profile photo`);
   };
 
   const signupForm = $("#memberSignupForm");
