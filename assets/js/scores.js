@@ -173,7 +173,7 @@ function renderLeaderboard() {
   const animationSignature = `${selectedRound?.id || "preseason"}:${allRanked
     .map(player => `${player.id}-${player.position}-${player.statistics.seasonPoints}`)
     .join("|")}`;
-  let playFilm = !state.search && !window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+  let playFilm = false;
   try {
     const animationKey = "bgs-leaderboard-film-seen";
     playFilm = playFilm && localStorage.getItem(animationKey) !== animationSignature;
