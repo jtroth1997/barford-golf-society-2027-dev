@@ -1,4 +1,4 @@
-const CACHE = "barford-golf-2027-speed-v36";
+const CACHE = "barford-golf-2027-speed-v37";
 const CORE = [
   "./",
   "./index.html",
@@ -19,13 +19,16 @@ const CORE = [
   "./assets/css/styles.css?v=homephotos4",
   "./assets/css/styles.css?v=homephotos5",
   "./assets/css/styles.css?v=homephotos6",
+  "./assets/css/styles.css?v=homephotos7",
   "./assets/css/members.css?v=rsvp1",
   "./assets/css/members.css?v=teeclick2",
   "./assets/css/members.css?v=account5",
   "./assets/css/members.css?v=cancel1",
   "./assets/css/members.css?v=homefit1",
+  "./assets/css/members.css?v=homefit2",
   "./assets/css/accessible-mobile.css?v=mobile6",
   "./assets/css/accessible-mobile.css?v=homefit1",
+  "./assets/css/accessible-mobile.css?v=homefit2",
   "./assets/css/events.css?v=video1",
   "./assets/css/events.css?v=rsvpmanage1",
   "./assets/css/scores.css?v=league6",
@@ -53,6 +56,7 @@ const CORE = [
   "./assets/js/home-photos.js?v=2",
   "./assets/js/home-photos.js?v=3",
   "./assets/js/home-photos.js?v=4",
+  "./assets/js/home-photos.js?v=5",
   "./assets/js/accessible-mobile.js?v=mobile6",
   "./assets/js/supabase-config.js?v=live1",
   "./assets/js/supabase-client.js?v=live1",
@@ -78,17 +82,10 @@ self.addEventListener("fetch", event => {
 
   if (request.mode === "navigate") {
     event.respondWith(
-      caches.match(request, { ignoreSearch: true }).then(cached => {
-        const refresh = fetch(request).then(response => {
-          if (response.ok) caches.open(CACHE).then(cache => cache.put(request, response.clone()));
-          return response;
-        });
-        if (cached) {
-          event.waitUntil(refresh.catch(() => undefined));
-          return cached;
-        }
-        return refresh.catch(() => caches.match("./index.html"));
-      })
+      fetch(request).then(response => {
+        if (response.ok) caches.open(CACHE).then(cache => cache.put(request, response.clone()));
+        return response;
+      }).catch(() => caches.match(request, { ignoreSearch: true }).then(cached => cached || caches.match("./index.html")))
     );
     return;
   }
