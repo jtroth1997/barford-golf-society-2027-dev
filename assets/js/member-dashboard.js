@@ -30,6 +30,13 @@
     const now = new Date();
     return `${now.getFullYear()}-${String(now.getMonth() + 1).padStart(2, "0")}-${String(now.getDate()).padStart(2, "0")}`;
   };
+  const cancellationReason = event => {
+    if (event?.cancel_reason) return event.cancel_reason;
+    const marker = "[BARFORD_CANCEL_REASON] ";
+    const notes = String(event?.notes || "");
+    const index = notes.lastIndexOf(marker);
+    return index >= 0 ? notes.slice(index + marker.length).trim() : "";
+  };
 
   const setAvatar = async profile => {
     const avatars = [document.getElementById("dashboardAvatar"), document.getElementById("dashboardHeroAvatar")].filter(Boolean);
@@ -375,7 +382,7 @@
     const cancelled = nextEvent.status === "cancelled";
     show("dashboardCancelledBanner", cancelled);
     if (cancelled) {
-      set("dashboardCancelledReason", nextEvent.cancel_reason || "This event has been cancelled by the committee.");
+      set("dashboardCancelledReason", cancellationReason(nextEvent) || "This event has been cancelled by the committee.");
       set("dashboardRsvpBadge", "Cancelled");
       show("dashboardRsvpActions", false);
       show("dashboardChangeRsvp", false);
