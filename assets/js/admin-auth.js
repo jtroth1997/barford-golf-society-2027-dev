@@ -17,6 +17,9 @@
   let teeGroups = [];
   let editingRsvp;
   let currentRsvpEventId;
+  let cancellingEvent;
+  let courseSearchTimer;
+  let selectedCourse;
 
   const initials = name => String(name || "BG").split(/\s+/).filter(Boolean).slice(0, 2)
     .map(part => part[0].toUpperCase()).join("");
@@ -28,8 +31,18 @@
     if (element) element.textContent = value;
   };
   const timeValue = value => value ? String(value).slice(0, 5) : "";
-  const eventOptions = () => `<option value="">Select event</option>${adminEvents.map(event =>
-    `<option value="${event.id}">Round ${event.round_number} · ${escapeHtml(event.name)} · ${escapeHtml(event.event_date)}</option>`
+  const localDate = () => {
+    const now = new Date();
+    return `${now.getFullYear()}-${String(now.getMonth() + 1).padStart(2, "0")}-${String(now.getDate()).padStart(2, "0")}`;
+  };
+  const activeEvents = () => adminEvents.filter(event => event.event_date >= localDate());
+  const nextRoundNumber = () => {
+    const used = new Set(adminRounds.map(round => Number(round.round_number)).filter(Number.isFinite));
+    for (let round = 1; round <= 7; round += 1) if (!used.has(round)) return round;
+    return Math.max(0, ...used) + 1;
+  };
+  const eventOptions = () => `<option value="">Select event</option>${activeEvents().map(event =>
+    `<option value="${event.id}">${escapeHtml(event.name)} · ${escapeHtml(event.event_date)}</option>`
   ).join("")}`;
 
   document.querySelectorAll("[data-admin-view]").forEach(button => button.addEventListener("click", () => {
@@ -42,6 +55,9 @@
   const resetEventForm = () => {
     document.querySelector("#adminEventForm")?.reset();
     document.querySelector("#adminEventId").value = "";
+    const search = document.querySelector("#adminCourseSearch");
+    if (search) search.value = "";
+    selectedCourse = null;
   };
 
   const loadEvents = async () => {
@@ -51,51 +67,142 @@
       return;
     }
     adminEvents = data || [];
-    document.querySelector("#adminEventCount").textContent = `${adminEvents.length} event${adminEvents.length === 1 ? "" : "s"}`;
+    const upcoming = activeEvents();
+    const past = adminEvents.filter(event => event.event_date < localDate());
+    document.querySelector("#adminEventCount").textContent = `${upcoming.length} active`;
     document.querySelector("#adminRsvpEvent").innerHTML = eventOptions();
     document.querySelector("#adminTeeEvent").innerHTML = eventOptions();
+    document.querySelector("#adminDropoutEvent").innerHTML = eventOptions();
     refreshRoundEventOptions();
     const list = document.querySelector("#adminEventList");
-    list.innerHTML = adminEvents.length ? adminEvents.map(event => `
-      <article>
-        <div><strong>${escapeHtml(event.name)}</strong><small>${escapeHtml(event.event_date)} · ${escapeHtml(event.venue)} · ${escapeHtml(event.status)}</small></div>
+    const eventRow = (event, isPast = false) => `
+      <article class="${event.status === "cancelled" ? "admin-cancelled-event" : ""} ${isPast ? "admin-past-event" : ""}">
+        <div><strong>${escapeHtml(event.name)}</strong><small>${escapeHtml(event.event_date)} · ${escapeHtml(event.venue)}</small>${event.status === "cancelled" ? `<span class="cancelled-pill">CANCELLED</span>${event.cancel_reason ? `<small>${escapeHtml(event.cancel_reason)}</small>` : ""}` : ""}</div>
         <div class="admin-row-actions">
           <button type="button" data-edit-event="${event.id}">Edit</button>
-          <button type="button" data-toggle-event="${event.id}">${event.status === "cancelled" ? "Restore" : "Cancel"}</button>
+          ${isPast ? "" : `<button type="button" data-toggle-event="${event.id}">${event.status === "cancelled" ? "Restore" : "Cancel event"}</button>`}
           <button class="danger-link" type="button" data-delete-event="${event.id}">Delete</button>
         </div>
-      </article>`).join("") : "<p>No events have been created.</p>";
-    list.querySelectorAll("[data-edit-event]").forEach(button => button.addEventListener("click", () => {
+      </article>`;
+    list.innerHTML = upcoming.length ? upcoming.map(event => eventRow(event)).join("") : "<p>No upcoming events. Create the next event here.</p>";
+    const pastList = document.querySelector("#adminPastEventList");
+    document.querySelector("#adminPastEventCount").textContent = `(${past.length})`;
+    pastList.innerHTML = past.length ? [...past].reverse().map(event => eventRow(event, true)).join("") : "<p>No past events yet.</p>";
+    [list, pastList].forEach(container => container.querySelectorAll("[data-edit-event]").forEach(button => button.addEventListener("click", () => {
       const event = adminEvents.find(item => item.id === button.dataset.editEvent);
       if (!event) return;
+      selectedCourse = { latitude: event.latitude ?? null, longitude: event.longitude ?? null };
+      document.querySelector("#adminCourseSearch").value = event.venue || event.name || "";
       document.querySelector("#adminEventId").value = event.id;
       document.querySelector("#adminEventName").value = event.name || "";
       document.querySelector("#adminEventVenue").value = event.venue || "";
       document.querySelector("#adminEventAddress").value = event.address || "";
       document.querySelector("#adminEventDate").value = event.event_date || "";
-      document.querySelector("#adminEventRound").value = event.round_number || "";
       document.querySelector("#adminEventFirstTee").value = timeValue(event.first_tee_time);
       document.querySelector("#adminEventPrice").value = event.price ?? "";
       document.querySelector("#adminEventCapacity").value = event.capacity ?? "";
       document.querySelector("#adminEventVideo").value = event.course_video_url || "";
       document.querySelector("#adminEventNotes").value = event.notes || "";
       document.querySelector("#adminEventForm").scrollIntoView({ behavior: "smooth", block: "start" });
-    }));
+    })));
     list.querySelectorAll("[data-toggle-event]").forEach(button => button.addEventListener("click", async () => {
       const event = adminEvents.find(item => item.id === button.dataset.toggleEvent);
-      const status = event.status === "cancelled" ? "scheduled" : "cancelled";
-      const { error: updateError } = await client.from("events").update({ status, updated_at: new Date().toISOString() }).eq("id", event.id);
-      setStatus("#adminEventStatus", updateError ? updateError.message : `${event.name} is now ${status}.`);
-      if (!updateError) await loadEvents();
+      if (event.status === "cancelled") {
+        let { error: updateError } = await client.from("events").update({ status: "scheduled", cancel_reason: null, updated_at: new Date().toISOString() }).eq("id", event.id);
+        if (updateError && /cancel_reason|column .* does not exist/i.test(updateError.message || "")) {
+          ({ error: updateError } = await client.from("events").update({ status: "scheduled", updated_at: new Date().toISOString() }).eq("id", event.id));
+        }
+        setStatus("#adminEventStatus", updateError ? updateError.message : `${event.name} has been restored.`);
+        if (!updateError) await loadEvents();
+        return;
+      }
+      cancellingEvent = event;
+      document.querySelector("#adminCancelEventName").textContent = `Cancel ${event.name}?`;
+      document.querySelector("#adminCancelReason").value = "";
+      document.querySelector("#adminCancelDetail").value = "";
+      setStatus("#adminCancelEventStatus", "");
+      document.querySelector("#adminCancelEventDialog")?.showModal();
     }));
-    list.querySelectorAll("[data-delete-event]").forEach(button => button.addEventListener("click", async () => {
+    [list, pastList].forEach(container => container.querySelectorAll("[data-delete-event]").forEach(button => button.addEventListener("click", async () => {
       const event = adminEvents.find(item => item.id === button.dataset.deleteEvent);
       if (!confirm(`Permanently delete ${event.name} and its related RSVPs and tee times?`)) return;
       const { error: deleteError } = await client.from("events").delete().eq("id", event.id);
       setStatus("#adminEventStatus", deleteError ? deleteError.message : `${event.name} was deleted.`);
       if (!deleteError) await loadEvents();
+    })));
+  };
+
+  const closeCancelDialog = () => document.querySelector("#adminCancelEventDialog")?.close();
+  document.querySelector("#adminCancelEventClose")?.addEventListener("click", closeCancelDialog);
+  document.querySelector("#adminCancelEventBack")?.addEventListener("click", closeCancelDialog);
+  document.querySelector("#adminCancelEventForm")?.addEventListener("submit", async event => {
+    event.preventDefault();
+    if (!cancellingEvent) return;
+    const reason = document.querySelector("#adminCancelReason").value;
+    const detail = document.querySelector("#adminCancelDetail").value.trim();
+    const cancelReason = detail ? `${reason} — ${detail}` : reason;
+    const button = event.currentTarget.querySelector('[type="submit"]');
+    button.disabled = true;
+    button.textContent = "Cancelling…";
+    let result = await client.from("events").update({ status: "cancelled", cancel_reason: cancelReason, updated_at: new Date().toISOString() }).eq("id", cancellingEvent.id);
+    if (result.error && /cancel_reason|column .* does not exist/i.test(result.error.message || "")) {
+      result = await client.from("events").update({ status: "cancelled", updated_at: new Date().toISOString() }).eq("id", cancellingEvent.id);
+    }
+    button.disabled = false;
+    button.textContent = "Cancel event";
+    if (result.error) {
+      setStatus("#adminCancelEventStatus", result.error.message);
+      return;
+    }
+    setStatus("#adminEventStatus", `${cancellingEvent.name} has been cancelled. Members will see a red CANCELLED banner.`);
+    cancellingEvent = null;
+    closeCancelDialog();
+    await loadEvents();
+  });
+
+  const courseMatches = document.querySelector("#adminCourseMatches");
+  const renderCourseMatches = matches => {
+    if (!courseMatches) return;
+    courseMatches.innerHTML = matches.map((course, index) => `<button type="button" role="option" data-course-index="${index}"><strong>${escapeHtml(course.name)}</strong><small>${escapeHtml(course.address || "United Kingdom")}</small></button>`).join("");
+    courseMatches.classList.toggle("hidden", !matches.length);
+    courseMatches.querySelectorAll("[data-course-index]").forEach(button => button.addEventListener("click", async () => {
+      const match = matches[Number(button.dataset.courseIndex)];
+      setStatus("#adminCourseSearchStatus", "Loading course details and finding a course video…");
+      courseMatches.classList.add("hidden");
+      const detailsResult = match.place_id ? await client.functions.invoke("course-lookup", { body: { place_id: match.place_id } }) : { data: null, error: null };
+      const course = detailsResult.data?.course || match;
+      selectedCourse = course;
+      document.querySelector("#adminCourseSearch").value = course.name || match.name || "";
+      document.querySelector("#adminEventVenue").value = course.name || match.name || "";
+      document.querySelector("#adminEventName").value = course.name || match.name || "";
+      document.querySelector("#adminEventAddress").value = course.address || match.address || "";
+      document.querySelector("#adminEventNotes").value = course.description || `${course.name || match.name} golf course${course.address ? ` in ${course.address}` : ""}.`;
+      document.querySelector("#adminEventVideo").value = course.video_url || "";
+      setStatus("#adminCourseSearchStatus", "Course selected. Check the details below, then add the date, price and slots.");
     }));
   };
+  document.querySelector("#adminCourseSearch")?.addEventListener("input", event => {
+    clearTimeout(courseSearchTimer);
+    selectedCourse = null;
+    const query = event.target.value.trim();
+    if (query.length < 3) {
+      courseMatches?.classList.add("hidden");
+      setStatus("#adminCourseSearchStatus", "Type at least 3 letters to search Google.");
+      return;
+    }
+    setStatus("#adminCourseSearchStatus", "Searching golf courses…");
+    courseSearchTimer = setTimeout(async () => {
+      const { data, error } = await client.functions.invoke("course-lookup", { body: { query } });
+      if (error) {
+        courseMatches?.classList.add("hidden");
+        setStatus("#adminCourseSearchStatus", "Course search is not connected yet. You can still enter the event details manually.");
+        return;
+      }
+      const matches = Array.isArray(data?.courses) ? data.courses : [];
+      renderCourseMatches(matches);
+      setStatus("#adminCourseSearchStatus", matches.length ? "Select the correct course below." : "No matching golf course found. Keep typing or enter the details manually.");
+    }, 350);
+  });
 
   document.querySelector("#adminEventForm")?.addEventListener("submit", async event => {
     event.preventDefault();
@@ -105,26 +212,39 @@
       venue: document.querySelector("#adminEventVenue").value.trim(),
       address: document.querySelector("#adminEventAddress").value.trim() || null,
       event_date: document.querySelector("#adminEventDate").value,
-      round_number: Number(document.querySelector("#adminEventRound").value),
       first_tee_time: document.querySelector("#adminEventFirstTee").value || null,
       price: document.querySelector("#adminEventPrice").value || null,
       capacity: document.querySelector("#adminEventCapacity").value || null,
       course_video_url: document.querySelector("#adminEventVideo").value.trim() || null,
       notes: document.querySelector("#adminEventNotes").value.trim() || null,
+      latitude: selectedCourse?.latitude ?? null,
+      longitude: selectedCourse?.longitude ?? null,
       status: id ? undefined : "scheduled",
       updated_at: new Date().toISOString()
     };
     if (id) delete payload.status;
-    const query = id ? client.from("events").update(payload).eq("id", id) : client.from("events").insert(payload);
-    const { error } = await query;
-    setStatus("#adminEventStatus", error ? error.message : id ? "Event updated." : "Event created.");
-    if (!error) {
-      if (id) {
-        await client.from("rounds").update({
-          name: payload.name,
-          played_on: payload.event_date
-        }).eq("event_id", id);
+    const eventResult = id
+      ? await client.from("events").update(payload).eq("id", id).select("id").single()
+      : await client.from("events").insert(payload).select("id").single();
+    let saveError = eventResult.error;
+    if (!saveError && id) {
+      const roundResult = await client.from("rounds").update({ name: payload.name, played_on: payload.event_date }).eq("event_id", id);
+      saveError = roundResult.error;
+    } else if (!saveError && !id) {
+      const roundResult = await client.from("rounds").insert({
+        event_id: eventResult.data.id,
+        season: 2027,
+        round_number: nextRoundNumber(),
+        name: payload.name,
+        played_on: payload.event_date
+      });
+      if (roundResult.error) {
+        await client.from("events").delete().eq("id", eventResult.data.id);
+        saveError = roundResult.error;
       }
+    }
+    setStatus("#adminEventStatus", saveError ? saveError.message : id ? "Event updated." : "Event created.");
+    if (!saveError) {
       resetEventForm();
       await Promise.all([loadEvents(), loadRounds()]);
     }
@@ -139,16 +259,20 @@
       playing.innerHTML = reserve.innerHTML = "<p>Select an event.</p>";
       return;
     }
-    const { data, error } = await client.from("rsvps")
-      .select("id,status,payment_status,buggy_requested,preferred_tee_time,guest_name,profiles(full_name,phone)")
-      .eq("event_id", eventId).order("created_at");
+    const [{ data, error }, { data: teeTimesPublished }] = await Promise.all([
+      client.from("rsvps")
+        .select("id,member_id,status,payment_status,buggy_requested,preferred_tee_time,guest_name,profiles(full_name,phone)")
+        .eq("event_id", eventId).order("created_at"),
+      client.rpc("get_event_rsvp_lock_status", { target_event_id: eventId })
+    ]);
     if (error) { setStatus("#adminRsvpStatus", error.message); return; }
     const preferenceLabel = value => ({ dont_mind: "Don’t mind", first: "Early", middle: "Middle", end: "Last" })[value] || "Don’t mind";
-    const row = item => `<article><div><strong>${escapeHtml(item.profiles?.full_name || item.guest_name || "Guest")}</strong><small>${escapeHtml(item.profiles?.phone || "No phone")} · ${item.buggy_requested ? "Buggy requested" : "Walking"} · prefers ${preferenceLabel(item.preferred_tee_time)} · ${escapeHtml(item.payment_status)}</small></div><div class="admin-row-actions"><button type="button" data-edit-rsvp="${item.id}">Change</button><button class="danger-link" type="button" data-remove-rsvp="${item.id}">Remove</button></div></article>`;
+    const row = item => `<article><div><strong>${escapeHtml(item.profiles?.full_name || item.guest_name || "Guest")}</strong><small>${escapeHtml(item.profiles?.phone || "No phone")} · ${item.buggy_requested ? "Buggy requested" : "Walking"} · prefers ${preferenceLabel(item.preferred_tee_time)} · ${escapeHtml(item.payment_status)}</small></div><div class="admin-row-actions"><button type="button" data-edit-rsvp="${item.id}">Change</button>${teeTimesPublished ? "" : `<button class="danger-link" type="button" data-remove-rsvp="${item.id}">Remove</button>`}</div></article>`;
     const active = (data || []).filter(item => item.status === "playing");
     const reserves = (data || []).filter(item => item.status === "reserve");
     playing.innerHTML = active.length ? active.map(row).join("") : "<p>No confirmed players.</p>";
     reserve.innerHTML = reserves.length ? reserves.map(row).join("") : "<p>No reserves.</p>";
+    setStatus("#adminRsvpStatus", teeTimesPublished ? "Tee times are published. Use Manage late dropout below to remove a player with minimum disruption." : "Members can still change their own RSVP.");
     document.querySelectorAll("[data-edit-rsvp]").forEach(button => button.addEventListener("click", () => {
       editingRsvp = (data || []).find(item => item.id === button.dataset.editRsvp);
       if (!editingRsvp) return;
@@ -263,6 +387,57 @@
     const walkers = players.filter(item => !item.buggy_requested);
     return [...mixCohort(buggy, pairings), ...mixCohort(walkers, pairings)];
   };
+  let draggedTeePlayer = null;
+  const renderTeePreview = () => {
+    const preview = document.querySelector("#adminTeePreview");
+    if (!preview) return;
+    preview.innerHTML = teeGroups.length ? teeGroups.map((group, groupIndex) => `
+      <article data-tee-group="${groupIndex}"><strong>${group.time}</strong><span>Group ${groupIndex + 1} · ${group.players.length} player${group.players.length === 1 ? "" : "s"}</span><div>${group.players.map((player, playerIndex) => `
+        <div class="tee-player" draggable="true" data-tee-player="${playerIndex}" data-tee-source="${groupIndex}">${escapeHtml(player.profiles?.full_name || player.guest_name || "Guest")}${player.buggy_requested ? " · buggy" : ""}<small>${teeWindowName(player.preferred_tee_time)}</small><select class="tee-move-select" data-move-source="${groupIndex}" data-move-player="${playerIndex}" aria-label="Move ${escapeHtml(player.profiles?.full_name || player.guest_name || "player")} to another group"><option value="">Move to…</option>${teeGroups.map((_, target) => target === groupIndex ? "" : `<option value="${target}">Group ${target + 1}</option>`).join("")}</select></div>`).join("")}</div></article>
+    `).join("") : "<p>No confirmed players to organise.</p>";
+    preview.querySelectorAll("[data-tee-player]").forEach(player => player.addEventListener("dragstart", event => {
+      draggedTeePlayer = { source: Number(player.dataset.teeSource), index: Number(player.dataset.teePlayer) };
+      event.dataTransfer.effectAllowed = "move";
+    }));
+    preview.querySelectorAll("[data-tee-group]").forEach(group => {
+      group.addEventListener("dragover", event => { event.preventDefault(); group.classList.add("tee-drop-target"); });
+      group.addEventListener("dragleave", () => group.classList.remove("tee-drop-target"));
+      group.addEventListener("drop", event => {
+        event.preventDefault();
+        group.classList.remove("tee-drop-target");
+        if (!draggedTeePlayer) return;
+        const target = Number(group.dataset.teeGroup);
+        const source = draggedTeePlayer.source;
+        if (target === source) return;
+        if (teeGroups[target].players.length >= 4) {
+          setStatus("#adminTeeStatus", `Group ${target + 1} already has four players. Move somebody out of that group first.`);
+          return;
+        }
+        const [moved] = teeGroups[source].players.splice(draggedTeePlayer.index, 1);
+        teeGroups[target].players.push(moved);
+        teeGroups = teeGroups.filter(item => item.players.length);
+        draggedTeePlayer = null;
+        renderTeePreview();
+        setStatus("#adminTeeStatus", "Manual change ready. Press Save tee times to publish it.");
+      });
+    });
+    preview.querySelectorAll("[data-move-player]").forEach(select => select.addEventListener("change", event => {
+      if (event.target.value === "") return;
+      const source = Number(event.target.dataset.moveSource);
+      const target = Number(event.target.value);
+      const playerIndex = Number(event.target.dataset.movePlayer);
+      if (teeGroups[target].players.length >= 4) {
+        setStatus("#adminTeeStatus", `Group ${target + 1} already has four players.`);
+        event.target.value = "";
+        return;
+      }
+      const [moved] = teeGroups[source].players.splice(playerIndex, 1);
+      teeGroups[target].players.push(moved);
+      teeGroups = teeGroups.filter(item => item.players.length);
+      renderTeePreview();
+      setStatus("#adminTeeStatus", "Manual change ready. Press Save tee times to publish it.");
+    }));
+  };
   const playerKey = player => player.member_id ? `member:${player.member_id}` : `guest:${String(player.guest_name || "").trim().toLowerCase()}`;
   const preservePublishedGroups = (players, savedRows, pairings, startMinutes, gap) => {
     if (!savedRows.length) return groupPlayers(players, pairings).map((group, index) => ({
@@ -317,9 +492,7 @@
     const [hours, minutes] = document.querySelector("#adminTeeStart").value.split(":").map(Number);
     const gap = Number(document.querySelector("#adminTeeGap").value) || 8;
     teeGroups = preservePublishedGroups([...(data || [])], savedError ? [] : (savedRows || []), pairings, hours * 60 + minutes, gap);
-    document.querySelector("#adminTeePreview").innerHTML = teeGroups.length ? teeGroups.map((group, index) => `
-      <article><strong>${group.time}</strong><span>Group ${index + 1}</span><div>${group.players.map(player => `<b>${escapeHtml(player.profiles?.full_name || player.guest_name || "Guest")}${player.buggy_requested ? " · buggy" : ""} · ${teeWindowName(player.preferred_tee_time)}</b>`).join("")}</div></article>
-    `).join("") : "<p>No confirmed players to organise.</p>";
+    renderTeePreview();
     document.querySelector("#adminSaveTeeTimes").disabled = !teeGroups.length;
     setStatus("#adminTeeStatus", teeGroups.length ? (savedRows?.length ? "Preview ready. Existing groups and times have been kept wherever possible; only the minimum moves were made." : "Preview ready. Buggy groups are first, tee-window requests are applied, and previous pairings are minimised.") : "");
   });
@@ -332,6 +505,94 @@
     const { error: deleteError } = await client.from("tee_times").delete().eq("event_id", eventId);
     const { error } = deleteError ? { error: deleteError } : await client.from("tee_times").insert(rows);
     setStatus("#adminTeeStatus", error ? error.message : "Tee times saved.");
+  });
+
+  let dropoutRsvps = [];
+  document.querySelector("#adminDropoutEvent")?.addEventListener("change", async event => {
+    const eventId = event.target.value;
+    const playerSelect = document.querySelector("#adminDropoutPlayer");
+    const confirmDropout = document.querySelector("#adminConfirmDropout");
+    dropoutRsvps = [];
+    playerSelect.innerHTML = '<option value="">Select player</option>';
+    playerSelect.disabled = true;
+    confirmDropout.disabled = true;
+    if (!eventId) return;
+    const [{ data: rsvps, error }, { data: published }] = await Promise.all([
+      client.from("rsvps").select("id,member_id,guest_name,profiles(full_name)").eq("event_id", eventId).eq("status", "playing").order("created_at"),
+      client.rpc("get_event_rsvp_lock_status", { target_event_id: eventId })
+    ]);
+    if (error) { setStatus("#adminDropoutStatus", error.message); return; }
+    if (!published) {
+      setStatus("#adminDropoutStatus", "Tee times have not been published yet. Remove the player from the RSVP overview instead.");
+      return;
+    }
+    dropoutRsvps = rsvps || [];
+    playerSelect.innerHTML += dropoutRsvps.map(item => `<option value="${item.id}">${escapeHtml(item.profiles?.full_name || item.guest_name || "Guest")}</option>`).join("");
+    playerSelect.disabled = !dropoutRsvps.length;
+    setStatus("#adminDropoutStatus", dropoutRsvps.length ? "Select the player who can no longer attend." : "No confirmed players found.");
+  });
+  document.querySelector("#adminDropoutPlayer")?.addEventListener("change", event => {
+    document.querySelector("#adminConfirmDropout").disabled = !event.target.value;
+  });
+  document.querySelector("#adminConfirmDropout")?.addEventListener("click", async event => {
+    const eventId = document.querySelector("#adminDropoutEvent").value;
+    const rsvpId = document.querySelector("#adminDropoutPlayer").value;
+    const dropout = dropoutRsvps.find(item => item.id === rsvpId);
+    if (!eventId || !dropout) return;
+    const playerName = dropout.profiles?.full_name || dropout.guest_name || "this player";
+    if (!confirm(`Confirm ${playerName} has dropped out? Tee groups will be kept as unchanged as possible.`)) return;
+    event.currentTarget.disabled = true;
+    event.currentTarget.textContent = "Updating…";
+    const { data: originalRows, error: teeError } = await client.from("tee_times")
+      .select("tee_time,tee_number,position,member_id,guest_name").eq("event_id", eventId).order("tee_time").order("position");
+    if (teeError) {
+      setStatus("#adminDropoutStatus", teeError.message);
+      event.currentTarget.disabled = false;
+      event.currentTarget.textContent = "Confirm dropout";
+      return;
+    }
+    const isDropout = row => dropout.member_id ? row.member_id === dropout.member_id : String(row.guest_name || "") === String(dropout.guest_name || "");
+    const groupsByKey = new Map();
+    (originalRows || []).filter(row => !isDropout(row)).forEach(row => {
+      const key = `${timeValue(row.tee_time)}|${row.tee_number || 1}`;
+      if (!groupsByKey.has(key)) groupsByKey.set(key, { time: timeValue(row.tee_time), teeNumber: row.tee_number || 1, players: [] });
+      groupsByKey.get(key).players.push(row);
+    });
+    const groups = [...groupsByKey.values()].filter(group => group.players.length);
+    groups.forEach((group, index) => {
+      if (group.players.length >= 3 || groups.reduce((sum, item) => sum + item.players.length, 0) <= 4) return;
+      const donors = groups.map((item, donorIndex) => ({ item, donorIndex })).filter(candidate => candidate.item !== group && candidate.item.players.length > 3).sort((a, b) => Math.abs(a.donorIndex - index) - Math.abs(b.donorIndex - index));
+      if (donors.length) group.players.push(donors[0].item.players.pop());
+    });
+    const replacementRows = groups.flatMap(group => group.players.map((player, position) => ({
+      event_id: eventId,
+      tee_time: group.time,
+      tee_number: group.teeNumber,
+      position: position + 1,
+      member_id: player.member_id || null,
+      guest_name: player.member_id ? null : player.guest_name
+    })));
+    const { error: rsvpError } = await client.from("rsvps").update({ status: "cancelled", updated_at: new Date().toISOString() }).eq("id", rsvpId);
+    let updateError = rsvpError;
+    if (!updateError) {
+      const deleted = await client.from("tee_times").delete().eq("event_id", eventId);
+      updateError = deleted.error;
+      if (!updateError && replacementRows.length) updateError = (await client.from("tee_times").insert(replacementRows)).error;
+      if (updateError) {
+        await client.from("tee_times").delete().eq("event_id", eventId);
+        if (originalRows?.length) await client.from("tee_times").insert(originalRows.map(row => ({ ...row, event_id: eventId })));
+        await client.from("rsvps").update({ status: "playing", updated_at: new Date().toISOString() }).eq("id", rsvpId);
+      }
+    }
+    event.currentTarget.textContent = "Confirm dropout";
+    if (updateError) {
+      event.currentTarget.disabled = false;
+      setStatus("#adminDropoutStatus", `Nothing was changed because the update failed: ${updateError.message}`);
+      return;
+    }
+    setStatus("#adminDropoutStatus", `${playerName} has been removed. Tee times were kept the same and only the minimum group adjustment was made.`);
+    document.querySelector("#adminDropoutPlayer").value = "";
+    await Promise.all([loadRsvps(eventId), document.querySelector("#adminDropoutEvent").dispatchEvent(new Event("change"))]);
   });
   document.querySelector("#adminWhatsAppTeeTimes")?.addEventListener("click", async () => {
     const event = adminEvents.find(item => item.id === document.querySelector("#adminTeeEvent").value);
