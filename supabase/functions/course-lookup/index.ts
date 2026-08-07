@@ -69,7 +69,10 @@ Deno.serve(async request => {
           "X-Goog-FieldMask": placeFields,
         },
       });
-      if (!response.ok) return json({ error: "Google could not load that course." }, 502);
+      if (!response.ok) {
+        const googleError = await response.json().catch(() => null);
+        return json({ error: googleError?.error?.message || `Google Places returned ${response.status} while loading that course.` }, 502);
+      }
       const place = normalisePlace(await response.json());
 
       const youtubeKey = Deno.env.get("YOUTUBE_API_KEY");
@@ -107,7 +110,10 @@ Deno.serve(async request => {
         regionCode: "GB",
       }),
     });
-    if (!response.ok) return json({ error: "Google course search is temporarily unavailable." }, 502);
+    if (!response.ok) {
+      const googleError = await response.json().catch(() => null);
+      return json({ error: googleError?.error?.message || `Google Places returned ${response.status} while searching.` }, 502);
+    }
     const result = await response.json();
     return json({ courses: (result.places || []).map(normalisePlace) });
   } catch {
