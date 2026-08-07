@@ -218,8 +218,12 @@ button:focus-visible,a:focus-visible,input:focus-visible,select:focus-visible,te
   .countdown-icon{display:none!important}
   .countdown-copy strong{font-size:1.2rem!important}
   .countdown-units{justify-content:space-between}
-  .dashboard-event-facts{grid-template-columns:1fr 1fr!important;gap:8px!important}
-  .dashboard-event-facts>div{padding:12px!important}
+  .member-home-grid{margin-top:0!important;padding-top:16px!important}
+  .dashboard-next-event{overflow:hidden}
+  .dashboard-event-facts{grid-template-columns:repeat(3,minmax(0,1fr))!important;gap:6px!important}
+  .dashboard-event-facts>div{min-width:0;padding:10px 6px!important;text-align:center}
+  .dashboard-next-event .dashboard-button-row{gap:8px!important;margin-top:12px!important}
+  .dashboard-next-event .dashboard-button-row .button{min-height:50px!important;padding:10px 14px!important}
   .event-weather-compact{padding:14px!important}
   .fourball-grid{grid-template-columns:1fr!important}
   .fourball-member{min-height:58px}
