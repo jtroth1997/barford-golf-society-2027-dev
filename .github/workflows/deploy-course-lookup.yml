@@ -44,3 +44,5 @@ jobs:
         run: |
           test -n "$SUPABASE_ACCESS_TOKEN"
           supabase functions deploy course-lookup --project-ref xspzmthygrajzktydvvj
+
+# Manual redeploy trigger: Google Places secret configured
