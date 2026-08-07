@@ -1,0 +1,121 @@
+const corsHeaders = {
+  "Access-Control-Allow-Origin": "*",
+  "Access-Control-Allow-Headers": "authorization, x-client-info, apikey, content-type",
+};
+
+type GooglePlace = {
+  id?: string;
+  displayName?: { text?: string };
+  formattedAddress?: string;
+  location?: { latitude?: number; longitude?: number };
+  editorialSummary?: { text?: string };
+  websiteUri?: string;
+};
+
+const json = (body: unknown, status = 200) => new Response(JSON.stringify(body), {
+  status,
+  headers: { ...corsHeaders, "Content-Type": "application/json" },
+});
+
+const placeFields = "id,displayName,formattedAddress,location,editorialSummary,websiteUri";
+
+const normalisePlace = (place: GooglePlace) => ({
+  place_id: place.id || null,
+  name: place.displayName?.text || "Golf course",
+  address: place.formattedAddress || "",
+  description: place.editorialSummary?.text || "",
+  latitude: place.location?.latitude ?? null,
+  longitude: place.location?.longitude ?? null,
+  website_url: place.websiteUri || null,
+});
+
+const jwtSubject = (request: Request) => {
+  try {
+    const token = (request.headers.get("Authorization") || "").replace(/^Bearer\s+/i, "");
+    const encoded = token.split(".")[1];
+    if (!encoded) return null;
+    const base64 = encoded.replace(/-/g, "+").replace(/_/g, "/").padEnd(Math.ceil(encoded.length / 4) * 4, "=");
+    return JSON.parse(atob(base64)).sub || null;
+  } catch {
+    return null;
+  }
+};
+
+const adminRequest = async (request: Request) => {
+  const userId = jwtSubject(request);
+  const supabaseUrl = Deno.env.get("SUPABASE_URL");
+  const serviceKey = Deno.env.get("SUPABASE_SERVICE_ROLE_KEY");
+  if (!userId || !supabaseUrl || !serviceKey) return false;
+  const response = await fetch(`${supabaseUrl}/rest/v1/profiles?id=eq.${encodeURIComponent(userId)}&select=is_admin`, {
+    headers: { apikey: serviceKey, Authorization: `Bearer ${serviceKey}` },
+  });
+  if (!response.ok) return false;
+  const profiles = await response.json();
+  return profiles?.[0]?.is_admin === true;
+};
+
+Deno.serve(async request => {
+  if (request.method === "OPTIONS") return new Response("ok", { headers: corsHeaders });
+  if (request.method !== "POST") return json({ error: "Method not allowed" }, 405);
+  if (!(await adminRequest(request))) return json({ error: "Administrator access required." }, 403);
+
+  const googleKey = Deno.env.get("GOOGLE_MAPS_API_KEY");
+  if (!googleKey) return json({ error: "Course search has not been configured." }, 503);
+
+  const body = await request.json().catch(() => ({}));
+  const query = String(body.query || "").trim();
+  const placeId = String(body.place_id || "").trim();
+
+  try {
+    if (placeId) {
+      const response = await fetch(`https://places.googleapis.com/v1/places/${encodeURIComponent(placeId)}`, {
+        headers: {
+          "X-Goog-Api-Key": googleKey,
+          "X-Goog-FieldMask": placeFields,
+        },
+      });
+      if (!response.ok) return json({ error: "Google could not load that course." }, 502);
+      const place = normalisePlace(await response.json());
+
+      const youtubeKey = Deno.env.get("YOUTUBE_API_KEY");
+      let videoUrl: string | null = `https://www.youtube.com/results?search_query=${encodeURIComponent(`${place.name} golf course flyover`)}`;
+      if (youtubeKey) {
+        const search = new URL("https://www.googleapis.com/youtube/v3/search");
+        search.searchParams.set("part", "snippet");
+        search.searchParams.set("type", "video");
+        search.searchParams.set("maxResults", "1");
+        search.searchParams.set("q", `${place.name} golf course official course flyover`);
+        search.searchParams.set("key", youtubeKey);
+        const videoResponse = await fetch(search);
+        if (videoResponse.ok) {
+          const result = await videoResponse.json();
+          const videoId = result?.items?.[0]?.id?.videoId;
+          if (videoId) videoUrl = `https://www.youtube.com/watch?v=${videoId}`;
+        }
+      }
+      return json({ course: { ...place, video_url: videoUrl } });
+    }
+
+    if (query.length < 3) return json({ courses: [] });
+    const response = await fetch("https://places.googleapis.com/v1/places:searchText", {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+        "X-Goog-Api-Key": googleKey,
+        "X-Goog-FieldMask": `places.${placeFields.replaceAll(",", ",places.")}`,
+      },
+      body: JSON.stringify({
+        textQuery: `${query} golf course UK`,
+        includedType: "golf_course",
+        maxResultCount: 5,
+        languageCode: "en",
+        regionCode: "GB",
+      }),
+    });
+    if (!response.ok) return json({ error: "Google course search is temporarily unavailable." }, 502);
+    const result = await response.json();
+    return json({ courses: (result.places || []).map(normalisePlace) });
+  } catch {
+    return json({ error: "Course search is temporarily unavailable." }, 500);
+  }
+});
