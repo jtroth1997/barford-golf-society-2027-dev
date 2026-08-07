@@ -223,6 +223,7 @@
   document.querySelector("#adminEventForm")?.addEventListener("submit", async event => {
     event.preventDefault();
     const id = document.querySelector("#adminEventId").value;
+    const automaticRoundNumber = id ? null : nextRoundNumber();
     const payload = {
       name: document.querySelector("#adminEventName").value.trim(),
       venue: document.querySelector("#adminEventVenue").value.trim(),
@@ -239,9 +240,14 @@
       updated_at: new Date().toISOString()
     };
     if (id) delete payload.status;
-    const eventResult = id
+    if (!id) payload.round_number = automaticRoundNumber;
+    let eventResult = id
       ? await client.from("events").update(payload).eq("id", id).select("id").single()
       : await client.from("events").insert(payload).select("id").single();
+    if (!id && eventResult.error && /round_number.*column|column.*round_number/i.test(eventResult.error.message || "")) {
+      delete payload.round_number;
+      eventResult = await client.from("events").insert(payload).select("id").single();
+    }
     let saveError = eventResult.error;
     if (!saveError && id) {
       const roundResult = await client.from("rounds").update({ name: payload.name, played_on: payload.event_date }).eq("event_id", id);
@@ -250,7 +256,7 @@
       const roundResult = await client.from("rounds").insert({
         event_id: eventResult.data.id,
         season: 2027,
-        round_number: nextRoundNumber(),
+        round_number: automaticRoundNumber,
         name: payload.name,
         played_on: payload.event_date
       });
