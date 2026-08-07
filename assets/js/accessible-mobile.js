@@ -60,7 +60,7 @@
     const items = [
       ["index.html", "⌂", "Home"],
       ["events.html", "◷", "Events"],
-      ["scores.html", "★", "Scores"],
+      ["scores.html", "★", "League Table"],
       ["account.html", "●", "My Account"]
     ];
     const current = currentPage;
