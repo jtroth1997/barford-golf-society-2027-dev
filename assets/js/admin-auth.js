@@ -207,7 +207,11 @@
       const { data, error } = await client.functions.invoke("course-lookup", { body: { query } });
       if (error) {
         courseMatches?.classList.add("hidden");
-        setStatus("#adminCourseSearchStatus", "Course search is not connected yet. You can still enter the event details manually.");
+        let backendMessage = "";
+        try {
+          if (error.context?.clone) backendMessage = (await error.context.clone().json())?.error || "";
+        } catch {}
+        setStatus("#adminCourseSearchStatus", backendMessage || "Course search could not connect. Please refresh and try again.");
         return;
       }
       const matches = Array.isArray(data?.courses) ? data.courses : [];
