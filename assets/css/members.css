@@ -459,6 +459,8 @@
   font-size: .9rem;
   text-align: center;
 }
+.password-toggle{justify-self:start;min-height:44px;padding:8px 12px;border:1px solid #bdcbc3;border-radius:10px;background:#fff;color:#075039;font-weight:800;text-decoration:underline;text-underline-offset:3px}
+.password-toggle:hover{background:#edf6f1}
 
 .account-login-form {
   display: grid;
