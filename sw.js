@@ -1,4 +1,4 @@
-const CACHE = "barford-golf-2027-speed-v38";
+const CACHE = "barford-golf-2027-speed-v39";
 const CORE = [
   "./",
   "./index.html",
@@ -21,6 +21,7 @@ const CORE = [
   "./assets/css/styles.css?v=homephotos6",
   "./assets/css/styles.css?v=homephotos7",
   "./assets/css/styles.css?v=ux100",
+  "./assets/css/styles.css?v=publiclogo1",
   "./assets/css/members.css?v=rsvp1",
   "./assets/css/members.css?v=teeclick2",
   "./assets/css/members.css?v=account5",
