@@ -50,6 +50,17 @@
   const friendlyPrice = value => value == null || value === ""
     ? "Price TBC"
     : Number(value) === 0 ? "Free" : `£${Number(value).toFixed(2)}`;
+  const cancelMarker = "[BARFORD_CANCEL_REASON] ";
+  const cancellationReason = event => event.cancel_reason || (() => {
+    const text = String(event.notes || "");
+    const index = text.lastIndexOf(cancelMarker);
+    return index >= 0 ? text.slice(index + cancelMarker.length).trim() : "";
+  })();
+  const courseDescription = notes => {
+    const text = String(notes || "");
+    const index = text.lastIndexOf(cancelMarker);
+    return (index >= 0 ? text.slice(0, index) : text).trim();
+  };
 
   const emptyState = (title, message) => {
     list.innerHTML = `
@@ -66,8 +77,9 @@
     const address = event.address
       ? `<span><b>Address</b>${escapeHtml(event.address)}</span>`
       : "";
-    const notes = event.notes
-      ? `<p class="event-description">${escapeHtml(event.notes)}</p>`
+    const description = courseDescription(event.notes);
+    const notes = description
+      ? `<p class="event-description">${escapeHtml(description)}</p>`
       : "";
     const video = event.course_video_url
       ? `<button class="button button-outline" type="button" data-course-video="${escapeHtml(event.course_video_url)}" data-course-name="${escapeHtml(event.name)}">Course video</button>`
@@ -84,7 +96,7 @@
 
     return `
       <article class="compact-event-card ${cancelled ? "event-cancelled-card" : ""}">
-        ${cancelled ? `<div class="event-cancelled-banner">CANCELLED${event.cancel_reason ? `<small>${escapeHtml(event.cancel_reason)}</small>` : ""}</div>` : ""}
+        ${cancelled ? `<div class="event-cancelled-banner">CANCELLED${cancellationReason(event) ? `<small>${escapeHtml(cancellationReason(event))}</small>` : ""}</div>` : ""}
         <div class="event-date-block" aria-label="${escapeHtml(friendlyDate(event.event_date))}">
           <span>${date.month}</span><strong>${date.day}</strong><small>${date.year}</small>
         </div>
