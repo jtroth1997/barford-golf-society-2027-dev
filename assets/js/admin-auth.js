@@ -31,6 +31,17 @@
     if (element) element.textContent = value;
   };
   const timeValue = value => value ? String(value).slice(0, 5) : "";
+  const cancelMarker = "[BARFORD_CANCEL_REASON] ";
+  const cancellationReasonFromNotes = notes => {
+    const text = String(notes || "");
+    const index = text.lastIndexOf(cancelMarker);
+    return index >= 0 ? text.slice(index + cancelMarker.length).trim() : "";
+  };
+  const notesWithoutCancellation = notes => {
+    const text = String(notes || "");
+    const index = text.lastIndexOf(cancelMarker);
+    return (index >= 0 ? text.slice(0, index) : text).trim() || null;
+  };
   const localDate = () => {
     const now = new Date();
     return `${now.getFullYear()}-${String(now.getMonth() + 1).padStart(2, "0")}-${String(now.getDate()).padStart(2, "0")}`;
@@ -77,7 +88,7 @@
     const list = document.querySelector("#adminEventList");
     const eventRow = (event, isPast = false) => `
       <article class="${event.status === "cancelled" ? "admin-cancelled-event" : ""} ${isPast ? "admin-past-event" : ""}">
-        <div><strong>${escapeHtml(event.name)}</strong><small>${escapeHtml(event.event_date)} · ${escapeHtml(event.venue)}</small>${event.status === "cancelled" ? `<span class="cancelled-pill">CANCELLED</span>${event.cancel_reason ? `<small>${escapeHtml(event.cancel_reason)}</small>` : ""}` : ""}</div>
+        <div><strong>${escapeHtml(event.name)}</strong><small>${escapeHtml(event.event_date)} · ${escapeHtml(event.venue)}</small>${event.status === "cancelled" ? `<span class="cancelled-pill">CANCELLED</span>${event.cancel_reason || cancellationReasonFromNotes(event.notes) ? `<small>${escapeHtml(event.cancel_reason || cancellationReasonFromNotes(event.notes))}</small>` : ""}` : ""}</div>
         <div class="admin-row-actions">
           <button type="button" data-edit-event="${event.id}">Edit</button>
           ${isPast ? "" : `<button type="button" data-toggle-event="${event.id}">${event.status === "cancelled" ? "Restore" : "Cancel event"}</button>`}
@@ -102,7 +113,7 @@
       document.querySelector("#adminEventPrice").value = event.price ?? "";
       document.querySelector("#adminEventCapacity").value = event.capacity ?? "";
       document.querySelector("#adminEventVideo").value = event.course_video_url || "";
-      document.querySelector("#adminEventNotes").value = event.notes || "";
+      document.querySelector("#adminEventNotes").value = notesWithoutCancellation(event.notes) || "";
       document.querySelector("#adminEventForm").scrollIntoView({ behavior: "smooth", block: "start" });
     })));
     list.querySelectorAll("[data-toggle-event]").forEach(button => button.addEventListener("click", async () => {
@@ -110,7 +121,7 @@
       if (event.status === "cancelled") {
         let { error: updateError } = await client.from("events").update({ status: "scheduled", cancel_reason: null, updated_at: new Date().toISOString() }).eq("id", event.id);
         if (updateError && /cancel_reason|column .* does not exist/i.test(updateError.message || "")) {
-          ({ error: updateError } = await client.from("events").update({ status: "scheduled", updated_at: new Date().toISOString() }).eq("id", event.id));
+          ({ error: updateError } = await client.from("events").update({ status: "scheduled", notes: notesWithoutCancellation(event.notes), updated_at: new Date().toISOString() }).eq("id", event.id));
         }
         setStatus("#adminEventStatus", updateError ? updateError.message : `${event.name} has been restored.`);
         if (!updateError) await loadEvents();
@@ -146,7 +157,8 @@
     button.textContent = "Cancelling…";
     let result = await client.from("events").update({ status: "cancelled", cancel_reason: cancelReason, updated_at: new Date().toISOString() }).eq("id", cancellingEvent.id);
     if (result.error && /cancel_reason|column .* does not exist/i.test(result.error.message || "")) {
-      result = await client.from("events").update({ status: "cancelled", updated_at: new Date().toISOString() }).eq("id", cancellingEvent.id);
+      const baseNotes = notesWithoutCancellation(cancellingEvent.notes) || "";
+      result = await client.from("events").update({ status: "cancelled", notes: `${baseNotes}${baseNotes ? "\n" : ""}${cancelMarker}${cancelReason}`, updated_at: new Date().toISOString() }).eq("id", cancellingEvent.id);
     }
     button.disabled = false;
     button.textContent = "Cancel event";
