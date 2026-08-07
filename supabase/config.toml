@@ -1,2 +1,5 @@
 [functions.passkeys]
 verify_jwt = false
+
+[functions.course-lookup]
+verify_jwt = true
