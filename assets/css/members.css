@@ -144,6 +144,7 @@
 .dashboard-member .member-avatar{width:56px;height:56px;flex-basis:56px;background:var(--gold-400);color:var(--green-1000)}
 .dashboard-content{display:grid;grid-template-columns:minmax(0,1.7fr) minmax(280px,.7fr);gap:24px;align-items:start;margin-top:-42px;padding-bottom:80px;position:relative;z-index:2}
 .next-event-dashboard,.dashboard-card{background:#fff;border:1px solid var(--line);border-radius:24px;box-shadow:var(--shadow-sm)}
+.dashboard-next-event:has(.dashboard-cancelled-banner:not(.hidden)){overflow:hidden;border:2px solid #ca2a2a}.dashboard-cancelled-banner{display:flex;align-items:center;justify-content:center;gap:12px;margin:-22px -22px 20px;padding:13px 18px;color:#fff;background:#c52222;text-align:center}.dashboard-cancelled-banner strong{font-size:1.2rem;letter-spacing:.12em}.dashboard-cancelled-banner span{font-size:.84rem;font-weight:700}
 .next-event-dashboard{padding:28px}
 .dashboard-event-top{display:grid;grid-template-columns:84px minmax(0,1fr) auto;gap:18px;align-items:center}
 .dashboard-date{min-height:92px;display:grid;place-content:center;text-align:center;border-radius:15px;color:#fff;background:linear-gradient(160deg,var(--green-800),var(--green-950))}
@@ -954,6 +955,7 @@
     width:58px;
     height:58px;
   }
+  .dashboard-cancelled-banner{margin:-1rem -1rem 16px;flex-direction:column;gap:3px}
 }
 
 
