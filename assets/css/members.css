@@ -546,7 +546,7 @@
 .member-home-hero { padding: 3rem 0 4.75rem; background: linear-gradient(120deg,#052e20,#0b5a3e); color: #fff; }
 .member-home-hero h1 { margin: .25rem 0 .5rem; color: #fff; }
 .member-home-hero p:last-child { margin: 0; color: #dcebe4; font-size: 1.1rem; }
-.member-home-grid { display: grid; grid-template-columns: 1.25fr .75fr; gap: 1.25rem; margin-top: -2.5rem; }
+.member-home-grid { display: grid; grid-template-columns: 1.25fr .75fr; gap: 1.25rem; margin-top: 1.25rem; }
 .dashboard-card { background: #fff; border: 1px solid #dbe5df; border-radius: 24px; padding: 1.5rem; box-shadow: 0 16px 40px rgba(5,46,32,.09); }
 .dashboard-passkey { grid-column: 1 / -1; display: grid; grid-template-columns: auto 1fr auto auto; align-items: center; gap: 1rem; border-color: #d6b45d; }
 .dashboard-passkey h2,.dashboard-next-event h2,.dashboard-season-review h2 { margin: .15rem 0 .35rem; }
