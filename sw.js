@@ -1,4 +1,4 @@
-const CACHE = "barford-golf-2027-speed-v37";
+const CACHE = "barford-golf-2027-speed-v38";
 const CORE = [
   "./",
   "./index.html",
@@ -20,15 +20,18 @@ const CORE = [
   "./assets/css/styles.css?v=homephotos5",
   "./assets/css/styles.css?v=homephotos6",
   "./assets/css/styles.css?v=homephotos7",
+  "./assets/css/styles.css?v=ux100",
   "./assets/css/members.css?v=rsvp1",
   "./assets/css/members.css?v=teeclick2",
   "./assets/css/members.css?v=account5",
   "./assets/css/members.css?v=cancel1",
   "./assets/css/members.css?v=homefit1",
   "./assets/css/members.css?v=homefit2",
+  "./assets/css/members.css?v=ux100",
   "./assets/css/accessible-mobile.css?v=mobile6",
   "./assets/css/accessible-mobile.css?v=homefit1",
   "./assets/css/accessible-mobile.css?v=homefit2",
+  "./assets/css/accessible-mobile.css?v=ux100",
   "./assets/css/events.css?v=video1",
   "./assets/css/events.css?v=rsvpmanage1",
   "./assets/css/scores.css?v=league6",
@@ -40,6 +43,7 @@ const CORE = [
   "./assets/js/member-dashboard.js?v=teeclick2",
   "./assets/js/member-dashboard.js?v=cancel1",
   "./assets/js/member-auth.js?v=account5",
+  "./assets/js/member-auth.js?v=ux100",
   "./assets/js/admin-auth.js?v=controls4",
   "./assets/js/admin-auth.js?v=eventround1",
   "./assets/js/admin-auth.js?v=adminsimple1",
@@ -58,8 +62,10 @@ const CORE = [
   "./assets/js/home-photos.js?v=4",
   "./assets/js/home-photos.js?v=5",
   "./assets/js/accessible-mobile.js?v=mobile6",
+  "./assets/js/accessible-mobile.js?v=ux100",
   "./assets/js/supabase-config.js?v=live1",
   "./assets/js/supabase-client.js?v=live1",
+  "./assets/js/supabase-client.js?v=ux100",
   "./assets/images/barford-golf-society-logo.png"
 ];
 
