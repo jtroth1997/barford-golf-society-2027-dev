@@ -379,21 +379,29 @@ th{background:linear-gradient(135deg,var(--green-1000),var(--green-800));color:#
 }
 
 
-/* Quiet, shuffled society-photo backdrop on the homepage. */
-.home-photo-page{background:#eef3f0}
-.home-photo-page #main-content{position:relative;isolation:isolate;overflow:hidden}
-.home-photo-backdrop{position:fixed;z-index:-1;inset:0;overflow:hidden;pointer-events:none;background:#edf3ef}
-.home-photo-backdrop::after{content:"";position:absolute;inset:0;background:linear-gradient(rgba(242,247,244,.84),rgba(246,248,247,.9))}
-.home-photo-backdrop span{position:absolute;inset:-3%;background-position:center;background-size:cover;opacity:0;filter:saturate(.78) contrast(.9);transform:scale(1.03);transition:opacity 1.5s ease}
-.home-photo-backdrop span.active{opacity:.2}
-.home-photo-page .member-home{background:rgba(243,247,244,.84)}
-.home-photo-page #publicHome{background:rgba(246,248,247,.82)}
-.home-photo-page .hero{background:linear-gradient(120deg,rgba(5,46,32,.9),rgba(10,83,57,.86))}
-.home-photo-page .section-soft{background:rgba(239,244,241,.9)}
+/* Shuffled society-gallery photo wash on the homepage. */
+.home-photo-page{background:#eaf1ed}
+.home-photo-page #main-content{position:relative;isolation:isolate;overflow:hidden;background:#eaf1ed}
+.home-photo-backdrop{position:fixed;z-index:0;inset:0;overflow:hidden;pointer-events:none;background:#dfe9e3}
+.home-photo-page #main-content>:not(.home-photo-backdrop){position:relative;z-index:1}
+.home-photo-backdrop::before{content:"";position:absolute;z-index:2;inset:0;background:
+  radial-gradient(circle at 82% 12%,rgba(225,190,114,.13),transparent 32%),
+  linear-gradient(180deg,rgba(3,38,27,.28) 0%,rgba(239,245,241,.42) 34%,rgba(244,247,245,.5) 100%)}
+.home-photo-backdrop::after{content:"";position:absolute;z-index:3;inset:0;box-shadow:inset 0 0 150px rgba(3,35,25,.16)}
+.home-photo-backdrop span{position:absolute;z-index:1;inset:-3%;background-position:center;background-size:cover;opacity:0;filter:saturate(.72) contrast(.96) brightness(.88);transform:scale(1.035);transition:opacity 2.2s ease}
+.home-photo-backdrop span.active{opacity:.72}
+.home-photo-page .member-home{background:rgba(239,245,241,.56)}
+.home-photo-page .member-home-hero{background:linear-gradient(120deg,rgba(3,40,28,.74),rgba(5,77,52,.66));box-shadow:inset 0 -1px rgba(255,255,255,.1)}
+.home-photo-page #publicHome{background:rgba(244,247,245,.62)}
+.home-photo-page .hero{background:linear-gradient(120deg,rgba(5,46,32,.76),rgba(10,83,57,.7))}
+.home-photo-page .section-soft{background:rgba(239,244,241,.72)}
+.home-photo-page .dashboard-card{background:rgba(255,255,255,.965);box-shadow:0 18px 44px rgba(4,43,30,.12);backdrop-filter:blur(4px)}
 @media(max-width:760px){
   .home-photo-backdrop span{background-position:center}
-  .home-photo-backdrop span.active{opacity:.17}
-  .home-photo-page .member-home{background:rgba(243,247,244,.86)}
+  .home-photo-backdrop span.active{opacity:.62}
+  .home-photo-backdrop::before{background:linear-gradient(180deg,rgba(3,38,27,.34) 0%,rgba(239,245,241,.5) 32%,rgba(244,247,245,.58) 100%)}
+  .home-photo-page .member-home{background:rgba(239,245,241,.65)}
+  .home-photo-page .member-home-hero{background:linear-gradient(135deg,rgba(3,40,28,.78),rgba(5,72,49,.72))}
 }
 @media(prefers-reduced-motion:reduce){.home-photo-backdrop span{transition:none}}
 
