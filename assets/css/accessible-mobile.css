@@ -165,7 +165,7 @@ button:focus-visible,a:focus-visible,input:focus-visible,select:focus-visible,te
   h2{font-size:1.45rem}
   h3{font-size:1.12rem}
   p,.muted{font-size:1rem;line-height:1.55}
-  .eyebrow{font-size:.77rem}
+  .eyebrow{font-size:.82rem}
   .button,.map-button,.nav-tab{
     min-height:52px;
     padding:12px 16px;
@@ -191,7 +191,7 @@ button:focus-visible,a:focus-visible,input:focus-visible,select:focus-visible,te
     min-height:56px;
     gap:1px!important;
     padding:6px 2px!important;
-    font-size:.71rem!important;
+    font-size:.78rem!important;
     line-height:1.15;
     text-align:center;
   }
