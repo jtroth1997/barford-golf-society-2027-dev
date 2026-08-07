@@ -6,10 +6,10 @@
   <meta name="description" content="Barford Golf Society 2027 website">
   <meta name="theme-color" content="#063d2a">
   <title>Sign Up | Barford Golf Society</title>
-  <link rel="stylesheet" href="assets/css/styles.css?v=fast3">
-  <link rel="stylesheet" href="assets/css/members.css">
+  <link rel="stylesheet" href="assets/css/styles.css?v=ux100">
+  <link rel="stylesheet" href="assets/css/members.css?v=ux100">
   
-  <link rel="stylesheet" href="assets/css/accessible-mobile.css?v=mobile4">
+  <link rel="stylesheet" href="assets/css/accessible-mobile.css?v=ux100">
 </head>
 <body>
 <a class="skip-link" href="#main-content">Skip to content</a>
@@ -24,10 +24,10 @@
     <nav id="primary-navigation" class="site-nav" aria-label="Primary navigation">
       <a class="" href="index.html">Home</a>
 <a class="" href="events.html">Events</a>
-<a class="" href="worldevents.html">World Events</a>
+<a class="" href="worldevents.html">Society Trips</a>
 <a class="" href="scores.html">League Table</a>
 <a class="" href="shop.html">Shop</a>
-<a class="" href="gallery.html">Gallery</a>
+<a class="" href="gallery.html">Photos</a>
 <a class="" href="about.html">About Us</a>
 <a class="active" href="signup.html" aria-current="page">Sign Up</a>
 <a class="" href="admin.html">Admin</a>
@@ -36,14 +36,16 @@
 </header>
 <main id="main-content">
 <section class="page-hero signup"><div class="shell"><p class="eyebrow">2027 member account</p><h1>Set up your account</h1><p>Create your secure Barford Golf Society login. It only takes a minute.</p></div></section>
-<section class="section shell"><div class="signup-grid"><div><p class="eyebrow">Simple setup</p><h2>Your golf, all in one place</h2><p>This is the real 2027 member system, completely separate from the current 2026 website.</p><ul class="check-list"><li>Stay signed in on your device</li><li>Manage your profile and golf information</li><li>Access events, tee times and scores</li></ul></div><form id="memberSignupForm" class="form-card member-create-form">
-  <label>Full name<input id="signupName" type="text" required autocomplete="name" placeholder="Your full name"></label>
+<section class="section shell"><div class="signup-grid"><div><p class="eyebrow">Simple setup</p><h2>Your golf, all in one place</h2><p>Choose your name and create your Barford Golf Society login.</p><ul class="check-list"><li>Stay signed in on your device</li><li>Manage your profile and golf information</li><li>Access events, tee times and the League Table</li></ul></div><form id="memberSignupForm" class="form-card member-create-form">
+  <label>Your name<select id="signupName" required><option value="">Loading member names…</option></select></label>
+  <label id="signupNewNameWrap" class="hidden">Your full name<input id="signupNewName" type="text" autocomplete="name" placeholder="Type your full name"></label>
   <label>Email address<input id="signupEmail" type="email" required autocomplete="email" placeholder="name@example.com"></label>
   <label>Create password<input id="signupPassword" type="password" required minlength="8" autocomplete="new-password" placeholder="At least 8 characters"></label>
   <label>Confirm password<input id="signupPasswordConfirm" type="password" required minlength="8" autocomplete="new-password" placeholder="Type it again"></label>
+  <button class="password-toggle" type="button" data-password-toggle="signupPassword,signupPasswordConfirm" aria-pressed="false">Show password</button>
   <label>Mobile number <span class="optional-label">Optional</span><input id="signupPhone" type="tel" autocomplete="tel" placeholder="07..."></label>
   <button class="button button-primary full-button" type="submit">Create my account</button>
-  <p class="account-helper">No email confirmation or committee approval needed. You will be sent to My Account to log in securely.</p>
+  <p class="account-helper">After creating your account, sign in using the email address and password you chose.</p>
   <p id="signupStatus" class="form-status" aria-live="polite"></p>
 </form></div></section>
 
@@ -57,11 +59,11 @@
 <script src="assets/js/app.js?v=speed2" defer></script>
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2" defer></script>
 <script src="assets/js/supabase-config.js?v=live1" defer></script>
-<script src="assets/js/supabase-client.js?v=live1" defer></script>
+<script src="assets/js/supabase-client.js?v=ux100" defer></script>
 <script src="assets/js/passkeys.js?v=faceid1" defer></script>
-<script src="assets/js/member-auth.js?v=faceid1" defer></script>
+<script src="assets/js/member-auth.js?v=ux100" defer></script>
 
-<script src="assets/js/accessible-mobile.js?v=mobile4" defer></script>
+<script src="assets/js/accessible-mobile.js?v=ux100" defer></script>
 <script data-mobile-nav-lock>
 window.addEventListener("DOMContentLoaded",()=>document.querySelectorAll(".mobile-quick-nav").forEach(nav=>{const links=nav.querySelectorAll("a");const item=links[links.length-1];if(!item)return;item.href="account.html";item.innerHTML='<span class="quick-icon" aria-hidden="true">●</span><span>My Account</span>';item.classList.toggle("active",location.pathname.endsWith("/account.html"));if(location.pathname.endsWith("/account.html"))item.setAttribute("aria-current","page");else item.removeAttribute("aria-current");}));
 </script>
