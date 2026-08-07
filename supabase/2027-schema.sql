@@ -32,6 +32,7 @@ create table if not exists public.events (
   longitude numeric,
   course_video_url text,
   notes text,
+  cancel_reason text,
   status text not null default 'scheduled'
     check (status in ('draft', 'scheduled', 'cancelled', 'completed')),
   created_at timestamptz not null default now(),
