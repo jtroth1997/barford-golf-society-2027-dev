@@ -3,6 +3,15 @@
   const backdrop = document.querySelector("#homePhotoBackdrop");
   if (!backdrop) return;
   const layers = [...backdrop.querySelectorAll("span")];
+  const photosPerSet = 3;
+  layers.forEach(layer => {
+    layer.classList.add("home-photo-set");
+    layer.replaceChildren(...Array.from({ length: photosPerSet }, () => {
+      const tile = document.createElement("i");
+      tile.className = "home-photo-tile";
+      return tile;
+    }));
+  });
   const legacyPhotoNumbers = [1, 2, 4, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23, 24, 25, 26];
   const legacyPhotos = legacyPhotoNumbers.map(number =>
     `assets/images/gallery-2026/legacy-${String(number).padStart(2, "0")}.webp`
@@ -33,9 +42,9 @@
   try {
     if ("FaceDetector" in window) faceDetector = new window.FaceDetector({ fastMode: true, maxDetectedFaces: 10 });
   } catch {}
-  const detectFaceFocus = async (layer, photo) => {
+  const detectFaceFocus = async (tile, photo) => {
     const fallback = focusCache.get(photo) ?? 32;
-    layer.style.setProperty("--photo-face-y", `${fallback}%`);
+    tile.style.setProperty("--photo-face-y", `${fallback}%`);
     if (!faceDetector) return;
     try {
       const image = new Image();
@@ -43,11 +52,11 @@
       image.src = photo;
       await image.decode();
       const faces = await faceDetector.detect(image);
-      if (!faces.length || layer.dataset.photo !== photo) return;
+      if (!faces.length || tile.dataset.photo !== photo) return;
       const centres = faces.map(face => face.boundingBox.y + (face.boundingBox.height / 2));
       const faceY = Math.max(14, Math.min(76, centres.reduce((sum, value) => sum + value, 0) / centres.length / image.naturalHeight * 100));
       focusCache.set(photo, faceY);
-      layer.style.setProperty("--photo-face-y", `${faceY.toFixed(1)}%`);
+      tile.style.setProperty("--photo-face-y", `${faceY.toFixed(1)}%`);
     } catch {}
   };
   const avoidLastPhoto = () => {
@@ -60,13 +69,17 @@
   const nextPhoto = () => {
     if (!photos.length || !layers.length) return;
     const layer = layers[layerIndex];
-    const photo = photos[photoIndex];
-    layer.dataset.photo = photo;
-    layer.style.backgroundImage = `url("${photo}")`;
-    detectFaceFocus(layer, photo);
+    const tiles = [...layer.querySelectorAll(".home-photo-tile")];
+    const firstPhoto = photos[photoIndex];
+    tiles.forEach((tile, offset) => {
+      const photo = photos[(photoIndex + offset) % photos.length];
+      tile.dataset.photo = photo;
+      tile.style.backgroundImage = `url("${photo}")`;
+      detectFaceFocus(tile, photo);
+    });
     layers.forEach(item => item.classList.toggle("active", item === layer));
-    try { localStorage.setItem(lastPhotoKey, photo); } catch {}
-    photoIndex = (photoIndex + 1) % photos.length;
+    try { localStorage.setItem(lastPhotoKey, firstPhoto); } catch {}
+    photoIndex = (photoIndex + photosPerSet) % photos.length;
     layerIndex = (layerIndex + 1) % layers.length;
   };
   avoidLastPhoto();
@@ -85,11 +98,12 @@
     const uploadedPhotos = data.map(photo =>
       client.storage.from(config.galleryBucket).getPublicUrl(photo.storage_path).data.publicUrl
     ).filter(Boolean);
-    const currentPhoto = photos[(photoIndex - 1 + photos.length) % photos.length];
-    photos = shuffle([...new Set([...uploadedPhotos, ...legacyPhotos])])
-      .filter(photo => photo !== currentPhoto);
-    if (currentPhoto) photos.unshift(currentPhoto);
-    photoIndex = Math.min(1, photos.length - 1);
+    const visiblePhotos = new Set(
+      layers.flatMap(layer => [...layer.querySelectorAll(".home-photo-tile")].map(tile => tile.dataset.photo).filter(Boolean))
+    );
+    photos = shuffle([...new Set([...uploadedPhotos, ...legacyPhotos])].filter(photo => !visiblePhotos.has(photo)));
+    photos.push(...visiblePhotos);
+    photoIndex = 0;
   };
   includeNewGalleryPhotos();
 
