@@ -198,11 +198,11 @@
   const loadPayments = async () => {
     const { data, error } = await client
       .from("rsvps")
-      .select("id,payment_status,event_id,events(name,event_date,price)")
+      .select("id,payment_status,event_id,events(name,event_date,price,status)")
       .eq("member_id", session.user.id)
       .eq("status", "playing")
       .eq("payment_status", "payment_due");
-    const due = error ? [] : (data || []).filter(item => item.events && new Date(`${item.events.event_date}T23:59:59`) >= new Date());
+    const due = error ? [] : (data || []).filter(item => item.events?.status === "scheduled" && new Date(`${item.events.event_date}T23:59:59`) >= new Date());
     set("dashboardPaymentCount", due.length);
     const list = document.getElementById("dashboardPaymentList");
     if (!list) return;
@@ -342,7 +342,7 @@
   const loadNextEvent = async () => {
     const today = localDate();
     const { data: events, error } = await client.from("events")
-      .select("*").gte("event_date", today).eq("status", "scheduled").order("event_date").limit(1);
+      .select("*").gte("event_date", today).in("status", ["scheduled", "cancelled"]).order("event_date").limit(1);
     if (error || !events?.length) {
       set("dashboardEventName", "No upcoming event announced");
       set("dashboardEventDetail", "The committee has not published the next 2027 event yet.");
@@ -372,6 +372,18 @@
     set("dashboardEventPrice", money(nextEvent.price));
     show("dashboardEventFacts");
     renderRsvpState();
+    const cancelled = nextEvent.status === "cancelled";
+    show("dashboardCancelledBanner", cancelled);
+    if (cancelled) {
+      set("dashboardCancelledReason", nextEvent.cancel_reason || "This event has been cancelled by the committee.");
+      set("dashboardRsvpBadge", "Cancelled");
+      show("dashboardRsvpActions", false);
+      show("dashboardChangeRsvp", false);
+      show("dashboardWithdrawRsvp", false);
+      show("dashboardPlayingConfirmation", false);
+      show("dashboardRsvpLockedNotice", false);
+      show("dashboardTeeGroup", false);
+    }
   };
 
   const saveRsvp = async (status, preferences = {}) => {
