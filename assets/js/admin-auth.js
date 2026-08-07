@@ -248,23 +248,7 @@
       delete payload.round_number;
       eventResult = await client.from("events").insert(payload).select("id").single();
     }
-    let saveError = eventResult.error;
-    if (!saveError && id) {
-      const roundResult = await client.from("rounds").update({ name: payload.name, played_on: payload.event_date }).eq("event_id", id);
-      saveError = roundResult.error;
-    } else if (!saveError && !id) {
-      const roundResult = await client.from("rounds").insert({
-        event_id: eventResult.data.id,
-        season: 2027,
-        round_number: automaticRoundNumber,
-        name: payload.name,
-        played_on: payload.event_date
-      });
-      if (roundResult.error) {
-        await client.from("events").delete().eq("id", eventResult.data.id);
-        saveError = roundResult.error;
-      }
-    }
+    const saveError = eventResult.error;
     setStatus("#adminEventStatus", saveError ? saveError.message : id ? "Event updated." : "Event created.");
     if (!saveError) {
       resetEventForm();
