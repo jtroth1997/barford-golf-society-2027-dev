@@ -50,15 +50,52 @@
   };
 
   const signupForm = $("#memberSignupForm");
+  const signupNameSelect = $("#signupName");
+  const signupNewNameWrap = $("#signupNewNameWrap");
+  const signupNewName = $("#signupNewName");
+
+  const loadSignupNames = async () => {
+    if (!signupNameSelect) return;
+    const { data, error } = await client.functions.invoke("legacy-2026-stats", { body: { action: "roster" } });
+    const names = !error && Array.isArray(data?.players) ? data.players : [];
+    signupNameSelect.innerHTML = '<option value="">Select your name…</option>' +
+      names.map(name => `<option value="${escapeHtml(name)}">${escapeHtml(name)}</option>`).join("") +
+      '<option value="__new__">My name isn’t listed / I’m a new member</option>';
+    if (error) message("#signupStatus", "We could not load the member list. Choose ‘My name isn’t listed’ to continue.", true);
+  };
+  signupNameSelect?.addEventListener("change", () => {
+    const isNew = signupNameSelect.value === "__new__";
+    signupNewNameWrap?.classList.toggle("hidden", !isNew);
+    if (signupNewName) signupNewName.required = isNew;
+    if (isNew) signupNewName?.focus();
+  });
+  loadSignupNames();
+
+  document.querySelectorAll("[data-password-toggle]").forEach(button => {
+    button.addEventListener("click", () => {
+      const ids = String(button.dataset.passwordToggle || "").split(",").map(value => value.trim()).filter(Boolean);
+      const fields = ids.map(id => document.getElementById(id)).filter(Boolean);
+      const show = fields.some(field => field.type === "password");
+      fields.forEach(field => { field.type = show ? "text" : "password"; });
+      button.textContent = show ? "Hide password" : "Show password";
+      button.setAttribute("aria-pressed", String(show));
+    });
+  });
+
   signupForm?.addEventListener("submit", async event => {
     event.preventDefault();
     const button = signupForm.querySelector("button[type=submit]");
-    const fullName = $("#signupName").value.trim();
+    const selectedName = signupNameSelect?.value || "";
+    const fullName = selectedName === "__new__" ? signupNewName?.value.trim() : selectedName.trim();
     const email = $("#signupEmail").value.trim().toLowerCase();
     const phone = $("#signupPhone").value.trim();
     const password = $("#signupPassword").value;
     const confirmation = $("#signupPasswordConfirm").value;
 
+    if (!fullName) {
+      message("#signupStatus", "Please select your name, or choose the new member option.", true);
+      return;
+    }
     if (password !== confirmation) {
       message("#signupStatus", "Those passwords do not match. Please try again.", true);
       return;
