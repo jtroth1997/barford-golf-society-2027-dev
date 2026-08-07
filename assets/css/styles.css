@@ -327,7 +327,21 @@ th{background:linear-gradient(135deg,var(--green-1000),var(--green-800));color:#
 .hero-art-premium .logo-card{
   position:relative;
   margin:0;
-  max-width:390px;
+  width:min(100%,340px);
+  max-width:340px;
+  padding:0;
+  background:transparent;
+  border-radius:0;
+  box-shadow:none;
+}
+.hero-art-premium .logo-card img{
+  display:block;
+  width:100%;
+  height:auto;
+  aspect-ratio:auto;
+  border-radius:0;
+  object-fit:contain;
+  filter:drop-shadow(0 16px 28px rgba(0,0,0,.28));
 }
 .hero-season-lockup{
   display:grid;
@@ -360,7 +374,7 @@ th{background:linear-gradient(135deg,var(--green-1000),var(--green-800));color:#
   background:linear-gradient(90deg,transparent,var(--gold-400),transparent);
 }
 @media(max-width:850px){
-  .hero-art-premium .logo-card{width:min(76vw,360px)}
+  .hero-art-premium .logo-card{width:min(68vw,320px)}
 }
 
 
