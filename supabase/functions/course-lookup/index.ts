@@ -29,24 +29,19 @@ const normalisePlace = (place: GooglePlace) => ({
   website_url: place.websiteUri || null,
 });
 
-const jwtSubject = (request: Request) => {
-  try {
-    const token = (request.headers.get("Authorization") || "").replace(/^Bearer\s+/i, "");
-    const encoded = token.split(".")[1];
-    if (!encoded) return null;
-    const base64 = encoded.replace(/-/g, "+").replace(/_/g, "/").padEnd(Math.ceil(encoded.length / 4) * 4, "=");
-    return JSON.parse(atob(base64)).sub || null;
-  } catch {
-    return null;
-  }
-};
-
 const adminRequest = async (request: Request) => {
-  const userId = jwtSubject(request);
   const supabaseUrl = Deno.env.get("SUPABASE_URL");
+  const anonKey = Deno.env.get("SUPABASE_ANON_KEY");
   const serviceKey = Deno.env.get("SUPABASE_SERVICE_ROLE_KEY");
-  if (!userId || !supabaseUrl || !serviceKey) return false;
-  const response = await fetch(`${supabaseUrl}/rest/v1/profiles?id=eq.${encodeURIComponent(userId)}&select=is_admin`, {
+  const authorization = request.headers.get("Authorization");
+  if (!authorization || !supabaseUrl || !anonKey || !serviceKey) return false;
+  const authResponse = await fetch(`${supabaseUrl}/auth/v1/user`, {
+    headers: { apikey: anonKey, Authorization: authorization },
+  });
+  if (!authResponse.ok) return false;
+  const user = await authResponse.json();
+  if (!user?.id) return false;
+  const response = await fetch(`${supabaseUrl}/rest/v1/profiles?id=eq.${encodeURIComponent(user.id)}&select=is_admin`, {
     headers: { apikey: serviceKey, Authorization: `Bearer ${serviceKey}` },
   });
   if (!response.ok) return false;
