@@ -18,4 +18,14 @@
       }
     }
   );
+
+  // Normal members never see Admin in navigation. Existing authorised admins
+  // get the link back automatically after their signed-in profile is checked.
+  (async () => {
+    const { data: { session } } = await window.BarfordSupabase.auth.getSession();
+    if (!session) return;
+    const { data: profile } = await window.BarfordSupabase.from("profiles")
+      .select("is_admin").eq("id", session.user.id).maybeSingle();
+    document.body.classList.toggle("is-admin", Boolean(profile?.is_admin));
+  })().catch(() => {});
 })();
