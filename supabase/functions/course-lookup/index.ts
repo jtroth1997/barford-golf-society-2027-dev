@@ -29,6 +29,23 @@ const normalisePlace = (place: GooglePlace) => ({
   website_url: place.websiteUri || null,
 });
 
+const rankCourses = (places: GooglePlace[], query: string) => {
+  const needle = query.toLowerCase().trim();
+  const words = needle.split(/\s+/).filter(Boolean);
+  const score = (place: GooglePlace) => {
+    const name = (place.displayName?.text || "").toLowerCase();
+    const address = (place.formattedAddress || "").toLowerCase();
+    let total = 0;
+    if (name === needle) total += 100;
+    if (name.startsWith(needle)) total += 70;
+    else if (name.includes(needle)) total += 55;
+    total += words.filter(word => name.includes(word)).length * 12;
+    total += words.filter(word => address.includes(word)).length * 3;
+    return total;
+  };
+  return [...places].sort((a, b) => score(b) - score(a));
+};
+
 const adminRequest = async (request: Request) => {
   const supabaseUrl = Deno.env.get("SUPABASE_URL");
   const anonKey = Deno.env.get("SUPABASE_ANON_KEY");
@@ -103,9 +120,8 @@ Deno.serve(async request => {
         "X-Goog-FieldMask": `places.${placeFields.replaceAll(",", ",places.")}`,
       },
       body: JSON.stringify({
-        textQuery: `${query} golf course UK`,
-        includedType: "golf_course",
-        maxResultCount: 5,
+        textQuery: `${query} golf course`,
+        maxResultCount: 10,
         languageCode: "en",
         regionCode: "GB",
       }),
@@ -115,7 +131,7 @@ Deno.serve(async request => {
       return json({ error: googleError?.error?.message || `Google Places returned ${response.status} while searching.` }, 502);
     }
     const result = await response.json();
-    return json({ courses: (result.places || []).map(normalisePlace) });
+    return json({ courses: rankCourses(result.places || [], query).slice(0, 5).map(normalisePlace) });
   } catch {
     return json({ error: "Course search is temporarily unavailable." }, 500);
   }
