@@ -1,6 +1,6 @@
 <!doctype html>
 <html lang="en">
-<head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover"><meta name="theme-color" content="#063d2a"><title>Admin | Barford Golf Society</title><link rel="stylesheet" href="assets/css/styles.css?v=live1"><link rel="stylesheet" href="assets/css/admin.css?v=eventround1"><link rel="stylesheet" href="assets/css/accessible-mobile.css?v=mobile4"></head>
+<head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover"><meta name="theme-color" content="#063d2a"><title>Admin | Barford Golf Society</title><link rel="stylesheet" href="assets/css/styles.css?v=live1"><link rel="stylesheet" href="assets/css/admin.css?v=adminsimple1"><link rel="stylesheet" href="assets/css/accessible-mobile.css?v=mobile4"></head>
 <body>
 <header class="site-header"><div class="shell header-inner"><a class="brand" href="index.html"><img src="assets/images/barford-golf-society-logo.png" alt="Barford Golf Society"></a><button class="menu-button" type="button" aria-expanded="false" aria-controls="primary-navigation"><span class="sr-only">Open menu</span><span></span><span></span><span></span></button><nav id="primary-navigation" class="site-nav"><a href="index.html">Home</a><a href="events.html">Events</a><a href="scores.html">League Table</a><a href="gallery.html">Gallery</a><a href="account.html">My Account</a><a class="active" href="admin.html">Admin</a></nav></div></header>
 <main class="admin-page">
@@ -20,43 +20,50 @@
     </nav>
 
     <section class="admin-view" data-admin-panel="events">
+      <div class="admin-workflow" aria-label="Event administration steps"><span><b>1</b>Create event</span><span><b>2</b>Manage event</span><span><b>3</b>Tee times</span><span><b>4</b>Late dropouts</span></div>
       <div class="admin-control-grid">
-        <section class="admin-card">
-          <div class="admin-heading"><div><p class="eyebrow">Event calendar</p><h3>Create or edit an event</h3></div><span id="adminEventCount" class="access-pill">0 events</span></div>
+        <section class="admin-card" id="adminCreateEventCard">
+          <div class="admin-heading"><div><p class="eyebrow">Step 1</p><h3>Create event</h3><p>Search for the golf course first and we’ll fill in the course details for you.</p></div><span id="adminEventCount" class="access-pill">0 active</span></div>
           <form id="adminEventForm" class="admin-form-grid">
             <input id="adminEventId" type="hidden">
+            <label class="wide course-search-label">Find golf course<input id="adminCourseSearch" autocomplete="off" placeholder="Start typing, e.g. Feldon Valley"><span id="adminCourseSearchStatus" class="field-help">Type at least 3 letters to search Google.</span><div id="adminCourseMatches" class="course-match-list hidden" role="listbox"></div></label>
             <label>Event name<input id="adminEventName" required></label>
             <label>Course / venue<input id="adminEventVenue" required></label>
             <label class="wide">Address<input id="adminEventAddress"></label>
             <label>Date<input id="adminEventDate" type="date" required></label>
-            <label>Season round<select id="adminEventRound" required><option value="">Select round</option><option value="1">Round 1</option><option value="2">Round 2</option><option value="3">Round 3</option><option value="4">Round 4</option><option value="5">Round 5</option><option value="6">Round 6</option><option value="7">Round 7</option></select><small>Required — this links the event to scoring and the leaderboard.</small></label>
             <label>First tee<input id="adminEventFirstTee" type="time"></label>
             <label>Price (£)<input id="adminEventPrice" type="number" min="0" step=".01"></label>
-            <label>Maximum players<input id="adminEventCapacity" type="number" min="1"></label>
+            <label>Slots available<input id="adminEventCapacity" type="number" min="1"></label>
             <label class="wide">Course video link<input id="adminEventVideo" type="url"></label>
-            <label class="wide">Notes<textarea id="adminEventNotes" rows="3"></textarea></label>
-            <div class="admin-form-actions wide"><button class="button button-primary" type="submit">Save event</button><button id="adminEventReset" class="button button-outline" type="button">Clear form</button></div>
+            <label class="wide">Course description<textarea id="adminEventNotes" rows="4"></textarea></label>
+            <div class="admin-form-actions wide"><button class="button button-primary" type="submit">Save event</button><button id="adminEventReset" class="button button-outline" type="button">Clear</button></div>
           </form>
           <p id="adminEventStatus" class="form-status" aria-live="polite"></p>
         </section>
         <section class="admin-card">
-          <p class="eyebrow">Published events</p><h3>Manage events</h3>
+          <p class="eyebrow">Step 2</p><h3>Manage events</h3><p class="admin-score-help">Upcoming events stay here. Finished events move into history automatically so they don’t clutter this screen.</p>
           <div id="adminEventList" class="admin-compact-list"><p>Loading events…</p></div>
+          <details class="admin-history"><summary>Past event history <span id="adminPastEventCount"></span></summary><div id="adminPastEventList" class="admin-compact-list"></div></details>
         </section>
       </div>
 
-      <section class="admin-card">
-        <div class="admin-heading"><div><p class="eyebrow">Players and reserves</p><h3>Manage RSVPs and dropouts</h3></div><select id="adminRsvpEvent"><option value="">Select event</option></select></div>
+      <section class="admin-card admin-secondary-control">
+        <div class="admin-heading"><div><p class="eyebrow">RSVP overview</p><h3>Players & reserves</h3><p>Members manage their own RSVP until tee times are published.</p></div><select id="adminRsvpEvent"><option value="">Select event</option></select></div>
         <div class="admin-two-columns"><div><h4>Playing list</h4><div id="adminPlayingList" class="admin-compact-list"><p>Select an event.</p></div></div><div><h4>Reserve list</h4><div id="adminReserveList" class="admin-compact-list"><p>Select an event.</p></div></div></div>
         <p id="adminRsvpStatus" class="form-status" aria-live="polite"></p>
       </section>
 
       <section class="admin-card">
-        <div class="admin-heading"><div><p class="eyebrow">Tee-time organiser</p><h3>Generate and edit groups</h3><p>Buggy players first, then one group of three walkers when needed, followed by fourballs.</p></div><select id="adminTeeEvent"><option value="">Select event</option></select></div>
+        <div class="admin-heading"><div><p class="eyebrow">Step 3</p><h3>Tee times</h3><p>Generate the groups, then drag any player to another group if you want to make a manual change.</p></div><select id="adminTeeEvent"><option value="">Select event</option></select></div>
         <div class="admin-inline-fields"><label>Start time<input id="adminTeeStart" type="time" value="09:00"></label><label>Gap in minutes<input id="adminTeeGap" type="number" min="5" value="8"></label><button id="adminGenerateTeeTimes" class="button button-primary" type="button">Generate tee times</button></div>
         <div id="adminTeePreview" class="admin-tee-preview"><p>Select an event to see its groups.</p></div>
         <div class="admin-form-actions"><button id="adminSaveTeeTimes" class="button button-primary" type="button" disabled>Save tee times</button><button id="adminWhatsAppTeeTimes" class="button button-outline" type="button">Copy WhatsApp message</button></div>
         <p id="adminTeeStatus" class="form-status" aria-live="polite"></p>
+      </section>
+      <section class="admin-card admin-dropout-card">
+        <div class="admin-heading"><div><p class="eyebrow">Step 4</p><h3>Manage late dropout</h3><p>Use this after tee times have been announced. We’ll remove the player and rebalance only if a group becomes too small.</p></div></div>
+        <div class="admin-dropout-fields"><label>Event<select id="adminDropoutEvent"><option value="">Select event</option></select></label><label>Player dropping out<select id="adminDropoutPlayer" disabled><option value="">Select player</option></select></label><button id="adminConfirmDropout" class="button button-primary" type="button" disabled>Confirm dropout</button></div>
+        <p id="adminDropoutStatus" class="form-status" aria-live="polite"></p>
       </section>
     </section>
 
@@ -101,6 +108,16 @@
   </section>
   <section id="adminDenied" class="section shell hidden"><article class="admin-card"><p class="eyebrow">Access restricted</p><h2>This account is not an administrator</h2><p>Your member account is working, but it has not been granted committee access.</p><a class="button button-outline" href="account.html">Return to My Account</a></article></section>
 </main>
+<dialog id="adminCancelEventDialog" class="admin-access-dialog">
+  <form id="adminCancelEventForm">
+    <button id="adminCancelEventClose" class="dialog-close" type="button" aria-label="Close">×</button>
+    <p class="eyebrow">Cancel event</p><h2 id="adminCancelEventName">Cancel event</h2>
+    <label>Reason<select id="adminCancelReason" required><option value="">Select reason</option><option value="Rain">Rain</option><option value="Weather">Other weather</option><option value="Lack of players">Lack of players</option><option value="Course closure">Course closure</option><option value="Other">Other</option></select></label>
+    <label>Extra detail (optional)<textarea id="adminCancelDetail" rows="3" placeholder="Anything members need to know"></textarea></label>
+    <div class="admin-dialog-actions"><button id="adminCancelEventBack" class="button button-outline" type="button">Keep event</button><button class="button button-primary cancel-event-button" type="submit">Cancel event</button></div>
+    <p id="adminCancelEventStatus" class="form-status" aria-live="polite"></p>
+  </form>
+</dialog>
 <dialog id="adminRsvpEditDialog" class="admin-access-dialog">
   <form id="adminRsvpEditForm">
     <button id="adminRsvpEditClose" class="dialog-close" type="button" aria-label="Close">×</button>
@@ -127,6 +144,6 @@
   </form>
 </dialog>
 <footer class="site-footer"><div class="shell footer-inner"><div class="footer-brand"><img src="assets/images/barford-golf-society-logo.png" alt=""><span>Barford Golf Society</span></div><p>© <span id="year"></span> Barford Golf Society</p></div></footer>
-<script src="assets/js/app.js?v=speed2" defer></script><script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2" defer></script><script src="assets/js/supabase-config.js?v=live1" defer></script><script src="assets/js/supabase-client.js?v=live1" defer></script><script src="assets/js/admin-auth.js?v=eventround1" defer></script><script src="assets/js/accessible-mobile.js?v=mobile4" defer></script>
+<script src="assets/js/app.js?v=speed2" defer></script><script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2" defer></script><script src="assets/js/supabase-config.js?v=live1" defer></script><script src="assets/js/supabase-client.js?v=live1" defer></script><script src="assets/js/admin-auth.js?v=adminsimple1" defer></script><script src="assets/js/accessible-mobile.js?v=mobile4" defer></script>
 </body>
 </html>
