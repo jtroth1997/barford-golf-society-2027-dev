@@ -60,6 +60,8 @@ button{cursor:pointer}
   padding:0;box-shadow:none
 }
 .site-nav{display:flex;align-items:center;gap:25px}
+.site-nav a[href="shop.html"],.site-nav a[href="worldevents.html"]{display:none}
+body:not(.is-admin):not(.admin-page) .site-nav a[href="admin.html"]{display:none}
 .site-nav a{
   position:relative;
   color:#f7fbf8;
