@@ -80,6 +80,19 @@ Deno.serve(async request => {
   if (request.method === "OPTIONS") return new Response("ok", { headers: cors(request) });
   if (request.method !== "POST") return json(request, { error: "Method not allowed" }, 405);
 
+  const requestBody = await request.json().catch(() => ({}));
+  const action = String(requestBody.action || "suggest");
+  const liveHeaders = { apikey: LIVE_2026_ANON_KEY, Authorization: `Bearer ${LIVE_2026_ANON_KEY}` };
+
+  // Registration needs names only. The 2026 player list is already public;
+  // no contact details, account IDs or 2027 profile fields leave this function.
+  if (action === "roster") {
+    const playersResponse = await fetch(`${LIVE_2026_URL}/rest/v1/players?select=name&order=name.asc`, { headers: liveHeaders });
+    if (!playersResponse.ok) return json(request, { error: "Member names are temporarily unavailable" }, 503);
+    const players: Array<{ name: string }> = await playersResponse.json();
+    return json(request, { players: [...new Set(players.map(player => String(player.name || "").trim()).filter(Boolean))] });
+  }
+
   const authorization = request.headers.get("Authorization");
   const projectUrl = Deno.env.get("SUPABASE_URL");
   const projectKey = Deno.env.get("SUPABASE_ANON_KEY") || Deno.env.get("SUPABASE_PUBLISHABLE_KEY");
@@ -96,8 +109,6 @@ Deno.serve(async request => {
   ]);
   if (!profile) return json(request, { error: "Member profile not found" }, 404);
 
-  const requestBody = await request.json().catch(() => ({}));
-  const action = String(requestBody.action || "suggest");
   if (action === "decline") {
     const { error } = await memberClient.from("legacy_member_links").upsert({
       member_id: user.id, legacy_name: null, confirmed: false,
@@ -107,7 +118,6 @@ Deno.serve(async request => {
     return json(request, { status: "declined" });
   }
 
-  const liveHeaders = { apikey: LIVE_2026_ANON_KEY, Authorization: `Bearer ${LIVE_2026_ANON_KEY}` };
   const [playersResponse, scoresResponse] = await Promise.all([
     fetch(`${LIVE_2026_URL}/rest/v1/players?select=name&order=name.asc`, { headers: liveHeaders }),
     fetch(`${LIVE_2026_URL}/rest/v1/scores?select=player,round,points,handicap,next_handicap,winner`, { headers: liveHeaders })
