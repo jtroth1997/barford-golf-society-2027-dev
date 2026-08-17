@@ -197,6 +197,8 @@
         }
         model=online; saveLocal(); await syncNow();
       } catch (error) {
+        const missingCard=/no group scorecard|not in a tee group|not been prepared/i.test(String(error.message||""));
+        if(missingCard){localStorage.removeItem(cacheKey(session.user.id));return unavailable(error.message);}
         if (cached) model=cached; else return unavailable(error.message);
       }
     }
