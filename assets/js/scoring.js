@@ -61,6 +61,24 @@
 
   function holeComplete() { return model.players.every(player => valueFor(player.id)); }
 
+  function renderCompetition(info) {
+    const types=[];
+    if(info.longest_drive)types.push({short:"LD",title:"Longest Drive",icon:"🏌️"});
+    if(info.nearest_pin)types.push({short:"NP",title:"Nearest the Pin",icon:"⛳"});
+    const marker=$("competitionMarker");
+    marker.classList.toggle("hidden",!types.length);
+    marker.textContent=types.map(type=>`${type.short} · ${type.title.toUpperCase()}`).join("  |  ");
+    if(!types.length)return;
+    const alertKey=`barford-competition-seen:${model.card.id}:${info.hole_number}:${types.map(type=>type.short).join("-")}`;
+    if(sessionStorage.getItem(alertKey))return;
+    sessionStorage.setItem(alertKey,"1");
+    $("competitionAlertIcon").textContent=types[0].icon;
+    $("competitionAlertTitle").textContent=types.map(type=>type.title).join(" & ");
+    $("competitionAlertText").textContent=`Hole ${info.hole_number} is today’s ${types.map(type=>type.title).join(" and ")} hole`;
+    show("competitionAlert");
+    setTimeout(()=>hide("competitionAlert"),3600);
+  }
+
   function renderHole() {
     const info = model.holes.find(item => item.hole_number === hole);
     if (!info) return;
@@ -74,6 +92,7 @@
     $("redHoleYards").textContent=info.red_yards?`${info.red_yards} yards`:"Yards TBC";
     $("redHoleIndex").textContent=`SI ${info.red_stroke_index || info.stroke_index}`;
     $("redTeeSummary").querySelector("b").textContent=info.red_tee_name || "Red tee";
+    renderCompetition(info);
     $("previousHole").textContent = hole === 1 ? "" : `‹ Hole ${hole - 1}`;
     $("nextHoleTop").textContent = hole === 18 ? "Review ›" : `Hole ${hole + 1} ›`;
     $("previousHole").disabled = hole === 1;
@@ -144,7 +163,7 @@
     if (!card) throw new Error("There is no active scorecard for your group.");
     const [{data:players,error:playersError},{data:holes,error:holesError}] = await Promise.all([
       client.from("event_scorecard_players").select("id,member_id,display_name,handicap_used,position,playing_category,tee_name").eq("scorecard_id",card.id).order("position"),
-      client.from("event_holes").select("hole_number,par,yards,stroke_index,red_par,red_yards,red_stroke_index,yellow_tee_name,red_tee_name").eq("event_id",card.event_id).order("hole_number")
+      client.from("event_holes").select("hole_number,par,yards,stroke_index,red_par,red_yards,red_stroke_index,yellow_tee_name,red_tee_name,longest_drive,nearest_pin").eq("event_id",card.event_id).order("hole_number")
     ]);
     if (playersError || holesError) throw (playersError||holesError);
     const {data:scores,error:scoresError}=await client.from("event_hole_scores").select("scorecard_player_id,hole_number,strokes,picked_up,updated_at").in("scorecard_player_id",players.map(player=>player.id));
