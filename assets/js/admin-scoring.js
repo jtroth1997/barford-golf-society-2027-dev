@@ -1,7 +1,7 @@
 (() => {
   "use strict";
   const client=window.BarfordSupabase,$=id=>document.getElementById(id),esc=value=>String(value??"").replace(/[&<>"']/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[c]));
-  let events=[],activeEventId=null,teeSets=[];
+  let events=[],activeEventId=null,courses=[],teeSets=[];
   const status=message=>{$("adminLiveScoringStatus").textContent=message;};
   const holeMarkup=(number,data={})=>`<div class="admin-hole-row"><strong>${number}</strong><input data-hole="${number}" data-field="par" type="number" min="3" max="6" value="${data.par||""}" placeholder="Y Par" aria-label="Hole ${number} yellow par"><input data-hole="${number}" data-field="yards" type="number" min="40" max="800" value="${data.yards||""}" placeholder="Y Yards" aria-label="Hole ${number} yellow yards"><input data-hole="${number}" data-field="stroke_index" type="number" min="1" max="18" value="${data.stroke_index||""}" placeholder="Y SI" aria-label="Hole ${number} yellow stroke index"><input data-hole="${number}" data-field="red_par" type="number" min="3" max="6" value="${data.red_par||""}" placeholder="R Par" aria-label="Hole ${number} red par"><input data-hole="${number}" data-field="red_yards" type="number" min="40" max="800" value="${data.red_yards||""}" placeholder="R Yards" aria-label="Hole ${number} red yards"><input data-hole="${number}" data-field="red_stroke_index" type="number" min="1" max="18" value="${data.red_stroke_index||""}" placeholder="R SI" aria-label="Hole ${number} red stroke index"></div>`;
 
@@ -41,10 +41,10 @@
   const options=(items,prompt)=>`<option value="">${prompt}</option>${items.map(item=>`<option value="${esc(item.id)}">${esc(item.name)}${item.county?` · ${esc(item.county)}`:""}</option>`).join("")}`;
   async function loadClubCourses(clubId){
     if(!clubId)return;status("Loading the club’s courses…");const data=await invokeCourse({action:"courses",club_id:clubId});
-    $("adminGolfCourse").innerHTML=options(data.courses||[],"Select the course being played");$("adminGolfCourse").disabled=false;status(data.courses?.length>1?"This club has multiple courses. Select the one being played.":"Select the course being played.");
+    courses=data.courses||[];$("adminGolfCourse").innerHTML=options(courses,"Select the course being played");$("adminGolfCourse").disabled=false;status(courses.length>1?"This club has multiple courses. Select the one being played.":"Select the course being played.");
   }
   async function loadCourseTees(courseId){
-    if(!courseId)return;status("Loading available tees and hole data…");const data=await invokeCourse({action:"scorecard",course_id:courseId});teeSets=data.tee_sets||[];
+    if(!courseId)return;status("Loading the available tees…");teeSets=courses.find(course=>String(course.id)===String(courseId))?.tee_sets||[];
     const teeOptions=options(teeSets,"Select tee");$("adminYellowTee").innerHTML=teeOptions;$("adminRedTee").innerHTML=teeOptions;$("adminYellowTee").disabled=$("adminRedTee").disabled=false;
     const yellow=teeSets.find(tee=>/yellow/i.test(tee.name))||teeSets.find(tee=>/men|male/i.test(tee.gender));
     const red=teeSets.find(tee=>/red/i.test(tee.name))||teeSets.find(tee=>/women|female/i.test(tee.gender));
@@ -62,9 +62,10 @@
   $("adminGolfCourse")?.addEventListener("change",async event=>{try{await loadCourseTees(event.target.value);}catch(error){status(error.message);}});
   ["adminYellowTee","adminRedTee"].forEach(id=>$(id)?.addEventListener("change",()=>{$("adminImportScorecard").disabled=!$("adminYellowTee").value||!$("adminRedTee").value;}));
   $("adminImportScorecard")?.addEventListener("click",async()=>{
-    const yellow=teeSets.find(tee=>tee.id===$("adminYellowTee").value),red=teeSets.find(tee=>tee.id===$("adminRedTee").value);if(!yellow||!red)return;
+    const yellowChoice=teeSets.find(tee=>tee.id===$("adminYellowTee").value),redChoice=teeSets.find(tee=>tee.id===$("adminRedTee").value);if(!yellowChoice||!redChoice)return;
+    status("Downloading the selected yellow and red scorecards…");let data;try{data=await invokeCourse({action:"scorecard",course_id:$("adminGolfCourse").value,yellow_tee_id:yellowChoice.id,red_tee_id:redChoice.id});}catch(error){status(error.message.includes("429")?"UK Golf API’s request limit has been reached. Please wait one minute and try again.":error.message);return;}const cards=data.tee_sets||[],yellow=cards[0],red=cards[1];if(!yellow||!red)return status("UK Golf API did not return both selected scorecards.");
     const redByHole=new Map(red.holes.map(item=>[item.hole,item]));const holes=yellow.holes.map(item=>{const r=redByHole.get(item.hole);return{event_id:activeEventId,hole_number:item.hole,par:item.par,yards:item.yards,stroke_index:item.stroke_index,red_par:r?.par,red_yards:r?.yards,red_stroke_index:r?.stroke_index,yellow_tee_name:yellow.name||"Yellow",red_tee_name:red.name||"Red"};});
-    if(holes.length!==18||holes.some(item=>!item.red_yards)){status("The selected tees do not contain a complete 18-hole scorecard.");return;}status("Saving both tee scorecards…");
+    if(holes.length!==18||holes.some(item=>!item.par||!item.yards||!item.red_par||!item.red_yards)){status("The selected tees do not contain a complete 18-hole scorecard.");return;}if(holes.some(item=>item.stroke_index<1||item.stroke_index>18||item.red_stroke_index<1||item.red_stroke_index>18)||new Set(holes.map(item=>item.stroke_index)).size!==18||new Set(holes.map(item=>item.red_stroke_index)).size!==18){status("UK Golf API is missing one or more stroke indexes for these tees, so the card cannot safely calculate Stableford points. Please use another course record or enter the missing indexes below.");return;}status("Saving both tee scorecards…");
     const event=events.find(item=>item.id===activeEventId),course=$('adminGolfCourse').selectedOptions[0];const [holeResult,eventResult]=await Promise.all([client.from("event_holes").upsert(holes,{onConflict:"event_id,hole_number"}),client.from("events").update({uk_golf_club_id:$("adminGolfClub").value,uk_golf_course_id:$("adminGolfCourse").value,selected_course_name:course?.textContent||event?.name,updated_at:new Date().toISOString()}).eq("id",activeEventId)]);
     if(holeResult.error||eventResult.error)return status((holeResult.error||eventResult.error).message);await loadEvent(activeEventId);status(`${course?.textContent||"Course"} loaded automatically with ${yellow.name} and ${red.name} tees.`);
   });
