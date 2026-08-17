@@ -5,6 +5,7 @@
   const PREFIX = "barford-scorecard-v1:";
   const DB_NAME = "barford-score-safety";
   const DB_VERSION = 1;
+  const UNCHANGED_TIMESTAMP = "1970-01-01T00:00:00.000Z";
   let dbPromise, wakeLock = null, wakeEnabled = false, recovered = false;
 
   const openDb = () => {
@@ -90,7 +91,7 @@
       ...args,
       score_changes: args.score_changes.map(change => ({
         ...change,
-        changed_at: model.scores?.[`${change.player_id}:${change.hole}`]?.changed_at || new Date().toISOString()
+        changed_at: model.scores?.[`${change.player_id}:${change.hole}`]?.changed_at || UNCHANGED_TIMESTAMP
       }))
     };
   };
