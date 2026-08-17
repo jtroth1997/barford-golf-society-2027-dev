@@ -5,7 +5,7 @@
   <meta name="theme-color" content="#063d2a"><meta name="apple-mobile-web-app-capable" content="yes"><meta name="apple-mobile-web-app-status-bar-style" content="default">
   <title>Event scorecard | Barford Golf Society</title>
   <link rel="manifest" href="manifest.webmanifest"><link rel="apple-touch-icon" href="assets/images/barford-golf-society-logo.png">
-  <link rel="stylesheet" href="assets/css/styles.css?v=ux100"><link rel="stylesheet" href="assets/css/scoring.css?v=competitions1"><link rel="stylesheet" href="assets/css/score-competitions.css?v=1">
+  <link rel="stylesheet" href="assets/css/styles.css?v=ux100"><link rel="stylesheet" href="assets/css/scoring.css?v=competitions1"><link rel="stylesheet" href="assets/css/scoring-simple.css?v=1"><link rel="stylesheet" href="assets/css/score-competitions.css?v=1">
 </head>
 <body class="scoring-page">
   <header class="score-app-header"><a href="index.html" aria-label="Back to dashboard">‹ Back</a><strong>Scorecard</strong><button id="scoreSyncButton" type="button">Saved</button></header>
@@ -13,6 +13,7 @@
     <section id="scoreLoading" class="score-state"><img src="assets/images/barford-golf-society-logo.png" alt=""><h1>Preparing your scorecard</h1><p>Checking your tee group and downloading everything needed offline…</p></section>
     <section id="scoreUnavailable" class="score-state hidden"><h1>Scorecard not ready</h1><p id="scoreUnavailableMessage">Ask an administrator to prepare the event scorecards.</p><a class="button button-primary" href="index.html">Return to dashboard</a></section>
     <section id="scoreReady" class="hidden">
+      <div class="score-simple-help"><strong>Scoring is simple</strong><span>1. Tap a player &nbsp; 2. Tap their score &nbsp; 3. Tap Next hole</span></div>
       <div id="competitionAlert" class="competition-alert hidden" role="status" aria-live="assertive"><span id="competitionAlertIcon">🏌️</span><strong id="competitionAlertTitle">Longest Drive</strong><small id="competitionAlertText">This is the competition hole</small></div>
       <div id="offlineReadyBanner" class="offline-ready"><span>✓</span><div><strong>Ready for low or no signal</strong><small>Scores are saved on this phone first.</small></div></div>
       <section class="hole-heading"><button id="previousHole" type="button">‹ Hole 18</button><div><span id="holeProgress">Hole 1 of 18</span><h1 id="holeTitle">Hole 1</h1><strong id="competitionMarker" class="competition-marker hidden">LONGEST DRIVE</strong><p id="yellowTeeSummary"><b>Yellow tee</b><b id="holePar">Par 4</b><b id="holeYards">386 yards</b><b id="holeIndex">SI 7</b></p><p id="redTeeSummary"><b>Red tee</b><b id="redHolePar">Par 4</b><b id="redHoleYards">342 yards</b><b id="redHoleIndex">SI 9</b></p></div><button id="nextHoleTop" type="button">Hole 2 ›</button></section>

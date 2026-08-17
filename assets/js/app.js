@@ -43,10 +43,10 @@ const mobileNav = document.createElement("nav");
 mobileNav.className = "mobile-quick-nav";
 mobileNav.setAttribute("aria-label","Quick navigation");
 mobileNav.innerHTML = `
-  <a href="index.html" class="${currentPage==="index.html"?"active":""}">⌂<span>Home</span></a>
-  <a href="events.html" class="${currentPage==="events.html"?"active":""}">◷<span>Events</span></a>
-  <a href="scores.html" class="${currentPage==="scores.html"?"active":""}">★<span>League Table</span></a>
-  <a href="account.html" class="${currentPage==="account.html"?"active":""}">●<span>My Account</span></a>
+  <a href="index.html" class="${currentPage==="index.html"?"active":""}"${currentPage==="index.html"?' aria-current="page"':""}><span class="quick-icon" aria-hidden="true">🏠</span><span>Home</span></a>
+  <a href="events.html" class="${currentPage==="events.html"?"active":""}"${currentPage==="events.html"?' aria-current="page"':""}><span class="quick-icon" aria-hidden="true">📅</span><span>Events</span></a>
+  <a href="scores.html" class="${currentPage==="scores.html"?"active":""}"${currentPage==="scores.html"?' aria-current="page"':""}><span class="quick-icon" aria-hidden="true">🏆</span><span>League</span></a>
+  <a href="account.html" class="${currentPage==="account.html"?"active":""}"${currentPage==="account.html"?' aria-current="page"':""}><span class="quick-icon" aria-hidden="true">👤</span><span>My details</span></a>
 `;
 body.appendChild(mobileNav);
 

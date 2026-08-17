@@ -6,6 +6,7 @@
   let session;
   let nextEvent;
   let currentRsvp;
+  let currentScorecard;
   let rsvpChoicesLocked = false;
   let teeGroup = [];
   let directionsDestination = "";
@@ -15,6 +16,12 @@
     if (element) element.textContent = value;
   };
   const show = (id, visible = true) => document.getElementById(id)?.classList.toggle("hidden", !visible);
+  const setNextStep = (message, tone = "") => {
+    set("dashboardNextStepText", message);
+    const box = document.getElementById("dashboardNextStep");
+    box?.classList.toggle("needs-action", tone === "action");
+    box?.classList.toggle("score-ready", tone === "score");
+  };
   const initials = name => String(name || "BG").split(/\s+/).filter(Boolean).slice(0, 2)
     .map(part => part[0].toUpperCase()).join("");
   const money = value => Number.isFinite(Number(value)) ? `£${Number(value).toFixed(2)}` : "TBC";
@@ -283,6 +290,21 @@
     set("dashboardRsvpBadge", isPlaying
       ? rsvpChoicesLocked ? "Tee times confirmed" : "You’re playing"
       : currentRsvp?.status === "not_playing" ? "Not playing" : rsvpChoicesLocked ? "RSVP closed" : "RSVP needed");
+    if (!isPlaying) {
+      setNextStep(currentRsvp?.status === "not_playing"
+        ? "Nothing to do — you are marked as not playing."
+        : rsvpChoicesLocked
+          ? "RSVP has closed. Contact the committee if you need help."
+          : "Tell us whether you’re playing.", currentRsvp?.status ? "" : "action");
+    } else if (["submitted", "locked"].includes(currentScorecard?.status)) {
+      setNextStep("Your group’s scores have been submitted.");
+    } else if (currentScorecard) {
+      setNextStep("Your group scorecard is ready.", "score");
+    } else if (hasPublishedGroup) {
+      setNextStep("Your tee time is confirmed. Your scorecard will appear here when ready.");
+    } else {
+      setNextStep("You’re booked in — nothing else to do yet.");
+    }
     if (!isPlaying) return;
     set("dashboardPlayingTravel", currentRsvp.buggy_requested ? "Buggy requested" : "Walking");
     set("dashboardPlayingPreference", teeWindowLabel(currentRsvp.preferred_tee_time));
@@ -354,6 +376,7 @@
       set("dashboardEventName", "No upcoming event announced");
       set("dashboardEventDetail", "The committee has not published the next 2027 event yet.");
       set("dashboardRsvpBadge", "Nothing due");
+      setNextStep("Nothing to do — no event has been announced.");
       return;
     }
     nextEvent = events[0];
@@ -361,16 +384,25 @@
       { data: rsvp },
       { data: teeTime },
       { data: choicesLocked },
-      { data: groupRows, error: groupError }
+      { data: groupRows, error: groupError },
+      { data: scorecard }
     ] = await Promise.all([
       client.from("rsvps").select("*").eq("event_id", nextEvent.id).eq("member_id", session.user.id).maybeSingle(),
       client.from("tee_times").select("tee_time,tee_number,position").eq("event_id", nextEvent.id).eq("member_id", session.user.id).maybeSingle(),
       client.rpc("get_event_rsvp_lock_status", { target_event_id: nextEvent.id }),
-      client.rpc("get_my_event_tee_group", { target_event_id: nextEvent.id })
+      client.rpc("get_my_event_tee_group", { target_event_id: nextEvent.id }),
+      client.from("event_scorecards").select("id,status").eq("event_id", nextEvent.id).maybeSingle()
     ]);
     currentRsvp = rsvp;
     rsvpChoicesLocked = Boolean(choicesLocked);
     teeGroup = groupError ? [] : (groupRows || []);
+    currentScorecard = scorecard || null;
+    const scoreLink = document.querySelector(".event-scorecard-cta");
+    scoreLink?.classList.toggle("hidden", !currentScorecard);
+    const scoreLabel = scoreLink?.querySelector("strong");
+    if (scoreLabel) scoreLabel.textContent = ["submitted", "locked"].includes(currentScorecard?.status)
+      ? "View submitted scores"
+      : "Enter event scores";
     const ownSlot = teeGroup.find(player => player.is_you);
     set("dashboardEventName", nextEvent.name);
     set("dashboardEventDetail", `${nextEvent.venue}${nextEvent.address ? ` · ${nextEvent.address}` : ""}`);
@@ -382,6 +414,8 @@
     const cancelled = nextEvent.status === "cancelled";
     show("dashboardCancelledBanner", cancelled);
     if (cancelled) {
+      setNextStep("Nothing to do — this event is cancelled.");
+      scoreLink?.classList.add("hidden");
       set("dashboardCancelledReason", cancellationReason(nextEvent) || "This event has been cancelled by the committee.");
       set("dashboardRsvpBadge", "Cancelled");
       show("dashboardRsvpActions", false);
@@ -435,6 +469,20 @@
     }
     document.getElementById("publicHome")?.classList.add("hidden");
     document.getElementById("memberHomeDashboard")?.classList.remove("hidden");
+    const seasonCard = document.getElementById("seasonDashboardCard");
+    if (seasonCard && !document.getElementById("dashboardHistoryToggle")) {
+      const toggle = document.createElement("button");
+      toggle.id = "dashboardHistoryToggle";
+      toggle.type = "button";
+      toggle.className = "button button-outline dashboard-history-toggle";
+      toggle.textContent = "Show my previous season";
+      seasonCard.before(toggle);
+      seasonCard.classList.add("mobile-history-collapsed");
+      toggle.addEventListener("click", () => {
+        const collapsed = seasonCard.classList.toggle("mobile-history-collapsed");
+        toggle.textContent = collapsed ? "Show my previous season" : "Hide previous season";
+      });
+    }
     const knownName = session.user.user_metadata?.full_name || "Member";
     set("dashboardFirstName", knownName.split(/\s+/)[0]);
     set("dashboardFullName", knownName);
