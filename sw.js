@@ -1,4 +1,4 @@
-const CACHE = "barford-golf-2027-simple-navigation-v1";
+const CACHE = "barford-golf-2027-confidence-v1";
 const CORE = [
   "./",
   "./index.html",
@@ -51,9 +51,11 @@ const CORE = [
   "./assets/js/member-dashboard.js?v=teeclick2",
   "./assets/js/member-dashboard.js?v=cancel1",
   "./assets/js/member-dashboard.js?v=simple1",
+  "./assets/js/member-dashboard.js?v=simple2",
   "./assets/js/member-auth.js?v=account5",
   "./assets/js/member-auth.js?v=ux100",
   "./assets/js/member-auth.js?v=course-tees1",
+  "./assets/js/member-auth.js?v=course-tees2",
   "./assets/js/admin-auth.js?v=controls4",
   "./assets/js/admin-auth.js?v=eventround1",
   "./assets/js/admin-auth.js?v=adminsimple1",
@@ -73,6 +75,7 @@ const CORE = [
   "./assets/js/scoring.js?v=competitions1",
   "./assets/js/scoring.js?v=trust1",
   "./assets/js/scoring.js?v=trust2",
+  "./assets/js/scoring.js?v=trust3",
   "./assets/js/gallery-live.js?v=swipe1",
   "./assets/js/home-photos.js?v=1",
   "./assets/js/home-photos.js?v=2",

@@ -71,7 +71,7 @@
           <label>Email address<input id="accountEmail" type="email" autocomplete="email" required></label>
           <label>Phone number<input id="accountPhone" type="tel" autocomplete="tel" required></label>
           <label>Home club<input id="accountHomeClub" type="text" placeholder="Optional"></label>
-          <label>Handicap index<input id="accountHandicap" type="number" min="0" max="54" step=".1"></label>
+          <label>Society handicap<input id="accountHandicap" type="number" min="0" max="54" step=".1" readonly aria-readonly="true"><small>This updates automatically after each completed round. Contact the committee if it needs correcting.</small></label>
           <label>Playing category<select id="accountPlayingCategory" required><option value="">Select…</option><option value="men">Men’s — yellow tees</option><option value="women">Women’s — red tees</option></select><small>This chooses your default event tee and yardages.</small></label>
         </div>
         <button class="button button-primary full-button" type="submit">Save my details</button>
@@ -105,7 +105,7 @@
 <script src="assets/js/supabase-config.js?v=live1" defer></script>
 <script src="assets/js/supabase-client.js?v=ux100" defer></script>
 <script src="assets/js/passkeys.js?v=faceid1" defer></script>
-<script src="assets/js/member-auth.js?v=course-tees1" defer></script>
+<script src="assets/js/member-auth.js?v=course-tees2" defer></script>
 <script src="assets/js/accessible-mobile.js?v=ux100" defer></script>
 <script data-mobile-nav-lock>
 window.addEventListener("DOMContentLoaded",()=>document.querySelectorAll(".mobile-quick-nav").forEach(nav=>{const links=nav.querySelectorAll("a");const item=links[links.length-1];if(!item)return;item.href="account.html";item.innerHTML='<span class="quick-icon" aria-hidden="true">👤</span><span>My details</span>';item.classList.toggle("active",location.pathname.endsWith("/account.html"));if(location.pathname.endsWith("/account.html"))item.setAttribute("aria-current","page");else item.removeAttribute("aria-current");}));

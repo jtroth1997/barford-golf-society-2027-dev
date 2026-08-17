@@ -521,7 +521,12 @@
   document.querySelector('[data-rsvp="playing"]')?.addEventListener("click", openRsvpDialog);
   document.getElementById("dashboardChangeRsvp")?.addEventListener("click", openRsvpDialog);
   document.querySelectorAll('[data-rsvp="not_playing"]').forEach(button =>
-    button.addEventListener("click", () => saveRsvp("not_playing"))
+    button.addEventListener("click", () => {
+      const message = currentRsvp?.status === "playing"
+        ? "Change your answer to ‘I can’t play’?\n\nYou can change it back until the tee times are published."
+        : "Tell the committee that you can’t play?\n\nYou can change this later until the tee times are published.";
+      if (confirm(message)) saveRsvp("not_playing");
+    })
   );
   document.getElementById("dashboardSeePlayers")?.addEventListener("click", loadPlayingList);
   document.getElementById("dashboardLockedSeePlayers")?.addEventListener("click", loadPlayingList);

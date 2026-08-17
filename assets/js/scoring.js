@@ -23,7 +23,8 @@
 
   function updateSyncBadge(text, failed = false) {
     const button = $("scoreSyncButton");
-    button.textContent = text;
+    button.textContent = text.startsWith("Saved") ? `✓ ${text}` : text;
+    button.setAttribute("aria-label", text.startsWith("Saved") ? `${text}. Tap to save again.` : text);
     button.classList.toggle("sync-failed", failed);
   }
 
@@ -50,8 +51,14 @@
   }
 
   function setValue(playerId, value) {
+    const wasEmpty = !valueFor(playerId);
     model.scores[`${playerId}:${hole}`] = { ...value, player_id: playerId, hole, changed_at: localNow() };
     model.dirty = true;
+    if (wasEmpty) {
+      const playerIndex = model.players.findIndex(player => player.id === playerId);
+      const followingPlayers = [...model.players.slice(playerIndex + 1), ...model.players.slice(0, playerIndex)];
+      selectedPlayerId = followingPlayers.find(player => !valueFor(player.id))?.id || playerId;
+    }
     saveLocal(); renderHole(); scheduleSync();
   }
 
