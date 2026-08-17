@@ -20,7 +20,7 @@ if(document.getElementById("dashboardEventCamera")){
 
 if("serviceWorker" in navigator){
   window.addEventListener("load",()=>{
-    const register=()=>navigator.serviceWorker.register("./sw.js?v=fast7").catch(()=>{});
+    const register=()=>navigator.serviceWorker.register("./sw.js?v=fast8").catch(()=>{});
     if("requestIdleCallback" in window)requestIdleCallback(register,{timeout:1400});else setTimeout(register,250);
   },{once:true});
 }
@@ -42,7 +42,6 @@ if(installBtn&&installHelp)installBtn.addEventListener("click",()=>{installHelp.
 
 const currentPage=location.pathname.split("/").pop()||"index.html";
 
-// Admin has several hidden data-heavy panels. Give the visible workflow first use of the network.
 if(currentPage==="admin.html"&&window.fetch){
   const nativeFetch=window.fetch.bind(window),queued=new Set();
   const flush=group=>[...queued].filter(item=>item.group===group).forEach(item=>item.run());
@@ -88,13 +87,13 @@ const initialiseSharedUi=()=>{
 };
 if(document.readyState==="loading")document.addEventListener("DOMContentLoaded",initialiseSharedUi,{once:true});else initialiseSharedUi();
 
-// These features depend on Supabase and the page-specific defer scripts. Load them only after the page is fully initialised.
 const loadEnhancement=(src,key,done)=>{
   if(document.querySelector(`script[data-${key}]`)){done?.();return;}
   const script=document.createElement("script");script.src=src;script.dataset[key.replace(/-([a-z])/g,(_,c)=>c.toUpperCase())]="1";script.onload=()=>done?.();document.body.appendChild(script);
 };
 window.addEventListener("load",()=>{
   if(currentPage==="admin.html"){
+    loadEnhancement("assets/js/test-event-controls.js?v=1","test-event-controls");
     loadEnhancement("assets/js/event-course-setup.js?v=2","event-course-setup",()=>loadEnhancement("assets/js/admin-brilliant.js?v=2","admin-brilliant"));
   } else if(currentPage==="index.html") {
     loadEnhancement("assets/js/member-experience-plus.js?v=2","member-experience-plus");
