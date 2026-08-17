@@ -1,6 +1,6 @@
 <!doctype html>
 <html lang="en">
-<head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover"><meta name="theme-color" content="#063d2a"><title>Admin | Barford Golf Society</title><link rel="stylesheet" href="assets/css/styles.css?v=ux100"><link rel="stylesheet" href="assets/css/admin.css?v=adminsimple1"><link rel="stylesheet" href="assets/css/accessible-mobile.css?v=ux100"></head>
+<head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover"><meta name="theme-color" content="#063d2a"><title>Admin | Barford Golf Society</title><link rel="stylesheet" href="assets/css/styles.css?v=ux100"><link rel="stylesheet" href="assets/css/admin.css?v=eventresults1"><link rel="stylesheet" href="assets/css/admin-scoring-results.css?v=1"><link rel="stylesheet" href="assets/css/accessible-mobile.css?v=ux100"></head>
 <body class="admin-page">
 <header class="site-header"><div class="shell header-inner"><a class="brand" href="index.html"><img src="assets/images/barford-golf-society-logo.png" alt="Barford Golf Society"></a><button class="menu-button" type="button" aria-expanded="false" aria-controls="primary-navigation"><span class="sr-only">Open menu</span><span></span><span></span><span></span></button><nav id="primary-navigation" class="site-nav"><a href="index.html">Home</a><a href="events.html">Events</a><a href="scores.html">League Table</a><a href="gallery.html">Photos</a><a href="account.html">My Account</a><a class="active" href="admin.html">Admin</a></nav></div></header>
 <main class="admin-page">
@@ -13,6 +13,8 @@
     <div class="admin-card admin-toolbar"><div><p class="eyebrow">2027 administration</p><h2>Admin access confirmed</h2><p>The new database is connected and ready for real society information.</p></div><button id="adminSignOut" class="button button-outline">Sign out</button></div>
     <nav class="admin-section-nav" aria-label="Admin sections">
       <button class="active" type="button" data-admin-view="events">Events</button>
+      <button type="button" data-admin-view="scorecards">Create Event Scorecards</button>
+      <button type="button" data-admin-view="results">View Event Results</button>
       <button type="button" data-admin-view="scores">Scores</button>
       <button type="button" data-admin-view="gallery">Gallery</button>
       <button type="button" data-admin-view="content">Shop & trips</button>
@@ -67,9 +69,9 @@
       </section>
     </section>
 
-    <section class="admin-view hidden" data-admin-panel="scores">
+    <section class="admin-view hidden" data-admin-panel="scorecards">
       <section class="admin-card admin-live-scoring">
-        <div class="admin-heading"><div><p class="eyebrow">Event-day scoring</p><h3>Digital scorecards</h3><p>Enter the course card, prepare each tee group and monitor submissions privately.</p></div><select id="adminScoringEvent"><option value="">Select event</option></select></div>
+        <div class="admin-heading"><div><p class="eyebrow">Before the event</p><h3>Create Event Scorecards</h3><p>Load the course once. When tee times exist, every group card is prepared automatically and waits for event day.</p></div><select id="adminScoringEvent"><option value="">Select event</option></select></div>
         <div id="adminScoringSetup" class="hidden">
           <div class="admin-scoring-steps"><span><b>1</b>Course card</span><span><b>2</b>Prepare groups</span><span><b>3</b>Check submissions</span><span><b>4</b>Complete round</span></div>
           <section class="admin-course-import">
@@ -81,6 +83,7 @@
             <label>Women’s tee<select id="adminRedTee" disabled><option value="">Load a course first</option></select></label>
             <button id="adminImportScorecard" class="button button-primary" type="button" disabled>Use these tees</button>
           </section>
+          <section class="admin-competition-setup"><div><h4>Event-day competitions</h4><p class="admin-score-help">Choose the holes for Longest Drive and Nearest the Pin.</p></div><label>Longest Drive hole<select id="adminLongestDriveHole"><option value="">Not selected</option></select></label><label>Nearest the Pin hole<select id="adminNearestPinHole"><option value="">Not selected</option></select></label><button id="adminSaveCompetitionHoles" class="button button-outline" type="button">Save competition holes</button></section>
           <div class="admin-scoring-grid">
             <section><h4>Loaded scorecard</h4><p class="admin-score-help">Yellow and red tee data is loaded automatically. Manual correction remains available if the club has recently changed its card.</p><div id="adminHoleEditor" class="admin-hole-editor"></div><button id="adminSaveHoles" class="button button-outline" type="button">Save manual corrections</button></section>
             <section><h4>Group scorecards</h4><p class="admin-score-help">Tee times and society handicaps are locked when cards are prepared.</p><button id="adminPrepareScorecards" class="button button-primary" type="button">Prepare group scorecards</button><div id="adminScorecardProgress" class="admin-compact-list"><p>Save the course card first.</p></div><button id="adminCompleteRound" class="button button-primary" type="button" disabled>Complete round</button></section>
@@ -88,6 +91,19 @@
         </div>
         <p id="adminLiveScoringStatus" class="form-status" aria-live="polite"></p>
       </section>
+    </section>
+
+    <section class="admin-view hidden" data-admin-panel="results">
+      <section class="admin-card admin-event-results">
+        <div class="admin-heading"><div><p class="eyebrow">Private committee view</p><h3>View Event Results</h3><p>Inspect submitted cards as they arrive. The full results table appears when every group has submitted.</p></div><select id="adminResultsEvent"><option value="">Select event</option></select></div>
+        <div id="adminResultsSummary" class="admin-results-summary"><p>Select an event.</p></div>
+        <div id="adminSubmittedCards" class="admin-submitted-cards"></div>
+        <div id="adminFinalResults" class="admin-final-results"></div>
+        <p id="adminResultsStatus" class="form-status" aria-live="polite"></p>
+      </section>
+    </section>
+
+    <section class="admin-view hidden" data-admin-panel="scores">
       <section class="admin-card">
         <div class="admin-heading"><div><p class="eyebrow">Rounds and results</p><h3>2027 score administration</h3><p>Events are already linked to their round. Enter results and lock a completed round.</p></div><div class="admin-form-actions"><button id="adminExportLeaderboard" class="button button-outline" type="button">Export leaderboard CSV</button><button id="adminClearScores" class="button button-outline danger-link" type="button">Clear season scores</button></div></div>
         <p class="admin-score-help">Each round is created automatically when you save an event. Use the Events section to choose its required season round.</p>
@@ -164,6 +180,6 @@
   </form>
 </dialog>
 <footer class="site-footer"><div class="shell footer-inner"><div class="footer-brand"><img src="assets/images/barford-golf-society-logo.png" alt=""><span>Barford Golf Society</span></div><p>© <span id="year"></span> Barford Golf Society</p></div></footer>
-<script src="assets/js/app.js?v=speed2" defer></script><script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2" defer></script><script src="assets/js/supabase-config.js?v=live1" defer></script><script src="assets/js/supabase-client.js?v=ux100" defer></script><script src="assets/js/admin-auth.js?v=adminsimple4" defer></script><script src="assets/js/admin-scoring.js?v=ukgolf1" defer></script><script src="assets/js/accessible-mobile.js?v=ux100" defer></script>
+<script src="assets/js/app.js?v=speed2" defer></script><script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2" defer></script><script src="assets/js/supabase-config.js?v=live1" defer></script><script src="assets/js/supabase-client.js?v=ux100" defer></script><script src="assets/js/admin-auth.js?v=autoscorecards1" defer></script><script src="assets/js/admin-scoring.js?v=eventresults1" defer></script><script src="assets/js/accessible-mobile.js?v=ux100" defer></script>
 </body>
 </html>
