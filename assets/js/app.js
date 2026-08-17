@@ -5,7 +5,7 @@ body.classList.add("product-premium");
   ["assets/css/product-premium.css?v=3","productPremium"],
   ["assets/css/product-polish.css?v=2","productPolish"],
   ["assets/css/product-polish-mobile.css?v=3","productPolishMobile"],
-  ["assets/css/brilliant.css?v=1","brilliantProduct"]
+  ["assets/css/brilliant.css?v=2","brilliantProduct"]
 ].forEach(([href,key])=>{
   const attr=`data-${key.replace(/[A-Z]/g,m=>`-${m.toLowerCase()}`)}`;
   if(document.querySelector(`link[${attr}]`))return;
@@ -20,7 +20,7 @@ if(document.getElementById("dashboardEventCamera")){
 
 if("serviceWorker" in navigator){
   window.addEventListener("load",()=>{
-    const register=()=>navigator.serviceWorker.register("./sw.js?v=fast6").catch(()=>{});
+    const register=()=>navigator.serviceWorker.register("./sw.js?v=fast7").catch(()=>{});
     if("requestIdleCallback" in window)requestIdleCallback(register,{timeout:1400});else setTimeout(register,250);
   },{once:true});
 }
@@ -83,7 +83,7 @@ const initialiseSharedUi=()=>{
   document.addEventListener("click",event=>{const target=event.target.closest('[data-profile-photo], [data-profile-owner="self"]');if(target)openPhoto(target)});
   document.addEventListener("profile-photo:open",event=>openPhoto(event.target));
   document.addEventListener("keydown",event=>{if((event.key==="Enter"||event.key===" ")&&event.target.matches('[data-profile-photo], [data-profile-owner="self"]')){event.preventDefault();openPhoto(event.target)}});
-  if(document.getElementById("dashboardEventCamera")){const script=document.createElement("script");script.src="assets/js/event-day-camera.js?v=2";script.async=true;document.body.appendChild(script);}
+  if(document.getElementById("dashboardEventCamera")){const script=document.createElement("script");script.src="assets/js/event-day-camera.js?v=3";script.async=true;document.body.appendChild(script);}
   if(!document.querySelector('script[data-product-experience]')){const script=document.createElement("script");script.src="assets/js/product-experience.js?v=3";script.async=true;script.dataset.productExperience="1";document.body.appendChild(script);}
 };
 if(document.readyState==="loading")document.addEventListener("DOMContentLoaded",initialiseSharedUi,{once:true});else initialiseSharedUi();
@@ -95,9 +95,9 @@ const loadEnhancement=(src,key,done)=>{
 };
 window.addEventListener("load",()=>{
   if(currentPage==="admin.html"){
-    loadEnhancement("assets/js/event-course-setup.js?v=2","event-course-setup",()=>loadEnhancement("assets/js/admin-brilliant.js?v=1","admin-brilliant"));
+    loadEnhancement("assets/js/event-course-setup.js?v=2","event-course-setup",()=>loadEnhancement("assets/js/admin-brilliant.js?v=2","admin-brilliant"));
   } else if(currentPage==="index.html") {
-    loadEnhancement("assets/js/member-experience-plus.js?v=1","member-experience-plus");
+    loadEnhancement("assets/js/member-experience-plus.js?v=2","member-experience-plus");
   } else if(currentPage==="account.html") {
     loadEnhancement("assets/js/member-onboarding.js?v=1","member-onboarding");
   }
