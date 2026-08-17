@@ -12,15 +12,39 @@
 .admin-result-card summary strong,.admin-result-card summary small { display:block; }
 .admin-result-card summary small { color:#66766e;margin-top:3px; }
 .admin-result-player { padding:14px;border-top:1px solid #e3e9e6; }
+.admin-reopen-card { margin:0 14px 14px; }
 .admin-result-player header { display:flex;justify-content:space-between;margin-bottom:10px; }
 .admin-result-holes { display:grid;grid-template-columns:repeat(9,1fr);gap:4px; }
 .admin-result-holes span { display:grid;place-items:center;padding:6px 2px;border-radius:7px;background:#f1f4f2; }
 .admin-result-holes small,.admin-result-holes b { display:block; }
 .admin-result-holes small { color:#738078;font-size:.62rem; }
 .admin-final-results { margin-top:24px; }
+.admin-end-round { margin-top:20px;padding:18px;border:2px solid #caa94f;border-radius:16px;background:linear-gradient(145deg,#fffaf0,#f7edcf); }
+.admin-end-round h4,.admin-end-round p { margin-top:0; }
+.admin-end-round .button { width:100%;margin-top:8px; }
+.admin-end-round .button:disabled { color:#5e675f;background:#dfe5e1;border-color:#dfe5e1;opacity:1; }
+.admin-winner-fields { display:grid;grid-template-columns:1fr 1fr;gap:10px;margin:14px 0; }
+.admin-winner-fields label { font-size:.78rem;font-weight:800; }
+.admin-winner-fields select { width:100%;margin-top:5px; }
+.admin-save-confirmation { display:flex;align-items:center;gap:10px;margin:0 0 18px;padding:14px 16px;border:2px solid #2c8b57;border-radius:14px;color:#083c27;background:#e7f7ee; }
+.admin-save-confirmation strong { white-space:nowrap; }
+.admin-save-confirmation.hidden { display:none; }
+.admin-position-grid { display:grid;grid-template-columns:repeat(4,minmax(130px,1fr));gap:10px;margin:16px 0; }
+.admin-position-card { padding:15px;border:1px solid #d9e2dd;border-radius:14px;background:#fff; }
+.admin-position-card strong,.admin-position-card span,.admin-position-card small { display:block; }
+.admin-position-card strong { color:#9b1c1c;font-size:.75rem;text-transform:uppercase;letter-spacing:.08em; }
+.admin-position-card span { margin:5px 0 2px;font-size:1rem;font-weight:900;color:#063d2a; }
+.admin-position-card small { color:#66766e; }
+.admin-position-card.winner { color:#fff;border-color:#063d2a;background:#063d2a; }
+.admin-position-card.winner strong { color:#f4d77c; }
+.admin-position-card.winner span,.admin-position-card.winner small { color:#fff; }
+.official-results-label { display:inline-flex;padding:6px 10px;border-radius:999px;color:#fff;background:#9b1c1c;font-size:.72rem;font-weight:900;text-transform:uppercase;letter-spacing:.08em; }
+.admin-competition-winners { display:grid;grid-template-columns:auto 1fr auto 1fr;gap:8px 12px;align-items:center;margin:0 0 16px;padding:14px;border-radius:14px;background:#fff5d8; }
+.admin-competition-winners strong { color:#7f1d1d; }
+.admin-competition-winners span { font-weight:900;color:#063d2a; }
 .admin-results-table { overflow:hidden;border:1px solid #d9e2dd;border-radius:14px; }
 .admin-results-table>div { display:grid;grid-template-columns:60px minmax(150px,1fr) 70px 80px;gap:10px;padding:11px 14px;border-bottom:1px solid #e3e9e6;align-items:center; }
 .admin-results-table>div:last-child { border-bottom:0; }
 .admin-results-table .results-head { color:#fff;background:#063d2a; }
-@media(max-width:850px){.admin-competition-setup{grid-template-columns:1fr 1fr}.admin-competition-setup>div{grid-column:1/-1}.admin-competition-setup .button{grid-column:1/-1}.admin-result-holes{grid-template-columns:repeat(6,1fr)}}
-@media(max-width:560px){.admin-competition-setup{grid-template-columns:1fr}.admin-competition-setup>div,.admin-competition-setup .button{grid-column:auto}.results-progress{display:block}.results-progress span{margin-top:4px}.admin-results-table>div{grid-template-columns:42px minmax(105px,1fr) 45px 55px;padding:9px 8px;font-size:.78rem}}
+@media(max-width:850px){.admin-competition-setup{grid-template-columns:1fr 1fr}.admin-competition-setup>div{grid-column:1/-1}.admin-competition-setup .button{grid-column:1/-1}.admin-result-holes{grid-template-columns:repeat(6,1fr)}.admin-position-grid{grid-template-columns:1fr 1fr}}
+@media(max-width:560px){.admin-competition-setup{grid-template-columns:1fr}.admin-competition-setup>div,.admin-competition-setup .button{grid-column:auto}.results-progress{display:block}.results-progress span{margin-top:4px}.admin-results-table>div{grid-template-columns:42px minmax(105px,1fr) 45px 55px;padding:9px 8px;font-size:.78rem}.admin-position-grid,.admin-winner-fields{grid-template-columns:1fr}.admin-save-confirmation{display:block}.admin-save-confirmation span{display:block;margin-top:3px}.admin-competition-winners{grid-template-columns:1fr}.admin-competition-winners strong{margin-top:5px}}
