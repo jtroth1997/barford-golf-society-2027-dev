@@ -128,9 +128,40 @@
       $("selectedPlayerPrompt").textContent = `Enter a score or X for ${missing?.display_name || "every player"}`;
       return;
     }
+    if (hole === 9 && next === 10) return showHalfwayReview();
     if (next > 18) return showReview();
     hole = Math.max(1, next); selectedPlayerId = model.players.find(player => !valueFor(player.id))?.id || model.players[0]?.id; renderHole();
     window.scrollTo({top:0,behavior:"smooth"});
+  }
+
+  function pointTotal(player, fromHole, toHole) {
+    return model.holes
+      .filter(info => info.hole_number >= fromHole && info.hole_number <= toHole)
+      .reduce((sum, info) => sum + pointsFor(player, info, valueFor(player.id, info.hole_number)), 0);
+  }
+
+  function showHalfwayReview() {
+    hide("scoreReady");
+    show("halfwayReview");
+    $("halfwayPlayers").innerHTML = model.players.map(player => `
+      <article><div><strong>${esc(player.display_name)}</strong><small>Front nine complete</small></div><b>${pointTotal(player, 1, 9)} points</b></article>`).join("");
+    window.scrollTo({top:0,behavior:"smooth"});
+  }
+
+  function scorecardSection(title, fromHole, toHole, totalLabel, includeOverall = false) {
+    const holes = model.holes.filter(info => info.hole_number >= fromHole && info.hole_number <= toHole);
+    const header = holes.map(info => `<span><b>${info.hole_number}</b><small>Par ${info.par}</small></span>`).join("");
+    const players = model.players.map(player => {
+      const scores = holes.map(info => {
+        const value = valueFor(player.id, info.hole_number);
+        const points = pointsFor(player, info, value);
+        return `<button type="button" class="review-score ${value.picked_up ? "is-pickup" : ""}" data-review-hole="${info.hole_number}" aria-label="Edit ${esc(player.display_name)}, hole ${info.hole_number}">${value.picked_up ? "X" : value.strokes}/${points}</button>`;
+      }).join("");
+      const sectionPoints = pointTotal(player, fromHole, toHole);
+      const overall = includeOverall ? `<b class="review-total review-grand-total">${pointTotal(player, 1, 18)}</b>` : "";
+      return `<div class="review-score-row"><strong><span>${esc(player.display_name)}</span><small>HCP ${player.handicap_used}</small></strong>${scores}<b class="review-total">${sectionPoints}</b>${overall}</div>`;
+    }).join("");
+    return `<section class="review-nine ${includeOverall ? "has-overall" : ""}"><h2>${title}</h2><div class="review-grid"><div class="review-hole-row"><strong>Hole</strong>${header}<b>${totalLabel}</b>${includeOverall ? "<b>Total</b>" : ""}</div>${players}</div><p><strong>Score key:</strong> strokes/points — for example, <b>4/2</b>.</p></section>`;
   }
 
   function showReview() {
@@ -139,11 +170,16 @@
       hole = firstMissing || 1; hide("roundReview"); show("scoreReady"); renderHole(); return;
     }
     hide("scoreReady"); show("roundReview");
-    $("reviewPlayers").innerHTML = model.players.map(player => {
-      let total = 0;
-      const holes = model.holes.map(info => { const value=valueFor(player.id,info.hole_number); const pts=pointsFor(player,info,value); total+=pts; return `<span>${info.hole_number}<b>${value.picked_up?"X":value.strokes}</b></span>`; }).join("");
-      return `<section class="review-player"><header><strong>${esc(player.display_name)}</strong><b>${total} pts</b></header><div class="review-holes">${holes}</div></section>`;
-    }).join("");
+    $("reviewPlayers").innerHTML = scorecardSection("Front nine", 1, 9, "Out") + scorecardSection("Back nine", 10, 18, "In", true);
+    document.querySelectorAll("[data-review-hole]").forEach(button => button.addEventListener("click", () => {
+      hole = Number(button.dataset.reviewHole);
+      selectedPlayerId = null;
+      hide("roundReview");
+      show("scoreReady");
+      renderHole();
+      window.scrollTo({top:0,behavior:"smooth"});
+    }));
+    window.scrollTo({top:0,behavior:"smooth"});
   }
 
   function pendingChanges() {
@@ -222,6 +258,8 @@
   $("nextHole")?.addEventListener("click",()=>goToHole(hole+1)); $("nextHoleTop")?.addEventListener("click",()=>goToHole(hole+1));
   $("previousHole")?.addEventListener("click",()=>goToHole(hole-1)); $("previousHoleBottom")?.addEventListener("click",()=>goToHole(hole-1));
   $("returnToCard")?.addEventListener("click",()=>{hide("roundReview");show("scoreReady");renderHole();});
+  $("continueBackNine")?.addEventListener("click",()=>{hole=10;selectedPlayerId=model.players.find(player=>!valueFor(player.id,10))?.id||model.players[0]?.id;hide("halfwayReview");show("scoreReady");renderHole();window.scrollTo({top:0,behavior:"smooth"});});
+  $("backToFrontNine")?.addEventListener("click",()=>{hole=9;selectedPlayerId=model.players[0]?.id;hide("halfwayReview");show("scoreReady");renderHole();window.scrollTo({top:0,behavior:"smooth"});});
   $("scoreSyncButton")?.addEventListener("click",syncNow);
   $("finaliseScores")?.addEventListener("click",async()=>{
     if(!confirm("Has the group checked and agreed every score on this card?\n\nAfter submission, only an administrator can reopen it."))return;

@@ -1,4 +1,4 @@
-const CACHE = "barford-golf-2027-confidence-v1";
+const CACHE = "barford-golf-2027-scorecard-review-v1";
 const CORE = [
   "./",
   "./index.html",
@@ -76,6 +76,7 @@ const CORE = [
   "./assets/js/scoring.js?v=trust1",
   "./assets/js/scoring.js?v=trust2",
   "./assets/js/scoring.js?v=trust3",
+  "./assets/js/scoring.js?v=cardreview1",
   "./assets/js/gallery-live.js?v=swipe1",
   "./assets/js/home-photos.js?v=1",
   "./assets/js/home-photos.js?v=2",
