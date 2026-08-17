@@ -5,6 +5,8 @@ alter table public.profiles add constraint profiles_playing_category_check check
 alter table public.events add column if not exists uk_golf_club_id text;
 alter table public.events add column if not exists uk_golf_course_id text;
 alter table public.events add column if not exists selected_course_name text;
+alter table public.events add column if not exists longest_drive_winner_id uuid references public.profiles(id) on delete set null;
+alter table public.events add column if not exists nearest_pin_winner_id uuid references public.profiles(id) on delete set null;
 
 alter table public.event_holes add column if not exists red_par integer check (red_par between 3 and 6);
 alter table public.event_holes add column if not exists red_yards integer check (red_yards between 40 and 800);
@@ -77,6 +79,22 @@ $$;
 revoke all on function public.prepare_event_scorecards(uuid) from public, anon;
 grant execute on function public.prepare_event_scorecards(uuid) to authenticated;
 
+create or replace function public.reopen_event_scorecard(target_scorecard_id uuid)
+returns void language plpgsql security definer set search_path = public as $$
+begin
+  if not public.is_admin() then raise exception 'Administrator access required'; end if;
+  if exists (
+    select 1 from public.event_scorecards c join public.events e on e.id=c.event_id
+    where c.id=target_scorecard_id and e.status='completed'
+  ) then raise exception 'A completed round cannot be reopened'; end if;
+  update public.event_scorecards set status='in_progress',submitted_at=null,updated_at=now()
+  where id=target_scorecard_id and status='submitted';
+  if not found then raise exception 'Only a submitted scorecard can be reopened'; end if;
+end;
+$$;
+revoke all on function public.reopen_event_scorecard(uuid) from public, anon;
+grant execute on function public.reopen_event_scorecard(uuid) to authenticated;
+
 create or replace function public.complete_event_round(target_event_id uuid)
 returns void language plpgsql security definer set search_path = public as $$
 declare target_round public.rounds; round_average integer;
@@ -103,7 +121,7 @@ begin
   select target_round.id,member_id,handicap_used,points,false,now() from totals
   on conflict (round_id,member_id) do update set handicap_used=excluded.handicap_used,points=excluded.points,dnp=false,updated_at=now();
 
-  if (select count(*) from public.scores where round_id=target_round.id and not dnp) < 4 then raise exception 'At least four completed player scores are required'; end if;
+  if (select count(*) from public.scores where round_id=target_round.id and not dnp) < 2 then raise exception 'At least two completed player scores are required'; end if;
   with ordered as (
     select points,row_number() over(order by points) row_no,count(*) over() player_count
     from public.scores where round_id=target_round.id and not dnp
@@ -123,8 +141,35 @@ begin
       when s.points-round_average>=-9 then 3 else 4 end) *
       (case when s.handicap_used<=9 then .5 when s.handicap_used<=18 then .75 when s.handicap_used<=28 then 1 else 1.25 end))::integer)))
   where s.round_id=target_round.id;
-  with ranked as (select id,row_number() over(order by points desc,handicap_used asc,member_id) place from public.scores where round_id=target_round.id and not dnp)
+  with hole_points as (
+    select p.member_id,h.hole_number,
+      public.stableford_points(s.strokes,s.picked_up,
+        case when p.playing_category='women' then coalesce(h.red_par,h.par) else h.par end,
+        p.handicap_used,
+        case when p.playing_category='women' then coalesce(h.red_stroke_index,h.stroke_index) else h.stroke_index end
+      ) points
+    from public.event_scorecard_players p
+    join public.event_scorecards c on c.id=p.scorecard_id
+    join public.event_hole_scores s on s.scorecard_player_id=p.id
+    join public.event_holes h on h.event_id=c.event_id and h.hole_number=s.hole_number
+    where c.event_id=target_event_id
+  ), countback as (
+    select member_id,sum(points) total,
+      sum(points) filter(where hole_number between 10 and 18) back_nine,
+      sum(points) filter(where hole_number between 13 and 18) last_six,
+      sum(points) filter(where hole_number between 16 and 18) last_three,
+      sum(points) filter(where hole_number=18) last_hole
+    from hole_points group by member_id
+  ), ranked as (
+    select s.id,row_number() over(order by cb.total desc,cb.back_nine desc,cb.last_six desc,cb.last_three desc,cb.last_hole desc,s.handicap_used asc,s.member_id) place
+    from public.scores s join countback cb on cb.member_id=s.member_id
+    where s.round_id=target_round.id and not s.dnp
+  )
   update public.scores s set winner=(r.place=1),runner_up=(r.place=2),third_place=(r.place=3) from ranked r where s.id=r.id;
+  update public.scores s set
+    longest_drive=(s.member_id=(select longest_drive_winner_id from public.events where id=target_event_id)),
+    nearest_pin=(s.member_id=(select nearest_pin_winner_id from public.events where id=target_event_id))
+  where s.round_id=target_round.id;
   update public.profiles p set handicap=s.next_handicap,updated_at=now() from public.scores s where s.round_id=target_round.id and s.member_id=p.id;
   update public.rounds set locked=true,played_on=(select event_date from public.events where id=target_event_id) where id=target_round.id;
   update public.event_scorecards set status='locked',updated_at=now() where event_id=target_event_id;
