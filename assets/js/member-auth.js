@@ -347,6 +347,7 @@
     const path = input?.dataset.currentPath;
     const { data: { user } } = await client.auth.getUser();
     if (!user || !path) return;
+    if (!confirm("Remove your profile photo?\n\nYou can add another photo at any time.")) return;
     event.currentTarget.disabled = true;
     const { error } = await client.from("profiles")
       .update({ photo_url: null, updated_at: new Date().toISOString() })
@@ -377,7 +378,6 @@
       full_name: $("#accountName").value.trim(),
       phone: $("#accountPhone").value.trim() || null,
       home_club: $("#accountHomeClub").value.trim() || null,
-      handicap: $("#accountHandicap").value || null,
       playing_category: $("#accountPlayingCategory").value,
       updated_at: new Date().toISOString()
     };
