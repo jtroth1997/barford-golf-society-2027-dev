@@ -1,18 +1,8 @@
-const CACHE="barford-golf-2027-fast-v6";
+const CACHE="barford-golf-2027-brilliant-v7";
 const CORE=[
-  "./",
-  "./index.html",
-  "./assets/css/styles.css",
-  "./assets/css/members.css",
-  "./assets/css/accessible-mobile.css",
-  "./assets/css/product-premium.css",
-  "./assets/css/product-polish.css",
-  "./assets/css/product-polish-mobile.css",
-  "./assets/js/app.js",
-  "./assets/js/product-experience.js",
-  "./assets/js/event-course-setup.js",
-  "./assets/js/supabase-config.js",
-  "./assets/js/supabase-client.js",
+  "./","./index.html","./scoring.html","./account.html","./admin.html",
+  "./assets/css/styles.css","./assets/css/members.css","./assets/css/accessible-mobile.css","./assets/css/product-premium.css","./assets/css/product-polish.css","./assets/css/product-polish-mobile.css","./assets/css/brilliant.css","./assets/css/scoring.css","./assets/css/scoring-simple.css","./assets/css/score-competitions.css",
+  "./assets/js/app.js","./assets/js/product-experience.js","./assets/js/event-course-setup.js","./assets/js/admin-brilliant.js","./assets/js/member-experience-plus.js","./assets/js/member-onboarding.js","./assets/js/scoring.js","./assets/js/scoring-resilience.js","./assets/js/supabase-config.js","./assets/js/supabase-client.js",
   "./assets/images/barford-golf-society-logo.png"
 ];
 self.addEventListener("install",event=>{event.waitUntil(caches.open(CACHE).then(cache=>cache.addAll(CORE)).then(()=>self.skipWaiting()))});
