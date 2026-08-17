@@ -7,6 +7,146 @@
   color: #164f38;
 }
 
+.live-nine-strip {
+  margin: 8px 8px 0;
+  overflow: hidden;
+  border: 1px solid #bac8c0;
+  border-radius: 9px;
+  background: #fff;
+}
+
+.live-card-header,
+.live-card-row {
+  display: grid;
+  grid-template-columns: minmax(72px, 1.7fr) repeat(9, minmax(25px, .62fr));
+}
+
+.live-card-header {
+  background: #0a623f;
+  color: #fff;
+}
+
+.live-card-header > *,
+.live-card-row > * {
+  display: grid;
+  place-items: center;
+  min-width: 0;
+  min-height: 31px;
+  padding: 2px 1px;
+  border-right: 1px solid #d5ded8;
+  font-size: .68rem;
+  text-align: center;
+}
+
+.live-card-header > * {
+  border-color: rgba(255,255,255,.22);
+}
+
+.live-card-header > *:last-child,
+.live-card-row > *:last-child {
+  border-right: 0;
+}
+
+.live-card-header > strong,
+.live-card-row > strong {
+  justify-items: start;
+  padding-left: 7px;
+  overflow: hidden;
+  white-space: nowrap;
+}
+
+.live-card-row {
+  border-top: 1px solid #d5ded8;
+}
+
+.live-card-row > strong {
+  text-overflow: ellipsis;
+  color: #173629;
+}
+
+.live-card-row button {
+  appearance: none;
+  margin: 0;
+  border: 0;
+  border-right: 1px solid #d5ded8;
+  border-radius: 0;
+  background: #fff;
+  color: #17221d;
+  font-weight: 900;
+}
+
+.live-card-row button.is-current,
+.live-card-header .is-current {
+  background: #f4d477;
+  color: #2d2205;
+}
+
+.live-card-row button.is-pickup {
+  color: #c92820;
+}
+
+.handoff-scorecard {
+  display: block;
+  margin: 0 auto 7px;
+  padding: 7px 10px;
+  border: 0;
+  background: transparent;
+  color: #53665c;
+  font-size: .76rem;
+  font-weight: 800;
+  text-decoration: underline;
+}
+
+.handoff-dialog {
+  width: min(420px, calc(100% - 24px));
+  padding: 0;
+  border: 0;
+  border-radius: 18px;
+}
+
+.handoff-dialog::backdrop {
+  background: rgba(4,31,22,.62);
+}
+
+.handoff-dialog form {
+  position: relative;
+  display: grid;
+  gap: 14px;
+  padding: 24px;
+}
+
+.handoff-dialog h2,
+.handoff-dialog p {
+  margin: 0;
+}
+
+.handoff-dialog label {
+  display: grid;
+  gap: 6px;
+  font-weight: 800;
+}
+
+.handoff-dialog select {
+  min-height: 52px;
+  padding: 10px 12px;
+  border: 1px solid #bac8c0;
+  border-radius: 10px;
+  background: #fff;
+  font: inherit;
+}
+
+@media (max-width: 380px) {
+  .live-card-header,
+  .live-card-row {
+    grid-template-columns: minmax(62px, 1.45fr) repeat(9, minmax(23px, .55fr));
+  }
+
+  .live-card-header > *,
+  .live-card-row > * {
+    font-size: .62rem;
+  }
+}
+
 .score-simple-help strong,
 .score-simple-help span {
   display: block;
