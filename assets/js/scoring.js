@@ -31,10 +31,18 @@
     return handicap < strokeIndex ? 0 : Math.floor((handicap - strokeIndex) / 18) + 1;
   }
 
+  function teeHole(player, info) {
+    return player.playing_category === "women" ? {
+      par: Number(info.red_par || info.par), yards: Number(info.red_yards || info.yards),
+      stroke_index: Number(info.red_stroke_index || info.stroke_index), tee: info.red_tee_name || "Red"
+    } : { par:Number(info.par),yards:Number(info.yards),stroke_index:Number(info.stroke_index),tee:info.yellow_tee_name || "Yellow" };
+  }
+
   function pointsFor(player, holeInfo, value) {
     if (!value || value.picked_up) return 0;
-    const nett = Number(value.strokes) - shotsReceived(player.handicap_used, holeInfo.stroke_index);
-    return Math.max(0, 2 + Number(holeInfo.par) - nett);
+    const tee=teeHole(player,holeInfo);
+    const nett = Number(value.strokes) - shotsReceived(player.handicap_used, tee.stroke_index);
+    return Math.max(0, 2 + tee.par - nett);
   }
 
   function valueFor(playerId, holeNumber = hole) {
@@ -60,7 +68,12 @@
     $("holeTitle").textContent = `Hole ${hole}`;
     $("holePar").textContent = `Par ${info.par}`;
     $("holeYards").textContent = info.yards ? `${info.yards} yards` : "Yards TBC";
-    $("holeIndex").textContent = `Stroke index ${info.stroke_index}`;
+    $("holeIndex").textContent = `SI ${info.stroke_index}`;
+    $("yellowTeeSummary").querySelector("b").textContent=info.yellow_tee_name || "Yellow tee";
+    $("redHolePar").textContent=`Par ${info.red_par || info.par}`;
+    $("redHoleYards").textContent=info.red_yards?`${info.red_yards} yards`:"Yards TBC";
+    $("redHoleIndex").textContent=`SI ${info.red_stroke_index || info.stroke_index}`;
+    $("redTeeSummary").querySelector("b").textContent=info.red_tee_name || "Red tee";
     $("previousHole").textContent = hole === 1 ? "" : `‹ Hole ${hole - 1}`;
     $("nextHoleTop").textContent = hole === 18 ? "Review ›" : `Hole ${hole + 1} ›`;
     $("previousHole").disabled = hole === 1;
@@ -68,11 +81,12 @@
     $("nextHole").textContent = hole === 18 ? "Review scores" : "Next hole";
     $("playerRows").innerHTML = model.players.map(player => {
       const value = valueFor(player.id);
-      const shots = shotsReceived(Number(player.handicap_used), Number(info.stroke_index));
+      const tee=teeHole(player,info);
+      const shots = shotsReceived(Number(player.handicap_used), tee.stroke_index);
       const display = value?.picked_up ? "X" : (value?.strokes ?? "");
       const pts = value ? pointsFor(player, info, value) : null;
       return `<button class="score-player-row ${selectedPlayerId===player.id?"is-selected":""}" type="button" data-player="${player.id}">
-        <span><span class="player-name">${esc(player.display_name)} <i class="shot-dots" aria-label="${shots} handicap shot${shots===1?"":"s"}">${"•".repeat(shots)}</i></span><small class="player-detail">HCP ${player.handicap_used}${pts===null?"":` · ${pts} point${pts===1?"":"s"}`}</small></span>
+        <span><span class="player-name">${esc(player.display_name)} <i class="shot-dots" aria-label="${shots} handicap shot${shots===1?"":"s"}">${"•".repeat(shots)}</i></span><small class="player-detail">${esc(tee.tee)} tee · ${tee.yards} yards · HCP ${player.handicap_used}${pts===null?"":` · ${pts} point${pts===1?"":"s"}`}</small></span>
         <span class="gross-value ${value?.picked_up?"is-pickup":""}">${display}</span></button>`;
     }).join("");
     document.querySelectorAll("[data-player]").forEach(button => button.addEventListener("click", () => { selectedPlayerId=button.dataset.player; renderHole(); }));
@@ -129,8 +143,8 @@
     if (cardError) throw cardError;
     if (!card) throw new Error("There is no active scorecard for your group.");
     const [{data:players,error:playersError},{data:holes,error:holesError}] = await Promise.all([
-      client.from("event_scorecard_players").select("id,member_id,display_name,handicap_used,position").eq("scorecard_id",card.id).order("position"),
-      client.from("event_holes").select("hole_number,par,yards,stroke_index").eq("event_id",card.event_id).order("hole_number")
+      client.from("event_scorecard_players").select("id,member_id,display_name,handicap_used,position,playing_category,tee_name").eq("scorecard_id",card.id).order("position"),
+      client.from("event_holes").select("hole_number,par,yards,stroke_index,red_par,red_yards,red_stroke_index,yellow_tee_name,red_tee_name").eq("event_id",card.event_id).order("hole_number")
     ]);
     if (playersError || holesError) throw (playersError||holesError);
     const {data:scores,error:scoresError}=await client.from("event_hole_scores").select("scorecard_player_id,hole_number,strokes,picked_up,updated_at").in("scorecard_player_id",players.map(player=>player.id));
