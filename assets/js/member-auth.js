@@ -89,6 +89,7 @@
     const fullName = selectedName === "__new__" ? signupNewName?.value.trim() : selectedName.trim();
     const email = $("#signupEmail").value.trim().toLowerCase();
     const phone = $("#signupPhone").value.trim();
+    const playingCategory = $("#signupPlayingCategory").value;
     const password = $("#signupPassword").value;
     const confirmation = $("#signupPasswordConfirm").value;
 
@@ -108,7 +109,7 @@
     const { data, error } = await client.auth.signUp({
       email,
       password,
-      options: { data: { full_name: fullName, phone } }
+      options: { data: { full_name: fullName, phone, playing_category: playingCategory } }
     });
     if (error) {
       message("#signupStatus", error.message, true);
@@ -284,6 +285,7 @@
     $("#accountPhone").value = profile.phone || "";
     $("#accountHomeClub").value = profile.home_club || "";
     $("#accountHandicap").value = profile.handicap ?? "";
+    $("#accountPlayingCategory").value = profile.playing_category || "";
     await Promise.all([
       renderProfilePhoto($("#accountHeroAvatar"), profile),
       renderProfilePhoto($("#accountPhotoPreview"), profile),
@@ -376,6 +378,7 @@
       phone: $("#accountPhone").value.trim() || null,
       home_club: $("#accountHomeClub").value.trim() || null,
       handicap: $("#accountHandicap").value || null,
+      playing_category: $("#accountPlayingCategory").value,
       updated_at: new Date().toISOString()
     };
     const { error } = await client.from("profiles").update(changes).eq("id", user.id);

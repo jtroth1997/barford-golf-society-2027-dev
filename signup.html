@@ -39,6 +39,7 @@
 <section class="section shell"><div class="signup-grid"><div><p class="eyebrow">Simple setup</p><h2>Your golf, all in one place</h2><p>Choose your name and create your Barford Golf Society login.</p><ul class="check-list"><li>Stay signed in on your device</li><li>Manage your profile and golf information</li><li>Access events, tee times and the League Table</li></ul></div><form id="memberSignupForm" class="form-card member-create-form">
   <label>Your name<select id="signupName" required><option value="">Loading member names…</option></select></label>
   <label id="signupNewNameWrap" class="hidden">Your full name<input id="signupNewName" type="text" autocomplete="name" placeholder="Type your full name"></label>
+  <label>Playing category<select id="signupPlayingCategory" required><option value="">Select men’s or women’s…</option><option value="men">Men’s — yellow tees</option><option value="women">Women’s — red tees</option></select><small>Used to load the correct tee distances, par and stroke indexes on event scorecards.</small></label>
   <label>Email address<input id="signupEmail" type="email" required autocomplete="email" placeholder="name@example.com"></label>
   <label>Create password<input id="signupPassword" type="password" required minlength="8" autocomplete="new-password" placeholder="At least 8 characters"></label>
   <label>Confirm password<input id="signupPasswordConfirm" type="password" required minlength="8" autocomplete="new-password" placeholder="Type it again"></label>
@@ -61,7 +62,7 @@
 <script src="assets/js/supabase-config.js?v=live1" defer></script>
 <script src="assets/js/supabase-client.js?v=ux100" defer></script>
 <script src="assets/js/passkeys.js?v=faceid1" defer></script>
-<script src="assets/js/member-auth.js?v=ux100" defer></script>
+<script src="assets/js/member-auth.js?v=course-tees1" defer></script>
 
 <script src="assets/js/accessible-mobile.js?v=ux100" defer></script>
 <script data-mobile-nav-lock>

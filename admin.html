@@ -72,8 +72,17 @@
         <div class="admin-heading"><div><p class="eyebrow">Event-day scoring</p><h3>Digital scorecards</h3><p>Enter the course card, prepare each tee group and monitor submissions privately.</p></div><select id="adminScoringEvent"><option value="">Select event</option></select></div>
         <div id="adminScoringSetup" class="hidden">
           <div class="admin-scoring-steps"><span><b>1</b>Course card</span><span><b>2</b>Prepare groups</span><span><b>3</b>Check submissions</span><span><b>4</b>Complete round</span></div>
+          <section class="admin-course-import">
+            <div><h4>Automatic course scorecard</h4><p class="admin-score-help">The event location is matched with UK Golf API. If the club has several courses, select the one being played.</p></div>
+            <button id="adminFindCourseData" class="button button-primary" type="button">Find linked course</button>
+            <label>Club<select id="adminGolfClub" disabled><option value="">Find the linked club first</option></select></label>
+            <label>Course<select id="adminGolfCourse" disabled><option value="">Select club first</option></select></label>
+            <label>Men’s tee<select id="adminYellowTee" disabled><option value="">Load a course first</option></select></label>
+            <label>Women’s tee<select id="adminRedTee" disabled><option value="">Load a course first</option></select></label>
+            <button id="adminImportScorecard" class="button button-primary" type="button" disabled>Use these tees</button>
+          </section>
           <div class="admin-scoring-grid">
-            <section><h4>Course holes</h4><p class="admin-score-help">Add par, yards and stroke index from the course scorecard.</p><div id="adminHoleEditor" class="admin-hole-editor"></div><button id="adminSaveHoles" class="button button-outline" type="button">Save course card</button></section>
+            <section><h4>Loaded scorecard</h4><p class="admin-score-help">Yellow and red tee data is loaded automatically. Manual correction remains available if the club has recently changed its card.</p><div id="adminHoleEditor" class="admin-hole-editor"></div><button id="adminSaveHoles" class="button button-outline" type="button">Save manual corrections</button></section>
             <section><h4>Group scorecards</h4><p class="admin-score-help">Tee times and society handicaps are locked when cards are prepared.</p><button id="adminPrepareScorecards" class="button button-primary" type="button">Prepare group scorecards</button><div id="adminScorecardProgress" class="admin-compact-list"><p>Save the course card first.</p></div><button id="adminCompleteRound" class="button button-primary" type="button" disabled>Complete round</button></section>
           </div>
         </div>
@@ -155,6 +164,6 @@
   </form>
 </dialog>
 <footer class="site-footer"><div class="shell footer-inner"><div class="footer-brand"><img src="assets/images/barford-golf-society-logo.png" alt=""><span>Barford Golf Society</span></div><p>© <span id="year"></span> Barford Golf Society</p></div></footer>
-<script src="assets/js/app.js?v=speed2" defer></script><script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2" defer></script><script src="assets/js/supabase-config.js?v=live1" defer></script><script src="assets/js/supabase-client.js?v=ux100" defer></script><script src="assets/js/admin-auth.js?v=adminsimple4" defer></script><script src="assets/js/admin-scoring.js?v=1" defer></script><script src="assets/js/accessible-mobile.js?v=ux100" defer></script>
+<script src="assets/js/app.js?v=speed2" defer></script><script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2" defer></script><script src="assets/js/supabase-config.js?v=live1" defer></script><script src="assets/js/supabase-client.js?v=ux100" defer></script><script src="assets/js/admin-auth.js?v=adminsimple4" defer></script><script src="assets/js/admin-scoring.js?v=ukgolf1" defer></script><script src="assets/js/accessible-mobile.js?v=ux100" defer></script>
 </body>
 </html>
