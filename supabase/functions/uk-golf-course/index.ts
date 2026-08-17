@@ -76,18 +76,38 @@ Deno.serve(async request => {
     const lat = Number(body.latitude), lng = Number(body.longitude);
     if (!Number.isFinite(lat) || !Number.isFinite(lng)) return json({ error: "This event has no course location." }, 400);
     path = `/clubs/nearby?lat=${encodeURIComponent(lat)}&lng=${encodeURIComponent(lng)}&radius_km=8`;
-  } else if (action === "courses" && body.club_id) path = `/clubs/${encodeURIComponent(body.club_id)}/courses`;
+  } else if (action === "courses" && body.club_id) path = `/clubs/${encodeURIComponent(String(body.club_id).split(",")[0])}/courses`;
   else if (action === "scorecard" && body.course_id) path = `/courses/${encodeURIComponent(body.course_id)}/scorecard`;
   else return json({ error: "Invalid course-data request." }, 400);
 
-  const response = await fetch(`https://uk-golf-course-data-api.p.rapidapi.com${path}`, {
-    headers: { "X-RapidAPI-Key": apiKey, "X-RapidAPI-Host": "uk-golf-course-data-api.p.rapidapi.com" },
-  });
+  const apiHeaders = { "X-RapidAPI-Key": apiKey, "X-RapidAPI-Host": "uk-golf-course-data-api.p.rapidapi.com" };
+  if (action === "courses" && String(body.club_id).includes(",")) {
+    const clubIds = String(body.club_id).split(",").filter(Boolean);
+    const payloads = await Promise.all(clubIds.map(async id => {
+      const result = await fetch(`https://uk-golf-course-data-api.p.rapidapi.com/clubs/${encodeURIComponent(id)}/courses`, { headers: apiHeaders });
+      return result.ok ? await result.json() : [];
+    }));
+    const courses = payloads.flatMap(payload => arrayFrom(payload, ["courses", "results", "data"])).map((course: any) => ({ id: course.id || course.course_id, name: course.name || course.course_name, holes: course.holes || course.hole_count || 18 }));
+    return json({ courses });
+  }
+  const response = await fetch(`https://uk-golf-course-data-api.p.rapidapi.com${path}`, { headers: apiHeaders });
   const payload = await response.json().catch(() => null);
   if (!response.ok) return json({ error: payload?.message || payload?.error || `UK Golf API returned ${response.status}.` }, response.status);
   if (action === "nearby") {
-    const clubs = arrayFrom(payload, ["clubs", "results", "data"]).map((club: any) => ({ id: club.id || club.club_id, name: club.name || club.club_name, county: club.county || club.region || "" }));
-    return json({ clubs });
+    let found = arrayFrom(payload, ["clubs", "results", "data"]);
+    const query = String(body.query || "").replace(/\b(resort|hotel|the)\b/gi, " ").replace(/\s+/g, " ").trim();
+    if (query) {
+      const searchResponse = await fetch(`https://uk-golf-course-data-api.p.rapidapi.com/clubs?search=${encodeURIComponent(query)}`, { headers: apiHeaders });
+      if (searchResponse.ok) found = found.concat(arrayFrom(await searchResponse.json(), ["clubs", "results", "data"]));
+    }
+    const grouped = new Map<string, any>();
+    found.forEach((club: any) => {
+      const name=String(club.name || club.club_name || "Golf club"), key=name.toLowerCase().replace(/[^a-z0-9]/g, "");
+      const existing=grouped.get(key);
+      if(existing) existing.id += `,${club.id || club.club_id}`;
+      else grouped.set(key,{id:String(club.id || club.club_id),name,county:club.county || club.region || ""});
+    });
+    return json({ clubs: [...grouped.values()] });
   }
   if (action === "courses") {
     const courses = arrayFrom(payload, ["courses", "results", "data"]).map((course: any) => ({ id: course.id || course.course_id, name: course.name || course.course_name, holes: course.holes || course.hole_count || 18 }));
