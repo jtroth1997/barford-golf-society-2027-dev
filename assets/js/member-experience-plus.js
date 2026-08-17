@@ -7,6 +7,7 @@
     const now = new Date();
     return `${now.getFullYear()}-${String(now.getMonth()+1).padStart(2,"0")}-${String(now.getDate()).padStart(2,"0")}`;
   };
+  const friendlyDate = value => value ? new Intl.DateTimeFormat("en-GB", { weekday:"short", day:"numeric", month:"short", year:"numeric" }).format(new Date(`${value}T12:00:00`)) : "the scheduled date";
   const wait = ms => new Promise(resolve => setTimeout(resolve, ms));
 
   const injectUpdates = notices => {
@@ -42,7 +43,7 @@
 
   const enableEventDay = async userId => {
     const today = localDate();
-    const { data: events } = await client.from("events").select("id,name,event_date,status").eq("event_date", today).neq("status","cancelled").order("first_tee_time");
+    const { data: events } = await client.from("events").select("id,name,event_date,status,test_mode_active,test_original_event_date").eq("event_date", today).neq("status","cancelled").order("first_tee_time");
     if (!events?.length) return;
     let selected = null, teeTime = null;
     for (const event of events) {
@@ -55,15 +56,22 @@
     }
     if (!selected) return;
     document.body.classList.add("event-day-focus");
+    if (selected.test_mode_active) document.body.classList.add("event-test-mode");
     const grid = document.querySelector(".member-home-grid");
     if (!grid || document.querySelector(".event-day-focus-banner")) return;
     const banner = document.createElement("section");
     banner.className = "event-day-focus-banner";
-    banner.innerHTML = `<div><strong>TODAY · ${esc(selected.name)}</strong><span>${teeTime ? `Your tee time ${esc(teeTime)}` : "Tee time details are on your event card"}</span></div><div class="event-day-focus-actions"><button id="eventDayDirectionsQuick" class="button button-gold" type="button">Directions</button><a class="button button-primary" href="scoring.html">Scorecard</a></div>`;
+    const label = selected.test_mode_active ? `TEST EVENT · ${selected.name}` : `TODAY · ${selected.name}`;
+    const detail = selected.test_mode_active
+      ? `Full live-event simulation · real date ${friendlyDate(selected.test_original_event_date)}`
+      : (teeTime ? `Your tee time ${teeTime}` : "Tee time details are on your event card");
+    banner.innerHTML = `<div><strong>${esc(label)}</strong><span>${esc(detail)}</span></div><div class="event-day-focus-actions"><button id="eventDayDirectionsQuick" class="button button-gold" type="button">Directions</button><a class="button button-primary" href="scoring.html">Scorecard</a></div>`;
     grid.prepend(banner);
     banner.querySelector("#eventDayDirectionsQuick")?.addEventListener("click", () => document.getElementById("dashboardEventDirections")?.click());
     const heading = document.querySelector(".dashboard-welcome-copy h1");
-    if (heading) heading.innerHTML = `Today’s golf, <span>${esc(document.getElementById("dashboardFirstName")?.textContent || "member")}</span>`;
+    if (heading) heading.innerHTML = selected.test_mode_active
+      ? `Test event, <span>${esc(document.getElementById("dashboardFirstName")?.textContent || "member")}</span>`
+      : `Today’s golf, <span>${esc(document.getElementById("dashboardFirstName")?.textContent || "member")}</span>`;
   };
 
   const start = async () => {
