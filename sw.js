@@ -1,10 +1,58 @@
-const CACHE = "barford-golf-2027-product-v3";
-const CORE = [
-  "./","./index.html","./events.html","./payments.html","./scores.html","./account.html","./gallery.html","./signup.html","./admin.html","./about.html","./shop.html","./worldevents.html","./scoring.html","./manifest.webmanifest",
-  "./assets/css/styles.css?v=ux100","./assets/css/styles.css?v=publiclogo1","./assets/css/product-premium.css?v=2","./assets/css/product-polish.css?v=1","./assets/css/product-polish-mobile.css?v=1",
-  "./assets/css/members.css?v=eventcamera1","./assets/css/accessible-mobile.css?v=simplenav1","./assets/css/events.css?v=simplechoice1","./assets/css/scores.css?v=preseason1","./assets/css/gallery.css?v=swipe1","./assets/css/admin.css?v=adminsimple1","./assets/css/scoring.css?v=1","./assets/css/scoring-simple.css?v=readable2","./assets/css/admin-scoring-results.css?v=checklist1","./assets/css/score-competitions.css?v=1",
-  "./assets/js/app.js?v=speed2","./assets/js/product-experience.js?v=2","./assets/js/event-day-camera.js?v=1","./assets/js/member-dashboard.js?v=simplewords1","./assets/js/member-auth.js?v=course-tees2","./assets/js/admin-auth.js?v=adminsimple4","./assets/js/admin-scoring.js?v=checklist1","./assets/js/events-live.js?v=simplechoice1","./assets/js/scores.js?v=preseason1","./assets/js/scores-data.js?v=overview1","./assets/js/handicap-engine.js","./assets/js/scoring.js?v=readable2","./assets/js/gallery-live.js?v=swipe1","./assets/js/home-photos.js?v=5","./assets/js/accessible-mobile.js?v=simplenav1","./assets/js/supabase-config.js?v=live1","./assets/js/supabase-client.js?v=ux100","./assets/images/barford-golf-society-logo.png"
+const CACHE="barford-golf-2027-fast-v4";
+const CORE=[
+  "./",
+  "./index.html",
+  "./assets/css/styles.css",
+  "./assets/css/members.css",
+  "./assets/css/accessible-mobile.css",
+  "./assets/css/product-premium.css",
+  "./assets/css/product-polish.css",
+  "./assets/css/product-polish-mobile.css",
+  "./assets/js/app.js",
+  "./assets/js/product-experience.js",
+  "./assets/js/supabase-config.js",
+  "./assets/js/supabase-client.js",
+  "./assets/images/barford-golf-society-logo.png"
 ];
-self.addEventListener("install",event=>{event.waitUntil(caches.open(CACHE).then(cache=>cache.addAll(CORE)).then(()=>self.skipWaiting()))});
-self.addEventListener("activate",event=>{event.waitUntil(caches.keys().then(keys=>Promise.all(keys.filter(key=>key.startsWith("barford-golf-")&&key!==CACHE).map(key=>caches.delete(key)))).then(()=>self.clients.claim()))});
-self.addEventListener("fetch",event=>{const request=event.request;if(request.method!=="GET")return;const url=new URL(request.url);if(request.mode==="navigate"){event.respondWith(fetch(request).then(response=>{if(response.ok)caches.open(CACHE).then(cache=>cache.put(request,response.clone()));return response}).catch(()=>caches.match(request,{ignoreSearch:true}).then(cached=>cached||caches.match("./index.html"))));return}if(url.origin===self.location.origin||url.hostname==="cdn.jsdelivr.net"){event.respondWith(caches.match(request).then(cached=>cached||fetch(request).then(response=>{if(response.ok)caches.open(CACHE).then(cache=>cache.put(request,response.clone()));return response})))}});
+
+self.addEventListener("install",event=>{
+  event.waitUntil(caches.open(CACHE).then(cache=>cache.addAll(CORE)).then(()=>self.skipWaiting()));
+});
+
+self.addEventListener("activate",event=>{
+  event.waitUntil(caches.keys().then(keys=>Promise.all(keys.filter(key=>key.startsWith("barford-golf-")&&key!==CACHE).map(key=>caches.delete(key)))).then(()=>self.clients.claim()));
+});
+
+const updateCache=async(cache,request)=>{
+  try{
+    const response=await fetch(request);
+    if(response?.ok)await cache.put(request,response.clone());
+    return response;
+  }catch{return null;}
+};
+
+self.addEventListener("fetch",event=>{
+  const request=event.request;
+  if(request.method!=="GET")return;
+  const url=new URL(request.url);
+
+  if(request.mode==="navigate"){
+    event.respondWith((async()=>{
+      const cache=await caches.open(CACHE);
+      const cached=await cache.match(request,{ignoreSearch:true});
+      const network=updateCache(cache,request);
+      if(cached){event.waitUntil(network);return cached;}
+      return (await network)||cache.match("./index.html");
+    })());
+    return;
+  }
+
+  if(url.origin===self.location.origin||url.hostname==="cdn.jsdelivr.net"){
+    event.respondWith((async()=>{
+      const cache=await caches.open(CACHE);
+      const cached=await cache.match(request,{ignoreSearch:true});
+      if(cached){event.waitUntil(updateCache(cache,request));return cached;}
+      return (await updateCache(cache,request))||Response.error();
+    })());
+  }
+});
