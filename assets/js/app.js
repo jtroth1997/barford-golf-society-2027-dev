@@ -20,7 +20,7 @@ if(document.getElementById("dashboardEventCamera")){
 
 if("serviceWorker" in navigator){
   window.addEventListener("load",()=>{
-    const register=()=>navigator.serviceWorker.register("./sw.js?v=fast9").catch(()=>{});
+    const register=()=>navigator.serviceWorker.register("./sw.js?v=fast10").catch(()=>{});
     if("requestIdleCallback" in window)requestIdleCallback(register,{timeout:1400});else setTimeout(register,250);
   },{once:true});
 }
@@ -41,25 +41,6 @@ const installBtn=document.querySelector("#installHelpBtn"),installHelp=document.
 if(installBtn&&installHelp)installBtn.addEventListener("click",()=>{installHelp.classList.toggle("hidden");installBtn.textContent=installHelp.classList.contains("hidden")?"Show instructions":"Hide instructions"});
 
 const currentPage=location.pathname.split("/").pop()||"index.html";
-
-// Test Event is a core Admin action. Keep an always-visible entry in the normal Admin screen
-// so it does not depend on optional enhancement scripts or cached Season Setup UI.
-if(currentPage==="admin.html"){
-  const dashboard=document.getElementById("adminDashboard");
-  const toolbar=dashboard?.querySelector(".admin-toolbar");
-  if(toolbar&&!document.getElementById("adminDirectTestEvent")){
-    const link=document.createElement("a");
-    link.id="adminDirectTestEvent";
-    link.href="test-event.html";
-    link.textContent="Test Event";
-    link.className="button button-primary admin-direct-test-event";
-    link.setAttribute("aria-label","Open Test Event controls");
-    toolbar.appendChild(link);
-    const style=document.createElement("style");
-    style.textContent='.admin-direct-test-event{min-height:50px;display:inline-flex;align-items:center;justify-content:center;background:#a83931!important;border-color:#a83931!important;color:#fff!important;font-weight:950!important}@media(max-width:720px){#adminDashboard .admin-toolbar{display:grid!important;grid-template-columns:1fr 1fr!important;gap:10px!important}#adminDashboard .admin-toolbar>div{grid-column:1/-1}.admin-direct-test-event,#adminSignOut{width:100%;min-height:52px}}';
-    document.head.appendChild(style);
-  }
-}
 
 if(currentPage==="admin.html"&&window.fetch){
   const nativeFetch=window.fetch.bind(window),queued=new Set();
