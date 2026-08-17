@@ -100,6 +100,7 @@
     $("redHoleIndex").textContent=`SI ${info.red_stroke_index || info.stroke_index}`;
     $("redTeeSummary").querySelector("b").textContent=info.red_tee_name || "Red tee";
     renderCompetition(info);
+    renderLiveCard();
     $("previousHole").textContent = hole === 1 ? "" : `‹ Hole ${hole - 1}`;
     $("nextHoleTop").textContent = hole === 18 ? "Review ›" : `Hole ${hole + 1} ›`;
     $("previousHole").disabled = hole === 1;
@@ -118,6 +119,27 @@
     document.querySelectorAll("[data-player]").forEach(button => button.addEventListener("click", () => { selectedPlayerId=button.dataset.player; renderHole(); }));
     const selected = model.players.find(player => player.id === selectedPlayerId);
     $("selectedPlayerPrompt").textContent = selected ? `Enter gross strokes for ${selected.display_name}` : "Select a player";
+  }
+
+  function renderLiveCard() {
+    const firstHole = hole <= 9 ? 1 : 10;
+    const holes = Array.from({length:9}, (_, index) => firstHole + index);
+    const header = holes.map(number => `<b class="${number===hole?"is-current":""}">${number}</b>`).join("");
+    const rows = model.players.map(player => {
+      const cells = holes.map(number => {
+        const value = valueFor(player.id, number);
+        const info = model.holes.find(item => item.hole_number === number);
+        const display = value ? `${value.picked_up ? "X" : value.strokes}/${pointsFor(player, info, value)}` : "–";
+        return `<button type="button" class="${number===hole?"is-current":""} ${value?.picked_up?"is-pickup":""}" data-live-hole="${number}" data-live-player="${player.id}" aria-label="${esc(player.display_name)}, hole ${number}: ${value ? display : "not entered"}">${display}</button>`;
+      }).join("");
+      return `<div class="live-card-row"><strong>${esc(player.display_name)}</strong>${cells}</div>`;
+    }).join("");
+    $("liveNineStrip").innerHTML = `<div class="live-card-header"><strong>${firstHole===1?"Front 9":"Back 9"}</strong>${header}</div>${rows}`;
+    document.querySelectorAll("[data-live-hole]").forEach(button => button.addEventListener("click", () => {
+      hole = Number(button.dataset.liveHole);
+      selectedPlayerId = button.dataset.livePlayer;
+      renderHole();
+    }));
   }
 
   function goToHole(next) {
@@ -195,6 +217,35 @@
   }
   function scheduleSync() { clearTimeout(syncTimer); syncTimer=setTimeout(syncNow,500); }
 
+  async function handoffScorecard(newScorerId) {
+    const status = $("handoffStatus");
+    if (!navigator.onLine) {
+      status.textContent = "Connect to signal before handing over so every score is transferred safely.";
+      return;
+    }
+    status.textContent = "Saving the latest scores…";
+    await syncNow();
+    if (model.dirty) {
+      status.textContent = "The latest scores have not reached the server yet. Try again when the signal improves.";
+      return;
+    }
+    status.textContent = "Handing over the scorecard…";
+    const { error } = await client.rpc("handoff_scorecard", {
+      target_scorecard_id: model.card.id,
+      target_new_scorer_id: newScorerId
+    });
+    if (error) {
+      status.textContent = error.message;
+      return;
+    }
+    const newScorer = model.players.find(player => player.member_id === newScorerId);
+    localStorage.removeItem(cacheKey(session.user.id));
+    $("handoffDialog")?.close();
+    hide("scoreReady");
+    $("handoffCompleteName").textContent = newScorer?.display_name || "the new scorer";
+    show("scoreHandedOff");
+  }
+
   async function loadOnline(userId) {
     const { data: memberships, error: membershipError } = await client.from("event_scorecard_players")
       .select("scorecard_id").eq("member_id",userId);
@@ -248,6 +299,10 @@
     hide("scoreLoading");
     if (["submitted","locked"].includes(model.card.status)) return show("roundSubmitted");
     show("scoreReady"); selectedPlayerId=model.players[0]?.id; renderHole();
+    const scorerOptions = model.players.filter(player => player.member_id !== session.user.id);
+    $("handoffPlayer").innerHTML = '<option value="">Choose a player…</option>' + scorerOptions
+      .map(player => `<option value="${player.member_id}">${esc(player.display_name)}</option>`).join("");
+    $("handoffScorecard")?.classList.toggle("hidden", !scorerOptions.length);
   }
 
   function unavailable(message) { hide("scoreLoading"); $("scoreUnavailableMessage").textContent=message; show("scoreUnavailable"); }
@@ -261,6 +316,9 @@
   $("continueBackNine")?.addEventListener("click",()=>{hole=10;selectedPlayerId=model.players.find(player=>!valueFor(player.id,10))?.id||model.players[0]?.id;hide("halfwayReview");show("scoreReady");renderHole();window.scrollTo({top:0,behavior:"smooth"});});
   $("backToFrontNine")?.addEventListener("click",()=>{hole=9;selectedPlayerId=model.players[0]?.id;hide("halfwayReview");show("scoreReady");renderHole();window.scrollTo({top:0,behavior:"smooth"});});
   $("scoreSyncButton")?.addEventListener("click",syncNow);
+  $("handoffScorecard")?.addEventListener("click",()=>{$("handoffStatus").textContent="";$("handoffPlayer").value="";$("handoffDialog")?.showModal();});
+  $("handoffCancel")?.addEventListener("click",()=>$("handoffDialog")?.close());
+  $("handoffForm")?.addEventListener("submit",event=>{event.preventDefault();const newScorerId=$("handoffPlayer").value;if(newScorerId)handoffScorecard(newScorerId);});
   $("finaliseScores")?.addEventListener("click",async()=>{
     if(!confirm("Has the group checked and agreed every score on this card?\n\nAfter submission, only an administrator can reopen it."))return;
     const button=$("finaliseScores"); button.disabled=true; $("finaliseStatus").textContent="Synchronising the final card…";
