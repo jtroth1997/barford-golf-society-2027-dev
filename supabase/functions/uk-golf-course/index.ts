@@ -69,6 +69,39 @@ const curatedStrokeIndexes: Record<string, { yellow: number[]; red: number[] }> 
   },
 };
 
+// Verified fallback for a course missing from UK Golf API. Values are copied
+// from BlueGolf's published Roman Road card, including the separate ladies' par
+// and stroke-index rows: https://course.bluegolf.com/bluegolf/course/course/celticmanorroman/detailedscorecard.htm
+const romanRoadFallback = {
+  id: "verified:celtic-manor-roman-road",
+  name: "Roman Road",
+  holes: 18,
+  tee_sets: [
+    { id: "verified:roman-road-yellow", name: "Yellow", gender: "male" },
+    { id: "verified:roman-road-red", name: "Red", gender: "female" },
+  ],
+};
+const romanRoadCards = [
+  {
+    id: "verified:roman-road-yellow", name: "Yellow", gender: "male",
+    holes: [
+      [1,4,423,7],[2,3,180,13],[3,5,507,3],[4,4,288,15],[5,4,428,1],[6,5,450,17],
+      [7,4,401,9],[8,3,186,11],[9,4,353,5],[10,4,420,8],[11,3,154,12],[12,4,355,6],
+      [13,3,182,14],[14,4,350,2],[15,3,132,16],[16,5,468,18],[17,4,381,4],[18,4,381,10],
+    ].map(([hole,par,yards,stroke_index]) => ({ hole,par,yards,stroke_index })),
+  },
+  {
+    id: "verified:roman-road-red", name: "Red", gender: "female",
+    holes: [
+      [1,5,386,9],[2,3,138,17],[3,5,446,3],[4,4,240,15],[5,5,433,1],[6,4,326,5],
+      [7,4,371,13],[8,3,163,11],[9,4,277,7],[10,4,371,8],[11,3,123,14],[12,4,290,6],
+      [13,3,153,16],[14,4,292,2],[15,3,118,18],[16,5,450,10],[17,4,355,4],[18,5,392,12],
+    ].map(([hole,par,yards,stroke_index]) => ({ hole,par,yards,stroke_index })),
+  },
+];
+const celticManorClubIds = new Set(["3ef3c44f-bd94-4c4d-9c90-3c92224ff172", "b71c4033-eece-4108-b3e2-c1d363976a23"]);
+const includesCelticManor = (clubIds: string) => clubIds.split(",").some(id => celticManorClubIds.has(id));
+
 const normaliseTeeSets = (payload: any) => {
   const roots = [payload, payload?.data, payload?.course, payload?.scorecard].filter(Boolean);
   let tees: any[] = [];
@@ -113,6 +146,7 @@ Deno.serve(async request => {
   else return json({ error: "Invalid course-data request." }, 400);
 
   const apiHeaders = { "X-RapidAPI-Key": apiKey, "X-RapidAPI-Host": "uk-golf-course-data-api.p.rapidapi.com" };
+  if (action === "scorecard" && body.course_id === romanRoadFallback.id) return json({ tee_sets: romanRoadCards, source: "BlueGolf verified fallback" });
   if (action === "courses" && String(body.club_id).includes(",")) {
     const clubIds = String(body.club_id).split(",").filter(Boolean);
     const payloads = await Promise.all(clubIds.map(async id => {
@@ -120,6 +154,7 @@ Deno.serve(async request => {
       return result.ok ? await result.json() : [];
     }));
     const courses = payloads.flatMap(payload => arrayFrom(payload, ["courses", "results", "data"])).map((course: any) => ({ id: course.id || course.course_id, name: course.name || course.course_name, holes: course.holes || course.hole_count || 18, tee_sets: normaliseTeeMetadata(course) }));
+    if (includesCelticManor(String(body.club_id))) courses.push(romanRoadFallback);
     return json({ courses });
   }
   if (action === "scorecard") {
@@ -152,6 +187,7 @@ Deno.serve(async request => {
   }
   if (action === "courses") {
     const courses = arrayFrom(payload, ["courses", "results", "data"]).map((course: any) => ({ id: course.id || course.course_id, name: course.name || course.course_name, holes: course.holes || course.hole_count || 18, tee_sets: normaliseTeeMetadata(course) }));
+    if (includesCelticManor(String(body.club_id))) courses.push(romanRoadFallback);
     return json({ courses });
   }
   return json({ tee_sets: normaliseTeeSets(payload) });
