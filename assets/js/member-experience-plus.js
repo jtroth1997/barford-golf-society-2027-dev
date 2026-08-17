@@ -41,6 +41,20 @@
     }
   };
 
+  const injectActiveTestStrip = async () => {
+    const { data: testEvent } = await client.from("events").select("id,name,test_original_event_date").eq("test_mode_active", true).limit(1).maybeSingle();
+    if (!testEvent) return null;
+    document.body.classList.add("event-test-mode");
+    const grid = document.querySelector(".member-home-grid");
+    if (grid && !document.querySelector(".test-event-member-strip")) {
+      const strip = document.createElement("section");
+      strip.className = "test-event-member-strip";
+      strip.innerHTML = `<div><strong>TEST EVENT ACTIVE</strong><span>${esc(testEvent.name)} is running as a full live-event simulation. Real date: ${esc(friendlyDate(testEvent.test_original_event_date))}.</span></div><b>Nothing here changes the real event date.</b>`;
+      grid.prepend(strip);
+    }
+    return testEvent;
+  };
+
   const enableEventDay = async userId => {
     const today = localDate();
     const { data: events } = await client.from("events").select("id,name,event_date,status,test_mode_active,test_original_event_date").eq("event_date", today).neq("status","cancelled").order("first_tee_time");
@@ -84,6 +98,7 @@
     const work = async () => {
       const [{ data: notices }] = await Promise.all([client.rpc("get_member_notices")]);
       injectUpdates(notices || []);
+      await injectActiveTestStrip();
       await enableEventDay(session.user.id);
     };
     if ("requestIdleCallback" in window) requestIdleCallback(() => work(), { timeout: 1600 }); else setTimeout(work, 350);
