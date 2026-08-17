@@ -215,6 +215,7 @@
   $("returnToCard")?.addEventListener("click",()=>{hide("roundReview");show("scoreReady");renderHole();});
   $("scoreSyncButton")?.addEventListener("click",syncNow);
   $("finaliseScores")?.addEventListener("click",async()=>{
+    if(!confirm("Has the group checked and agreed every score on this card?\n\nAfter submission, only an administrator can reopen it."))return;
     const button=$("finaliseScores"); button.disabled=true; $("finaliseStatus").textContent="Synchronising the final card…";
     if (!navigator.onLine) { $("finaliseStatus").textContent="Your scores are safely saved. Connect to signal before final submission."; button.disabled=false; return; }
     await syncNow(); if(model.dirty){$("finaliseStatus").textContent="Could not synchronise yet. Please try again when signal improves.";button.disabled=false;return;}
