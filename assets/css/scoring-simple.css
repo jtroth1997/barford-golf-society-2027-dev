@@ -151,6 +151,12 @@
 .live-card-row.is-selected-player button { background:#eef7f1; }
 .live-card-row.is-selected-player button.is-current { background:#f4d477; }
 .live-card-row .live-player-name { display:block;overflow:hidden;padding-left:7px;color:#173629;text-align:left;text-overflow:ellipsis;white-space:nowrap; }
+.live-card-header b { font-size:.74rem;font-weight:900; }
+.live-card-row button:not(.live-player-name) { color:#8b9690;font-size:.7rem;font-variant-numeric:tabular-nums;letter-spacing:-.02em; }
+.live-card-row button.has-score { background:#f8fbf9;color:#043c28;font-size:.84rem;font-weight:950; }
+.live-card-row.is-selected-player button.has-score { background:#e5f3ea; }
+.live-card-row button.has-score.is-current { background:#f4d477;color:#211900; }
+.live-card-row button.is-pickup { color:#b51f18; }
 
 body.scoring-page { height:100dvh;overflow:hidden; }
 .scoring-page .score-app { height:calc(100dvh - 58px);min-height:0;overflow:hidden; }
