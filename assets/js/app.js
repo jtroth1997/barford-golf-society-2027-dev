@@ -18,7 +18,12 @@ if(document.getElementById("dashboardEventCamera")){
   document.head.appendChild(style);
 }
 
-if("serviceWorker" in navigator)navigator.serviceWorker.register("./sw.js?v=fast6").catch(()=>{});
+if("serviceWorker" in navigator){
+  window.addEventListener("load",()=>{
+    const register=()=>navigator.serviceWorker.register("./sw.js?v=fast6").catch(()=>{});
+    if("requestIdleCallback" in window)requestIdleCallback(register,{timeout:1400});else setTimeout(register,250);
+  },{once:true});
+}
 
 document.querySelectorAll(".menu-button").forEach(menuButton=>{
   const navigationId=menuButton.getAttribute("aria-controls");
