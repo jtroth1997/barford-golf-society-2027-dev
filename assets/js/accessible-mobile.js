@@ -61,7 +61,8 @@
       ["index.html", "🏠", "Home"],
       ["events.html", "📅", "Events"],
       ["scores.html", "🏆", "League"],
-      ["account.html", "👤", "My details"]
+      ["gallery.html", "📷", "Photos"],
+      ["account.html", "👤", "Account"]
     ];
     const current = currentPage;
     quickNav.innerHTML = items.map(([href, icon, label]) =>
@@ -83,7 +84,7 @@
   }
 
   document.querySelectorAll(".rsvp-event-button").forEach(button => {
-    if (button.textContent.trim() === "RSVP") button.textContent = "Book my place";
+    if (button.textContent.trim() === "RSVP") button.textContent = "Choose yes or no";
   });
   document.querySelectorAll(".event-button-row button").forEach(button => {
     if (button.textContent.trim() === "Course video") button.textContent = "Watch course video";

@@ -1,6 +1,6 @@
 <!doctype html>
 <html lang="en">
-<head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover"><meta name="theme-color" content="#063d2a"><title>Admin | Barford Golf Society</title><link rel="stylesheet" href="assets/css/styles.css?v=ux100"><link rel="stylesheet" href="assets/css/admin.css?v=eventresults1"><link rel="stylesheet" href="assets/css/admin-scoring-results.css?v=endround1"><link rel="stylesheet" href="assets/css/accessible-mobile.css?v=ux100"></head>
+<head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover"><meta name="theme-color" content="#063d2a"><title>Admin | Barford Golf Society</title><link rel="stylesheet" href="assets/css/styles.css?v=ux100"><link rel="stylesheet" href="assets/css/admin.css?v=eventresults1"><link rel="stylesheet" href="assets/css/admin-scoring-results.css?v=checklist1"><link rel="stylesheet" href="assets/css/accessible-mobile.css?v=simplenav1"></head>
 <body class="admin-page">
 <header class="site-header"><div class="shell header-inner"><a class="brand" href="index.html"><img src="assets/images/barford-golf-society-logo.png" alt="Barford Golf Society"></a><button class="menu-button" type="button" aria-expanded="false" aria-controls="primary-navigation"><span class="sr-only">Open menu</span><span></span><span></span><span></span></button><nav id="primary-navigation" class="site-nav"><a href="index.html">Home</a><a href="events.html">Events</a><a href="scores.html">League Table</a><a href="gallery.html">Photos</a><a href="account.html">My Account</a><a class="active" href="admin.html">Admin</a></nav></div></header>
 <main class="admin-page">
@@ -13,7 +13,7 @@
     <div class="admin-card admin-toolbar"><div><p class="eyebrow">2027 administration</p><h2>Admin access confirmed</h2><p>The new database is connected and ready for real society information.</p></div><button id="adminSignOut" class="button button-outline">Sign out</button></div>
     <nav class="admin-section-nav" aria-label="Admin sections">
       <button class="active" type="button" data-admin-view="events">Events</button>
-      <button type="button" data-admin-view="scorecards">Event Scorecard</button>
+      <button type="button" data-admin-view="scorecards">Event Scoring</button>
       <button type="button" data-admin-view="scores">Scores</button>
       <button type="button" data-admin-view="gallery">Gallery</button>
       <button type="button" data-admin-view="content">Shop & trips</button>
@@ -70,9 +70,15 @@
 
     <section class="admin-view hidden" data-admin-panel="scorecards">
       <section class="admin-card admin-live-scoring">
-        <div class="admin-heading"><div><p class="eyebrow">Complete scoring workflow</p><h3>Event Scorecard</h3><p>Select the event, save its course and tees, prepare the group cards, then finish the round here when everybody is safely in.</p></div><select id="adminScoringEvent"><option value="">Select event</option></select></div>
+        <div class="admin-heading"><div><p class="eyebrow">Complete scoring workflow</p><h3>Event Scoring</h3><p>Select an event and follow the checklist. The page will show the next job that needs attention.</p></div><select id="adminScoringEvent"><option value="">Select event</option></select></div>
         <div id="adminScoringSetup" class="hidden">
-          <div class="admin-scoring-steps"><span><b>1</b>Course card</span><span><b>2</b>Prepare groups</span><span><b>3</b>Check submissions</span><span><b>4</b>End round</span></div>
+          <ol id="adminScoringChecklist" class="admin-scoring-checklist" aria-label="Event scoring progress">
+            <li data-score-check="event"><b>1</b><span><strong>Event selected</strong><small>Ready</small></span></li>
+            <li data-score-check="course"><b>2</b><span><strong>Course and tees saved</strong><small>Needs attention</small></span></li>
+            <li data-score-check="cards"><b>3</b><span><strong>Group scorecards ready</strong><small>Waiting</small></span></li>
+            <li data-score-check="submitted"><b>4</b><span><strong>Groups submitted</strong><small>Waiting</small></span></li>
+            <li data-score-check="finished"><b>5</b><span><strong>Round finished</strong><small>Waiting</small></span></li>
+          </ol>
           <section class="admin-course-import">
             <div><h4>Automatic course scorecard</h4><p class="admin-score-help">The event location is matched with UK Golf API. If the club has several courses, select the one being played.</p></div>
             <button id="adminFindCourseData" class="button button-primary" type="button">Find linked course</button>
@@ -85,7 +91,7 @@
           <div id="adminScorecardSaved" class="admin-save-confirmation hidden" role="status" aria-live="polite"><strong>Saved successfully</strong><span>The event scorecard information is ready.</span></div>
           <section class="admin-competition-setup"><div><h4>Event-day competitions</h4><p class="admin-score-help">Choose the holes for Longest Drive and Nearest the Pin.</p></div><label>Longest Drive hole<select id="adminLongestDriveHole"><option value="">Not selected</option></select></label><label>Nearest the Pin hole<select id="adminNearestPinHole"><option value="">Not selected</option></select></label><button id="adminSaveCompetitionHoles" class="button button-outline" type="button">Save competition holes</button></section>
           <div class="admin-scoring-grid">
-            <section><h4>Loaded scorecard</h4><p class="admin-score-help">Yellow and red tee data is loaded automatically. Manual correction remains available if the club has recently changed its card.</p><div id="adminHoleEditor" class="admin-hole-editor"></div><button id="adminSaveHoles" class="button button-outline" type="button">Save manual corrections</button></section>
+            <details class="admin-advanced-scorecard"><summary>Advanced: view or correct the course scorecard</summary><p class="admin-score-help">Only use this if the club has recently changed its card or automatic course information is wrong.</p><div id="adminHoleEditor" class="admin-hole-editor"></div><button id="adminSaveHoles" class="button button-outline" type="button">Save manual corrections</button></details>
             <section><h4>Group scorecards</h4><p class="admin-score-help">Tee times and society handicaps are locked when cards are prepared.</p><button id="adminPrepareScorecards" class="button button-primary" type="button">Create group scorecards</button><div id="adminScorecardProgress" class="admin-compact-list"><p>Save the course card first.</p></div><div class="admin-end-round"><p class="eyebrow">Everyone safely in?</p><h4>Finish the round</h4><p>This becomes available when every group has submitted. It publishes the scores to the league table, calculates next handicaps and creates the committee's official finishing positions.</p><div class="admin-winner-fields"><label>Longest Drive winner<select id="adminLongestDriveWinner"><option value="">Not awarded</option></select></label><label>Nearest the Pin winner<select id="adminNearestPinWinner"><option value="">Not awarded</option></select></label></div><button id="adminCompleteRound" class="button button-primary" type="button" disabled>Waiting for scorecards</button></div></section>
           </div>
         </div>
@@ -103,8 +109,9 @@
 
     <section class="admin-view hidden" data-admin-panel="scores">
       <section class="admin-card">
-        <div class="admin-heading"><div><p class="eyebrow">Rounds and results</p><h3>2027 score administration</h3><p>Events are already linked to their round. Enter results and lock a completed round.</p></div><div class="admin-form-actions"><button id="adminExportLeaderboard" class="button button-outline" type="button">Export leaderboard CSV</button><button id="adminClearScores" class="button button-outline danger-link" type="button">Clear season scores</button></div></div>
+        <div class="admin-heading"><div><p class="eyebrow">Alternative scoring system</p><h3>Manual scores</h3><p>This separate system remains available while the committee decides which scoring method to use.</p></div><div class="admin-form-actions"><button id="adminExportLeaderboard" class="button button-outline" type="button">Export leaderboard CSV</button></div></div>
         <p class="admin-score-help">Each round is created automatically when you save an event. Use the Events section to choose its required season round.</p>
+        <details class="admin-danger-zone"><summary>Advanced season controls</summary><p>Only use this when deliberately resetting the whole season.</p><button id="adminClearScores" class="button button-outline danger-link" type="button">Clear all season scores</button></details>
         <div id="adminRoundList" class="admin-compact-list"></div>
         <p id="adminRoundStatus" class="form-status" aria-live="polite"></p>
       </section>
@@ -178,6 +185,6 @@
   </form>
 </dialog>
 <footer class="site-footer"><div class="shell footer-inner"><div class="footer-brand"><img src="assets/images/barford-golf-society-logo.png" alt=""><span>Barford Golf Society</span></div><p>© <span id="year"></span> Barford Golf Society</p></div></footer>
-<script src="assets/js/app.js?v=speed2" defer></script><script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2" defer></script><script src="assets/js/supabase-config.js?v=live1" defer></script><script src="assets/js/supabase-client.js?v=ux100" defer></script><script src="assets/js/admin-auth.js?v=autoscorecards1" defer></script><script src="assets/js/admin-scoring.js?v=endround1" defer></script><script src="assets/js/accessible-mobile.js?v=ux100" defer></script>
+<script src="assets/js/app.js?v=speed2" defer></script><script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2" defer></script><script src="assets/js/supabase-config.js?v=live1" defer></script><script src="assets/js/supabase-client.js?v=ux100" defer></script><script src="assets/js/admin-auth.js?v=autoscorecards1" defer></script><script src="assets/js/admin-scoring.js?v=checklist1" defer></script><script src="assets/js/accessible-mobile.js?v=simplenav1" defer></script>
 </body>
 </html>

@@ -8,7 +8,7 @@
   <title>Gallery | Barford Golf Society</title>
   <link rel="stylesheet" href="assets/css/styles.css?v=ux100">
   <link rel="stylesheet" href="assets/css/gallery.css?v=swipe1">
-  <link rel="stylesheet" href="assets/css/accessible-mobile.css?v=ux100">
+  <link rel="stylesheet" href="assets/css/accessible-mobile.css?v=simplenav1">
 </head>
 <body>
 <a class="skip-link" href="#main-content">Skip to content</a>
@@ -21,6 +21,12 @@
 </header>
 <main id="main-content">
   <section class="page-hero gallery"><div class="shell"><p class="eyebrow">Member memories</p><h1>Photos</h1><p>Photos from Barford golf days, trips and memorable moments.</p></div></section>
+  <section class="section section-soft">
+    <div class="shell">
+      <div class="section-heading"><div><p class="eyebrow">Society photographs</p><h2>Latest photos</h2></div><span id="galleryCount" class="status-pill">Loading…</span></div>
+      <div id="galleryGrid" class="gallery-grid"><div class="empty-state">Loading the gallery…</div></div>
+    </div>
+  </section>
   <section class="section shell">
     <div class="toolbar"><div><p class="eyebrow">Share a moment</p><h2>Add your photos</h2><p id="galleryLoginNote" class="muted">Sign in to upload photographs.</p></div></div>
     <form id="galleryUploadForm" class="upload-card hidden">
@@ -29,12 +35,6 @@
       <button class="button button-primary" type="submit">Upload photos</button>
       <p id="galleryUploadStatus" class="form-status" aria-live="polite"></p>
     </form>
-  </section>
-  <section class="section section-soft">
-    <div class="shell">
-      <div class="section-heading"><div><p class="eyebrow">Society photographs</p><h2>Latest photos</h2></div><span id="galleryCount" class="status-pill">Loading…</span></div>
-      <div id="galleryGrid" class="gallery-grid"><div class="empty-state">Loading the gallery…</div></div>
-    </div>
   </section>
 </main>
 <dialog id="galleryLightbox" class="gallery-lightbox">
@@ -52,7 +52,7 @@
 <script src="assets/js/supabase-config.js?v=live1" defer></script>
 <script src="assets/js/supabase-client.js?v=ux100" defer></script>
 <script src="assets/js/gallery-live.js?v=swipe1" defer></script>
-<script src="assets/js/accessible-mobile.js?v=ux100" defer></script>
+<script src="assets/js/accessible-mobile.js?v=simplenav1" defer></script>
 <script data-mobile-nav-lock>
 window.addEventListener("DOMContentLoaded",()=>document.querySelectorAll(".mobile-quick-nav").forEach(nav=>{const links=nav.querySelectorAll("a");const item=links[links.length-1];if(!item)return;item.href="account.html";item.innerHTML='<span class="quick-icon" aria-hidden="true">👤</span><span>My details</span>';item.classList.toggle("active",location.pathname.endsWith("/account.html"));if(location.pathname.endsWith("/account.html"))item.setAttribute("aria-current","page");else item.removeAttribute("aria-current");}));
 </script>

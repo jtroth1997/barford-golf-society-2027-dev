@@ -160,6 +160,12 @@ function renderLeaderboard() {
     ? `<strong>${escapeHtml(selectedRound.name)} standings</strong><span>Your five highest round scores count. From Round 6 onwards, a better score automatically replaces your lowest counting score. Tap a player for their full history.</span>`
     : `<strong>No completed rounds yet</strong><span>The leaderboard will appear after scores are calculated and saved.</span>`;
 
+  if (!selectedRound) {
+    list.innerHTML = `<div class="preseason-empty"><span aria-hidden="true">🏌️</span><strong>No standings yet</strong><p>The League Table will appear after Round 1 has been completed.</p></div>`;
+    $("#statusMessage").textContent = "";
+    return;
+  }
+
   const eligiblePlayers = state.data.players.filter(player =>
     !selectedRound || Number(player.fromRound || 1) <= Number(selectedRound.number)
   );

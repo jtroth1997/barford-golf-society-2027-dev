@@ -19,8 +19,8 @@
   <link rel="preconnect" href="https://xspzmthygrajzktydvvj.supabase.co" crossorigin>
   <link rel="preconnect" href="https://cdn.jsdelivr.net" crossorigin>
   <link rel="stylesheet" href="assets/css/styles.css?v=publiclogo1">
-  <link rel="stylesheet" href="assets/css/members.css?v=scorecardtop1">
-  <link rel="stylesheet" href="assets/css/accessible-mobile.css?v=ux100">
+  <link rel="stylesheet" href="assets/css/members.css?v=simpleflow1">
+  <link rel="stylesheet" href="assets/css/accessible-mobile.css?v=simplenav1">
   <style>
     .member-session-cached #publicHome{display:none!important}
     .member-session-cached #memberHomeDashboard{display:block!important}
@@ -50,7 +50,7 @@
       <section class="dashboard-card dashboard-next-event">
         <div id="dashboardCancelledBanner" class="dashboard-cancelled-banner hidden"><strong>CANCELLED</strong><span id="dashboardCancelledReason">This event has been cancelled.</span></div>
         <div id="dashboardNextStep" class="dashboard-next-step"><span>What you need to do</span><strong id="dashboardNextStepText">Checking your next event…</strong></div>
-        <div class="dashboard-card-heading"><div class="dashboard-event-heading"><p class="eyebrow">Your next event</p><div class="dashboard-event-title-line"><h2 id="dashboardEventName">Checking upcoming events…</h2><a class="event-scorecard-cta hidden" href="scoring.html"><span aria-hidden="true">✎</span><strong>Enter event scorecard</strong></a></div></div><span id="dashboardRsvpBadge" class="season-chip">Checking</span></div>
+          <div class="dashboard-card-heading"><div class="dashboard-event-heading"><p class="eyebrow">Your next event</p><div class="dashboard-event-title-line"><h2 id="dashboardEventName">Checking upcoming events…</h2><a class="event-scorecard-cta hidden" href="scoring.html"><span aria-hidden="true">✎</span><strong>Open today’s scorecard</strong></a></div></div><span id="dashboardRsvpBadge" class="season-chip">Checking</span></div>
         <p id="dashboardEventDetail">Your event details will appear here.</p>
         <div id="dashboardEventFacts" class="dashboard-event-facts hidden">
           <div><span>Date</span><strong id="dashboardEventDate">—</strong></div>
@@ -80,7 +80,7 @@
           </div>
         </section>
         <section id="dashboardPlayingConfirmation" class="dashboard-playing-confirmation hidden" aria-live="polite">
-          <div class="playing-confirmation-heading"><span aria-hidden="true">✓</span><div><strong>You’re playing this event</strong><small>Your RSVP has been saved.</small></div></div>
+          <div class="playing-confirmation-heading"><span aria-hidden="true">✓</span><div><strong>You’re playing this event</strong><small>Your choice has been saved.</small></div></div>
           <div class="playing-request-grid">
             <div><span>Playing</span><strong id="dashboardPlayingTravel">Walking</strong></div>
             <div><span>Tee-time request</span><strong id="dashboardPlayingPreference">Don’t mind</strong></div>
@@ -91,7 +91,7 @@
             <button id="dashboardWithdrawRsvp" class="button button-outline" type="button" data-rsvp="not_playing">I can’t play</button>
           </div>
         </section>
-        <div id="dashboardRsvpLockedNotice" class="dashboard-rsvp-locked hidden"><strong>Tee times have been produced</strong><span>Your RSVP choices are now locked. Please contact the committee if something needs changing.</span></div>
+        <div id="dashboardRsvpLockedNotice" class="dashboard-rsvp-locked hidden"><strong>Tee times have been produced</strong><span>Your playing choice is now locked. Please contact the committee if something needs changing.</span></div>
         <div id="dashboardRsvpActions" class="dashboard-button-row hidden">
           <button id="dashboardRsvpPlaying" class="button button-primary" type="button" data-rsvp="playing">I’m playing</button>
           <button id="dashboardRsvpDecline" class="button button-outline" type="button" data-rsvp="not_playing">I can’t play</button>
@@ -157,7 +157,7 @@
     <div class="shell">
       <div class="section-heading compact"><div><p class="eyebrow">Quick access</p><h2>Everything in one place</h2></div></div>
       <div class="feature-grid four">
-        <a class="feature-card link-card" href="events.html"><span class="feature-number">01</span><h3>Society events</h3><p>View dates, venues, tee times and RSVP information.</p></a>
+        <a class="feature-card link-card" href="events.html"><span class="feature-number">01</span><h3>Society events</h3><p>View dates, venues, tee times and tell us whether you’re playing.</p></a>
         <a class="feature-card link-card" href="scores.html"><span class="feature-number">02</span><h3>League Table</h3><p>See the standings, round results and handicaps.</p></a>
         <a class="feature-card link-card" href="gallery.html"><span class="feature-number">03</span><h3>Member gallery</h3><p>Browse and add society photographs.</p></a>
         <a class="feature-card link-card" href="account.html"><span class="feature-number">04</span><h3>My Account</h3><p>Manage your profile and personal golf information.</p></a>
@@ -197,7 +197,7 @@
 <dialog id="dashboardRsvpDialog" class="member-rsvp-dialog">
   <form id="dashboardRsvpForm">
     <button id="dashboardRsvpClose" class="dialog-close" type="button" aria-label="Close">×</button>
-    <p class="eyebrow">Confirm your RSVP</p>
+    <p class="eyebrow">Confirm your choice</p>
     <h2>I’m playing</h2>
     <p>Tell the organiser how you plan to play. You can change this later.</p>
     <fieldset>
@@ -228,8 +228,8 @@
 <script src="assets/js/supabase-client.js?v=ux100" defer></script>
 <script src="assets/js/passkeys.js?v=faceid1" defer></script>
 <script src="assets/js/home-photos.js?v=5" defer></script>
-<script src="assets/js/member-dashboard.js?v=simple2" defer></script>
-<script src="assets/js/accessible-mobile.js?v=ux100" defer></script>
+<script src="assets/js/member-dashboard.js?v=simplewords1" defer></script>
+<script src="assets/js/accessible-mobile.js?v=simplenav1" defer></script>
 <script data-mobile-nav-lock>
 window.addEventListener("DOMContentLoaded",()=>document.querySelectorAll(".mobile-quick-nav").forEach(nav=>{const links=nav.querySelectorAll("a");const item=links[links.length-1];if(!item)return;item.href="account.html";item.innerHTML='<span class="quick-icon" aria-hidden="true">👤</span><span>My details</span>';item.classList.toggle("active",location.pathname.endsWith("/account.html"));if(location.pathname.endsWith("/account.html"))item.setAttribute("aria-current","page");else item.removeAttribute("aria-current");}));
 </script>

@@ -33,7 +33,17 @@
     $("adminLongestDriveHole").value=String((holes||[]).find(item=>item.longest_drive)?.hole_number||"");
     $("adminNearestPinHole").value=String((holes||[]).find(item=>item.nearest_pin)?.hole_number||"");
     const ready=holes?.length===18&&holes.every(item=>item.red_yards&&item.red_stroke_index);
-    renderCards(cards||[],ready);$("adminResultsEvent").value=eventId;await loadResults(eventId);status(ready?"Yellow and red course cards are ready.":"Find the linked course and select the yellow and red tees.");
+    renderCards(cards||[],ready);updateChecklist(ready,cards||[]);$("adminResultsEvent").value=eventId;await loadResults(eventId);status(ready?"Yellow and red course cards are ready.":"Find the linked course and select the yellow and red tees.");
+  }
+  function updateChecklist(courseReady,cards){
+    const set=(name,done,label,current=false)=>{const item=document.querySelector(`[data-score-check="${name}"]`);if(!item)return;item.classList.toggle("is-done",done);item.classList.toggle("is-current",current&&!done);item.querySelector("small").textContent=label;};
+    const prepared=cards.length>0,submitted=prepared&&cards.every(card=>["submitted","locked"].includes(card.status)),finished=prepared&&cards.every(card=>card.status==="locked");
+    const submittedCount=cards.filter(card=>["submitted","locked"].includes(card.status)).length;
+    set("event",true,"Ready");
+    set("course",courseReady,courseReady?"Saved":"Do this next",true);
+    set("cards",prepared,prepared?`${cards.length} group card${cards.length===1?"":"s"} ready`:courseReady?"Do this next":"Waiting",courseReady);
+    set("submitted",submitted,prepared?`${submittedCount} of ${cards.length} submitted`:"Waiting",prepared);
+    set("finished",finished,finished?"Complete":submitted?"Ready to finish":"Waiting",submitted);
   }
   function renderCards(cards,holesReady){
     $("adminPrepareScorecards").disabled=!holesReady;

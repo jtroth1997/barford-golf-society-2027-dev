@@ -289,12 +289,12 @@
     show("dashboardWithdrawRsvp", isPlaying && !rsvpChoicesLocked);
     set("dashboardRsvpBadge", isPlaying
       ? rsvpChoicesLocked ? "Tee times confirmed" : "You’re playing"
-      : currentRsvp?.status === "not_playing" ? "Not playing" : rsvpChoicesLocked ? "RSVP closed" : "RSVP needed");
+      : currentRsvp?.status === "not_playing" ? "Not playing" : rsvpChoicesLocked ? "Choices closed" : "Choose yes or no");
     if (!isPlaying) {
       setNextStep(currentRsvp?.status === "not_playing"
         ? "Nothing to do — you are marked as not playing."
         : rsvpChoicesLocked
-          ? "RSVP has closed. Contact the committee if you need help."
+          ? "Playing choices are closed. Contact the committee if you need help."
           : "Tell us whether you’re playing.", currentRsvp?.status ? "" : "action");
     } else if (["submitted", "locked"].includes(currentScorecard?.status)) {
       setNextStep("Your group’s scores have been submitted.");
@@ -402,7 +402,7 @@
     const scoreLabel = scoreLink?.querySelector("strong");
     if (scoreLabel) scoreLabel.textContent = ["submitted", "locked"].includes(currentScorecard?.status)
       ? "View submitted scores"
-      : "Enter event scores";
+      : "Open today’s scorecard";
     const ownSlot = teeGroup.find(player => player.is_you);
     set("dashboardEventName", nextEvent.name);
     set("dashboardEventDetail", `${nextEvent.venue}${nextEvent.address ? ` · ${nextEvent.address}` : ""}`);
@@ -434,7 +434,7 @@
       if (statusLine) statusLine.textContent = "Tee times have been produced, so your choices are locked. Please contact the committee.";
       return null;
     }
-    if (statusLine) statusLine.textContent = "Saving your RSVP…";
+    if (statusLine) statusLine.textContent = "Saving your choice…";
     const payload = {
       event_id: nextEvent.id,
       member_id: session.user.id,
@@ -446,7 +446,7 @@
     };
     const { data, error } = await client.from("rsvps").upsert(payload, { onConflict: "event_id,member_id" }).select().single();
     if (error) {
-      if (statusLine) statusLine.textContent = "Your RSVP could not be saved. Please try again.";
+      if (statusLine) statusLine.textContent = "Your choice could not be saved. Please try again.";
       return null;
     }
     currentRsvp = data;
