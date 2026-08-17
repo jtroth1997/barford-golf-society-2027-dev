@@ -57,7 +57,17 @@ Deno.serve(async request => {
   if (request.method === "OPTIONS") return new Response("ok", { headers: corsHeaders });
   if (request.method !== "POST") return json({ error: "Method not allowed" }, 405);
   if (!(await adminRequest(request))) return json({ error: "Administrator access required." }, 403);
-  const apiKey = Deno.env.get("UK_GOLF_API_KEY");
+  let apiKey = Deno.env.get("UK_GOLF_API_KEY");
+  if (!apiKey) {
+    const supabaseUrl = Deno.env.get("SUPABASE_URL");
+    const serviceKey = Deno.env.get("SUPABASE_SERVICE_ROLE_KEY");
+    if (supabaseUrl && serviceKey) {
+      const secretResponse = await fetch(`${supabaseUrl}/rest/v1/integration_secrets?name=eq.UK_GOLF_API_KEY&select=secret_value`, {
+        headers: { apikey: serviceKey, Authorization: `Bearer ${serviceKey}` },
+      });
+      if (secretResponse.ok) apiKey = (await secretResponse.json())?.[0]?.secret_value;
+    }
+  }
   if (!apiKey) return json({ error: "UK Golf API is ready but its RapidAPI key has not been connected yet.", code: "UK_GOLF_KEY_MISSING" }, 503);
   const body = await request.json().catch(() => ({}));
   const action = String(body.action || "");
@@ -70,7 +80,7 @@ Deno.serve(async request => {
   else if (action === "scorecard" && body.course_id) path = `/courses/${encodeURIComponent(body.course_id)}/scorecard`;
   else return json({ error: "Invalid course-data request." }, 400);
 
-  const response = await fetch(`https://uk-golf-api.vercel.app${path}`, {
+  const response = await fetch(`https://uk-golf-course-data-api.p.rapidapi.com${path}`, {
     headers: { "X-RapidAPI-Key": apiKey, "X-RapidAPI-Host": "uk-golf-course-data-api.p.rapidapi.com" },
   });
   const payload = await response.json().catch(() => null);
