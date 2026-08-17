@@ -14,7 +14,7 @@
     <section id="scoreUnavailable" class="score-state hidden"><h1>Scorecard not ready</h1><p id="scoreUnavailableMessage">Ask an administrator to prepare the event scorecards.</p><a class="button button-primary" href="index.html">Return to dashboard</a></section>
     <section id="scoreReady" class="hidden">
       <div id="offlineReadyBanner" class="offline-ready"><span>✓</span><div><strong>Ready for low or no signal</strong><small>Scores are saved on this phone first.</small></div></div>
-      <section class="hole-heading"><button id="previousHole" type="button">‹ Hole 18</button><div><span id="holeProgress">Hole 1 of 18</span><h1 id="holeTitle">Hole 1</h1><p><b id="holePar">Par 4</b><b id="holeYards">386 yards</b><b id="holeIndex">Stroke index 7</b></p></div><button id="nextHoleTop" type="button">Hole 2 ›</button></section>
+      <section class="hole-heading"><button id="previousHole" type="button">‹ Hole 18</button><div><span id="holeProgress">Hole 1 of 18</span><h1 id="holeTitle">Hole 1</h1><p id="yellowTeeSummary"><b>Yellow tee</b><b id="holePar">Par 4</b><b id="holeYards">386 yards</b><b id="holeIndex">SI 7</b></p><p id="redTeeSummary"><b>Red tee</b><b id="redHolePar">Par 4</b><b id="redHoleYards">342 yards</b><b id="redHoleIndex">SI 9</b></p></div><button id="nextHoleTop" type="button">Hole 2 ›</button></section>
       <div id="playerRows" class="score-player-list"></div>
       <section id="scoreKeypad" class="score-keypad" aria-label="Enter gross score">
         <div id="selectedPlayerPrompt">Select a player</div>
@@ -30,5 +30,5 @@
     <section id="roundReview" class="score-review hidden"><p class="eyebrow">Card complete</p><h1>Review your group’s scores</h1><p>Check every score carefully before submitting. After submission, only an administrator can make changes.</p><div id="reviewPlayers"></div><button id="returnToCard" class="button button-outline" type="button">Return to scorecard</button><button id="finaliseScores" class="button button-primary" type="button">Finalise and submit scores</button><p id="finaliseStatus" class="form-status"></p></section>
     <section id="roundSubmitted" class="score-state hidden"><span class="submitted-tick">✓</span><h1>Scores submitted</h1><p>Your group’s card is safely with the committee. The leaderboard remains private until the administrator completes the round.</p><a class="button button-primary" href="index.html">Return to dashboard</a></section>
   </main>
-  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2" defer></script><script src="assets/js/supabase-config.js?v=live1" defer></script><script src="assets/js/supabase-client.js?v=ux100" defer></script><script src="assets/js/scoring.js?v=1" defer></script>
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2" defer></script><script src="assets/js/supabase-config.js?v=live1" defer></script><script src="assets/js/supabase-client.js?v=ux100" defer></script><script src="assets/js/scoring.js?v=course-tees1" defer></script>
 </body></html>
