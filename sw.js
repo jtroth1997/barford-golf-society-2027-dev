@@ -1,4 +1,4 @@
-const CACHE="barford-golf-2027-fast-v5";
+const CACHE="barford-golf-2027-fast-v6";
 const CORE=[
   "./",
   "./index.html",
@@ -10,6 +10,7 @@ const CORE=[
   "./assets/css/product-polish-mobile.css",
   "./assets/js/app.js",
   "./assets/js/product-experience.js",
+  "./assets/js/event-course-setup.js",
   "./assets/js/supabase-config.js",
   "./assets/js/supabase-client.js",
   "./assets/images/barford-golf-society-logo.png"
