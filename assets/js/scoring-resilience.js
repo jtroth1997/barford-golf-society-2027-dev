@@ -6,6 +6,7 @@
   const DB_NAME = "barford-score-safety";
   const DB_VERSION = 1;
   const UNCHANGED_TIMESTAMP = "1970-01-01T00:00:00.000Z";
+  const TEST_CACHE_KEY = "barford-active-test-event";
   let dbPromise, wakeLock = null, wakeEnabled = false, recovered = false;
 
   const openDb = () => {
@@ -132,6 +133,29 @@
     const note=document.createElement("div");note.className="score-recovery-note";note.textContent="✓ Recovered your latest scorecard from the safety backup on this phone.";bar.after(note);setTimeout(()=>note.remove(),5000);
   }
 
+  const showTestMode = async () => {
+    let testEvent = null;
+    if (navigator.onLine) {
+      const { data, error } = await client.from("events").select("id,name,test_original_event_date").eq("test_mode_active", true).limit(1).maybeSingle();
+      if (!error) {
+        testEvent = data || null;
+        if (testEvent) localStorage.setItem(TEST_CACHE_KEY, JSON.stringify(testEvent));
+        else localStorage.removeItem(TEST_CACHE_KEY);
+      }
+    }
+    if (!testEvent) testEvent = parse(localStorage.getItem(TEST_CACHE_KEY));
+    if (!testEvent || document.getElementById("scoreTestModeBanner")) return;
+    const realDate = testEvent.test_original_event_date
+      ? new Intl.DateTimeFormat("en-GB", { weekday:"short", day:"numeric", month:"short", year:"numeric" }).format(new Date(`${testEvent.test_original_event_date}T12:00:00`))
+      : "the real scheduled date";
+    const banner = document.createElement("div");
+    banner.id = "scoreTestModeBanner";
+    banner.className = "score-test-mode-banner";
+    banner.innerHTML = `TEST EVENT · ${String(testEvent.name || "Society round").replace(/[<>]/g,"")}<small>Full live scoring simulation · real event date ${realDate}</small>`;
+    bar.after(banner);
+  };
+  showTestMode();
+
   const safetyText = document.getElementById("scoreSafetyText");
   const updateSafety = () => {
     const syncText = document.getElementById("scoreSyncButton")?.textContent || "";
@@ -171,7 +195,7 @@
     else if (wakeEnabled) requestWake();
   });
   window.addEventListener("pagehide", () => { snapshotAll(); });
-  window.addEventListener("online", () => { updateSafety(); setTimeout(async()=>{await replayPending();document.getElementById("scoreSyncButton")?.click();},250); });
+  window.addEventListener("online", () => { updateSafety(); showTestMode(); setTimeout(async()=>{await replayPending();document.getElementById("scoreSyncButton")?.click();},250); });
   window.addEventListener("offline", updateSafety);
   window.addEventListener("error", () => snapshotAll());
   window.addEventListener("unhandledrejection", () => snapshotAll());
