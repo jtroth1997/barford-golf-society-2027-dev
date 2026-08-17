@@ -232,6 +232,9 @@ button:focus-visible,a:focus-visible,input:focus-visible,select:focus-visible,te
   .dashboard-side{margin-top:16px}
   .dashboard-side .dashboard-card:nth-of-type(2){display:none}
   .dashboard-side .dashboard-card{padding:16px!important}
+  .dashboard-actions{display:none!important}
+  .dashboard-history-toggle{display:flex!important;width:100%;justify-content:center;margin-top:4px}
+  .dashboard-season-review.mobile-history-collapsed{display:none!important}
   #publicHome .hero{padding:38px 0!important}
   #publicHome .hero-grid{display:block}
   #publicHome .hero-art{display:none}
