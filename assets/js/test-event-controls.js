@@ -31,11 +31,17 @@
     dialog.querySelector("#quickTestConfirm")?.addEventListener("click", async event => {
       if (!pending) return;
       const button = event.currentTarget;
-      button.disabled = true; button.textContent = "Starting Test Mode…";
+      button.disabled = true;
+      button.textContent = "Starting Test Mode…";
       const status = dialog.querySelector("#quickTestStatus");
       status.textContent = "Preparing the full live-event simulation…";
       const { error } = await client.rpc("set_event_test_mode", { target_event_id: pending.id, make_active: true });
-      if (error) { status.textContent = error.message; button.disabled = false; button.textContent = "Start test & open member view"; return; }
+      if (error) {
+        status.textContent = error.message;
+        button.disabled = false;
+        button.textContent = "Start test & open member view";
+        return;
+      }
       location.href = "index.html?test=1";
     });
     return dialog;
@@ -47,14 +53,19 @@
     dialog.querySelector("#quickTestTitle").textContent = `Test ${event.name}?`;
     dialog.querySelector("#quickTestIntro").textContent = `Real scheduled date: ${event.test_original_event_date || event.event_date}.`;
     dialog.querySelector("#quickTestStatus").textContent = "";
-    const confirm = dialog.querySelector("#quickTestConfirm"); confirm.disabled = false; confirm.textContent = "Start test & open member view";
+    const confirm = dialog.querySelector("#quickTestConfirm");
+    confirm.disabled = false;
+    confirm.textContent = "Start test & open member view";
     dialog.showModal();
   };
 
   const endTest = async event => {
     if (!confirm(`End Test Mode for ${event.name}?\n\nIts real date will be restored. Test scores and tee times stay available until you reset the test.`)) return;
     const { error } = await client.rpc("set_event_test_mode", { target_event_id: event.id, make_active: false });
-    if (error) { alert(error.message); return; }
+    if (error) {
+      alert(error.message);
+      return;
+    }
     await refresh();
   };
 
@@ -70,7 +81,8 @@
       const selected = events.find(item => item.id === event.target.value);
       const button = card.querySelector("#adminQuickTestStart");
       button.disabled = !selected;
-      button.textContent = selected?.test_mode_active ? "End active test" : "Start test event";
+      const label = selected?.test_mode_active ? "End active test" : "Start test event";
+      if (button.textContent !== label) button.textContent = label;
     });
     card.querySelector("#adminQuickTestStart")?.addEventListener("click", () => {
       const selected = events.find(item => item.id === card.querySelector("#adminQuickTestSelect").value);
@@ -82,16 +94,26 @@
   const enhanceRows = () => {
     [document.getElementById("adminEventList"), document.getElementById("adminPastEventList")].filter(Boolean).forEach(list => {
       list.querySelectorAll("[data-edit-event]").forEach(edit => {
-        const event = events.find(item => item.id === edit.dataset.editEvent);
+        const eventId = edit.dataset.editEvent;
+        const event = events.find(item => item.id === eventId);
         const actions = edit.closest("article")?.querySelector(".admin-row-actions");
         if (!event || !actions) return;
-        let button = actions.querySelector(`[data-quick-test-event="${event.id}"]`);
+        let button = actions.querySelector(`[data-quick-test-event="${eventId}"]`);
         if (!button) {
-          button = document.createElement("button"); button.type = "button"; button.dataset.quickTestEvent = event.id; button.className = "quick-test-event"; edit.after(button);
-          button.addEventListener("click", () => event.test_mode_active ? endTest(event) : startWarning(event));
+          button = document.createElement("button");
+          button.type = "button";
+          button.dataset.quickTestEvent = eventId;
+          button.className = "quick-test-event";
+          edit.after(button);
+          button.addEventListener("click", () => {
+            const current = events.find(item => item.id === eventId);
+            if (!current) return;
+            current.test_mode_active ? endTest(current) : startWarning(current);
+          });
         }
         button.classList.toggle("is-live", Boolean(event.test_mode_active));
-        button.textContent = event.test_mode_active ? "End TEST" : "Test event";
+        const label = event.test_mode_active ? "End TEST" : "Test event";
+        if (button.textContent !== label) button.textContent = label;
       });
     });
   };
@@ -102,11 +124,16 @@
     const live = events.find(item => item.test_mode_active);
     if (select) {
       const current = select.value;
-      select.innerHTML = `<option value="">Choose event to test</option>${events.filter(item => item.status !== "cancelled").map(item => `<option value="${item.id}">${esc(item.name)} · ${esc(item.test_original_event_date || item.event_date)}${item.test_mode_active ? " · TEST LIVE" : ""}</option>`).join("")}`;
+      const markup = `<option value="">Choose event to test</option>${events.filter(item => item.status !== "cancelled").map(item => `<option value="${item.id}">${esc(item.name)} · ${esc(item.test_original_event_date || item.event_date)}${item.test_mode_active ? " · TEST LIVE" : ""}</option>`).join("")}`;
+      if (select.innerHTML !== markup) select.innerHTML = markup;
       if (events.some(item => item.id === current)) select.value = current;
     }
     const note = document.getElementById("adminTestLiveNote");
-    if (note) { note.classList.toggle("hidden", !live); note.textContent = live ? `TEST MODE ACTIVE — ${live.name}` : ""; }
+    if (note) {
+      note.classList.toggle("hidden", !live);
+      const label = live ? `TEST MODE ACTIVE — ${live.name}` : "";
+      if (note.textContent !== label) note.textContent = label;
+    }
     enhanceRows();
   };
 
@@ -117,11 +144,13 @@
     render();
   };
 
-  addStyles(); ensureDialog(); ensureCard();
+  addStyles();
+  ensureDialog();
+  ensureCard();
   observer = new MutationObserver(() => enhanceRows());
-  [document.getElementById("adminEventList"), document.getElementById("adminPastEventList")].filter(Boolean).forEach(list => observer.observe(list,{childList:true,subtree:true}));
+  [document.getElementById("adminEventList"), document.getElementById("adminPastEventList")].filter(Boolean).forEach(list => observer.observe(list, { childList:true, subtree:true }));
   const start = async () => {
-    for (let i=0;i<50 && dashboard.classList.contains("hidden");i+=1) await new Promise(r=>setTimeout(r,100));
+    for (let i=0; i<50 && dashboard.classList.contains("hidden"); i+=1) await new Promise(resolve => setTimeout(resolve,100));
     if (!dashboard.classList.contains("hidden")) await refresh();
   };
   start();
