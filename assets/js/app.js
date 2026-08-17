@@ -62,6 +62,14 @@ if(currentPage==="admin.html"&&window.fetch){
     const map={gallery:"gallery",content:"content",members:"members"};
     if(map[button.dataset.adminView])flush(map[button.dataset.adminView]);
   },{passive:true});
+
+  if(!document.querySelector('script[data-event-course-setup]')){
+    const script=document.createElement("script");
+    script.src="assets/js/event-course-setup.js?v=1";
+    script.async=false;
+    script.dataset.eventCourseSetup="1";
+    document.head.appendChild(script);
+  }
 }
 
 const mobileNav=document.createElement("nav");
