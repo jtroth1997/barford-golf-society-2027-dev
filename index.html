@@ -50,7 +50,7 @@
       <section class="dashboard-card dashboard-next-event">
         <div id="dashboardCancelledBanner" class="dashboard-cancelled-banner hidden"><strong>CANCELLED</strong><span id="dashboardCancelledReason">This event has been cancelled.</span></div>
         <div id="dashboardNextStep" class="dashboard-next-step"><span>What you need to do</span><strong id="dashboardNextStepText">Checking your next event…</strong></div>
-          <div class="dashboard-card-heading"><div class="dashboard-event-heading"><p class="eyebrow">Your next event</p><div class="dashboard-event-title-line"><h2 id="dashboardEventName">Checking upcoming events…</h2><a class="event-scorecard-cta hidden" href="scoring.html"><span aria-hidden="true">✎</span><strong>Open today’s scorecard</strong></a></div></div><span id="dashboardRsvpBadge" class="season-chip">Checking</span></div>
+        <div class="dashboard-card-heading"><div class="dashboard-event-heading"><p class="eyebrow">Your next event</p><div class="dashboard-event-title-line"><h2 id="dashboardEventName">Checking upcoming events…</h2><a class="event-scorecard-cta hidden" href="scoring.html"><span aria-hidden="true">✎</span><strong>Open today’s scorecard</strong></a></div></div><span id="dashboardRsvpBadge" class="season-chip">Checking</span></div>
         <p id="dashboardEventDetail">Your event details will appear here.</p>
         <div id="dashboardEventFacts" class="dashboard-event-facts hidden">
           <div><span>Date</span><strong id="dashboardEventDate">—</strong></div>
@@ -59,24 +59,17 @@
         </div>
         <section id="dashboardTeeGroup" class="dashboard-tee-group hidden" aria-live="polite">
           <div class="tee-group-header">
-            <div><p class="eyebrow">Your event-day group</p><h3 id="dashboardConfirmedTeeTime">Tee time confirmed</h3></div>
-            <span id="dashboardConfirmedTeeNumber" class="tee-number-chip">Starting tee</span>
+            <div><p class="eyebrow">Your group</p><h3><span class="sr-only">Your tee time: </span><span id="dashboardConfirmedTeeTime">Tee time confirmed</span></h3></div>
           </div>
           <p class="tee-group-intro">You’re playing with</p>
           <div id="dashboardTeeGroupPlayers" class="tee-group-players"></div>
           <div class="tee-group-day-details">
-            <div><span>Event</span><strong id="dashboardDayEvent">—</strong></div>
             <div><span>Date</span><strong id="dashboardDayDate">—</strong></div>
-            <div><span>Course</span><strong id="dashboardDayVenue">—</strong></div>
-            <div><span>Address</span><strong id="dashboardDayAddress">—</strong></div>
-            <div><span>Your tee time</span><strong id="dashboardDayTeeTime">—</strong></div>
-            <div><span>Starting tee</span><strong id="dashboardDayTeeNumber">—</strong></div>
-            <div><span>Group size</span><strong id="dashboardDayGroupSize">—</strong></div>
             <div><span>Playing</span><strong id="dashboardDayTravel">—</strong></div>
           </div>
           <div class="tee-group-actions">
             <button id="dashboardLockedSeePlayers" class="button button-primary" type="button">See the other tee times for this event</button>
-            <button id="dashboardEventDirections" class="button button-outline" type="button">Directions to course</button>
+            <button id="dashboardEventDirections" class="button button-outline" type="button">Directions</button>
           </div>
         </section>
         <section id="dashboardPlayingConfirmation" class="dashboard-playing-confirmation hidden" aria-live="polite">
