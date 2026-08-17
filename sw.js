@@ -1,4 +1,4 @@
-const CACHE="barford-golf-2027-brilliant-v8";
+const CACHE="barford-golf-2027-testmode-v9";
 const CORE=[
   "./","./index.html","./scoring.html",
   "./assets/css/styles.css","./assets/css/members.css","./assets/css/accessible-mobile.css","./assets/css/product-premium.css","./assets/css/product-polish.css","./assets/css/product-polish-mobile.css","./assets/css/brilliant.css","./assets/css/scoring.css","./assets/css/scoring-simple.css","./assets/css/score-competitions.css",
