@@ -1,0 +1,10 @@
+revoke all on function public.is_scorecard_group_member(uuid) from anon;
+revoke all on function public.prepare_event_scorecards(uuid) from anon;
+revoke all on function public.claim_scorecard(uuid) from anon;
+revoke all on function public.sync_scorecard(uuid,jsonb) from anon;
+revoke all on function public.submit_scorecard(uuid) from anon;
+revoke all on function public.complete_event_round(uuid) from anon;
+alter function public.stableford_points(integer,boolean,integer,integer,integer) set search_path = public;
+create index if not exists event_scorecard_players_member_id_idx on public.event_scorecard_players(member_id);
+create index if not exists event_scorecards_scorer_id_idx on public.event_scorecards(scorer_id);
+notify pgrst, 'reload schema';

@@ -1,0 +1,34 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover,user-scalable=no">
+  <meta name="theme-color" content="#063d2a"><meta name="apple-mobile-web-app-capable" content="yes"><meta name="apple-mobile-web-app-status-bar-style" content="default">
+  <title>Event scorecard | Barford Golf Society</title>
+  <link rel="manifest" href="manifest.webmanifest"><link rel="apple-touch-icon" href="assets/images/barford-golf-society-logo.png">
+  <link rel="stylesheet" href="assets/css/styles.css?v=ux100"><link rel="stylesheet" href="assets/css/scoring.css?v=1">
+</head>
+<body class="scoring-page">
+  <header class="score-app-header"><a href="index.html" aria-label="Back to dashboard">‹ Back</a><strong>Scorecard</strong><button id="scoreSyncButton" type="button">Saved</button></header>
+  <main id="scoreApp" class="score-app" aria-live="polite">
+    <section id="scoreLoading" class="score-state"><img src="assets/images/barford-golf-society-logo.png" alt=""><h1>Preparing your scorecard</h1><p>Checking your tee group and downloading everything needed offline…</p></section>
+    <section id="scoreUnavailable" class="score-state hidden"><h1>Scorecard not ready</h1><p id="scoreUnavailableMessage">Ask an administrator to prepare the event scorecards.</p><a class="button button-primary" href="index.html">Return to dashboard</a></section>
+    <section id="scoreReady" class="hidden">
+      <div id="offlineReadyBanner" class="offline-ready"><span>✓</span><div><strong>Ready for low or no signal</strong><small>Scores are saved on this phone first.</small></div></div>
+      <section class="hole-heading"><button id="previousHole" type="button">‹ Hole 18</button><div><span id="holeProgress">Hole 1 of 18</span><h1 id="holeTitle">Hole 1</h1><p><b id="holePar">Par 4</b><b id="holeYards">386 yards</b><b id="holeIndex">Stroke index 7</b></p></div><button id="nextHoleTop" type="button">Hole 2 ›</button></section>
+      <div id="playerRows" class="score-player-list"></div>
+      <section id="scoreKeypad" class="score-keypad" aria-label="Enter gross score">
+        <div id="selectedPlayerPrompt">Select a player</div>
+        <div class="keypad-grid">
+          <button data-score="1">1</button><button data-score="2">2</button><button data-score="3">3</button>
+          <button data-score="4">4</button><button data-score="5">5</button><button data-score="6">6</button>
+          <button data-score="7">7</button><button data-score="8">8</button><button data-score="9">9</button>
+          <button id="clearScore" class="key-secondary">Clear</button><button data-score="10">10</button><button id="pickupScore" class="key-pickup">X<br><small>Pick up</small></button>
+        </div>
+      </section>
+      <footer class="hole-actions"><button id="previousHoleBottom" class="button button-outline" type="button">Previous</button><button id="nextHole" class="button button-primary" type="button">Next hole</button></footer>
+    </section>
+    <section id="roundReview" class="score-review hidden"><p class="eyebrow">Card complete</p><h1>Review your group’s scores</h1><p>Check every score carefully before submitting. After submission, only an administrator can make changes.</p><div id="reviewPlayers"></div><button id="returnToCard" class="button button-outline" type="button">Return to scorecard</button><button id="finaliseScores" class="button button-primary" type="button">Finalise and submit scores</button><p id="finaliseStatus" class="form-status"></p></section>
+    <section id="roundSubmitted" class="score-state hidden"><span class="submitted-tick">✓</span><h1>Scores submitted</h1><p>Your group’s card is safely with the committee. The leaderboard remains private until the administrator completes the round.</p><a class="button button-primary" href="index.html">Return to dashboard</a></section>
+  </main>
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2" defer></script><script src="assets/js/supabase-config.js?v=live1" defer></script><script src="assets/js/supabase-client.js?v=ux100" defer></script><script src="assets/js/scoring.js?v=1" defer></script>
+</body></html>

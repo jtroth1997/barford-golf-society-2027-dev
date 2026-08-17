@@ -68,6 +68,17 @@
     </section>
 
     <section class="admin-view hidden" data-admin-panel="scores">
+      <section class="admin-card admin-live-scoring">
+        <div class="admin-heading"><div><p class="eyebrow">Event-day scoring</p><h3>Digital scorecards</h3><p>Enter the course card, prepare each tee group and monitor submissions privately.</p></div><select id="adminScoringEvent"><option value="">Select event</option></select></div>
+        <div id="adminScoringSetup" class="hidden">
+          <div class="admin-scoring-steps"><span><b>1</b>Course card</span><span><b>2</b>Prepare groups</span><span><b>3</b>Check submissions</span><span><b>4</b>Complete round</span></div>
+          <div class="admin-scoring-grid">
+            <section><h4>Course holes</h4><p class="admin-score-help">Add par, yards and stroke index from the course scorecard.</p><div id="adminHoleEditor" class="admin-hole-editor"></div><button id="adminSaveHoles" class="button button-outline" type="button">Save course card</button></section>
+            <section><h4>Group scorecards</h4><p class="admin-score-help">Tee times and society handicaps are locked when cards are prepared.</p><button id="adminPrepareScorecards" class="button button-primary" type="button">Prepare group scorecards</button><div id="adminScorecardProgress" class="admin-compact-list"><p>Save the course card first.</p></div><button id="adminCompleteRound" class="button button-primary" type="button" disabled>Complete round</button></section>
+          </div>
+        </div>
+        <p id="adminLiveScoringStatus" class="form-status" aria-live="polite"></p>
+      </section>
       <section class="admin-card">
         <div class="admin-heading"><div><p class="eyebrow">Rounds and results</p><h3>2027 score administration</h3><p>Events are already linked to their round. Enter results and lock a completed round.</p></div><div class="admin-form-actions"><button id="adminExportLeaderboard" class="button button-outline" type="button">Export leaderboard CSV</button><button id="adminClearScores" class="button button-outline danger-link" type="button">Clear season scores</button></div></div>
         <p class="admin-score-help">Each round is created automatically when you save an event. Use the Events section to choose its required season round.</p>
@@ -144,6 +155,6 @@
   </form>
 </dialog>
 <footer class="site-footer"><div class="shell footer-inner"><div class="footer-brand"><img src="assets/images/barford-golf-society-logo.png" alt=""><span>Barford Golf Society</span></div><p>© <span id="year"></span> Barford Golf Society</p></div></footer>
-<script src="assets/js/app.js?v=speed2" defer></script><script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2" defer></script><script src="assets/js/supabase-config.js?v=live1" defer></script><script src="assets/js/supabase-client.js?v=ux100" defer></script><script src="assets/js/admin-auth.js?v=adminsimple4" defer></script><script src="assets/js/accessible-mobile.js?v=ux100" defer></script>
+<script src="assets/js/app.js?v=speed2" defer></script><script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2" defer></script><script src="assets/js/supabase-config.js?v=live1" defer></script><script src="assets/js/supabase-client.js?v=ux100" defer></script><script src="assets/js/admin-auth.js?v=adminsimple4" defer></script><script src="assets/js/admin-scoring.js?v=1" defer></script><script src="assets/js/accessible-mobile.js?v=ux100" defer></script>
 </body>
 </html>
