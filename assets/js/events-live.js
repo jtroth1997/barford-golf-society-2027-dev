@@ -89,10 +89,10 @@
     const participation = cancelled
       ? `<div class="event-member-state cancelled"><strong>Event cancelled</strong><small>No action needed.</small></div>`
       : !memberState.signedIn
-        ? `<div class="event-member-state"><strong>Want to play?</strong><small>Sign in to manage your RSVP.</small><a class="button button-primary" href="index.html">Sign in</a></div>`
+        ? `<div class="event-member-state"><strong>Want to play?</strong><small>Sign in, then tell us whether you’re playing.</small><a class="button button-primary" href="account.html">Sign in</a></div>`
         : memberRsvp?.status === "playing"
           ? `<div class="event-member-state playing"><strong>✓ You’re playing</strong>${memberState.locked ? `<small>Tee times are published. Contact an admin if you need to drop out.</small><span class="rsvp-contact-admin">Contact admin to withdraw</span>` : `<small>Your place is confirmed.</small><button class="button button-outline" type="button" data-withdraw-event="${event.id}">I can’t play now</button>`}</div>`
-          : `<div class="event-member-state"><strong>${memberRsvp?.status === "not_playing" || memberRsvp?.status === "cancelled" ? "You’re not playing" : "RSVP not confirmed"}</strong><small>${memberState.locked ? "Tee times are already published." : "Use your dashboard to join this event."}</small>${memberState.locked ? `<span class="rsvp-contact-admin">Contact admin to make a change</span>` : `<a class="button button-primary" href="index.html">${memberRsvp ? "Change RSVP" : "RSVP"}</a>`}</div>`;
+          : `<div class="event-member-state"><strong>${memberRsvp?.status === "not_playing" || memberRsvp?.status === "cancelled" ? "You’re not playing" : "Are you playing?"}</strong><small>${memberState.locked ? "Tee times are already published." : "Open your dashboard to confirm your choice."}</small>${memberState.locked ? `<span class="rsvp-contact-admin">Contact admin to make a change</span>` : `<a class="button button-primary" href="index.html">${memberRsvp ? "Change my choice" : "Choose yes or no"}</a>`}</div>`;
 
     return `
       <article class="compact-event-card ${cancelled ? "event-cancelled-card" : ""}">
