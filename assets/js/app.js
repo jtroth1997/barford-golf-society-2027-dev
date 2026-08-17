@@ -4,7 +4,8 @@ body.classList.add("product-premium");
 [
   ["assets/css/product-premium.css?v=3","productPremium"],
   ["assets/css/product-polish.css?v=2","productPolish"],
-  ["assets/css/product-polish-mobile.css?v=3","productPolishMobile"]
+  ["assets/css/product-polish-mobile.css?v=3","productPolishMobile"],
+  ["assets/css/brilliant.css?v=1","brilliantProduct"]
 ].forEach(([href,key])=>{
   const attr=`data-${key.replace(/[A-Z]/g,m=>`-${m.toLowerCase()}`)}`;
   if(document.querySelector(`link[${attr}]`))return;
@@ -17,7 +18,7 @@ if(document.getElementById("dashboardEventCamera")){
   document.head.appendChild(style);
 }
 
-if("serviceWorker" in navigator)navigator.serviceWorker.register("./sw.js?v=fast5").catch(()=>{});
+if("serviceWorker" in navigator)navigator.serviceWorker.register("./sw.js?v=fast6").catch(()=>{});
 
 document.querySelectorAll(".menu-button").forEach(menuButton=>{
   const navigationId=menuButton.getAttribute("aria-controls");
@@ -62,14 +63,6 @@ if(currentPage==="admin.html"&&window.fetch){
     const map={gallery:"gallery",content:"content",members:"members"};
     if(map[button.dataset.adminView])flush(map[button.dataset.adminView]);
   },{passive:true});
-
-  if(!document.querySelector('script[data-event-course-setup]')){
-    const script=document.createElement("script");
-    script.src="assets/js/event-course-setup.js?v=1";
-    script.async=false;
-    script.dataset.eventCourseSetup="1";
-    document.head.appendChild(script);
-  }
 }
 
 const mobileNav=document.createElement("nav");
@@ -89,3 +82,18 @@ const initialiseSharedUi=()=>{
   if(!document.querySelector('script[data-product-experience]')){const script=document.createElement("script");script.src="assets/js/product-experience.js?v=3";script.async=true;script.dataset.productExperience="1";document.body.appendChild(script);}
 };
 if(document.readyState==="loading")document.addEventListener("DOMContentLoaded",initialiseSharedUi,{once:true});else initialiseSharedUi();
+
+// These features depend on Supabase and the page-specific defer scripts. Load them only after the page is fully initialised.
+const loadEnhancement=(src,key,done)=>{
+  if(document.querySelector(`script[data-${key}]`)){done?.();return;}
+  const script=document.createElement("script");script.src=src;script.dataset[key.replace(/-([a-z])/g,(_,c)=>c.toUpperCase())]="1";script.onload=()=>done?.();document.body.appendChild(script);
+};
+window.addEventListener("load",()=>{
+  if(currentPage==="admin.html"){
+    loadEnhancement("assets/js/event-course-setup.js?v=2","event-course-setup",()=>loadEnhancement("assets/js/admin-brilliant.js?v=1","admin-brilliant"));
+  } else if(currentPage==="index.html") {
+    loadEnhancement("assets/js/member-experience-plus.js?v=1","member-experience-plus");
+  } else if(currentPage==="account.html") {
+    loadEnhancement("assets/js/member-onboarding.js?v=1","member-onboarding");
+  }
+},{once:true});
