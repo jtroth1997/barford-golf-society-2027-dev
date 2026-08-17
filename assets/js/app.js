@@ -1,30 +1,23 @@
 const body=document.body;
 body.classList.add("product-premium");
 
-// Start all visual layers together. They are local and cached by the service worker.
 [
   ["assets/css/product-premium.css?v=3","productPremium"],
   ["assets/css/product-polish.css?v=2","productPolish"],
-  ["assets/css/product-polish-mobile.css?v=2","productPolishMobile"]
+  ["assets/css/product-polish-mobile.css?v=3","productPolishMobile"]
 ].forEach(([href,key])=>{
   const attr=`data-${key.replace(/[A-Z]/g,m=>`-${m.toLowerCase()}`)}`;
   if(document.querySelector(`link[${attr}]`))return;
-  const link=document.createElement("link");
-  link.rel="stylesheet";
-  link.href=href;
-  link.dataset[key]="1";
-  document.head.appendChild(link);
+  const link=document.createElement("link");link.rel="stylesheet";link.href=href;link.dataset[key]="1";document.head.appendChild(link);
 });
 
-// Small dashboard camera layout lives inline so the main members stylesheet can stay fully local.
 if(document.getElementById("dashboardEventCamera")){
   const style=document.createElement("style");
   style.textContent='.dashboard-event-tools{display:flex;align-items:center;gap:8px;flex:0 0 auto}.event-camera-button{display:inline-flex;align-items:center;gap:7px;min-height:48px;padding:9px 13px;border:2px solid #c6a44c;border-radius:14px;background:#fff8df;color:#063d2a;font:inherit;font-weight:900;cursor:pointer}.event-camera-button span{font-size:1.25rem;line-height:1}.event-camera-button.is-uploading{opacity:.65;pointer-events:none}.event-camera-button.is-done{border-color:#78b48e;background:#e7f6ee}@media(max-width:650px){.dashboard-event-title-line{align-items:flex-start;gap:9px}.dashboard-event-tools{gap:6px}.event-camera-button{width:48px;height:48px;padding:0;justify-content:center}.event-camera-button strong{display:none}.event-camera-button span{font-size:1.35rem}.event-scorecard-cta{min-height:48px;padding:9px 11px}.event-scorecard-cta strong{font-size:.78rem;white-space:normal;line-height:1.15}}';
   document.head.appendChild(style);
 }
 
-// Register immediately now that the cache install is deliberately tiny.
-if("serviceWorker" in navigator) navigator.serviceWorker.register("./sw.js?v=fast4").catch(()=>{});
+if("serviceWorker" in navigator)navigator.serviceWorker.register("./sw.js?v=fast5").catch(()=>{});
 
 document.querySelectorAll(".menu-button").forEach(menuButton=>{
   const navigationId=menuButton.getAttribute("aria-controls");
@@ -42,19 +35,44 @@ const installBtn=document.querySelector("#installHelpBtn"),installHelp=document.
 if(installBtn&&installHelp)installBtn.addEventListener("click",()=>{installHelp.classList.toggle("hidden");installBtn.textContent=installHelp.classList.contains("hidden")?"Show instructions":"Hide instructions"});
 
 const currentPage=location.pathname.split("/").pop()||"index.html";
+
+// Admin has several hidden data-heavy panels. Give the visible workflow first use of the network.
+if(currentPage==="admin.html"&&window.fetch){
+  const nativeFetch=window.fetch.bind(window),queued=new Set();
+  const flush=group=>[...queued].filter(item=>item.group===group).forEach(item=>item.run());
+  window.fetch=(input,init)=>{
+    let url;try{url=new URL(typeof input==="string"?input:input.url,location.href);}catch{return nativeFetch(input,init);}
+    const dashboard=document.getElementById("adminDashboard");
+    if(!url.hostname.includes("supabase.co")||dashboard?.classList.contains("hidden"))return nativeFetch(input,init);
+    const table=(url.pathname.split("/rest/v1/")[1]||"").split("?")[0];
+    const select=decodeURIComponent(url.searchParams.get("select")||"");
+    let group="";
+    if(table==="gallery_photos")group="gallery";
+    else if(table==="products"||table==="world_events"||table==="world_event_votes")group="content";
+    else if(table==="profiles"&&select.includes("email")&&select.includes("phone"))group="members";
+    if(!group)return nativeFetch(input,init);
+    return new Promise((resolve,reject)=>{
+      let done=false,timer;
+      const item={group,run:()=>{if(done)return;done=true;clearTimeout(timer);queued.delete(item);nativeFetch(input,init).then(resolve,reject)}};
+      queued.add(item);timer=setTimeout(item.run,1800);
+    });
+  };
+  document.addEventListener("click",event=>{
+    const button=event.target.closest("[data-admin-view]");if(!button)return;
+    const map={gallery:"gallery",content:"content",members:"members"};
+    if(map[button.dataset.adminView])flush(map[button.dataset.adminView]);
+  },{passive:true});
+}
+
 const mobileNav=document.createElement("nav");
-mobileNav.className="mobile-quick-nav";
-mobileNav.setAttribute("aria-label","Quick navigation");
+mobileNav.className="mobile-quick-nav";mobileNav.setAttribute("aria-label","Quick navigation");
 const quickItems=[["index.html","🏠","Home"],["events.html","📅","Events"],["scores.html","🏆","League"],["gallery.html","📷","Photos"],["account.html","👤","Account"]];
 mobileNav.innerHTML=quickItems.map(([href,icon,label])=>`<a href="${href}" class="${currentPage===href?"active":""}"${currentPage===href?' aria-current="page"':""}><span class="quick-icon" aria-hidden="true">${icon}</span><span>${label}</span></a>`).join("");
 body.appendChild(mobileNav);
 
 const initialiseSharedUi=()=>{
-  const dialog=document.createElement("dialog");
-  dialog.className="profile-photo-lightbox";
-  dialog.setAttribute("aria-label","Profile photo");
-  dialog.innerHTML='<form method="dialog"><button class="profile-photo-lightbox-close" value="cancel" aria-label="Close profile photo">×</button><img alt="Enlarged profile photo"><a class="button button-primary profile-photo-change hidden" href="account.html#profile-photo">Change profile picture</a><button class="button button-outline" value="cancel">Close</button></form>';
-  document.body.append(dialog);
+  const dialog=document.createElement("dialog");dialog.className="profile-photo-lightbox";dialog.setAttribute("aria-label","Profile photo");
+  dialog.innerHTML='<form method="dialog"><button class="profile-photo-lightbox-close" value="cancel" aria-label="Close profile photo">×</button><img alt="Enlarged profile photo"><a class="button button-primary profile-photo-change hidden" href="account.html#profile-photo">Change profile picture</a><button class="button button-outline" value="cancel">Close</button></form>';document.body.append(dialog);
   const openPhoto=element=>{const source=element?.dataset?.profilePhoto||element?.querySelector?.("img")?.src;if(!source){location.href="account.html#profile-photo";return}dialog.querySelector("img").src=source;dialog.querySelector(".profile-photo-change")?.classList.toggle("hidden",element.dataset.profileOwner!=="self");dialog.showModal()};
   document.addEventListener("click",event=>{const target=event.target.closest('[data-profile-photo], [data-profile-owner="self"]');if(target)openPhoto(target)});
   document.addEventListener("profile-photo:open",event=>openPhoto(event.target));
