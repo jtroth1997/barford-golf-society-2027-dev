@@ -125,7 +125,7 @@
         const value = valueFor(player.id, number);
         const info = model.holes.find(item => item.hole_number === number);
         const display = value ? `${value.picked_up ? "X" : value.strokes}/${pointsFor(player, info, value)}` : "–";
-        return `<button type="button" class="${number===hole?"is-current":""} ${value?.picked_up?"is-pickup":""}" data-live-hole="${number}" data-live-player="${player.id}" aria-label="${esc(player.display_name)}, hole ${number}: ${value ? display : "not entered"}">${display}</button>`;
+        return `<button type="button" class="${number===hole?"is-current":""} ${value?"has-score":""} ${value?.picked_up?"is-pickup":""}" data-live-hole="${number}" data-live-player="${player.id}" aria-label="${esc(player.display_name)}, hole ${number}: ${value ? display : "not entered"}">${display}</button>`;
       }).join("");
       return `<div class="live-card-row ${selectedPlayerId===player.id?"is-selected-player":""}"><button type="button" class="live-player-name" data-live-player-name="${player.id}" aria-label="Enter a score for ${esc(player.display_name)}">${esc(player.display_name)}</button>${cells}</div>`;
     }).join("");
