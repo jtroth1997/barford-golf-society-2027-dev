@@ -559,6 +559,12 @@
 .dashboard-next-event { grid-column: 2; grid-row: 2; }
 .dashboard-season-review { grid-column: 1; grid-row: 2 / span 2; }
 .dashboard-card-heading { display:flex;justify-content:space-between;gap:1rem;align-items:start; }
+.dashboard-event-heading{min-width:0;flex:1}
+.dashboard-event-title-line{display:flex;align-items:center;justify-content:space-between;gap:16px}
+.dashboard-event-title-line h2{min-width:0}
+.event-scorecard-cta{display:inline-flex;align-items:center;gap:8px;flex:0 0 auto;min-height:46px;padding:10px 15px;border:2px solid #c59b32;border-radius:13px;background:linear-gradient(135deg,#f8e7ad,#d8b34f);color:#082f22;text-decoration:none;box-shadow:0 7px 18px rgba(109,81,18,.18);font-size:.83rem;font-weight:900;white-space:nowrap}
+.event-scorecard-cta span{display:grid;place-items:center;width:25px;height:25px;border-radius:50%;background:#073d2a;color:#fff;font-size:1rem}
+.event-scorecard-cta:hover{transform:translateY(-1px);box-shadow:0 9px 22px rgba(109,81,18,.25)}
 .season-chip { padding:.45rem .75rem;border-radius:999px;background:#f7edcf;color:#735717;font-weight:800; }
 .legacy-stat-grid { display:grid;grid-template-columns:repeat(3,1fr);gap:.75rem;margin:1.25rem 0; }
 .legacy-stat-grid div { padding:1rem;border-radius:16px;background:#f4f7f5; }
@@ -629,6 +635,8 @@
   .dashboard-actions{order:4;grid-template-columns:1fr 1fr;gap:.6rem}
   .dashboard-passkey{order:5}
   .dashboard-card-heading{display:grid;grid-template-columns:minmax(0,1fr) auto;align-items:start;gap:.65rem}
+  .dashboard-event-title-line{display:grid;gap:.7rem}
+  .event-scorecard-cta{width:100%;min-height:52px;justify-content:center;font-size:.9rem}
   .dashboard-card-heading h2{font-size:1.35rem;line-height:1.15}
   .dashboard-next-event .dashboard-card-heading .eyebrow{margin-bottom:.25rem}
   .dashboard-next-event>p:not(.form-status){margin:.55rem 0;font-size:.88rem;line-height:1.45}

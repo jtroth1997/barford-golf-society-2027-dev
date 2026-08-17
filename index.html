@@ -19,7 +19,7 @@
   <link rel="preconnect" href="https://xspzmthygrajzktydvvj.supabase.co" crossorigin>
   <link rel="preconnect" href="https://cdn.jsdelivr.net" crossorigin>
   <link rel="stylesheet" href="assets/css/styles.css?v=publiclogo1">
-  <link rel="stylesheet" href="assets/css/members.css?v=ux100">
+  <link rel="stylesheet" href="assets/css/members.css?v=scorecardtop1">
   <link rel="stylesheet" href="assets/css/accessible-mobile.css?v=ux100">
   <style>
     .member-session-cached #publicHome{display:none!important}
@@ -49,7 +49,7 @@
     <div class="shell member-home-grid">
       <section class="dashboard-card dashboard-next-event">
         <div id="dashboardCancelledBanner" class="dashboard-cancelled-banner hidden"><strong>CANCELLED</strong><span id="dashboardCancelledReason">This event has been cancelled.</span></div>
-        <div class="dashboard-card-heading"><div><p class="eyebrow">Your next event</p><h2 id="dashboardEventName">Checking upcoming events…</h2></div><span id="dashboardRsvpBadge" class="season-chip">Checking</span></div>
+        <div class="dashboard-card-heading"><div class="dashboard-event-heading"><p class="eyebrow">Your next event</p><div class="dashboard-event-title-line"><h2 id="dashboardEventName">Checking upcoming events…</h2><a class="event-scorecard-cta" href="scoring.html"><span aria-hidden="true">✎</span><strong>Enter event scorecard</strong></a></div></div><span id="dashboardRsvpBadge" class="season-chip">Checking</span></div>
         <p id="dashboardEventDetail">Your event details will appear here.</p>
         <div id="dashboardEventFacts" class="dashboard-event-facts hidden">
           <div><span>Date</span><strong id="dashboardEventDate">—</strong></div>
@@ -128,7 +128,6 @@
         <small id="dashboardDataSource" class="dashboard-live-source"><span></span> Read-only data from the current 2026 website</small>
       </section>
       <div class="dashboard-actions">
-        <a class="dashboard-action" href="scoring.html"><strong>Event Scorecard</strong><span>Open your group’s offline card →</span></a>
         <a class="dashboard-action" href="account.html"><strong>My Account</strong><span>Update your details →</span></a>
         <a class="dashboard-action" href="scores.html"><strong>League Table</strong><span>View the 2027 season →</span></a>
       </div>
