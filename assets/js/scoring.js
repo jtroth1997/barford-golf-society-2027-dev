@@ -119,15 +119,23 @@
   function renderLiveCard() {
     const firstHole = hole <= 9 ? 1 : 10;
     const holes = Array.from({length:9}, (_, index) => firstHole + index);
+    const firstNames = model.players.map(player => String(player.display_name || "Player").trim().split(/\s+/)[0]);
+    const liveName = (player, index) => {
+      const first = firstNames[index] || "Player";
+      const duplicate = firstNames.filter(name => name.toLowerCase() === first.toLowerCase()).length > 1;
+      if (!duplicate) return first;
+      const parts = String(player.display_name || "").trim().split(/\s+/);
+      return `${first} ${parts.at(-1)?.charAt(0) || ""}.`.trim();
+    };
     const header = holes.map(number => `<b class="${number===hole?"is-current":""}">${number}</b>`).join("");
-    const rows = model.players.map(player => {
+    const rows = model.players.map((player, playerIndex) => {
       const cells = holes.map(number => {
         const value = valueFor(player.id, number);
         const info = model.holes.find(item => item.hole_number === number);
         const display = value ? `${value.picked_up ? "X" : value.strokes}/${pointsFor(player, info, value)}` : "–";
         return `<button type="button" class="${number===hole?"is-current":""} ${value?"has-score":""} ${value?.picked_up?"is-pickup":""}" data-live-hole="${number}" data-live-player="${player.id}" aria-label="${esc(player.display_name)}, hole ${number}: ${value ? display : "not entered"}">${display}</button>`;
       }).join("");
-      return `<div class="live-card-row ${selectedPlayerId===player.id?"is-selected-player":""}"><button type="button" class="live-player-name" data-live-player-name="${player.id}" aria-label="Enter a score for ${esc(player.display_name)}">${esc(player.display_name)}</button>${cells}</div>`;
+      return `<div class="live-card-row ${selectedPlayerId===player.id?"is-selected-player":""}"><button type="button" class="live-player-name" data-live-player-name="${player.id}" aria-label="Enter a score for ${esc(player.display_name)}" title="${esc(player.display_name)}">${esc(liveName(player, playerIndex))}</button>${cells}</div>`;
     }).join("");
     $("liveNineStrip").innerHTML = `<div class="live-card-header"><strong>${firstHole===1?"Front 9":"Back 9"}</strong>${header}</div>${rows}`;
     document.querySelectorAll("[data-live-hole]").forEach(button => button.addEventListener("click", () => {
