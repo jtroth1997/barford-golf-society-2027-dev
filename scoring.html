@@ -5,7 +5,7 @@
   <meta name="theme-color" content="#063d2a"><meta name="apple-mobile-web-app-capable" content="yes"><meta name="apple-mobile-web-app-status-bar-style" content="default">
   <title>Event scorecard | Barford Golf Society</title>
   <link rel="manifest" href="manifest.webmanifest"><link rel="apple-touch-icon" href="assets/images/barford-golf-society-logo.png">
-  <link rel="stylesheet" href="assets/css/styles.css?v=ux100"><link rel="stylesheet" href="assets/css/scoring.css?v=competitions1"><link rel="stylesheet" href="assets/css/scoring-simple.css?v=readable2"><link rel="stylesheet" href="assets/css/score-competitions.css?v=1"><link rel="stylesheet" href="assets/css/product-premium.css?v=1">
+  <link rel="stylesheet" href="assets/css/styles.css?v=ux100"><link rel="stylesheet" href="assets/css/scoring.css?v=competitions1"><link rel="stylesheet" href="assets/css/scoring-simple.css?v=readable2"><link rel="stylesheet" href="assets/css/score-competitions.css?v=1"><link rel="stylesheet" href="assets/css/product-premium.css?v=3"><link rel="stylesheet" href="assets/css/brilliant.css?v=1">
 </head>
 <body class="scoring-page product-premium">
   <header class="score-app-header"><a href="index.html" aria-label="Back to dashboard">‹ Back</a><strong>Scorecard</strong><button id="scoreSyncButton" type="button" aria-label="Scores are saved. Tap to save again.">✓ Saved</button></header>
@@ -34,5 +34,5 @@
     <section id="scoreHandedOff" class="score-state hidden"><span class="submitted-tick">✓</span><h1>Scoring handed over</h1><p><strong id="handoffCompleteName">The new scorer</strong> can now open the scorecard from their own account and continue from the saved scores.</p><a class="button button-primary" href="index.html">Return to dashboard</a></section>
   </main>
   <dialog id="handoffDialog" class="handoff-dialog"><form id="handoffForm"><button class="dialog-close" id="handoffCancel" type="button" aria-label="Close">×</button><h2>Hand over scoring</h2><p>Choose another player in your group. Your saved scores will appear when they open the scorecard.</p><label>New scorer<select id="handoffPlayer" required><option value="">Choose a player…</option></select></label><button class="button button-primary" type="submit">Confirm handover</button><p id="handoffStatus" class="form-status" aria-live="polite"></p></form></dialog>
-  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2" defer></script><script src="assets/js/supabase-config.js?v=live1" defer></script><script src="assets/js/supabase-client.js?v=ux100" defer></script><script src="assets/js/scoring.js?v=readable2" defer></script>
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2" defer></script><script src="assets/js/supabase-config.js?v=live1" defer></script><script src="assets/js/supabase-client.js?v=ux100" defer></script><script src="assets/js/scoring-resilience.js?v=1" defer></script><script src="assets/js/scoring.js?v=readable3" defer></script>
 </body></html>
