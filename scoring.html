@@ -5,7 +5,7 @@
   <meta name="theme-color" content="#063d2a"><meta name="apple-mobile-web-app-capable" content="yes"><meta name="apple-mobile-web-app-status-bar-style" content="default">
   <title>Event scorecard | Barford Golf Society</title>
   <link rel="manifest" href="manifest.webmanifest"><link rel="apple-touch-icon" href="assets/images/barford-golf-society-logo.png">
-  <link rel="stylesheet" href="assets/css/styles.css?v=ux100"><link rel="stylesheet" href="assets/css/scoring.css?v=competitions1"><link rel="stylesheet" href="assets/css/scoring-simple.css?v=livecard1"><link rel="stylesheet" href="assets/css/score-competitions.css?v=1">
+  <link rel="stylesheet" href="assets/css/styles.css?v=ux100"><link rel="stylesheet" href="assets/css/scoring.css?v=competitions1"><link rel="stylesheet" href="assets/css/scoring-simple.css?v=noscr1"><link rel="stylesheet" href="assets/css/score-competitions.css?v=1">
 </head>
 <body class="scoring-page">
   <header class="score-app-header"><a href="index.html" aria-label="Back to dashboard">‹ Back</a><strong>Scorecard</strong><button id="scoreSyncButton" type="button" aria-label="Scores are saved. Tap to save again.">✓ Saved</button></header>
@@ -16,7 +16,6 @@
       <div id="competitionAlert" class="competition-alert hidden" role="status" aria-live="assertive"><span id="competitionAlertIcon">🏌️</span><strong id="competitionAlertTitle">Longest Drive</strong><small id="competitionAlertText">This is the competition hole</small></div>
       <section class="hole-heading"><button id="previousHole" type="button">‹ Hole 18</button><div><span id="holeProgress">Hole 1 of 18</span><h1 id="holeTitle">Hole 1</h1><strong id="competitionMarker" class="competition-marker hidden">LONGEST DRIVE</strong><p id="yellowTeeSummary"><b>Yellow tee</b><b id="holePar">Par 4</b><b id="holeYards">386 yards</b><b id="holeIndex">SI 7</b></p><p id="redTeeSummary"><b>Red tee</b><b id="redHolePar">Par 4</b><b id="redHoleYards">342 yards</b><b id="redHoleIndex">SI 9</b></p></div><button id="nextHoleTop" type="button">Hole 2 ›</button></section>
       <section id="liveNineStrip" class="live-nine-strip" aria-label="Current nine-hole scorecard"></section>
-      <div id="playerRows" class="score-player-list"></div>
       <button id="handoffScorecard" class="handoff-scorecard hidden" type="button">Leaving early? Hand over scoring</button>
       <section id="scoreKeypad" class="score-keypad" aria-label="Enter gross score">
         <div id="selectedPlayerPrompt">Select a player</div>
@@ -35,5 +34,5 @@
     <section id="scoreHandedOff" class="score-state hidden"><span class="submitted-tick">✓</span><h1>Scoring handed over</h1><p><strong id="handoffCompleteName">The new scorer</strong> can now open the scorecard from their own account and continue from the saved scores.</p><a class="button button-primary" href="index.html">Return to dashboard</a></section>
   </main>
   <dialog id="handoffDialog" class="handoff-dialog"><form id="handoffForm"><button class="dialog-close" id="handoffCancel" type="button" aria-label="Close">×</button><h2>Hand over scoring</h2><p>Choose another player in your group. Your saved scores will appear when they open the scorecard.</p><label>New scorer<select id="handoffPlayer" required><option value="">Choose a player…</option></select></label><button class="button button-primary" type="submit">Confirm handover</button><p id="handoffStatus" class="form-status" aria-live="polite"></p></form></dialog>
-  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2" defer></script><script src="assets/js/supabase-config.js?v=live1" defer></script><script src="assets/js/supabase-client.js?v=ux100" defer></script><script src="assets/js/scoring.js?v=livecard1" defer></script>
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2" defer></script><script src="assets/js/supabase-config.js?v=live1" defer></script><script src="assets/js/supabase-client.js?v=ux100" defer></script><script src="assets/js/scoring.js?v=noscr1" defer></script>
 </body></html>

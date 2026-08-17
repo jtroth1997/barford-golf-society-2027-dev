@@ -106,19 +106,14 @@
     $("previousHole").disabled = hole === 1;
     $("previousHoleBottom").disabled = hole === 1;
     $("nextHole").textContent = hole === 18 ? "Review scores" : "Next hole";
-    $("playerRows").innerHTML = model.players.map(player => {
-      const value = valueFor(player.id);
-      const tee=teeHole(player,info);
-      const shots = shotsReceived(Number(player.handicap_used), tee.stroke_index);
-      const display = value?.picked_up ? "X" : (value?.strokes ?? "");
-      const pts = value ? pointsFor(player, info, value) : null;
-      return `<button class="score-player-row ${selectedPlayerId===player.id?"is-selected":""}" type="button" data-player="${player.id}">
-        <span><span class="player-name">${esc(player.display_name)} <i class="shot-dots" aria-label="${shots} handicap shot${shots===1?"":"s"}">${"•".repeat(shots)}</i></span><small class="player-detail">${esc(tee.tee)} tee · ${tee.yards} yards · HCP ${player.handicap_used}${pts===null?"":` · ${pts} point${pts===1?"":"s"}`}</small></span>
-        <span class="gross-value ${value?.picked_up?"is-pickup":""}">${display}</span></button>`;
-    }).join("");
-    document.querySelectorAll("[data-player]").forEach(button => button.addEventListener("click", () => { selectedPlayerId=button.dataset.player; renderHole(); }));
     const selected = model.players.find(player => player.id === selectedPlayerId);
-    $("selectedPlayerPrompt").textContent = selected ? `Enter gross strokes for ${selected.display_name}` : "Select a player";
+    if (selected) {
+      const selectedTee = teeHole(selected, info);
+      const selectedShots = shotsReceived(Number(selected.handicap_used), selectedTee.stroke_index);
+      $("selectedPlayerPrompt").innerHTML = `<strong>${esc(selected.display_name)}</strong><span class="shot-dots" aria-label="${selectedShots} handicap shot${selectedShots===1?"":"s"}">${"•".repeat(selectedShots)}</span><small>HCP ${selected.handicap_used} · ${esc(selectedTee.tee)} · ${selectedTee.yards}yd</small>`;
+    } else {
+      $("selectedPlayerPrompt").textContent = "Tap a player above";
+    }
   }
 
   function renderLiveCard() {
@@ -132,12 +127,16 @@
         const display = value ? `${value.picked_up ? "X" : value.strokes}/${pointsFor(player, info, value)}` : "–";
         return `<button type="button" class="${number===hole?"is-current":""} ${value?.picked_up?"is-pickup":""}" data-live-hole="${number}" data-live-player="${player.id}" aria-label="${esc(player.display_name)}, hole ${number}: ${value ? display : "not entered"}">${display}</button>`;
       }).join("");
-      return `<div class="live-card-row"><strong>${esc(player.display_name)}</strong>${cells}</div>`;
+      return `<div class="live-card-row ${selectedPlayerId===player.id?"is-selected-player":""}"><button type="button" class="live-player-name" data-live-player-name="${player.id}" aria-label="Enter a score for ${esc(player.display_name)}">${esc(player.display_name)}</button>${cells}</div>`;
     }).join("");
     $("liveNineStrip").innerHTML = `<div class="live-card-header"><strong>${firstHole===1?"Front 9":"Back 9"}</strong>${header}</div>${rows}`;
     document.querySelectorAll("[data-live-hole]").forEach(button => button.addEventListener("click", () => {
       hole = Number(button.dataset.liveHole);
       selectedPlayerId = button.dataset.livePlayer;
+      renderHole();
+    }));
+    document.querySelectorAll("[data-live-player-name]").forEach(button => button.addEventListener("click", () => {
+      selectedPlayerId = button.dataset.livePlayerName;
       renderHole();
     }));
   }
@@ -147,7 +146,6 @@
       const missing = model.players.find(player => !valueFor(player.id));
       selectedPlayerId = missing?.id || selectedPlayerId;
       renderHole();
-      $("selectedPlayerPrompt").textContent = `Enter a score or X for ${missing?.display_name || "every player"}`;
       return;
     }
     if (hole === 9 && next === 10) return showHalfwayReview();

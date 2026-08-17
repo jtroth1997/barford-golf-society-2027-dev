@@ -147,6 +147,39 @@
   }
 }
 
+/* Compact, no-scroll active scoring layout. */
+.live-card-row.is-selected-player button { background:#eef7f1; }
+.live-card-row.is-selected-player button.is-current { background:#f4d477; }
+.live-card-row .live-player-name { display:block;overflow:hidden;padding-left:7px;color:#173629;text-align:left;text-overflow:ellipsis;white-space:nowrap; }
+
+body.scoring-page { height:100dvh;overflow:hidden; }
+.scoring-page .score-app { height:calc(100dvh - 58px);min-height:0;overflow:hidden; }
+#scoreReady:not(.hidden) { display:grid;grid-template-rows:auto auto auto minmax(0,1fr);height:100%;min-height:0;overflow:hidden; }
+#scoreReady .hole-heading { min-height:0;padding:6px 5px; }
+#scoreReady .hole-heading h1 { margin:0;font-size:clamp(1.18rem,3.5dvh,1.45rem); }
+#scoreReady .hole-heading>div>span { font-size:.62rem; }
+#scoreReady .hole-heading p { margin:1px 0;gap:6px;font-size:clamp(.62rem,1.45dvh,.73rem); }
+#scoreReady .live-nine-strip { margin:5px 6px 0; }
+#scoreReady .live-card-header>*,#scoreReady .live-card-row>* { min-height:clamp(25px,3.75dvh,31px); }
+#scoreReady .handoff-scorecard { min-height:22px;margin:0 auto;padding:3px 8px;font-size:.68rem; }
+#scoreReady .score-keypad { display:grid;grid-template-rows:34px minmax(0,1fr);min-height:0;padding:0 7px calc(68px + env(safe-area-inset-bottom));overflow:hidden; }
+#scoreReady #selectedPlayerPrompt { display:flex;align-items:center;justify-content:center;gap:5px;min-width:0;padding:2px 4px;color:#273c32;font-size:.76rem;white-space:nowrap; }
+#scoreReady #selectedPlayerPrompt strong { max-width:42%;overflow:hidden;text-overflow:ellipsis; }
+#scoreReady #selectedPlayerPrompt small { color:#64736b;font-size:.66rem; }
+#scoreReady .keypad-grid { grid-template-rows:repeat(4,minmax(0,1fr));min-height:0;height:100%; }
+#scoreReady .keypad-grid button { height:auto;min-height:38px;font-size:clamp(1rem,3dvh,1.3rem); }
+#scoreReady .hole-actions { min-height:64px;padding-top:7px;padding-bottom:calc(7px + env(safe-area-inset-bottom)); }
+#scoreReady .hole-actions .button { min-height:50px; }
+.score-review:not(.hidden),.score-state:not(.hidden) { max-height:calc(100dvh - 58px);overflow-y:auto; }
+
+@media (max-height:680px) {
+  #scoreReady .hole-heading { padding-block:3px; }
+  #scoreReady .hole-heading h1 { font-size:1.1rem; }
+  #scoreReady .hole-heading p { font-size:.59rem; }
+  #scoreReady .score-keypad { grid-template-rows:30px minmax(0,1fr); }
+  #scoreReady .live-card-header>*,#scoreReady .live-card-row>* { min-height:24px; }
+}
+
 .score-simple-help strong,
 .score-simple-help span {
   display: block;
