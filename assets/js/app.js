@@ -96,6 +96,7 @@ window.addEventListener("load",()=>{
   if(currentPage==="admin.html"){
     loadEnhancement("assets/js/test-event-controls.js?v=2","test-event-controls");
     loadEnhancement("assets/js/event-course-setup.js?v=2","event-course-setup",()=>loadEnhancement("assets/js/admin-brilliant.js?v=2","admin-brilliant"));
+    loadEnhancement("assets/js/admin-scorecard-preview.js?v=1","admin-scorecard-preview");
   } else if(currentPage==="index.html") {
     loadEnhancement("assets/js/member-experience-plus.js?v=2","member-experience-plus");
   } else if(currentPage==="account.html") {
