@@ -1,7 +1,7 @@
-const CACHE="barford-golf-2027-adminfresh-v11";
+const CACHE="barford-golf-2027-mobile-v12";
 const CORE=[
   "./","./index.html","./scoring.html",
-  "./assets/css/styles.css","./assets/css/members.css","./assets/css/accessible-mobile.css","./assets/css/product-premium.css","./assets/css/product-polish.css","./assets/css/product-polish-mobile.css","./assets/css/brilliant.css","./assets/css/scoring.css","./assets/css/scoring-simple.css","./assets/css/score-competitions.css",
+  "./assets/css/styles.css","./assets/css/members.css","./assets/css/accessible-mobile.css","./assets/css/product-premium.css","./assets/css/product-polish.css","./assets/css/product-polish-mobile.css","./assets/css/brilliant.css","./assets/css/mobile-redesign.css","./assets/css/scoring.css","./assets/css/scoring-simple.css","./assets/css/score-competitions.css",
   "./assets/js/app.js","./assets/js/product-experience.js","./assets/js/scoring.js","./assets/js/scoring-resilience.js","./assets/js/supabase-config.js","./assets/js/supabase-client.js",
   "./assets/images/barford-golf-society-logo.png"
 ];
@@ -13,11 +13,11 @@ self.addEventListener("fetch",event=>{
   const request=event.request;if(request.method!=="GET")return;
   const url=new URL(request.url),path=url.pathname;
   const isAdminPage=/\/(admin|test-event)\.html$/.test(path);
-  const isAdminAsset=/\/assets\/js\/(app|admin-auth|admin-scoring|admin-brilliant|event-course-setup|test-event-controls)\.js$/.test(path);
+  const isFreshUiAsset=/\/assets\/js\/(app|product-experience|admin-auth|admin-scoring|admin-brilliant|event-course-setup|test-event-controls)\.js$/.test(path)||/\/assets\/css\/mobile-redesign\.css$/.test(path);
   if(request.mode==="navigate"){
     event.respondWith((async()=>{const cache=await caches.open(CACHE);if(isAdminPage)return networkFirst(cache,request,"./index.html");const cached=await cache.match(request,{ignoreSearch:true});const fresh=network(cache,request);if(cached){event.waitUntil(fresh);return cached}return(await fresh)||cache.match("./index.html")})());return;
   }
   if(url.origin===self.location.origin||url.hostname==="cdn.jsdelivr.net"){
-    event.respondWith((async()=>{const cache=await caches.open(CACHE);if(isAdminAsset)return networkFirst(cache,request);const cached=await cache.match(request,{ignoreSearch:true});if(cached){event.waitUntil(network(cache,request));return cached}return(await network(cache,request))||Response.error()})());
+    event.respondWith((async()=>{const cache=await caches.open(CACHE);if(isFreshUiAsset)return networkFirst(cache,request);const cached=await cache.match(request,{ignoreSearch:true});if(cached){event.waitUntil(network(cache,request));return cached}return(await network(cache,request))||Response.error()})());
   }
 });
