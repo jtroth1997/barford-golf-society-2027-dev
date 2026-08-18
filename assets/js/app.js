@@ -5,7 +5,8 @@ body.classList.add("product-premium");
   ["assets/css/product-premium.css?v=3","productPremium"],
   ["assets/css/product-polish.css?v=2","productPolish"],
   ["assets/css/product-polish-mobile.css?v=3","productPolishMobile"],
-  ["assets/css/brilliant.css?v=2","brilliantProduct"]
+  ["assets/css/brilliant.css?v=2","brilliantProduct"],
+  ["assets/css/mobile-redesign.css?v=1","mobileRedesign"]
 ].forEach(([href,key])=>{
   const attr=`data-${key.replace(/[A-Z]/g,m=>`-${m.toLowerCase()}`)}`;
   if(document.querySelector(`link[${attr}]`))return;
@@ -20,7 +21,7 @@ if(document.getElementById("dashboardEventCamera")){
 
 if("serviceWorker" in navigator){
   window.addEventListener("load",()=>{
-    const register=()=>navigator.serviceWorker.register("./sw.js?v=fast10").catch(()=>{});
+    const register=()=>navigator.serviceWorker.register("./sw.js?v=fast11").catch(()=>{});
     if("requestIdleCallback" in window)requestIdleCallback(register,{timeout:1400});else setTimeout(register,250);
   },{once:true});
 }
