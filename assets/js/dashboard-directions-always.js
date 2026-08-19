@@ -1,45 +1,29 @@
 (() => {
-  'use strict';
-  const client = window.BarfordSupabase;
-  const button = document.getElementById('dashboardEventDirections');
-  if (!client || !button) return;
+  "use strict";
 
-  let destination = '';
-  const dialog = document.getElementById('dashboardDirectionsDialog');
-  const setLink = (id, href) => { const el = document.getElementById(id); if (el) el.href = href; };
+  // The event card already contains the useful event information. Remove the duplicate
+  // top-level directions control entirely so it cannot reappear on event day.
+  document.getElementById("dashboardEventDirections")?.remove();
 
-  const reveal = async () => {
-    try {
-      const { data: events, error } = await client.from('events')
-        .select('id,name,event_date,venue,address,status')
-        .neq('status','archived')
-        .order('event_date',{ascending:true});
-      if (error) return;
-      const today = new Date(); today.setHours(0,0,0,0);
-      const next = (events || []).find(e => new Date(`${e.event_date}T12:00:00`) >= today && e.status !== 'cancelled') || (events || [])[0];
-      if (!next) return;
-      destination = [next.venue, next.address].filter(Boolean).join(', ') || next.name;
-      button.classList.remove('hidden');
-      button.hidden = false;
-      button.style.setProperty('display','inline-flex','important');
-      const label = document.getElementById('dashboardDirectionsDestination');
-      if (label) label.textContent = destination;
-      const q = encodeURIComponent(destination);
-      setLink('dashboardAppleMaps', `https://maps.apple.com/?daddr=${q}`);
-      setLink('dashboardGoogleMaps', `https://www.google.com/maps/dir/?api=1&destination=${q}`);
-      setLink('dashboardWaze', `https://waze.com/ul?q=${q}&navigate=yes`);
-    } catch (_) {}
-  };
+  // Keep the scorecard action with the tee-group/event information rather than beside
+  // the event title at the top of the card.
+  const scoreLink = document.querySelector(".event-scorecard-cta");
+  const teeActions = document.querySelector("#dashboardTeeGroup .tee-group-actions");
+  if (scoreLink && teeActions && scoreLink.parentElement !== teeActions) {
+    scoreLink.classList.add("button", "button-primary");
+    scoreLink.querySelector("span")?.remove();
+    const label = scoreLink.querySelector("strong");
+    if (label) label.textContent = "Open today’s scorecard";
+    teeActions.prepend(scoreLink);
+  }
 
-  // Capture-phase handler so this remains independent of tee-time/dashboard state.
-  button.addEventListener('click', e => {
-    e.preventDefault(); e.stopImmediatePropagation();
-    if (!destination) return;
-    if (dialog?.showModal) dialog.showModal();
-    else window.open(`https://maps.apple.com/?daddr=${encodeURIComponent(destination)}`,'_blank');
-  }, true);
-
-  reveal();
-  setTimeout(reveal, 500);
-  setTimeout(reveal, 1500);
+  // Load the scorer workflow once. This replaces the old mutation-observer loop that
+  // could repeatedly re-render the dashboard and make the page jump uncontrollably.
+  if (!document.querySelector('script[data-dashboard-scorer-selection]')) {
+    const script = document.createElement("script");
+    script.src = "assets/js/dashboard-scorer-selection.js?v=stable2";
+    script.defer = true;
+    script.dataset.dashboardScorerSelection = "1";
+    document.head.appendChild(script);
+  }
 })();
