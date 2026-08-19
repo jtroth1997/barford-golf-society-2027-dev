@@ -1,87 +1,16 @@
 (() => {
-  "use strict";
-  const client = window.BarfordSupabase;
-  if (!client) return;
-
-  const escapeHtml = value => String(value ?? "").replace(/[&<>"']/g, c => ({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"})[c]);
-  const initials = name => String(name || "BG").split(/\s+/).filter(Boolean).slice(0,2).map(p=>p[0].toUpperCase()).join("");
-
-  const ensureDialog = () => {
-    let dialog = document.getElementById("eventRsvpRosterDialog");
-    if (dialog) return dialog;
-    dialog = document.createElement("dialog");
-    dialog.id = "eventRsvpRosterDialog";
-    dialog.className = "member-rsvp-dialog event-players-dialog";
-    dialog.innerHTML = `<div class="event-players-panel"><button class="dialog-close" type="button" aria-label="Close">×</button><p class="eyebrow">Who’s playing?</p><h2 id="eventRsvpRosterTitle">Players RSVP’d</h2><p id="eventRsvpRosterSummary"></p><div id="eventRsvpRosterList" class="event-players-list rsvp-roster-list"></div><button class="button button-primary" type="button" data-close-rsvp-roster>Close</button></div>`;
-    document.body.appendChild(dialog);
-    dialog.querySelector(".dialog-close").addEventListener("click",()=>dialog.close());
-    dialog.querySelector("[data-close-rsvp-roster]").addEventListener("click",()=>dialog.close());
-    return dialog;
-  };
-
-  const fetchPlaying = async eventId => {
-    const { data:rsvps, error } = await client.from("rsvps").select("member_id,guest_name").eq("event_id",eventId).eq("status","playing");
-    if (error) throw error;
-    const memberIds=[...new Set((rsvps||[]).map(r=>r.member_id).filter(Boolean))];
-    let profiles=[];
-    if(memberIds.length){
-      const result=await client.from("profiles").select("id,full_name,photo_url").in("id",memberIds);
-      if(result.error) throw result.error;
-      profiles=result.data||[];
-    }
-    const byId=new Map(profiles.map(p=>[p.id,p]));
-    return (rsvps||[]).map(r=>({...(byId.get(r.member_id)||{}),full_name:byId.get(r.member_id)?.full_name||r.guest_name||"Guest player"})).sort((a,b)=>a.full_name.localeCompare(b.full_name));
-  };
-
-  const openRoster = async (eventId,eventName,capacity) => {
-    const dialog=ensureDialog(), list=dialog.querySelector("#eventRsvpRosterList");
-    dialog.querySelector("#eventRsvpRosterTitle").textContent=eventName||"Players RSVP’d";
-    dialog.querySelector("#eventRsvpRosterSummary").textContent="Loading players…";
-    list.innerHTML="";
-    dialog.showModal();
-    try{
-      const players=await fetchPlaying(eventId);
-      dialog.querySelector("#eventRsvpRosterSummary").textContent=capacity?`${players.length} of ${capacity} places filled · ${Math.max(0,capacity-players.length)} available`:`${players.length} player${players.length===1?"":"s"} RSVP’d`;
-      list.innerHTML=players.length?`<ul class="event-tee-player-list">${players.map((p,i)=>`<li><div class="event-tee-avatar" data-rsvp-avatar="${i}">${escapeHtml(initials(p.full_name))}</div><strong>${escapeHtml(p.full_name)}</strong></li>`).join("")}</ul>`:"<p>No one has RSVP’d as playing yet.</p>";
-      players.forEach(async(p,i)=>{if(!p.photo_url)return;const {data}=await client.storage.from("profile-images").createSignedUrl(p.photo_url,3600);const avatar=list.querySelector(`[data-rsvp-avatar="${i}"]`);if(data?.signedUrl&&avatar){avatar.innerHTML=`<img src="${escapeHtml(data.signedUrl)}" alt="">`;avatar.classList.add("has-photo");}});
-    }catch(_){dialog.querySelector("#eventRsvpRosterSummary").textContent="The RSVP list could not be loaded. Please try again.";}
-  };
-
-  const addDashboardAvailability = async () => {
-    const card=document.querySelector(".dashboard-next-event");
-    const name=document.getElementById("dashboardEventName")?.textContent;
-    if(!card||!name||name.includes("Checking")||name.includes("No upcoming"))return;
-    const today=new Date().toISOString().slice(0,10);
-    const {data:events}=await client.from("events").select("id,name,capacity,event_date").gte("event_date",today).in("status",["scheduled","cancelled"]).order("event_date").limit(1);
-    const event=events?.[0]; if(!event)return;
-    const players=await fetchPlaying(event.id);
-    let box=document.getElementById("dashboardEventAvailability");
-    if(!box){box=document.createElement("div");box.id="dashboardEventAvailability";box.className="event-rsvp-availability dashboard-rsvp-availability";document.getElementById("dashboardEventFacts")?.after(box);}
-    const available=event.capacity?Math.max(0,event.capacity-players.length):null;
-    box.innerHTML=`<div><span>EVENT PLACES</span><strong>${event.capacity?`${players.length} of ${event.capacity} filled`: `${players.length} RSVP’d`}</strong>${available!==null?`<small>${available} place${available===1?"":"s"} available</small>`:""}</div><button class="button button-outline" type="button">See who’s playing</button>`;
-    box.querySelector("button").addEventListener("click",()=>openRoster(event.id,event.name,event.capacity));
-  };
-
-  const enhanceEventCards = async () => {
-    const list=document.getElementById("eventList"); if(!list)return;
-    const cards=[...list.querySelectorAll(".compact-event-card")]; if(!cards.length)return;
-    const today=new Date().toISOString().slice(0,10);
-    const {data:events}=await client.from("events").select("id,name,capacity,event_date").gte("event_date",today).in("status",["scheduled","cancelled"]).order("event_date");
-    for(let i=0;i<cards.length;i++){
-      const event=events?.[i]; if(!event||cards[i].querySelector(".event-rsvp-availability"))continue;
-      const players=await fetchPlaying(event.id), available=event.capacity?Math.max(0,event.capacity-players.length):null;
-      const box=document.createElement("div");box.className="event-rsvp-availability";
-      box.innerHTML=`<div><span>EVENT PLACES</span><strong>${event.capacity?`${players.length} of ${event.capacity} filled`:`${players.length} RSVP’d`}</strong>${available!==null?`<small>${available} available</small>`:""}</div><button class="button button-outline" type="button">See who’s playing</button>`;
-      const main=cards[i].querySelector(".event-main"); main?.appendChild(box);
-      box.querySelector("button").addEventListener("click",()=>openRoster(event.id,event.name,event.capacity));
-    }
-  };
-
-  const style=document.createElement("style");
-  style.textContent=`.event-rsvp-availability{display:flex;align-items:center;justify-content:space-between;gap:16px;margin-top:16px;padding:14px 16px;border:1px solid rgba(6,61,42,.16);border-radius:14px;background:#f5f8f6}.event-rsvp-availability>div{display:grid;gap:2px}.event-rsvp-availability span{font-size:.72rem;font-weight:800;letter-spacing:.08em;color:#6b756f}.event-rsvp-availability strong{font-size:1rem;color:#063d2a}.event-rsvp-availability small{color:#65716b}.rsvp-roster-list .event-tee-player-list{margin:0;padding:0;list-style:none}.rsvp-roster-list .event-tee-player-list li{display:flex;align-items:center;gap:12px;padding:10px 0;border-bottom:1px solid rgba(6,61,42,.1)}@media(max-width:640px){.event-rsvp-availability{align-items:stretch;flex-direction:column}.event-rsvp-availability .button{width:100%}}`;
-  document.head.appendChild(style);
-
-  const observer=new MutationObserver(()=>{enhanceEventCards().catch(()=>{});});
-  const eventList=document.getElementById("eventList"); if(eventList)observer.observe(eventList,{childList:true,subtree:false});
-  window.addEventListener("load",()=>{setTimeout(()=>addDashboardAvailability().catch(()=>{}),700);setTimeout(()=>enhanceEventCards().catch(()=>{}),500);});
+"use strict";
+const client=window.BarfordSupabase;if(!client)return;
+const esc=v=>String(v??"").replace(/[&<>"']/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"})[c]);
+const initials=n=>String(n||"BG").split(/\s+/).filter(Boolean).slice(0,2).map(x=>x[0].toUpperCase()).join("");
+async function availability(id){const {data,error}=await client.rpc("get_event_availability",{p_event_id:id});if(error)throw error;return data?.[0]||{};}
+async function roster(id){const {data,error}=await client.rpc("get_event_rsvp_roster",{p_event_id:id});if(error)throw error;return data||[];}
+function dialog(){let d=document.getElementById("eventRsvpRosterDialog");if(d)return d;d=document.createElement("dialog");d.id="eventRsvpRosterDialog";d.className="member-rsvp-dialog event-players-dialog";d.innerHTML='<div class="event-players-panel"><button class="dialog-close" type="button">×</button><p class="eyebrow">Event attendance</p><h2 id="rrTitle">Who’s playing?</h2><p id="rrSummary"></p><div id="rrList"></div><button class="button button-primary" data-close type="button">Close</button></div>';document.body.appendChild(d);d.querySelector(".dialog-close").onclick=()=>d.close();d.querySelector("[data-close]").onclick=()=>d.close();return d;}
+async function openRoster(event){const d=dialog(),list=d.querySelector("#rrList");d.querySelector("#rrTitle").textContent=event.name;d.querySelector("#rrSummary").textContent="Loading…";list.innerHTML="";d.showModal();try{const [people,a]=await Promise.all([roster(event.id),availability(event.id)]);d.querySelector("#rrSummary").textContent=`${a.playing_count||0} of ${a.capacity||event.capacity} filled · ${a.available||0} available${Number(a.reserve_count)?` · ${a.reserve_count} reserve`:""}`;const playing=people.filter(p=>p.status==="playing"),reserve=people.filter(p=>p.status==="reserve");const rows=arr=>arr.map(p=>`<li><span class="event-tee-avatar">${esc(initials(p.full_name))}</span><strong>${esc(p.full_name)}</strong></li>`).join("");list.innerHTML=`<h3>Playing</h3><ul class="event-tee-player-list">${rows(playing)||"<li>No players yet</li>"}</ul>${reserve.length?`<h3 class="reserve-heading">Reserve list</h3><ol class="reserve-list">${reserve.map(p=>`<li><strong>${esc(p.full_name)}</strong></li>`).join("")}</ol>`:""}`;}catch(e){d.querySelector("#rrSummary").textContent="Could not load the attendance list.";}}
+function renderBox(event,a,where){let box=where.querySelector(".event-rsvp-availability");if(!box){box=document.createElement("div");box.className="event-rsvp-availability";where.appendChild(box);}const full=Number(a.available)===0;box.innerHTML=`<div class="event-place-copy"><span>EVENT PLACES</span><strong>${a.playing_count||0} of ${a.capacity||event.capacity} filled</strong><small>${full?"Event full":`${a.available} place${Number(a.available)===1?"":"s"} available`}${Number(a.reserve_count)?` · ${a.reserve_count} on reserve list`:""}</small></div><div class="event-place-actions"><button class="button button-outline see-roster" type="button">See who’s playing</button>${full?'<button class="button button-primary join-reserve" type="button">Join reserve list</button>':""}</div>`;box.querySelector(".see-roster").onclick=()=>openRoster(event);const reserveBtn=box.querySelector(".join-reserve");if(reserveBtn)reserveBtn.onclick=async()=>{reserveBtn.disabled=true;reserveBtn.textContent="Joining…";const {data:{user}}=await client.auth.getUser();if(!user){location.href="account.html";return;}const {data:own}=await client.from("rsvps").select("buggy_requested,preferred_tee_time").eq("event_id",event.id).eq("member_id",user.id).maybeSingle();const {data,error}=await client.rpc("set_my_event_rsvp",{p_event_id:event.id,p_status:"playing",p_buggy_requested:own?.buggy_requested||false,p_preferred_tee_time:own?.preferred_tee_time||"dont_mind"});if(error){reserveBtn.disabled=false;reserveBtn.textContent="Join reserve list";return;}reserveBtn.textContent=data==="reserve"?"You’re on the reserve list":"You’re playing";setTimeout(()=>location.reload(),600);};}
+async function dashboard(){const card=document.querySelector(".dashboard-next-event");if(!card)return;const today=new Date().toISOString().slice(0,10);const {data}=await client.from("events").select("id,name,capacity,event_date,status").gte("event_date",today).eq("status","scheduled").order("event_date").limit(1);const event=data?.[0];if(!event)return;const a=await availability(event.id);let host=document.getElementById("dashboardEventAvailabilityHost");if(!host){host=document.createElement("div");host.id="dashboardEventAvailabilityHost";document.getElementById("dashboardEventFacts")?.after(host);}renderBox(event,a,host);}
+async function cards(){const list=document.getElementById("eventList");if(!list)return;const els=[...list.querySelectorAll(".compact-event-card")];if(!els.length)return;const today=new Date().toISOString().slice(0,10);const {data:events}=await client.from("events").select("id,name,capacity,event_date,status").gte("event_date",today).eq("status","scheduled").order("event_date");for(let i=0;i<els.length;i++){const event=events?.[i];if(!event)continue;const main=els[i].querySelector(".event-main")||els[i];const a=await availability(event.id);renderBox(event,a,main);}}
+async function promotionPopup(){const {data,error}=await client.rpc("get_my_unseen_rsvp_promotions");if(error||!data?.length)return;for(const p of data){const d=document.createElement("dialog");d.className="member-rsvp-dialog reserve-promotion-dialog";d.innerHTML=`<div class="event-players-panel"><p class="eyebrow">Good news</p><h2>You’re in!</h2><p>A place became available for <strong>${esc(p.event_name)}</strong>. You’ve automatically moved from the reserve list to the playing list.</p><button class="button button-primary">Got it</button></div>`;document.body.appendChild(d);d.querySelector("button").onclick=async()=>{await client.rpc("mark_my_rsvp_promotion_seen",{p_id:p.id});d.close();d.remove();};d.showModal();break;}}
+const style=document.createElement("style");style.textContent=`.event-rsvp-availability{display:flex;align-items:center;justify-content:space-between;gap:16px;margin:16px 0;padding:14px 16px;border:1px solid rgba(6,61,42,.16);border-radius:14px;background:#f5f8f6}.event-place-copy{display:grid;gap:3px}.event-place-copy span{font-size:.72rem;font-weight:800;letter-spacing:.08em;color:#6b756f}.event-place-copy strong{color:#063d2a}.event-place-copy small{color:#65716b}.event-place-actions{display:flex;gap:8px;flex-wrap:wrap}.reserve-heading{margin-top:20px}.reserve-list{padding-left:24px}.reserve-list li{padding:7px}.event-tee-player-list{list-style:none;padding:0}.event-tee-player-list li{display:flex;align-items:center;gap:12px;padding:9px 0}.event-tee-avatar{display:grid;place-items:center;width:38px;height:38px;border-radius:50%;background:#063d2a;color:white;font-weight:800}@media(max-width:640px){.event-rsvp-availability{flex-direction:column;align-items:stretch}.event-place-actions{display:grid}.event-place-actions .button{width:100%}}`;document.head.appendChild(style);
+let tries=0;const boot=()=>{dashboard().catch(()=>{});cards().catch(()=>{});if(++tries<8)setTimeout(boot,700);};if(document.readyState==="loading")document.addEventListener("DOMContentLoaded",boot,{once:true});else boot();window.addEventListener("load",()=>{promotionPopup().catch(()=>{});});
 })();
