@@ -19,6 +19,15 @@
     }
   );
 
+  // Load the scorecard workflow guard on the admin and live-scoring screens.
+  // This keeps prepared, assigned and started as three separate states.
+  if (document.body.classList.contains("admin-page") || document.body.classList.contains("scoring-page")) {
+    const workflow = document.createElement("script");
+    workflow.src = "assets/js/scorecard-workflow-fix.js?v=1";
+    workflow.defer = true;
+    document.head.appendChild(workflow);
+  }
+
   // Normal members never see Admin in navigation. Existing authorised admins
   // get the link back automatically after their signed-in profile is checked.
   (async () => {
