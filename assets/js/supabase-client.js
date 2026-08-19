@@ -27,12 +27,12 @@
     document.head.appendChild(workflow);
   }
 
-  // On the signed-in home dashboard the tee group chooses its scorer.
+  // The dashboard must always offer scorer selection before a prepared card can be opened.
   if (document.getElementById("dashboardTeeGroup")) {
     const scorerChoice = document.createElement("script");
-    scorerChoice.src = "assets/js/dashboard-scorer-selection.js?v=1";
-    scorerChoice.defer = true;
-    document.head.appendChild(scorerChoice);
+    scorerChoice.src = "assets/js/dashboard-scorer-selection.js?v=3";
+    scorerChoice.async = false;
+    document.body.appendChild(scorerChoice);
   }
 
   // Normal members never see Admin in navigation. Existing authorised admins
