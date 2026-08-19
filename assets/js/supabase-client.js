@@ -19,13 +19,20 @@
     }
   );
 
-  // Load the scorecard workflow guard on the admin and live-scoring screens.
-  // This keeps prepared, assigned and started as three separate states.
+  // Prepared, assigned and started are separate scorecard states.
   if (document.body.classList.contains("admin-page") || document.body.classList.contains("scoring-page")) {
     const workflow = document.createElement("script");
-    workflow.src = "assets/js/scorecard-workflow-fix.js?v=1";
+    workflow.src = "assets/js/scorecard-workflow-fix.js?v=2";
     workflow.defer = true;
     document.head.appendChild(workflow);
+  }
+
+  // On the signed-in home dashboard the tee group chooses its scorer.
+  if (document.getElementById("dashboardTeeGroup")) {
+    const scorerChoice = document.createElement("script");
+    scorerChoice.src = "assets/js/dashboard-scorer-selection.js?v=1";
+    scorerChoice.defer = true;
+    document.head.appendChild(scorerChoice);
   }
 
   // Normal members never see Admin in navigation. Existing authorised admins
