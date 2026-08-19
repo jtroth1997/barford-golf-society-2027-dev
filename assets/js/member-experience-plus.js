@@ -59,29 +59,19 @@
     const today = localDate();
     const { data: events } = await client.from("events").select("id,name,event_date,status,test_mode_active,test_original_event_date").eq("event_date", today).neq("status","cancelled").order("first_tee_time");
     if (!events?.length) return;
-    let selected = null, teeTime = null;
+    let selected = null;
     for (const event of events) {
       const { data: rsvp } = await client.from("rsvps").select("status").eq("event_id",event.id).eq("member_id",userId).eq("status","playing").maybeSingle();
       if (!rsvp) continue;
       selected = event;
-      const { data: tee } = await client.from("tee_times").select("tee_time").eq("event_id",event.id).eq("member_id",userId).order("tee_time").limit(1).maybeSingle();
-      teeTime = tee?.tee_time ? String(tee.tee_time).slice(0,5) : null;
       break;
     }
     if (!selected) return;
     document.body.classList.add("event-day-focus");
     if (selected.test_mode_active) document.body.classList.add("event-test-mode");
-    const grid = document.querySelector(".member-home-grid");
-    if (!grid || document.querySelector(".event-day-focus-banner")) return;
-    const banner = document.createElement("section");
-    banner.className = "event-day-focus-banner";
-    const label = selected.test_mode_active ? `TEST EVENT · ${selected.name}` : `TODAY · ${selected.name}`;
-    const detail = selected.test_mode_active
-      ? `Full live-event simulation · real date ${friendlyDate(selected.test_original_event_date)}`
-      : (teeTime ? `Your tee time ${teeTime}` : "Tee time details are on your event card");
-    banner.innerHTML = `<div><strong>${esc(label)}</strong><span>${esc(detail)}</span></div><div class="event-day-focus-actions"><button id="eventDayDirectionsQuick" class="button button-gold" type="button">Directions</button><a class="button button-primary" href="scoring.html">Scorecard</a></div>`;
-    grid.prepend(banner);
-    banner.querySelector("#eventDayDirectionsQuick")?.addEventListener("click", () => document.getElementById("dashboardEventDirections")?.click());
+    // Do not add a separate green event-day banner. Directions and scorecard controls
+    // already live in the main event information card below, avoiding duplication.
+    document.querySelector(".event-day-focus-banner")?.remove();
     const heading = document.querySelector(".dashboard-welcome-copy h1");
     if (heading) heading.innerHTML = selected.test_mode_active
       ? `Test event, <span>${esc(document.getElementById("dashboardFirstName")?.textContent || "member")}</span>`
