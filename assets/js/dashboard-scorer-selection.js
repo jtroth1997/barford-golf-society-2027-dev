@@ -8,6 +8,7 @@
   if (scoreLink) scoreLink.classList.add("hidden");
   const esc = v => String(v ?? "").replace(/[&<>"']/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[c]));
   let rendering = false;
+  const renderSoon = () => setTimeout(()=>render().catch(console.error),50);
 
   async function render() {
     if (rendering) return;
@@ -16,21 +17,12 @@
       if (scoreLink) scoreLink.classList.add("hidden");
       const {data:{session}} = await client.auth.getSession();
       if (!session) return;
-
-      const {data: memberships, error: membershipError} = await client.from("event_scorecard_players")
-        .select("scorecard_id").eq("member_id",session.user.id);
+      const {data: memberships, error: membershipError} = await client.from("event_scorecard_players").select("scorecard_id").eq("member_id",session.user.id);
       if (membershipError || !memberships?.length) return;
-
-      const {data: cards, error: cardError} = await client.from("event_scorecards")
-        .select("id,event_id,status,scorer_id,updated_at")
-        .in("id",memberships.map(x=>x.scorecard_id))
-        .in("status",["ready","in_progress","submitted","locked"])
-        .order("updated_at",{ascending:false}).limit(1);
+      const {data: cards, error: cardError} = await client.from("event_scorecards").select("id,event_id,status,scorer_id,updated_at").in("id",memberships.map(x=>x.scorecard_id)).in("status",["ready","in_progress","submitted","locked"]).order("updated_at",{ascending:false}).limit(1);
       if (cardError || !cards?.length) return;
       const card = cards[0];
-
-      const {data: players, error: playersError} = await client.from("event_scorecard_players")
-        .select("member_id,display_name,position").eq("scorecard_id",card.id).order("position");
+      const {data: players, error: playersError} = await client.from("event_scorecard_players").select("member_id,display_name,position").eq("scorecard_id",card.id).order("position");
       if (playersError || !players?.length) return;
 
       let box = document.getElementById("dashboardScorerChoice");
@@ -50,7 +42,8 @@
           if(status) status.textContent="Saving scorer…";
           const {error}=await client.rpc("select_scorecard_scorer",{target_event_id:card.event_id,target_scorer_id:btn.dataset.pickScorer});
           if(error){if(status)status.textContent=error.message;box.querySelectorAll("button").forEach(b=>b.disabled=false);return;}
-          await render();
+          if(status) status.textContent="Scorer selected.";
+          renderSoon();
         }));
         return;
       }
@@ -61,14 +54,10 @@
         if(scoreLink) scoreLink.classList.toggle("hidden", !isMe || !["ready","in_progress"].includes(card.status));
         return;
       }
-
       box.innerHTML=`<strong>Scorecard submitted</strong><small>This group card is complete.</small>`;
-    } finally {
-      rendering=false;
-    }
+    } finally { rendering=false; }
   }
 
-  const renderSoon = () => setTimeout(()=>render().catch(console.error),50);
   document.addEventListener("visibilitychange",()=>{if(!document.hidden)renderSoon();});
   window.addEventListener("pageshow",renderSoon);
   renderSoon();
