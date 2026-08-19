@@ -5,7 +5,6 @@
   const scoreLink = document.querySelector(".event-scorecard-cta");
   if (!client || !host) return;
 
-  // Fail closed: a prepared card is NEVER openable until the database says this user is the scorer.
   if (scoreLink) scoreLink.classList.add("hidden");
   const esc = v => String(v ?? "").replace(/[&<>"']/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[c]));
   let rendering = false;
@@ -51,14 +50,14 @@
           if(status) status.textContent="Saving scorer…";
           const {error}=await client.rpc("select_scorecard_scorer",{target_event_id:card.event_id,target_scorer_id:btn.dataset.pickScorer});
           if(error){if(status)status.textContent=error.message;box.querySelectorAll("button").forEach(b=>b.disabled=false);return;}
-          await renderSoon();
+          await render();
         }));
         return;
       }
 
       if (scorer) {
         const isMe=scorer.member_id===session.user.id;
-        box.innerHTML=`<strong style="display:block">${isMe?"You’re keeping score":`${esc(scorer.display_name)} is keeping score`}</strong><small>${isMe?"You can open the group card when scoring is available.":"Only the nominated scorer can enter this group’s scores."}</small>`;
+        box.innerHTML=`<strong style="display:block">${isMe?"You’re keeping score":`${esc(scorer.display_name)} is keeping score`}</strong><small>${isMe?"You can open the group card below.":"Only the nominated scorer can enter this group’s scores."}</small>`;
         if(scoreLink) scoreLink.classList.toggle("hidden", !isMe || !["ready","in_progress"].includes(card.status));
         return;
       }
@@ -69,16 +68,8 @@
     }
   }
 
-  function renderSoon(){setTimeout(()=>render().catch(console.error),50);}
-
-  // member-dashboard.js also updates the scorecard button. Keep this guard authoritative after it runs.
-  const observer=new MutationObserver(()=>renderSoon());
-  observer.observe(host,{attributes:true,attributeFilter:["class"],childList:true,subtree:true});
-  if(scoreLink) observer.observe(scoreLink,{attributes:true,attributeFilter:["class"]});
+  const renderSoon = () => setTimeout(()=>render().catch(console.error),50);
   document.addEventListener("visibilitychange",()=>{if(!document.hidden)renderSoon();});
   window.addEventListener("pageshow",renderSoon);
   renderSoon();
-  setTimeout(renderSoon,500);
-  setTimeout(renderSoon,1200);
-  setTimeout(renderSoon,2500);
 })();
