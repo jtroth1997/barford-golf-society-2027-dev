@@ -33,6 +33,11 @@
     scorerChoice.src = "assets/js/dashboard-scorer-selection.js?v=4";
     scorerChoice.async = false;
     document.body.appendChild(scorerChoice);
+
+    const directions = document.createElement("script");
+    directions.src = "assets/js/home-event-directions.js?v=1";
+    directions.defer = true;
+    document.body.appendChild(directions);
   }
 
   // Normal members never see Admin in navigation. Existing authorised admins
