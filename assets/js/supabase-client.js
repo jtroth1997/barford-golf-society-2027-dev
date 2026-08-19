@@ -27,10 +27,10 @@
     document.head.appendChild(workflow);
   }
 
-  // The dashboard must always offer scorer selection before a prepared card can be opened.
+  // The tee-group scorer guard is authoritative: no scorer means no open-card action.
   if (document.getElementById("dashboardTeeGroup")) {
     const scorerChoice = document.createElement("script");
-    scorerChoice.src = "assets/js/dashboard-scorer-selection.js?v=3";
+    scorerChoice.src = "assets/js/dashboard-scorer-selection.js?v=4";
     scorerChoice.async = false;
     document.body.appendChild(scorerChoice);
   }
