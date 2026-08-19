@@ -8,6 +8,31 @@
   const money = value => Number.isFinite(Number(value)) ? `£${Number(value).toFixed(2)}` : "Amount TBC";
   let busy = false;
 
+  const ensureDirections = () => {
+    const button = document.getElementById("dashboardEventDirections");
+    const detail = document.getElementById("dashboardEventDetail");
+    if (!button || !detail) return;
+    const destination = detail.textContent.trim();
+    if (!destination || destination === "Your event details will appear here." || destination.includes("not published")) return;
+    button.classList.remove("hidden");
+    if (button.dataset.directionsFixWired) return;
+    button.dataset.directionsFixWired = "1";
+    button.addEventListener("click", () => {
+      const currentDestination = document.getElementById("dashboardEventDetail")?.textContent.trim();
+      if (!currentDestination) return;
+      const encoded = encodeURIComponent(currentDestination.replace(" · ", ", "));
+      const destinationText = document.getElementById("dashboardDirectionsDestination");
+      if (destinationText) destinationText.textContent = currentDestination;
+      const apple = document.getElementById("dashboardAppleMaps");
+      const google = document.getElementById("dashboardGoogleMaps");
+      const waze = document.getElementById("dashboardWaze");
+      if (apple) apple.href = `https://maps.apple.com/?daddr=${encoded}&dirflg=d`;
+      if (google) google.href = `https://www.google.com/maps/dir/?api=1&destination=${encoded}`;
+      if (waze) waze.href = `https://waze.com/ul?q=${encoded}&navigate=yes`;
+      document.getElementById("dashboardDirectionsDialog")?.showModal();
+    });
+  };
+
   const ensureSheet = () => {
     let sheet = document.getElementById("demoApplePaySheet");
     if (sheet) return sheet;
@@ -36,6 +61,7 @@
   };
 
   const wire = async () => {
+    ensureDirections();
     const {data:{session}}=await client.auth.getSession(); if(!session)return;
     const links=[...list.querySelectorAll('a[href^="payments.html?event="]')];
     for(const link of links){
@@ -46,6 +72,6 @@
       link.addEventListener("click",e=>{e.preventDefault();openPayment(eventId,event.name,event.price,session.user.id);});
     }
   };
-  let timer; const observer=new MutationObserver(()=>{clearTimeout(timer);timer=setTimeout(wire,80);}); observer.observe(list,{childList:true,subtree:true});
-  window.addEventListener("DOMContentLoaded",()=>setTimeout(wire,250),{once:true});
+  let timer; const observer=new MutationObserver(()=>{clearTimeout(timer);timer=setTimeout(wire,80);}); observer.observe(document.getElementById("memberHomeDashboard") || list,{childList:true,subtree:true,characterData:true});
+  window.addEventListener("DOMContentLoaded",()=>{setTimeout(wire,250);setTimeout(ensureDirections,800);setTimeout(ensureDirections,1600);},{once:true});
 })();
