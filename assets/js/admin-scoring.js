@@ -21,23 +21,30 @@
   async function loadEvent(eventId){
     activeEventId=eventId;$("adminScoringSetup").classList.toggle("hidden",!eventId);$("adminScorecardSaved")?.classList.add("hidden");if(!eventId){$("adminResultsSummary").innerHTML="<p>Select an event.</p>";$("adminSubmittedCards").innerHTML="";$("adminFinalResults").innerHTML="";return;}
     status("Loading course card…");
-    const {data:holes,error:holeError}=await client.from("event_holes").select("*").eq("event_id",eventId).order("hole_number");
-    if(eventId!==activeEventId)return;
-    if(holeError){status(holeError.message);return;}
-    const byHole=new Map((holes||[]).map(item=>[item.hole_number,item]));
-    $("adminHoleEditor").innerHTML=Array.from({length:18},(_,i)=>holeMarkup(i+1,byHole.get(i+1))).join("");
-    const holeOptions='<option value="">Not selected</option>'+Array.from({length:18},(_,i)=>`<option value="${i+1}">Hole ${i+1}</option>`).join("");
-    $("adminLongestDriveHole").innerHTML=holeOptions;$("adminNearestPinHole").innerHTML=holeOptions;
-    $("adminLongestDriveHole").value=String((holes||[]).find(item=>item.longest_drive)?.hole_number||"");
-    $("adminNearestPinHole").value=String((holes||[]).find(item=>item.nearest_pin)?.hole_number||"");
-    const ready=holes?.length===18&&holes.every(item=>item.red_yards&&item.red_stroke_index);
-    renderCards([],ready);updateChecklist(ready,[]);status(ready?"Course card ready — loading group scorecards…":"Find the linked course and select the yellow and red tees.");
-    const {data:cards,error:cardError}=await client.from("event_scorecards").select("id,tee_time,tee_number,status,submitted_at,scorer_id").eq("event_id",eventId).order("tee_time");
-    if(eventId!==activeEventId)return;
-    if(cardError){status(cardError.message);return;}
-    renderCards(cards||[],ready);updateChecklist(ready,cards||[]);$("adminResultsEvent").value=eventId;
-    loadResults(eventId).catch(error=>{$("adminResultsStatus").textContent=error?.message||"Could not load submitted cards.";});
-    status(ready?"Yellow and red course cards are ready.":"Find the linked course and select the yellow and red tees.");
+    try{
+      const {data:holes,error:holeError}=await client.from("event_holes").select("*").eq("event_id",eventId).order("hole_number");
+      if(eventId!==activeEventId)return;
+      if(holeError)throw holeError;
+      status("Course data received — preparing the scorecard…");
+      const byHole=new Map((holes||[]).map(item=>[item.hole_number,item]));
+      $("adminHoleEditor").innerHTML=Array.from({length:18},(_,i)=>holeMarkup(i+1,byHole.get(i+1))).join("");
+      const holeOptions='<option value="">Not selected</option>'+Array.from({length:18},(_,i)=>`<option value="${i+1}">Hole ${i+1}</option>`).join("");
+      $("adminLongestDriveHole").innerHTML=holeOptions;$("adminNearestPinHole").innerHTML=holeOptions;
+      $("adminLongestDriveHole").value=String((holes||[]).find(item=>item.longest_drive)?.hole_number||"");
+      $("adminNearestPinHole").value=String((holes||[]).find(item=>item.nearest_pin)?.hole_number||"");
+      const ready=holes?.length===18&&holes.every(item=>item.red_yards&&item.red_stroke_index);
+      renderCards([],ready);updateChecklist(ready,[]);
+      status(ready?"Course card ready — loading group scorecards…":"Find the linked course and select the yellow and red tees.");
+      const {data:cards,error:cardError}=await client.from("event_scorecards").select("id,tee_time,tee_number,status,submitted_at,scorer_id").eq("event_id",eventId).order("tee_time");
+      if(eventId!==activeEventId)return;
+      if(cardError)throw cardError;
+      renderCards(cards||[],ready);updateChecklist(ready,cards||[]);$("adminResultsEvent").value=eventId;
+      loadResults(eventId).catch(error=>{$("adminResultsStatus").textContent=error?.message||"Could not load submitted cards.";});
+      status(ready?"Yellow and red course cards are ready.":"Find the linked course and select the yellow and red tees.");
+    }catch(error){
+      console.error("Admin course-card load failed",error);
+      status(`Course-card loading failed: ${error?.message||"Unknown error"}`);
+    }
   }
   function updateChecklist(courseReady,cards){
     const set=(name,done,label,current=false)=>{const item=document.querySelector(`[data-score-check="${name}"]`);if(!item)return;item.classList.toggle("is-done",done);item.classList.toggle("is-current",current&&!done);item.querySelector("small").textContent=label;};
