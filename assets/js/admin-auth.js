@@ -838,26 +838,29 @@
   });
 
   const loadGallery = async () => {
-    const { data, error } = await client.from("gallery_photos").select("*").order("created_at", { ascending: false });
+    const { data, error } = await client.from("gallery_photos").select("id,storage_path,caption,approved,created_at").order("created_at", { ascending: false });
     if (error) { setStatus("#adminGalleryStatus", error.message); return; }
-    document.querySelector("#adminGalleryCount").textContent = `${(data || []).filter(item => !item.approved).length} awaiting approval`;
+    const awaiting = (data || []).filter(item => !item.approved).length;
+    document.querySelector("#adminGalleryCount").textContent = `${(data || []).length} uploaded${awaiting ? ` · ${awaiting} awaiting approval` : ""}`;
     const list = document.querySelector("#adminGalleryList");
-    const photos = await Promise.all((data || []).map(async photo => {
-      const { data: signed } = await client.storage.from("gallery-images").createSignedUrl(photo.storage_path, 900);
-      return { ...photo, url: signed?.signedUrl };
-    }));
-    list.innerHTML = photos.length ? photos.map(photo => `<article><div class="admin-photo">${photo.url ? `<img loading="lazy" src="${photo.url}" alt="">` : ""}</div><strong>${escapeHtml(photo.caption || "Society photo")}</strong><small>${photo.approved ? "Approved" : "Waiting for approval"}</small><div class="admin-row-actions">${photo.approved ? "" : `<button type="button" data-approve-photo="${photo.id}">Approve</button>`}<button class="danger-link" type="button" data-delete-photo="${photo.id}" data-photo-path="${escapeHtml(photo.storage_path)}">Delete</button></div></article>`).join("") : "<p>No photographs uploaded.</p>";
+    list.classList.add("admin-gallery-grid");
+    const photos = (data || []).map(photo => ({ ...photo, url: client.storage.from("gallery-images").getPublicUrl(photo.storage_path).data.publicUrl }));
+    list.innerHTML = photos.length ? photos.map(photo => `<article><div class="admin-photo">${photo.url ? `<img loading="lazy" src="${photo.url}" alt="${escapeHtml(photo.caption || "Society photo")}">` : ""}</div><strong>${escapeHtml(photo.caption || "Society photo")}</strong><small>${photo.approved ? "Visible in gallery" : "Waiting for approval"}${photo.created_at ? ` · ${new Intl.DateTimeFormat("en-GB", { day:"numeric", month:"short", year:"numeric" }).format(new Date(photo.created_at))}` : ""}</small><div class="admin-row-actions">${photo.approved ? "" : `<button type="button" data-approve-photo="${photo.id}">Approve</button>`}<button class="admin-delete-photo" type="button" data-delete-photo="${photo.id}" data-photo-path="${escapeHtml(photo.storage_path)}">Delete photo</button></div></article>`).join("") : "<p>No uploaded photographs to manage.</p>";
     list.querySelectorAll("[data-approve-photo]").forEach(button => button.addEventListener("click", async () => {
       const { error: approveError } = await client.from("gallery_photos").update({ approved: true }).eq("id", button.dataset.approvePhoto);
       setStatus("#adminGalleryStatus", approveError ? approveError.message : "Photo approved.");
       if (!approveError) loadGallery();
     }));
     list.querySelectorAll("[data-delete-photo]").forEach(button => button.addEventListener("click", async () => {
-      if (!confirm("Delete this photograph permanently?")) return;
+      if (!confirm("Permanently delete this photo from the society gallery? This cannot be undone.")) return;
+      button.disabled = true;
+      button.textContent = "Deleting…";
+      setStatus("#adminGalleryStatus", "Deleting photo…");
       const storageResult = await client.storage.from("gallery-images").remove([button.dataset.photoPath]);
       const { error: rowError } = storageResult.error ? { error: storageResult.error } : await client.from("gallery_photos").delete().eq("id", button.dataset.deletePhoto);
       setStatus("#adminGalleryStatus", rowError ? rowError.message : "Photo deleted.");
       if (!rowError) loadGallery();
+      else { button.disabled = false; button.textContent = "Delete photo"; }
     }));
   };
 
