@@ -34,7 +34,7 @@
   const loadEvents=async()=>{
     if(!client){emptyState("Events could not be loaded","Please refresh the page and try again.");return;}
     const today=new Date(), localToday=`${today.getFullYear()}-${String(today.getMonth()+1).padStart(2,"0")}-${String(today.getDate()).padStart(2,"0")}`;
-    let result=await client.from("events").select("id,name,venue,address,event_date,first_tee_time,price,capacity,course_video_url,notes,status,cancel_reason").in("status",["scheduled","cancelled"]).gte("event_date",localToday).order("event_date",{ascending:true});
+    let result=await client.from("events").select("id,name,venue,address,event_date,first_tee_time,price,capacity,course_video_url,notes,status").in("status",["scheduled","cancelled"]).gte("event_date",localToday).order("event_date",{ascending:true});
     if(result.error&&/cancel_reason|column .* does not exist/i.test(result.error.message||""))result=await client.from("events").select("id,name,venue,address,event_date,first_tee_time,price,capacity,course_video_url,notes,status").in("status",["scheduled","cancelled"]).gte("event_date",localToday).order("event_date",{ascending:true});
     const {data,error}=result;if(error){emptyState("Events could not be loaded","Please refresh the page and try again.");return;}
     const events=data||[];if(!events.length){emptyState("The 2027 calendar is empty","Once an administrator publishes an event, members will be able to see it here.");if(summary)summary.textContent="The committee has not published any upcoming events yet.";return;}
