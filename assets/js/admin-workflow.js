@@ -38,7 +38,7 @@
       const [rsvp,tees,holes,cards]=await Promise.all([
         client.from("rsvps").select("id",{count:"exact",head:true}).eq("event_id",event.id).eq("status","playing"),
         client.from("tee_times").select("id",{count:"exact",head:true}).eq("event_id",event.id).not("member_id","is",null),
-        client.from("event_holes").select("id",{count:"exact",head:true}).eq("event_id",event.id),
+        client.from("event_holes").select("hole_number",{count:"exact",head:true}).eq("event_id",event.id),
         client.from("event_scorecards").select("id,status").eq("event_id",event.id)
       ]);
       const cardList=cards.data||[];
