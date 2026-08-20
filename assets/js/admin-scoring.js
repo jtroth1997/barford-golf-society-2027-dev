@@ -33,7 +33,11 @@
     $("adminLongestDriveHole").value=String((holes||[]).find(item=>item.longest_drive)?.hole_number||"");
     $("adminNearestPinHole").value=String((holes||[]).find(item=>item.nearest_pin)?.hole_number||"");
     const ready=holes?.length===18&&holes.every(item=>item.red_yards&&item.red_stroke_index);
-    renderCards(cards||[],ready);updateChecklist(ready,cards||[]);$("adminResultsEvent").value=eventId;await loadResults(eventId);status(ready?"Yellow and red course cards are ready.":"Find the linked course and select the yellow and red tees.");
+    renderCards(cards||[],ready);updateChecklist(ready,cards||[]);$("adminResultsEvent").value=eventId;
+    // Draw the event-day controls immediately. The detailed committee results
+    // continue loading in the background instead of blocking this view.
+    loadResults(eventId).catch(error=>{$("adminResultsStatus").textContent=error?.message||"Could not load submitted cards.";});
+    status(ready?"Yellow and red course cards are ready.":"Find the linked course and select the yellow and red tees.");
   }
   function updateChecklist(courseReady,cards){
     const set=(name,done,label,current=false)=>{const item=document.querySelector(`[data-score-check="${name}"]`);if(!item)return;item.classList.toggle("is-done",done);item.classList.toggle("is-current",current&&!done);item.querySelector("small").textContent=label;};
