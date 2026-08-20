@@ -43,10 +43,13 @@
   oldEvents.remove();oldDay.remove();
 
   const nav=document.querySelector(".admin-section-nav");
-  nav.innerHTML='<button type="button" data-flow-tab="create-event">1. Create Event</button><button type="button" data-flow-tab="manage-event">2. Manage Event & RSVP</button><button type="button" data-flow-tab="tee-times">3. Tee Times</button><button type="button" data-flow-tab="scorecards-setup">4. Scorecards</button><button type="button" data-flow-tab="event-day">5. Event Day & Results</button>';
-  const panels=[createPanel,managePanel,teePanel,scorecardPanel,dayPanel];
+  const galleryPanel=document.querySelector('[data-admin-panel="gallery"]');
+  nav.innerHTML='<button type="button" data-flow-tab="create-event">1. Create Event</button><button type="button" data-flow-tab="manage-event">2. Manage Event & RSVP</button><button type="button" data-flow-tab="tee-times">3. Tee Times</button><button type="button" data-flow-tab="scorecards-setup">4. Scorecards</button><button type="button" data-flow-tab="event-day">5. Event Day & Results</button><button type="button" data-flow-tab="gallery">6. Manage Photos</button>';
+  const panels=[createPanel,managePanel,teePanel,scorecardPanel,dayPanel,galleryPanel].filter(Boolean);
   const openTab=name=>{nav.querySelectorAll("[data-flow-tab]").forEach(b=>b.classList.toggle("active",b.dataset.flowTab===name));panels.forEach(p=>p.classList.toggle("hidden",p.dataset.adminPanel!==name));};
-  nav.querySelectorAll("[data-flow-tab]").forEach(b=>b.addEventListener("click",()=>openTab(b.dataset.flowTab)));openTab("create-event");
+  nav.querySelectorAll("[data-flow-tab]").forEach(b=>b.addEventListener("click",()=>openTab(b.dataset.flowTab)));
+  const requestedTab=new URLSearchParams(location.search).get("section");
+  openTab(panels.some(p=>p.dataset.adminPanel===requestedTab)?requestedTab:"create-event");
 
   const setupWrap=document.createElement("section");setupWrap.className="admin-card admin-combined-scorecard-setup";setupWrap.innerHTML='<div class="admin-heading"><div><p class="eyebrow">Step 4</p><h3>Scorecards</h3><p class="admin-score-help">Select the event below, set the course, tees and competition holes, then post the group scorecards when tee times are published.</p></div></div>';
   const scorecardEventLabel=document.createElement("label");scorecardEventLabel.className="admin-scorecard-event";scorecardEventLabel.textContent="Event";const scorecardEvent=document.createElement("select");scorecardEvent.id="adminScorecardEvent";scorecardEvent.innerHTML='<option value="">Select event</option>';scorecardEventLabel.appendChild(scorecardEvent);setupWrap.appendChild(scorecardEventLabel);scorecardPanel.appendChild(setupWrap);
