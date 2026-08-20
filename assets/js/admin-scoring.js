@@ -40,7 +40,9 @@
       if(cardError)throw cardError;
       renderCards(cards||[],ready);updateChecklist(ready,cards||[]);$("adminResultsEvent").value=eventId;
       loadResults(eventId).catch(error=>{$("adminResultsStatus").textContent=error?.message||"Could not load submitted cards.";});
-      status(ready?"Yellow and red course cards are ready.":"Find the linked course and select the yellow and red tees.");
+      const event=events.find(item=>item.id===eventId);
+      const linked=ready&&showSavedLinkedCourse(event,holes||[]);
+      status(linked?`${event?.selected_course_name||event?.venue||event?.name} is already linked and its yellow and red scorecards are ready.`:ready?"Yellow and red course cards are ready.":"Find the linked course and select the yellow and red tees.");
     }catch(error){
       console.error("Admin course-card load failed",error);
       status(`Course-card loading failed: ${error?.message||"Unknown error"}`);
@@ -74,9 +76,34 @@
   }
   async function invokeCourse(body){const {data,error}=await client.functions.invoke("uk-golf-course",{body});if(error)throw new Error(data?.error||error.message);if(data?.error)throw new Error(data.error);return data;}
   const options=(items,prompt)=>`<option value="">${prompt}</option>${items.map(item=>`<option value="${esc(item.id)}">${esc(item.name)}${item.county?` · ${esc(item.county)}`:""}</option>`).join("")}`;
+  function showSavedLinkedCourse(event, holes){
+    const courseName=event?.selected_course_name||event?.venue||event?.name;
+    if(!courseName||holes?.length!==18)return false;
+    const yellowName=holes.find(h=>h.yellow_tee_name)?.yellow_tee_name||"Yellow";
+    const redName=holes.find(h=>h.red_tee_name)?.red_tee_name||"Red";
+    $("adminGolfClub").innerHTML=`<option value="${esc(event?.uk_golf_club_id||"linked")}">${esc(event?.venue||event?.name||"Linked club")}</option>`;
+    $("adminGolfClub").disabled=false;
+    $("adminGolfCourse").innerHTML=`<option value="${esc(event?.uk_golf_course_id||"linked")}" selected>${esc(courseName)}</option>`;
+    $("adminGolfCourse").disabled=false;
+    $("adminYellowTee").innerHTML=`<option value="saved-yellow" selected>${esc(yellowName)}</option>`;
+    $("adminRedTee").innerHTML=`<option value="saved-red" selected>${esc(redName)}</option>`;
+    $("adminYellowTee").disabled=false;$("adminRedTee").disabled=false;
+    $("adminImportScorecard").disabled=true;
+    $("adminFindCourseData").textContent="Course card already saved";
+    return true;
+  }
   async function loadClubCourses(clubId){
     if(!clubId)return;status("Loading the club’s courses…");const data=await invokeCourse({action:"courses",club_id:clubId});
-    courses=data.courses||[];$("adminGolfCourse").innerHTML=options(courses,"Select the course being played");$("adminGolfCourse").disabled=false;status(courses.length>1?"This club has multiple courses. Select the one being played.":"Select the course being played.");
+    courses=data.courses||[];
+    if(!courses.length){
+      $("adminGolfCourse").innerHTML='<option value="">No courses returned — use the saved course card or try again later</option>';
+      $("adminGolfCourse").disabled=true;
+      $("adminYellowTee").innerHTML='<option value="">Load a course first</option>';$("adminRedTee").innerHTML='<option value="">Load a course first</option>';
+      $("adminYellowTee").disabled=$("adminRedTee").disabled=true;
+      status("No course records were returned. The saved scorecard remains available; try Find linked course again later if you need to replace it.");
+      return;
+    }
+    $("adminGolfCourse").innerHTML=options(courses,"Select the course being played");$("adminGolfCourse").disabled=false;status(courses.length>1?"This club has multiple courses. Select the one being played.":"Select the course being played.");
   }
   async function loadCourseTees(courseId){
     if(!courseId)return;status("Loading the available tees…");teeSets=courses.find(course=>String(course.id)===String(courseId))?.tee_sets||[];
