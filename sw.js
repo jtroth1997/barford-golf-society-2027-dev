@@ -1,7 +1,59 @@
-const CACHE="barford-golf-2027-admin-gallery-v22";
-const CORE=["./","./index.html","./events.html","./scores.html","./gallery.html","./account.html","./payments.html","./scoring.html","./admin.html","./assets/css/styles.css","./assets/css/members.css","./assets/css/accessible-mobile.css","./assets/css/product-premium.css","./assets/css/product-polish.css","./assets/css/product-polish-mobile.css","./assets/css/brilliant.css","./assets/css/mobile-redesign.css","./assets/css/events.css","./assets/css/admin-workflow.css","./assets/css/scoring.css","./assets/css/scoring-simple.css","./assets/css/score-competitions.css","./assets/js/app.js","./assets/js/events-live.js","./assets/js/event-rsvp-roster.js","./assets/js/admin-workflow.js","./assets/js/product-experience.js","./assets/js/admin-scorecard-preview.js","./assets/js/member-experience-plus.js","./assets/js/dashboard-scorer-selection.js","./assets/js/member-dashboard.js","./assets/js/scoring.js","./assets/js/scoring-resilience.js","./assets/js/supabase-config.js","./assets/js/supabase-client.js","./assets/images/barford-golf-society-logo.png"];
-self.addEventListener("install",event=>{event.waitUntil(caches.open(CACHE).then(cache=>cache.addAll(CORE.map(url=>new Request(url,{cache:"reload"})))).then(()=>self.skipWaiting()))});
-self.addEventListener("activate",event=>{event.waitUntil(caches.keys().then(keys=>Promise.all(keys.filter(key=>key!==CACHE).map(key=>caches.delete(key)))).then(()=>self.clients.claim()))});
-const network=async(cache,request)=>{try{const response=await fetch(request,{cache:"no-store"});if(response?.ok)await cache.put(request,response.clone());return response}catch{return null}};
-const networkFirst=async(cache,request,fallback)=>{const response=await network(cache,request);if(response)return response;return(await cache.match(request,{ignoreSearch:true}))||(fallback?await cache.match(fallback):null)||Response.error()};
-self.addEventListener("fetch",event=>{const request=event.request;if(request.method!=="GET")return;const url=new URL(request.url);if(request.mode==="navigate"){event.respondWith((async()=>{const cache=await caches.open(CACHE),cached=await cache.match(request,{ignoreSearch:true});if(cached){event.waitUntil(network(cache,request));return cached}return networkFirst(cache,request,"./index.html")})());return;}if(url.origin===self.location.origin||url.hostname==="cdn.jsdelivr.net"){event.respondWith((async()=>{const cache=await caches.open(CACHE),cached=await cache.match(request,{ignoreSearch:true});if(cached){event.waitUntil(network(cache,request));return cached}return(await network(cache,request))||Response.error()})());}});
+const CACHE = "barford-golf-2027-live-first-v23";
+const OFFLINE_PAGES = [
+  "./", "./index.html", "./events.html", "./scores.html", "./gallery.html",
+  "./account.html", "./payments.html", "./scoring.html", "./admin.html"
+];
+
+self.addEventListener("install", event => {
+  event.waitUntil(
+    caches.open(CACHE)
+      .then(cache => cache.addAll(OFFLINE_PAGES.map(url => new Request(url, { cache: "reload" }))))
+      .then(() => self.skipWaiting())
+  );
+});
+
+self.addEventListener("activate", event => {
+  event.waitUntil(
+    caches.keys()
+      .then(keys => Promise.all(keys.filter(key => key !== CACHE).map(key => caches.delete(key))))
+      .then(() => self.clients.claim())
+  );
+});
+
+const fetchFresh = async (cache, request) => {
+  try {
+    const response = await fetch(request, { cache: "no-store" });
+    if (response?.ok) await cache.put(request, response.clone());
+    return response;
+  } catch {
+    return null;
+  }
+};
+
+self.addEventListener("fetch", event => {
+  const request = event.request;
+  if (request.method !== "GET") return;
+  const url = new URL(request.url);
+
+  if (request.mode === "navigate") {
+    event.respondWith((async () => {
+      const cache = await caches.open(CACHE);
+      const fresh = await fetchFresh(cache, request);
+      if (fresh) return fresh;
+      return (await cache.match(request)) || (await cache.match("./index.html")) || Response.error();
+    })());
+    return;
+  }
+
+  if (url.origin === self.location.origin || url.hostname === "cdn.jsdelivr.net") {
+    event.respondWith((async () => {
+      const cache = await caches.open(CACHE);
+      const cached = await cache.match(request);
+      if (cached) {
+        event.waitUntil(fetchFresh(cache, request));
+        return cached;
+      }
+      return (await fetchFresh(cache, request)) || Response.error();
+    })());
+  }
+});
