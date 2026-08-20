@@ -511,9 +511,7 @@
     const { error: deleteError } = await client.from("tee_times").delete().eq("event_id", eventId);
     const { error } = deleteError ? { error: deleteError } : await client.from("tee_times").insert(rows);
     if(error){setStatus("#adminTeeStatus",error.message);return;}
-    const {count:holeCount}=await client.from("event_holes").select("id",{count:"exact",head:true}).eq("event_id",eventId);
-    if(holeCount===18){const prepared=await client.rpc("prepare_event_scorecards",{target_event_id:eventId});setStatus("#adminTeeStatus",prepared.error?`Tee times saved. Scorecards need attention: ${prepared.error.message}`:"Tee times saved and group scorecards prepared automatically.");}
-    else setStatus("#adminTeeStatus","Tee times saved. Load the course in Create Event Scorecards and the group cards will then prepare automatically.");
+    setStatus("#adminTeeStatus","Tee times published. When you are ready, use Create group scorecards below — no scorer has been chosen.");
   });
 
   let dropoutRsvps = [];
