@@ -12,15 +12,26 @@
   const liveCard=document.querySelector(".admin-live-scoring"),resultsCard=document.querySelector(".admin-event-results");
   if(!createCard||!manageCard||!rsvpCard||!teeCard||!liveCard)return;
 
-  // Create Event is deliberately basic event information only. Remove any legacy scoring-setup UI injected by older admin scripts.
+  // Step 1 must contain ONLY the event form. Legacy admin-auth code can inject a scoring panel inside the form,
+  // so remove anything between the course description field and the form action buttons unless it is a form field.
   const removeCreateEventScoring=()=>{
-    Array.from(createCard.querySelectorAll("section,div,article")).forEach(node=>{
+    const form=document.getElementById("adminEventForm");
+    if(!form)return;
+    const actions=form.querySelector(".admin-form-actions");
+    Array.from(form.children).forEach(node=>{
+      if(node===actions||node.id==="adminEventId"||node.matches("label"))return;
       const text=(node.textContent||"").replace(/\s+/g," ").trim();
-      if((/Prepare the course scorecard now/i.test(text)||(/SCORING SETUP/i.test(text)&&/Find scoring card/i.test(text)))&&!node.querySelector("#adminEventForm")) node.remove();
+      if(/scoring setup|prepare the course scorecard|find scoring card|not prepared/i.test(text))node.remove();
+    });
+    // Also catch nested/injected legacy scoring cards regardless of their class name.
+    Array.from(form.querySelectorAll("section,article,div")).forEach(node=>{
+      if(node===actions||node.contains(actions))return;
+      const text=(node.textContent||"").replace(/\s+/g," ").trim();
+      if(/prepare the course scorecard|find scoring card/i.test(text))node.remove();
     });
   };
   removeCreateEventScoring();
-  const createObserver=new MutationObserver(removeCreateEventScoring);createObserver.observe(createCard,{childList:true,subtree:true});
+  new MutationObserver(removeCreateEventScoring).observe(document.getElementById("adminEventForm"),{childList:true,subtree:true});
 
   const makePanel=(name,title,help)=>{const p=document.createElement("section");p.className="admin-view hidden";p.dataset.adminPanel=name;p.innerHTML=`<div class="admin-workflow-stage"><p class="eyebrow">${title}</p><p>${help}</p></div>`;dashboard.appendChild(p);return p;};
   const createPanel=makePanel("create-event","1 · Create event","Create the round and its basic event information only.");
