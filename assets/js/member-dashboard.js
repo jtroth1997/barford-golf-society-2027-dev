@@ -371,7 +371,7 @@
   const loadNextEvent = async () => {
     const today = localDate();
     const { data: events, error } = await client.from("events")
-      .select("*").gte("event_date", today).in("status", ["scheduled", "cancelled"]).order("event_date").limit(1);
+      .select("id,name,event_date,status,venue,address,price,latitude,longitude,notes").gte("event_date", today).in("status", ["scheduled", "cancelled"]).order("event_date").limit(1);
     if (error || !events?.length) {
       set("dashboardEventName", "No upcoming event announced");
       set("dashboardEventDetail", "The committee has not published the next 2027 event yet.");
@@ -387,7 +387,7 @@
       { data: groupRows, error: groupError },
       { data: scorecard }
     ] = await Promise.all([
-      client.from("rsvps").select("*").eq("event_id", nextEvent.id).eq("member_id", session.user.id).maybeSingle(),
+      client.from("rsvps").select("id,event_id,member_id,status,payment_status,buggy_requested,preferred_tee_time").eq("event_id", nextEvent.id).eq("member_id", session.user.id).maybeSingle(),
       client.from("tee_times").select("tee_time,tee_number,position").eq("event_id", nextEvent.id).eq("member_id", session.user.id).maybeSingle(),
       client.rpc("get_event_rsvp_lock_status", { target_event_id: nextEvent.id }),
       client.rpc("get_my_event_tee_group", { target_event_id: nextEvent.id }),
@@ -487,7 +487,7 @@
     set("dashboardFirstName", knownName.split(/\s+/)[0]);
     set("dashboardFullName", knownName);
 
-    const profilePromise = client.from("profiles").select("*").eq("id", session.user.id).single();
+    const profilePromise = client.from("profiles").select("id,full_name,is_admin,photo_url").eq("id", session.user.id).single();
     const corePromise = Promise.all([loadNextEvent(), loadPayments()]);
     const [{ data: profile }] = await Promise.all([profilePromise, corePromise]);
     const name = profile?.full_name || knownName;
