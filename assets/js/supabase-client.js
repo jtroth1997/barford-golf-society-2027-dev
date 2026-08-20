@@ -19,26 +19,16 @@
     }
   );
 
-  // Prepared, assigned and started are separate scorecard states.
+  // Keep the shared assignment/tee guard, which is not declared in page HTML.
   if (document.body.classList.contains("admin-page") || document.body.classList.contains("scoring-page")) {
     const workflow = document.createElement("script");
-    workflow.src = "assets/js/scorecard-workflow-fix.js?v=2";
-    workflow.defer = true;
-    document.head.appendChild(workflow);
+    workflow.src = "assets/js/scorecard-workflow-fix.js?v=speed20";
+    workflow.async = true;
+    document.body.appendChild(workflow);
   }
 
-  // The tee-group scorer guard is authoritative: no scorer means no open-card action.
-  if (document.getElementById("dashboardTeeGroup")) {
-    const scorerChoice = document.createElement("script");
-    scorerChoice.src = "assets/js/dashboard-scorer-selection.js?v=4";
-    scorerChoice.async = false;
-    document.body.appendChild(scorerChoice);
-
-    const directions = document.createElement("script");
-    directions.src = "assets/js/home-event-directions.js?v=1";
-    directions.defer = true;
-    document.body.appendChild(directions);
-  }
+  // Dashboard scripts are declared in index.html. Injecting them here as well
+  // duplicated downloads, observers and Supabase queries on the busiest page.
 
   // Normal members never see Admin in navigation. Existing authorised admins
   // get the link back automatically after their signed-in profile is checked.
