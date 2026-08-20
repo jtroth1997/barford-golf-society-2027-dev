@@ -22,7 +22,10 @@
     activeEventId=eventId;$("adminScoringSetup").classList.toggle("hidden",!eventId);$("adminScorecardSaved")?.classList.add("hidden");if(!eventId){$("adminResultsSummary").innerHTML="<p>Select an event.</p>";$("adminSubmittedCards").innerHTML="";$("adminFinalResults").innerHTML="";return;}
     status("Loading course card…");
     try{
-      const {data:holes,error:holeError}=await client.from("event_holes").select("*").eq("event_id",eventId).order("hole_number");
+      const [{data:holes,error:holeError},{data:cards,error:cardError}]=await Promise.all([
+        client.from("event_holes").select("hole_number,par,yards,stroke_index,red_par,red_yards,red_stroke_index,yellow_tee_name,red_tee_name,longest_drive,nearest_pin").eq("event_id",eventId).order("hole_number"),
+        client.from("event_scorecards").select("id,tee_time,tee_number,status,submitted_at,scorer_id").eq("event_id",eventId).order("tee_time")
+      ]);
       if(eventId!==activeEventId)return;
       if(holeError)throw holeError;
       status("Course data received — preparing the scorecard…");
@@ -35,7 +38,6 @@
       const ready=holes?.length===18&&holes.every(item=>item.red_yards&&item.red_stroke_index);
       renderCards([],ready);updateChecklist(ready,[]);
       status(ready?"Course card ready — loading group scorecards…":"Find the linked course and select the yellow and red tees.");
-      const {data:cards,error:cardError}=await client.from("event_scorecards").select("id,tee_time,tee_number,status,submitted_at,scorer_id").eq("event_id",eventId).order("tee_time");
       if(eventId!==activeEventId)return;
       if(cardError)throw cardError;
       renderCards(cards||[],ready);updateChecklist(ready,cards||[]);$("adminResultsEvent").value=eventId;
@@ -184,5 +186,5 @@
     }
   }
   $("adminResultsEvent")?.addEventListener("change",event=>loadResults(event.target.value));
-  window.addEventListener("load",()=>setTimeout(loadEvents,700));
+  loadEvents();
 })();
