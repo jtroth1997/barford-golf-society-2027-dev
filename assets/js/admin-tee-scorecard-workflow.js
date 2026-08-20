@@ -1,29 +1,48 @@
 (() => {
   "use strict";
   const client=window.BarfordSupabase;
-  const teeCard=document.getElementById("adminTeeEvent")?.closest(".admin-card"),scoringSetup=document.getElementById("adminScoringSetup");
-  if(!client||!teeCard||!scoringSetup)return;
-  const heading=teeCard.querySelector(".admin-heading > div");
-  if(heading){heading.querySelector(".eyebrow").textContent="Step 3";heading.querySelector("h3").textContent="Tee times & scorecards";heading.querySelector("p").textContent="Set the course scorecard and tees, generate the playing groups, then publish everything together when you are happy.";}
-  const navButton=document.querySelector('[data-admin-view="scorecards"]');if(navButton)navButton.textContent="Event Day & Results";
-  const workflow=document.querySelector('[data-admin-panel="events"] .admin-workflow');if(workflow)workflow.innerHTML='<span><b>1</b>Season setup</span><span><b>2</b>RSVPs</span><span><b>3</b>Tee times + cards</span><span><b>4</b>Event day</span><span><b>5</b>Finish & publish</span>';
-  const setupWrap=document.createElement("section");setupWrap.className="admin-combined-scorecard-setup";setupWrap.innerHTML='<div class="admin-heading"><div><p class="eyebrow">Scorecard setup</p><h4>Course & scoring information</h4><p class="admin-score-help">Choose the course, tees and competition holes here. This information will be attached to the groups when you publish.</p></div></div>';
+  const dashboard=document.getElementById("adminDashboard"),oldEvents=document.querySelector('[data-admin-panel="events"]'),oldDay=document.querySelector('[data-admin-panel="scorecards"]');
+  if(!client||!dashboard||!oldEvents||!oldDay)return;
+
+  const createCard=document.getElementById("adminCreateEventCard");
+  const manageCard=document.getElementById("adminEventList")?.closest(".admin-card");
+  const rsvpCard=document.getElementById("adminRsvpEvent")?.closest(".admin-card");
+  const teeCard=document.getElementById("adminTeeEvent")?.closest(".admin-card");
+  const dropoutCard=document.getElementById("adminDropoutEvent")?.closest(".admin-card");
+  const liveCard=document.querySelector(".admin-live-scoring"),resultsCard=document.querySelector(".admin-event-results");
+  if(!createCard||!manageCard||!rsvpCard||!teeCard||!liveCard)return;
+
+  // Four clear admin stages. Each task lives in one place only.
+  const makePanel=(name,title,help)=>{const p=document.createElement("section");p.className="admin-view hidden";p.dataset.adminPanel=name;p.innerHTML=`<div class="admin-workflow-stage"><p class="eyebrow">${title}</p><p>${help}</p></div>`;dashboard.appendChild(p);return p;};
+  const createPanel=makePanel("create-event","1 · Create event","Create the round and its basic event information.");
+  const managePanel=makePanel("manage-event","2 · Manage event & RSVP","Manage the event, players, reserves and RSVP choices.");
+  const teePanel=makePanel("tee-scorecards","3 · Tee times & scorecards","Choose the event, set its course and scoring information, generate the groups and publish tee times and scorecards together.");
+  const dayPanel=makePanel("event-day","4 · Event day","Run the live event. Groups choose their scorer on the day; submitted cards and results appear here for presentation.");
+  createPanel.appendChild(createCard);managePanel.append(manageCard,rsvpCard);teePanel.appendChild(teeCard);if(dropoutCard)dayPanel.appendChild(dropoutCard);dayPanel.appendChild(liveCard);if(resultsCard)dayPanel.appendChild(resultsCard);
+  oldEvents.remove();oldDay.remove();
+
+  const nav=document.querySelector(".admin-section-nav");
+  nav.innerHTML='<button type="button" data-flow-tab="create-event">1. Create Event</button><button type="button" data-flow-tab="manage-event">2. Manage Event & RSVP</button><button type="button" data-flow-tab="tee-scorecards">3. Tee Times & Scorecards</button><button type="button" data-flow-tab="event-day">4. Event Day & Results</button>';
+  const panels=[createPanel,managePanel,teePanel,dayPanel];
+  const openTab=name=>{nav.querySelectorAll("[data-flow-tab]").forEach(b=>b.classList.toggle("active",b.dataset.flowTab===name));panels.forEach(p=>p.classList.toggle("hidden",p.dataset.adminPanel!==name));};
+  nav.querySelectorAll("[data-flow-tab]").forEach(b=>b.addEventListener("click",()=>openTab(b.dataset.flowTab)));openTab("create-event");
+
+  // Scorecard setup belongs only inside stage 3.
+  const setupWrap=document.createElement("section");setupWrap.className="admin-combined-scorecard-setup";setupWrap.innerHTML='<div class="admin-heading"><div><p class="eyebrow">Scorecard setup</p><h4>Course & scoring information</h4><p class="admin-score-help">Select the event above, then set the course, tees and competition holes before generating the groups.</p></div></div>';
   teeCard.insertBefore(setupWrap,teeCard.querySelector(".admin-inline-fields"));
   [document.querySelector(".admin-course-import"),document.getElementById("adminScorecardSaved"),document.querySelector(".admin-competition-setup"),document.querySelector(".admin-advanced-scorecard")].forEach(n=>{if(n)setupWrap.appendChild(n);});
   document.getElementById("adminScoringChecklist")?.remove();
   const prepare=document.getElementById("adminPrepareScorecards");if(prepare){const section=prepare.closest("section");prepare.remove();document.getElementById("adminScorecardProgress")?.remove();Array.from(section?.querySelectorAll("h4")||[]).find(x=>/group scorecards/i.test(x.textContent))?.remove();Array.from(section?.querySelectorAll("p.admin-score-help")||[]).find(x=>/tee times|handicaps|scorecard/i.test(x.textContent))?.remove();}
-  const scoringHeading=document.querySelector('[data-admin-panel="scorecards"] .admin-live-scoring .admin-heading > div');if(scoringHeading){scoringHeading.querySelector(".eyebrow").textContent="Event day";scoringHeading.querySelector("h3").textContent="Live scoring & finish round";scoringHeading.querySelector("p").textContent="Scorecards are created with the published tee times. On the day, each group chooses its scorer before entering any scores.";}
-  const generate=document.getElementById("adminGenerateTeeTimes"),publish=document.getElementById("adminSaveTeeTimes"),teeSelect=document.getElementById("adminTeeEvent"),scoringSelect=document.getElementById("adminScoringEvent");if(generate)generate.textContent="Generate tee times & scorecards";if(publish)publish.textContent="Publish tee times & scorecards";
+  const dayHeading=liveCard.querySelector(".admin-heading > div");if(dayHeading){dayHeading.querySelector(".eyebrow").textContent="Live event";dayHeading.querySelector("h3").textContent="Event control & results";dayHeading.querySelector("p").textContent="This is the event-day screen. Monitor submitted scorecards, award the competitions and finish the round when everyone is in.";}
+  const generate=document.getElementById("adminGenerateTeeTimes"),publish=document.getElementById("adminSaveTeeTimes");if(generate)generate.textContent="Generate tee times & scorecards";if(publish)publish.textContent="Publish tee times & scorecards";
+
+  const teeSelect=document.getElementById("adminTeeEvent"),scoringSelect=document.getElementById("adminScoringEvent");
   teeSelect?.addEventListener("change",()=>{if(!scoringSelect)return;scoringSelect.value=teeSelect.value;scoringSelect.dispatchEvent(new Event("change",{bubbles:true}));});
-  const showConfirmation=message=>{const box=document.getElementById("adminScorecardSaved");if(!box)return;box.classList.remove("hidden");box.innerHTML=`<strong>✓ Saved successfully</strong><span>${message}</span>`;box.style.display="flex";box.style.opacity="1";};
-  const restoreButtons=()=>{const a=document.getElementById("adminImportScorecard"),b=document.getElementById("adminSaveCompetitionHoles");if(a){a.disabled=false;if(a.textContent==="Saving…")a.textContent="Save course and tees";}if(b){b.disabled=false;if(b.textContent==="Saving…")b.textContent="Save competition holes";}};
-  const liveStatus=document.getElementById("adminLiveScoringStatus");
-  if(liveStatus)new MutationObserver(()=>{const text=liveStatus.textContent||"";if(/loaded with .* tees/i.test(text)||/course card saved/i.test(text)){const course=document.getElementById("adminGolfCourse")?.selectedOptions?.[0]?.textContent||"Course",men=document.getElementById("adminYellowTee")?.selectedOptions?.[0]?.textContent||"men’s tee",women=document.getElementById("adminRedTee")?.selectedOptions?.[0]?.textContent||"women’s tee";showConfirmation(`${course} saved to Supabase. Men: ${men}. Women: ${women}.`);const a=document.getElementById("adminImportScorecard");if(a){a.disabled=false;a.textContent="Saved ✓";}}
-  if(/competition holes saved/i.test(text)){const ld=document.getElementById("adminLongestDriveHole")?.selectedOptions?.[0]?.textContent||"Not selected",np=document.getElementById("adminNearestPinHole")?.selectedOptions?.[0]?.textContent||"Not selected";showConfirmation(`Competition holes saved to Supabase. Longest Drive: ${ld}. Nearest the Pin: ${np}.`);const b=document.getElementById("adminSaveCompetitionHoles");if(b){b.disabled=false;b.textContent="Saved ✓";}}
-  if(/error|failed|could not|missing|required|limit/i.test(text))restoreButtons();}).observe(liveStatus,{childList:true,subtree:true,characterData:true});
-  // Safety net: the underlying admin-scoring handlers perform the Supabase writes. Never leave the UI frozen if a response is slow or a status message changes unexpectedly.
-  document.getElementById("adminImportScorecard")?.addEventListener("click",()=>{const b=document.getElementById("adminImportScorecard");if(b)b.textContent="Saving…";setTimeout(()=>{if(b?.textContent==="Saving…"){b.disabled=false;b.textContent="Save course and tees";}},12000);},true);
-  document.getElementById("adminSaveCompetitionHoles")?.addEventListener("click",()=>{const b=document.getElementById("adminSaveCompetitionHoles");if(b)b.textContent="Saving…";setTimeout(()=>{if(b?.textContent==="Saving…"){b.disabled=false;b.textContent="Save competition holes";}},12000);},true);
-  generate?.addEventListener("click",async event=>{const eventId=teeSelect?.value;if(!eventId)return;const{count}=await client.from("event_holes").select("id",{count:"exact",head:true}).eq("event_id",eventId);if(count!==18){event.stopImmediatePropagation();document.getElementById("adminTeeStatus").textContent="Set and save the course scorecard information above before generating the tee times and scorecards.";}},true);
-  publish?.addEventListener("click",()=>{const s=document.getElementById("adminTeeStatus");if(s)s.textContent="Publishing tee times and group scorecards together…";},true);
+  const showConfirmation=message=>{const box=document.getElementById("adminScorecardSaved");if(!box)return;box.classList.remove("hidden");box.innerHTML=`<strong>✓ Saved</strong><span>${message}</span>`;box.style.display="flex";box.style.opacity="1";};
+
+  // Verify saves against Supabase itself, rather than leaving the UI dependent on a transient status message.
+  document.getElementById("adminImportScorecard")?.addEventListener("click",()=>{const button=document.getElementById("adminImportScorecard");if(button)button.textContent="Saving…";setTimeout(async()=>{const eventId=teeSelect?.value;if(!eventId){if(button){button.disabled=false;button.textContent="Save course and tees";}return;}const {data,error}=await client.from("event_holes").select("yellow_tee_name,red_tee_name").eq("event_id",eventId).limit(1);if(!error&&data?.length){button.disabled=false;button.textContent="Saved ✓";showConfirmation(`Course scorecard is saved in Supabase. Men: ${data[0].yellow_tee_name}. Women: ${data[0].red_tee_name}.`);}else{button.disabled=false;button.textContent="Save course and tees";}},2500);},true);
+  document.getElementById("adminSaveCompetitionHoles")?.addEventListener("click",()=>{const button=document.getElementById("adminSaveCompetitionHoles");if(button)button.textContent="Saving…";setTimeout(async()=>{const eventId=teeSelect?.value;if(!eventId){button.disabled=false;button.textContent="Save competition holes";return;}const {data,error}=await client.from("event_holes").select("hole_number,longest_drive,nearest_pin").eq("event_id",eventId).or("longest_drive.eq.true,nearest_pin.eq.true");if(!error){const ld=data?.find(x=>x.longest_drive)?.hole_number||"–",np=data?.find(x=>x.nearest_pin)?.hole_number||"–";button.disabled=false;button.textContent="Saved ✓";showConfirmation(`Competition holes saved in Supabase. Longest Drive: Hole ${ld}. Nearest the Pin: Hole ${np}.`);}else{button.disabled=false;button.textContent="Save competition holes";}},2000);},true);
+
+  generate?.addEventListener("click",async event=>{const eventId=teeSelect?.value;if(!eventId)return;const{count}=await client.from("event_holes").select("hole_number",{count:"exact",head:true}).eq("event_id",eventId);if(count!==18){event.stopImmediatePropagation();document.getElementById("adminTeeStatus").textContent="Save the complete course scorecard above before generating tee times and scorecards.";}},true);
 })();
