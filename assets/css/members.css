@@ -990,3 +990,6 @@
 .tee-group-avatar.has-photo:hover,
 .tee-group-avatar.has-photo:focus-visible { transform:scale(1.06); box-shadow:0 0 0 4px rgba(230,200,102,.22); }
 .tee-group-avatar.has-photo { transition:transform .18s ease,box-shadow .18s ease; }
+
+/* Fast, single-purpose event weather status on the member dashboard. */
+.dashboard-weather-card{display:flex;gap:12px;align-items:center;margin:12px 0;padding:14px 16px;border:1px solid #d8e3dc;border-radius:14px;background:#f4f8f5}.dashboard-weather-card>span{font-size:1.65rem}.dashboard-weather-card small,.dashboard-weather-card strong,.dashboard-weather-card p{display:block}.dashboard-weather-card small{color:#52635a;font-size:.72rem;font-weight:800;text-transform:uppercase;letter-spacing:.05em}.dashboard-weather-card strong{margin-top:2px;color:#063d2a}.dashboard-weather-card p{margin:3px 0 0;color:#52635a;font-size:.84rem}
