@@ -3,3 +3,6 @@ verify_jwt = false
 
 [functions.course-lookup]
 verify_jwt = false
+
+[functions.scorecard-photo-reader]
+verify_jwt = false
