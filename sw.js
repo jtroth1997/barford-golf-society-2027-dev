@@ -1,4 +1,4 @@
-const CACHE = "barford-golf-2027-live-first-v27";
+const CACHE = "barford-golf-2027-live-first-v28";
 const OFFLINE_PAGES = [
   "./", "./index.html", "./events.html", "./scores.html", "./gallery.html",
   "./account.html", "./payments.html", "./scoring.html", "./admin.html"
