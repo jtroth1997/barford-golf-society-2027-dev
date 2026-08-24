@@ -36,10 +36,10 @@
   const makePanel=(name,title,help)=>{const p=document.createElement("section");p.className="admin-view hidden";p.dataset.adminPanel=name;p.innerHTML=`<div class="admin-workflow-stage"><p class="eyebrow">${title}</p><p>${help}</p></div>`;dashboard.appendChild(p);return p;};
   const createPanel=makePanel("create-event","1 · Create event","Create the round and its basic event information only.");
   const nextPanel=makePanel("next-action","Event control centre","The system shows the next event and the one action needed to move it forward.");
-  const managePanel=makePanel("manage-event","2 · Manage event & RSVP","Manage the event, players, reserves and RSVP choices.");
-  const teePanel=makePanel("tee-times","3 · Tee times","Generate and publish tee times. This does not create or post scorecards.");
-  const scorecardPanel=makePanel("scorecards-setup","4 · Scorecards","Set the course and scoring information, then post the group scorecards separately after tee times are published.");
-  const dayPanel=makePanel("event-day","5 · Event day & results","Run the live event. Groups choose their scorer on the day; submitted cards and results appear here for presentation.");
+  const managePanel=makePanel("manage-event","Ongoing management · RSVPs","Manage the event, players, reserves and RSVP choices.");
+  const teePanel=makePanel("tee-times","2 · Tee times","Generate and publish tee times. This does not create or post scorecards.");
+  const scorecardPanel=makePanel("scorecards-setup","3 · Scorecards","Set the course and scoring information, then post the group scorecards separately after tee times are published.");
+  const dayPanel=makePanel("event-day","4 · Play event & results","Run the live event. Groups choose their scorer on the day; submitted cards and results appear here for presentation.");
   createPanel.appendChild(createCard);managePanel.append(manageCard,rsvpCard);teePanel.appendChild(teeCard);if(dropoutCard)dayPanel.appendChild(dropoutCard);dayPanel.appendChild(liveCard);if(resultsCard)dayPanel.appendChild(resultsCard);
   oldEvents.remove();oldDay.remove();
 
@@ -47,17 +47,19 @@
   const galleryPanel=document.querySelector('[data-admin-panel="gallery"]');
   nav.innerHTML='<button type="button" data-flow-tab="next-action">Next action</button><button type="button" data-flow-tab="create-event">1. Event setup</button><button type="button" data-flow-tab="tee-times">2. Tee times</button><button type="button" data-flow-tab="scorecards-setup">3. Scorecards</button><button type="button" data-flow-tab="event-day">4. Play & results</button><button type="button" data-flow-tab="manage-event">Manage RSVPs</button><button type="button" data-flow-tab="gallery">Manage photos</button>';
   const panels=[nextPanel,createPanel,managePanel,teePanel,scorecardPanel,dayPanel,galleryPanel].filter(Boolean);
-  const openTab=name=>{nav.querySelectorAll("[data-flow-tab]").forEach(b=>b.classList.toggle("active",b.dataset.flowTab===name));panels.forEach(p=>p.classList.toggle("hidden",p.dataset.adminPanel!==name));};
+  let inlineActionStage=null;
+  const openTab=name=>{if(name!=="next-action")inlineActionStage=null;nav.querySelectorAll("[data-flow-tab]").forEach(b=>b.classList.toggle("active",b.dataset.flowTab===name));panels.forEach(p=>p.classList.toggle("hidden",!(p.dataset.adminPanel===name||(name==="next-action"&&p.dataset.adminPanel===inlineActionStage))));};
   nav.querySelectorAll("[data-flow-tab]").forEach(b=>b.addEventListener("click",()=>openTab(b.dataset.flowTab)));
   const requestedTab=new URLSearchParams(location.search).get("section");
   openTab(panels.some(p=>p.dataset.adminPanel===requestedTab)?requestedTab:"next-action");
 
-  const openEventStage=(stage,eventId)=>{
-    openTab(stage);
+  const selectEventForStage=(stage,eventId)=>{
     const selects={"tee-times":"adminTeeEvent","scorecards-setup":"adminScorecardEvent","event-day":"adminScoringEvent","manage-event":"adminRsvpEvent"};
     const select=document.getElementById(selects[stage]);
     if(select&&eventId){select.value=eventId;select.dispatchEvent(new Event("change",{bubbles:true}));}
   };
+  const openEventStage=(stage,eventId)=>{openTab(stage);selectEventForStage(stage,eventId);};
+  const openInlineAction=(stage,eventId)=>{inlineActionStage=stage;selectEventForStage(stage,eventId);openTab("next-action");document.querySelector(`[data-admin-panel="${stage}"]`)?.scrollIntoView({behavior:"smooth",block:"start"});};
   const commandCentre=document.createElement("section");
   commandCentre.className="admin-event-command-centre";
   commandCentre.innerHTML='<p>Loading current event…</p>';
@@ -98,11 +100,12 @@
     const workspace=[["Event setup",true,"create-event","View / edit"],["RSVPs",true,"manage-event","Manage"],["Tee times",counts.tees>0,"tee-times",counts.tees?"View / edit":"Not created"],["Scorecards",counts.cards>0||counts.holes===18,"scorecards-setup",counts.cards?"View / edit":counts.holes===18?"Course card saved":"Not created"],["Results",counts.cards>0,"event-day",event.results_status==="ready_to_review"?"Ready to review":counts.cards?counts.submitted+"/"+counts.cards+" submitted":"Awaiting event"]].map(([name,ready,stage,label])=>`<article><strong>${name}</strong><small>${ready?"Saved":"Not started"}</small><button type="button" data-workspace-stage="${stage}">${label}</button></article>`).join("");
     const archived=(completed||[]).map(item=>`<p>${esc(item.name)} · ${esc(item.event_date)}</p>`).join("")||"<p>No completed events yet.</p>";
     commandCentre.innerHTML=`<section class="admin-current-event"><p class="eyebrow">Current / next event</p><h2>${esc(event.name)}</h2><p>${esc(event.event_date)} · ${esc(event.venue)}</p><div class="admin-event-facts">${facts}</div></section><section class="admin-progress"><p class="eyebrow">Event progress</p><div>${progress}</div></section><section class="admin-next-action"><p class="eyebrow">Next action</p><h3>${action.title}</h3><p>${action.copy}</p><button class="button button-primary" data-command-stage="${action.stage}">${action.label}</button></section><section class="admin-workspace"><p class="eyebrow">Saved event information</p><div>${workspace}</div></section><details class="admin-history"><summary>Completed events (${(completed||[]).length})</summary>${archived}</details>`;
-    commandCentre.querySelectorAll("[data-command-stage],[data-workspace-stage]").forEach(button=>button.addEventListener("click",()=>openEventStage(button.dataset.commandStage||button.dataset.workspaceStage,event.id)));
+    commandCentre.querySelectorAll("[data-command-stage]").forEach(button=>button.addEventListener("click",()=>openInlineAction(button.dataset.commandStage,event.id)));
+    commandCentre.querySelectorAll("[data-workspace-stage]").forEach(button=>button.addEventListener("click",()=>openEventStage(button.dataset.workspaceStage,event.id)));
   };
   setTimeout(()=>refreshCommandCentre().catch(error=>{commandCentre.innerHTML=`<p>${esc(error.message||"Could not load event workflow.")}</p>`;}),600);
 
-  const setupWrap=document.createElement("section");setupWrap.className="admin-card admin-combined-scorecard-setup";setupWrap.innerHTML='<div class="admin-heading"><div><p class="eyebrow">Step 4</p><h3>Scorecards</h3><p class="admin-score-help">Select the event below, set the course, tees and competition holes, then post the group scorecards when tee times are published.</p></div></div>';
+  const setupWrap=document.createElement("section");setupWrap.className="admin-card admin-combined-scorecard-setup";setupWrap.innerHTML='<div class="admin-heading"><div><p class="eyebrow">Step 3</p><h3>Scorecards</h3><p class="admin-score-help">Select the event below, set the course, tees and competition holes, then post the group scorecards when tee times are published.</p></div></div>';
   const scorecardEventLabel=document.createElement("label");scorecardEventLabel.className="admin-scorecard-event";scorecardEventLabel.textContent="Event";const scorecardEvent=document.createElement("select");scorecardEvent.id="adminScorecardEvent";scorecardEvent.innerHTML='<option value="">Select event</option>';scorecardEventLabel.appendChild(scorecardEvent);setupWrap.appendChild(scorecardEventLabel);scorecardPanel.appendChild(setupWrap);
   [document.querySelector(".admin-course-import"),document.getElementById("adminScorecardSaved"),document.querySelector(".admin-competition-setup"),document.querySelector(".admin-advanced-scorecard")].forEach(n=>{if(n)setupWrap.appendChild(n);});
   document.getElementById("adminScoringChecklist")?.remove();
