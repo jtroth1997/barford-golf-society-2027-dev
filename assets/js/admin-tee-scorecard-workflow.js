@@ -113,6 +113,8 @@
     const section=prepare.closest("section");prepare.remove();section?.remove();
     const scorecardAction=document.createElement("section");scorecardAction.className="admin-scorecard-publish-step";
     scorecardAction.innerHTML='<div><p class="eyebrow">After tee times are published</p><h4>Post group scorecards</h4><p class="admin-score-help">This is a separate step. It creates ready cards with no scorer selected; each group chooses their scorer on the day.</p></div>';
+    const groupSaved=document.createElement("div");groupSaved.id="adminGroupScorecardsSaved";groupSaved.className="admin-save-confirmation hidden";groupSaved.setAttribute("role","status");groupSaved.innerHTML='<strong>✓ Saved</strong><span>Group scorecards created successfully. Players can now open them.</span>';
+    scorecardAction.appendChild(groupSaved);
     prepare.textContent="Post group scorecards";prepare.disabled=true;scorecardAction.appendChild(prepare);scorecardPanel.appendChild(scorecardAction);
   }
   const dayHeading=liveCard.querySelector(".admin-heading > div");if(dayHeading){dayHeading.querySelector(".eyebrow").textContent="Live event";dayHeading.querySelector("h3").textContent="Event control & results";dayHeading.querySelector("p").textContent="This is the event-day screen. Monitor submitted scorecards, award the competitions and finish the round when everyone is in.";}
