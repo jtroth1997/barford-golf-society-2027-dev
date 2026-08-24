@@ -19,7 +19,7 @@
     if($("adminResultsEvent"))$("adminResultsEvent").innerHTML=`<option value="">Select event</option>${events.map(event=>`<option value="${event.id}">${esc(event.name)} · Round ${event.round_number||"?"}</option>`).join("")}`;
   }
   async function loadEvent(eventId){
-    activeEventId=eventId;$("adminScoringSetup").classList.toggle("hidden",!eventId);$("adminScorecardSaved")?.classList.add("hidden");if(!eventId){$("adminResultsSummary").innerHTML="<p>Select an event.</p>";$("adminSubmittedCards").innerHTML="";$("adminFinalResults").innerHTML="";return;}
+    activeEventId=eventId;$("adminScoringSetup").classList.toggle("hidden",!eventId);$("adminScorecardSaved")?.classList.add("hidden");$("adminGroupScorecardsSaved")?.classList.add("hidden");if(!eventId){$("adminResultsSummary").innerHTML="<p>Select an event.</p>";$("adminSubmittedCards").innerHTML="";$("adminFinalResults").innerHTML="";return;}
     status("Loading course card…");
     try{
       const [{data:holes,error:holeError},{data:cards,error:cardError}]=await Promise.all([
@@ -143,7 +143,7 @@
     await loadEvent(activeEventId);saved("Longest Drive and Nearest the Pin holes saved successfully.");status("Competition holes saved. Prepared phone scorecards will update when they next connect.");
   });
   $("adminPrepareScorecards")?.addEventListener("click",async()=>{
-    status("Preparing tee groups and locking society handicaps…");const {error}=await client.rpc("prepare_event_scorecards",{target_event_id:activeEventId});if(error)return status(error.message);const {error:workflowError}=await client.from("events").update({scorecards_status:"published",results_status:"collecting",updated_at:new Date().toISOString()}).eq("id",activeEventId);if(workflowError)return status(workflowError.message);await loadEvent(activeEventId);saved("Group scorecards created successfully. Players can now open them.");status("Group scorecards prepared. Players can now open them on their phones.");
+    status("Preparing tee groups and locking society handicaps…");const {error}=await client.rpc("prepare_event_scorecards",{target_event_id:activeEventId});if(error)return status(error.message);const {error:workflowError}=await client.from("events").update({scorecards_status:"published",results_status:"collecting",updated_at:new Date().toISOString()}).eq("id",activeEventId);if(workflowError)return status(workflowError.message);await loadEvent(activeEventId);const groupSaved=$("adminGroupScorecardsSaved");if(groupSaved){groupSaved.classList.remove("hidden");groupSaved.querySelector("span").textContent="Group scorecards created successfully. Players can now open them.";}status("Group scorecards prepared. Players can now open them on their phones.");
   });
   $("adminCompleteRound")?.addEventListener("click",async()=>{
     const event=events.find(item=>item.id===activeEventId);if(!confirm(`END ${event?.name||"this round"}?\n\nThis publishes every submitted score to the league table, confirms the finishing positions and calculates each player's next society handicap.`))return;
