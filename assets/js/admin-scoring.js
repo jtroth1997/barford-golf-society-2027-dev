@@ -150,7 +150,7 @@
     const completedEventId=activeEventId,button=$("adminCompleteRound");button.disabled=true;button.textContent="Ending round…";status("Ending the round and publishing the official results…");
     const {error:winnerError}=await client.from("events").update({longest_drive_winner_id:$("adminLongestDriveWinner").value||null,nearest_pin_winner_id:$("adminNearestPinWinner").value||null,updated_at:new Date().toISOString()}).eq("id",completedEventId);if(winnerError){status(winnerError.message);button.disabled=false;button.textContent="Finish round and publish results";return;}
     const {error}=await client.rpc("complete_event_round",{target_event_id:completedEventId});if(error){status(error.message);button.disabled=false;button.textContent="Finish round and publish results";return;}const {error:workflowError}=await client.from("events").update({results_status:"published",updated_at:new Date().toISOString()}).eq("id",completedEventId);if(workflowError){status(`Results are published, but the workflow status needs refreshing: ${workflowError.message}`);return;}
-    await loadEvents();$("adminScoringEvent").value=completedEventId;await loadEvent(completedEventId);status("Round ended. The league table, finishing positions and next handicaps are updated.");
+    await loadEvents();$("adminScoringEvent").value=completedEventId;await loadEvent(completedEventId);window.dispatchEvent(new Event("barford:round-published"));status("Round ended. The league table, finishing positions and next handicaps are updated.");
     $("adminFinalResults")?.scrollIntoView({behavior:"smooth",block:"start"});
   });
   const shotsReceived=(handicap,index)=>handicap<index?0:Math.floor((handicap-index)/18)+1;
