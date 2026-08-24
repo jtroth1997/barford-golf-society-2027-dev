@@ -91,12 +91,12 @@
       ["Event",true,"create-event"],
       ["Tee times",event.tee_times_status==="published"&&counts.tees>0,"tee-times"],
       ["Scorecards",event.scorecards_status==="published"&&counts.cards>0,"scorecards-setup"],
-      ["Play",counts.cards>0&&counts.submitted<counts.cards,"event-day"],
+      ["Play",counts.cards>0&&counts.submitted===counts.cards,"event-day"],
       ["Results",event.results_status==="ready_to_review"||event.results_status==="published","event-day"],
       ["Complete",event.results_status==="published"||event.status==="completed","event-day"]
     ];
     const facts=`<span>${counts.players} RSVP${counts.players===1?"":"s"}</span><span>${event.capacity?Math.max(0,event.capacity-counts.players)+" places remaining":"Capacity not set"}</span><span>${counts.cards?counts.submitted+"/"+counts.cards+" cards submitted":counts.holes===18?"Course card verified":"Course card not set"}</span>`;
-    const progress=stages.map(([name,done,stage])=>`<button type="button" class="${done?"is-done":""} ${stage===action.stage?"is-current":""}" data-workspace-stage="${stage}"><b>${done?"✓":"○"}</b>${name}</button>`).join("");
+    const progress=stages.map(([name,done,stage])=>`<button type="button" class="${done?"is-done":""} ${stage===action.stage?"is-current":""}" data-workspace-stage="${stage}" data-progress-step="${name.toLowerCase().replace(/\\s+/g,"-")}"><b>${done?"✓":"○"}</b>${name}</button>`).join("");
     const workspace=[["Event setup",true,"create-event","View / edit"],["RSVPs",true,"manage-event","Manage"],["Tee times",counts.tees>0,"tee-times",counts.tees?"View / edit":"Not created"],["Scorecards",counts.cards>0||counts.holes===18,"scorecards-setup",counts.cards?"View / edit":counts.holes===18?"Course card saved":"Not created"],["Results",counts.cards>0,"event-day",event.results_status==="ready_to_review"?"Ready to review":counts.cards?counts.submitted+"/"+counts.cards+" submitted":"Awaiting event"]].map(([name,ready,stage,label])=>`<article><strong>${name}</strong><small>${ready?"Saved":"Not started"}</small><button type="button" data-workspace-stage="${stage}">${label}</button></article>`).join("");
     const archived=(completed||[]).map(item=>`<p>${esc(item.name)} · ${esc(item.event_date)}</p>`).join("")||"<p>No completed events yet.</p>";
     commandCentre.innerHTML=`<section class="admin-current-event"><p class="eyebrow">Current / next event</p><h2>${esc(event.name)}</h2><p>${esc(event.event_date)} · ${esc(event.venue)}</p><div class="admin-event-facts">${facts}</div></section><section class="admin-progress"><p class="eyebrow">Event progress</p><div>${progress}</div></section><section class="admin-next-action"><p class="eyebrow">Next action</p><h3>${action.title}</h3><p>${action.copy}</p><button class="button button-primary" data-command-stage="${action.stage}">${action.label}</button></section><section class="admin-workspace"><p class="eyebrow">Saved event information</p><div>${workspace}</div></section><details class="admin-history"><summary>Completed events (${(completed||[]).length})</summary>${archived}</details>`;
@@ -104,6 +104,15 @@
     commandCentre.querySelectorAll("[data-workspace-stage]").forEach(button=>button.addEventListener("click",()=>openEventStage(button.dataset.workspaceStage,event.id)));
   };
   setTimeout(()=>refreshCommandCentre().catch(error=>{commandCentre.innerHTML=`<p>${esc(error.message||"Could not load event workflow.")}</p>`;}),600);
+  window.addEventListener("barford:round-published",()=>{
+    ["play","results","complete"].forEach(step=>{
+      const item=commandCentre.querySelector(`[data-progress-step="${step}"]`);
+      if(!item)return;
+      item.classList.add("is-done");
+      item.classList.remove("is-current");
+      item.querySelector("b").textContent="✓";
+    });
+  });
 
   const setupWrap=document.createElement("section");setupWrap.className="admin-card admin-combined-scorecard-setup";setupWrap.innerHTML='<div class="admin-heading"><div><p class="eyebrow">Step 3</p><h3>Scorecards</h3><p class="admin-score-help">Select the event below, set the course, tees and competition holes, then post the group scorecards when tee times are published.</p></div></div>';
   const scorecardEventLabel=document.createElement("label");scorecardEventLabel.className="admin-scorecard-event";scorecardEventLabel.textContent="Event";const scorecardEvent=document.createElement("select");scorecardEvent.id="adminScorecardEvent";scorecardEvent.innerHTML='<option value="">Select event</option>';scorecardEventLabel.appendChild(scorecardEvent);setupWrap.appendChild(scorecardEventLabel);scorecardPanel.appendChild(setupWrap);
