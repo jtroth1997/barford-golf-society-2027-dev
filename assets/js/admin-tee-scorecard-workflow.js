@@ -40,7 +40,7 @@
   const teePanel=makePanel("tee-times","2 · Tee times","Generate and publish tee times. This does not create or post scorecards.");
   const scorecardPanel=makePanel("scorecards-setup","3 · Scorecards","Set the course and scoring information, then post the group scorecards separately after tee times are published.");
   const dayPanel=makePanel("event-day","4 · Play event & results","Run the live event. Groups choose their scorer on the day; submitted cards and results appear here for presentation.");
-  createPanel.appendChild(createCard);managePanel.append(manageCard,rsvpCard);teePanel.appendChild(teeCard);if(dropoutCard)dayPanel.appendChild(dropoutCard);dayPanel.appendChild(liveCard);if(resultsCard)dayPanel.appendChild(resultsCard);
+  createPanel.append(createCard,manageCard);managePanel.appendChild(rsvpCard);teePanel.appendChild(teeCard);if(dropoutCard)dayPanel.appendChild(dropoutCard);dayPanel.appendChild(liveCard);if(resultsCard)dayPanel.appendChild(resultsCard);
   oldEvents.remove();oldDay.remove();
 
   const nav=document.querySelector(".admin-section-nav");
