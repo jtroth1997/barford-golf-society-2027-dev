@@ -121,7 +121,6 @@ begin
   select target_round.id,member_id,handicap_used,points,false,now() from totals
   on conflict (round_id,member_id) do update set handicap_used=excluded.handicap_used,points=excluded.points,dnp=false,updated_at=now();
 
-  if (select count(*) from public.scores where round_id=target_round.id and not dnp) < 2 then raise exception 'At least two completed player scores are required'; end if;
   with ordered as (
     select points,row_number() over(order by points) row_no,count(*) over() player_count
     from public.scores where round_id=target_round.id and not dnp
