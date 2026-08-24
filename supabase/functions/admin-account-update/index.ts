@@ -1,0 +1,16 @@
+const cors={"Access-Control-Allow-Origin":"*","Access-Control-Allow-Headers":"authorization, x-client-info, apikey, content-type"};
+const reply=(body:unknown,status=200)=>new Response(JSON.stringify(body),{status,headers:{...cors,"Content-Type":"application/json"}});
+Deno.serve(async req=>{
+  if(req.method==="OPTIONS")return new Response("ok",{headers:cors});
+  const url=Deno.env.get("SUPABASE_URL"),anon=Deno.env.get("SUPABASE_ANON_KEY"),service=Deno.env.get("SUPABASE_SERVICE_ROLE_KEY"),auth=req.headers.get("Authorization");
+  if(!url||!anon||!service||!auth)return reply({error:"Secure account service is not configured."},500);
+  const who=await fetch(`${url}/auth/v1/user`,{headers:{apikey:anon,Authorization:auth}});if(!who.ok)return reply({error:"Please sign in again."},401);
+  const user=await who.json(),admin=await fetch(`${url}/rest/v1/profiles?id=eq.${user.id}&select=is_admin`,{headers:{apikey:service,Authorization:`Bearer ${service}`}});
+  if(!admin.ok||(await admin.json())?.[0]?.is_admin!==true)return reply({error:"Administrator access required."},403);
+  const body=await req.json().catch(()=>null),id=body?.target_id,p=body?.profile;if(!/^[0-9a-f-]{36}$/i.test(String(id||""))||!p)return reply({error:"Choose a valid member."},400);
+  const clean={full_name:String(p.full_name||"").trim(),email:String(p.email||"").trim().toLowerCase(),phone:String(p.phone||"").trim()||null,home_club:String(p.home_club||"").trim()||null,handicap:p.handicap===""||p.handicap===null?null:Number(p.handicap),playing_preference:["walker","buggy"].includes(p.playing_preference)?p.playing_preference:"walker",playing_category:["men","women"].includes(p.playing_category)?p.playing_category:null,photo_url:String(p.photo_url||"").trim()||null,leaderboard_active:Boolean(p.leaderboard_active),leaderboard_from_round:Math.max(1,Number(p.leaderboard_from_round)||1),committee_contacted:Boolean(p.committee_contacted),updated_at:new Date().toISOString()};
+  if(!clean.full_name||!/^\S+@\S+\.\S+$/.test(clean.email)||!Number.isFinite(clean.handicap??0)||(clean.handicap??0)<0||(clean.handicap??0)>54)return reply({error:"Enter a name, valid email and handicap between 0 and 54."},400);
+  const old=await fetch(`${url}/rest/v1/profiles?id=eq.${id}&select=email`,{headers:{apikey:service,Authorization:`Bearer ${service}`}}),current=(await old.json())?.[0];if(!current)return reply({error:"Member account not found."},404);
+  if(current.email!==clean.email){const email=await fetch(`${url}/auth/v1/admin/users/${id}`,{method:"PUT",headers:{apikey:service,Authorization:`Bearer ${service}`,"Content-Type":"application/json"},body:JSON.stringify({email:clean.email})});if(!email.ok)return reply({error:"That sign-in email could not be changed. It may already be used."},400);}
+  const saved=await fetch(`${url}/rest/v1/profiles?id=eq.${id}`,{method:"PATCH",headers:{apikey:service,Authorization:`Bearer ${service}`,"Content-Type":"application/json",Prefer:"return=representation"},body:JSON.stringify(clean)});if(!saved.ok)return reply({error:"The account details could not be saved."},400);return reply({profile:(await saved.json())?.[0]});
+});
