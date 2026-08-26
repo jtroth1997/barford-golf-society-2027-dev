@@ -143,7 +143,28 @@
     await loadEvent(activeEventId);saved("Longest Drive and Nearest the Pin holes saved successfully.");status("Competition holes saved. Prepared phone scorecards will update when they next connect.");
   });
   $("adminPrepareScorecards")?.addEventListener("click",async()=>{
-    status("Preparing tee groups and locking society handicaps…");const {error}=await client.rpc("prepare_event_scorecards",{target_event_id:activeEventId});if(error)return status(error.message);const {error:workflowError}=await client.from("events").update({scorecards_status:"published",results_status:"collecting",updated_at:new Date().toISOString()}).eq("id",activeEventId);if(workflowError)return status(workflowError.message);await loadEvent(activeEventId);const groupSaved=$("adminGroupScorecardsSaved");if(groupSaved){groupSaved.classList.remove("hidden");groupSaved.querySelector("span").textContent="Group scorecards created successfully. Players can now open them.";}status("Group scorecards prepared. Players can now open them on their phones.");
+    const button=$("adminPrepareScorecards"),eventId=activeEventId||$("adminScoringEvent")?.value||$("adminTeeEvent")?.value;
+    if(!eventId)return status("Select the event, then publish its tee times before posting the group scorecards.");
+    button.disabled=true;button.textContent="Posting scorecards…";status("Preparing tee groups and locking society handicaps…");
+    try{
+      const {count,error:teeError}=await client.from("tee_times").select("id",{count:"exact",head:true}).eq("event_id",eventId);
+      if(teeError)throw teeError;
+      if(!count){status("There are no published tee times for this event yet. Publish tee times first, then post the group scorecards.");return;}
+      const {error}=await client.rpc("prepare_event_scorecards",{target_event_id:eventId});
+      if(error)throw error;
+      const {error:workflowError}=await client.from("events").update({scorecards_status:"published",results_status:"collecting",updated_at:new Date().toISOString()}).eq("id",eventId);
+      if(workflowError)throw workflowError;
+      $("adminScoringEvent").value=eventId;
+      await loadEvent(eventId);
+      const groupSaved=$("adminGroupScorecardsSaved");
+      if(groupSaved){groupSaved.classList.remove("hidden");groupSaved.querySelector("span").textContent="Group scorecards created successfully. Players can now open them.";}
+      status("Group scorecards posted. Players can now open them on their phones.");
+    }catch(error){
+      console.error("Could not post group scorecards",error);
+      status("Could not post group scorecards: "+(error?.message||"Unknown error"));
+    }finally{
+      button.disabled=false;button.textContent="Post group scorecards";
+    }
   });
   $("adminCompleteRound")?.addEventListener("click",async()=>{
     const event=events.find(item=>item.id===activeEventId);
