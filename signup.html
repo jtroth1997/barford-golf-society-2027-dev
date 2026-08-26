@@ -40,6 +40,7 @@
   <label>Your name<select id="signupName" required><option value="">Loading member names…</option></select></label>
   <label id="signupNewNameWrap" class="hidden">Your full name<input id="signupNewName" type="text" autocomplete="name" placeholder="Type your full name"></label>
   <label>Playing category<select id="signupPlayingCategory" required><option value="">Select men’s or women’s…</option><option value="men">Men’s — yellow tees</option><option value="women">Women’s — red tees</option></select><small>Used to load the correct tee distances, par and stroke indexes on event scorecards.</small></label>
+  <label>Starting society handicap<input id="signupHandicap" type="number" min="0" max="54" step=".1" required inputmode="decimal" placeholder="e.g. 18"><small>Your starting handicap is set once here, then updates automatically after each society round.</small></label>
   <label>Email address<input id="signupEmail" type="email" required autocomplete="email" placeholder="name@example.com"></label>
   <label>Create password<input id="signupPassword" type="password" required minlength="8" autocomplete="new-password" placeholder="At least 8 characters"></label>
   <label>Confirm password<input id="signupPasswordConfirm" type="password" required minlength="8" autocomplete="new-password" placeholder="Type it again"></label>
