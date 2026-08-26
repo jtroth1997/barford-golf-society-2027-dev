@@ -142,9 +142,61 @@
     if(np){const {error}=await client.from("event_holes").update({nearest_pin:true}).eq("event_id",activeEventId).eq("hole_number",np);if(error)return status(error.message);}
     await loadEvent(activeEventId);saved("Longest Drive and Nearest the Pin holes saved successfully.");status("Competition holes saved. Prepared phone scorecards will update when they next connect.");
   });
+  async function confirmMissingPlayingCategories(eventId){
+    const {data:teeTimes,error:teeError}=await client.from("tee_times").select("member_id").eq("event_id",eventId).not("member_id","is",null);
+    if(teeError)throw teeError;
+    const memberIds=[...new Set((teeTimes||[]).map(row=>row.member_id).filter(Boolean))];
+    if(!memberIds.length)return true;
+    const {data:profiles,error:profileError}=await client.from("profiles").select("id,full_name,playing_category").in("id",memberIds);
+    if(profileError)throw profileError;
+    const missing=(profiles||[]).filter(profile=>!["men","women"].includes(profile.playing_category));
+    if(!missing.length)return true;
+
+    return new Promise(resolve=>{
+      const dialog=document.createElement("dialog");
+      dialog.className="admin-access-dialog";
+      dialog.innerHTML=`<form class="admin-access-dialog-form">
+        <button type="button" class="dialog-close" data-close-missing-category>×</button>
+        <p class="eyebrow">Scorecard setup needed</p>
+        <h2>Which tee category is each player using?</h2>
+        <p>The following player${missing.length===1?" has":"s have"} not completed this during account setup. Choose their category now; it will be saved to their profile permanently.</p>
+        ${missing.map(profile=>`<label>${esc(profile.full_name)}<select data-missing-category="${profile.id}"><option value="">Choose a category…</option><option value="men">Men’s — yellow tees</option><option value="women">Women’s — red tees</option></select></label>`).join("")}
+        <div class="admin-dialog-actions"><button type="button" class="button button-outline" data-close-missing-category>Cancel</button><button type="button" class="button button-primary" data-save-missing-category>Save and post scorecards</button></div>
+        <p class="form-status" data-missing-category-status aria-live="polite"></p>
+      </form>`;
+      document.body.appendChild(dialog);
+      const close=approved=>{dialog.close();dialog.remove();resolve(approved);};
+      dialog.querySelectorAll("[data-close-missing-category]").forEach(button=>button.addEventListener("click",()=>close(false)));
+      dialog.addEventListener("cancel",event=>{event.preventDefault();close(false);},{once:true});
+      dialog.querySelector("[data-save-missing-category]").addEventListener("click",async event=>{
+        const button=event.currentTarget,statusEl=dialog.querySelector("[data-missing-category-status]");
+        const updates=missing.map(profile=>({id:profile.id,playing_category:dialog.querySelector(`[data-missing-category="${profile.id}"]`).value}));
+        if(updates.some(item=>!["men","women"].includes(item.playing_category))){statusEl.textContent="Choose a tee category for every named player.";return;}
+        button.disabled=true;button.textContent="Saving…";statusEl.textContent="";
+        try{
+          for(const update of updates){
+            const {error}=await client.from("profiles").update({playing_category:update.playing_category,updated_at:new Date().toISOString()}).eq("id",update.id);
+            if(error)throw error;
+          }
+          close(true);
+        }catch(error){
+          statusEl.textContent=error?.message||"Could not save the player’s tee category.";
+          button.disabled=false;button.textContent="Save and post scorecards";
+        }
+      });
+      dialog.showModal();
+    });
+  }
+
   $("adminPrepareScorecards")?.addEventListener("click",async()=>{
     const button=$("adminPrepareScorecards"),eventId=activeEventId||$("adminScoringEvent")?.value||$("adminTeeEvent")?.value;
     if(!eventId)return status("Select the event, then publish its tee times before posting the group scorecards.");
+    try{
+      const categoriesConfirmed=await confirmMissingPlayingCategories(eventId);
+      if(!categoriesConfirmed)return status("Group scorecards were not posted. Complete the missing player category to continue.");
+    }catch(error){
+      return status("Could not check player categories: "+(error?.message||"Unknown error"));
+    }
     button.disabled=true;button.textContent="Posting scorecards…";status("Preparing tee groups and locking society handicaps…");
     try{
       const {count,error:teeError}=await client.from("tee_times").select("id",{count:"exact",head:true}).eq("event_id",eventId);
