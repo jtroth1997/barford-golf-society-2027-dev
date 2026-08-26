@@ -90,11 +90,20 @@
     const email = $("#signupEmail").value.trim().toLowerCase();
     const phone = $("#signupPhone").value.trim();
     const playingCategory = $("#signupPlayingCategory").value;
+    const handicap = Number($("#signupHandicap").value);
     const password = $("#signupPassword").value;
     const confirmation = $("#signupPasswordConfirm").value;
 
     if (!fullName) {
       message("#signupStatus", "Please select your name, or choose the new member option.", true);
+      return;
+    }
+    if (!["men", "women"].includes(playingCategory)) {
+      message("#signupStatus", "Choose Men’s or Women’s playing category.", true);
+      return;
+    }
+    if (!Number.isFinite(handicap) || handicap < 0 || handicap > 54) {
+      message("#signupStatus", "Enter a starting society handicap between 0 and 54.", true);
       return;
     }
     if (password !== confirmation) {
@@ -109,7 +118,7 @@
     const { data, error } = await client.auth.signUp({
       email,
       password,
-      options: { data: { full_name: fullName, phone, playing_category: playingCategory } }
+      options: { data: { full_name: fullName, phone, playing_category: playingCategory, handicap } }
     });
     if (error) {
       message("#signupStatus", error.message, true);
