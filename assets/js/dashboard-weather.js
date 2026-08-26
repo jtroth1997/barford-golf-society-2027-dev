@@ -9,9 +9,24 @@
   card.id = "dashboardWeather";
   card.className = "dashboard-weather-card hidden";
   card.setAttribute("aria-live","polite");
-  card.innerHTML = '<span aria-hidden="true">⛅</span><div><small>Weather at tee-off</small><strong>Checking the course forecast…</strong><p></p></div>';
+  card.innerHTML = '<span aria-hidden="true">⛅</span><div><small>Weather for your round</small><strong>Checking the course forecast…</strong><p class="dashboard-weather-summary"></p><small class="dashboard-weather-change"></small><small class="dashboard-weather-tips"></small></div>';
   host.after(card);
-  const set = (title, detail) => { card.querySelector("strong").textContent=title; card.querySelector("p").textContent=detail; card.classList.remove("hidden"); };
+  const set = (title, detail, change="", tips="") => {
+    card.querySelector("strong").textContent=title;
+    card.querySelector(".dashboard-weather-summary").textContent=detail;
+    card.querySelector(".dashboard-weather-change").textContent=change;
+    card.querySelector(".dashboard-weather-tips").textContent=tips;
+    card.classList.remove("hidden");
+  };
+  const adviceFor = ({temp,rain,wind}) => {
+    const tips=[];
+    if(rain>=30) tips.push("Bring a waterproof jacket.");
+    if(temp>=20) tips.push("Bring sun cream and plenty to drink.");
+    if(temp<=10) tips.push("Bring an extra warm layer.");
+    if(wind>=18) tips.push("Expect gusts — keep a layer handy.");
+    if(!tips.length) tips.push("Comfortable conditions — take water as usual.");
+    return "Golf-day tips: "+tips.join(" ");
+  };
   const condition = code => code === 0 ? ["☀️","Sunny"] : [1,2].includes(code) ? ["🌤️","Sunny intervals"] : code === 3 ? ["☁️","Cloudy"] : [45,48].includes(code) ? ["🌫️","Foggy"] : [51,53,55].includes(code) ? ["🌦️","Drizzle"] : [61,63,65,80,81,82].includes(code) ? ["🌧️","Rain"] : [95,96,99].includes(code) ? ["⛈️","Thunderstorms"] : ["🌥️","Mixed conditions"];
   (async () => {
     const { data:{session} } = await client.auth.getSession();
@@ -34,8 +49,24 @@
       const temp=Math.round(weather.hourly.temperature_2m[index]);
       const rain=Math.round(weather.hourly.precipitation_probability[index]||0);
       const wind=Math.round(weather.hourly.wind_speed_10m[index]||0);
+      const roundIndexes=weather.hourly.time.map((time,i)=>({time,i})).filter(({time})=>{
+        const hour=new Date(time).getTime();
+        return hour>=target&&hour<=target+(4*60*60*1000);
+      }).map(({i})=>i);
+      const forecastIndexes=roundIndexes.length?roundIndexes:[index];
+      const roundRain=Math.max(...forecastIndexes.map(i=>Math.round(weather.hourly.precipitation_probability[i]||0)));
+      const roundWind=Math.max(...forecastIndexes.map(i=>Math.round(weather.hourly.wind_speed_10m[i]||0)));
+      const roundTemps=forecastIndexes.map(i=>Math.round(weather.hourly.temperature_2m[i]));
+      const tempShift=Math.max(...roundTemps)-Math.min(...roundTemps);
+      const codeChanges=forecastIndexes.some(i=>weather.hourly.weather_code[i]!==weather.hourly.weather_code[index]);
+      const moreRain=roundRain>=rain+20;
+      const windShift=roundWind>=wind+8;
+      const endTime=String(weather.hourly.time[forecastIndexes.at(-1)]||"").slice(11,16);
+      const change=(moreRain||windShift||codeChanges||tempShift>=4)
+        ? `During your round: forecast to change — rain chance reaches ${roundRain}% by about ${endTime||"the end"}.`
+        : `During your round: forecast looks steady — rain chance stays around ${roundRain}%.`;
       card.querySelector("span").textContent=weatherIcon;
-      set(`${temp}°C · ${label}`, `${teeTime} tee-off at ${event.venue||event.name} · ${rain}% rain · ${wind} mph wind`);
+      set(`${temp}°C · ${label}`, `${teeTime} tee-off at ${event.venue||event.name} · ${rain}% chance of rain · up to ${roundRain}% during your round · ${wind} mph wind`, change, adviceFor({temp:Math.max(temp,...roundTemps),rain:roundRain,wind:roundWind}));
     } catch { set("Weather update unavailable", "We will try again automatically when you revisit the dashboard."); }
   })();
 })();
