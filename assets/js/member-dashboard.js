@@ -505,8 +505,6 @@
       previousSeasonLoaded = true;
       loadLegacyStats();
     };
-    if ("requestIdleCallback" in window) requestIdleCallback(loadPreviousSeason, { timeout: 1200 });
-    else setTimeout(loadPreviousSeason, 100);
   };
 
   const rsvpDialog = document.getElementById("dashboardRsvpDialog");
