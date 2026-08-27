@@ -410,6 +410,8 @@
     set("dashboardTeeTime", friendlyTime(ownSlot?.tee_time || teeTime?.tee_time));
     set("dashboardEventPrice", money(nextEvent.price));
     show("dashboardEventFacts");
+    directionsDestination = [nextEvent.venue, nextEvent.address].filter(Boolean).join(", ");
+    document.getElementById("dashboardEventDirections")?.classList.toggle("hidden", !directionsDestination);
     renderRsvpState();
     const cancelled = nextEvent.status === "cancelled";
     show("dashboardCancelledBanner", cancelled);
@@ -481,6 +483,7 @@
       toggle.addEventListener("click", () => {
         const collapsed = seasonCard.classList.toggle("mobile-history-collapsed");
         toggle.textContent = collapsed ? "Show my previous season" : "Hide previous season";
+        if (!collapsed) loadPreviousSeason();
       });
     }
     const knownName = session.user.user_metadata?.full_name || "Member";
@@ -496,7 +499,12 @@
     set("dashboardMembershipStatus", profile?.is_admin ? "2027 member · Administrator" : "2027 member");
     if (profile) setAvatar(profile);
 
-    const loadPreviousSeason = () => loadLegacyStats();
+    let previousSeasonLoaded = false;
+    const loadPreviousSeason = () => {
+      if (previousSeasonLoaded) return;
+      previousSeasonLoaded = true;
+      loadLegacyStats();
+    };
     if ("requestIdleCallback" in window) requestIdleCallback(loadPreviousSeason, { timeout: 1200 });
     else setTimeout(loadPreviousSeason, 100);
   };
