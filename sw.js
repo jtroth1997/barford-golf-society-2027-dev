@@ -8,9 +8,10 @@ self.addEventListener("fetch",event=>{
   if(url.origin!==self.location.origin&&url.hostname!=="cdn.jsdelivr.net")return;
   event.respondWith((async()=>{
     const cache=await caches.open(CACHE);
-    const cached=await cache.match(event.request);
+    const isPage=event.request.mode==="navigate";
+    const cached=await cache.match(event.request,{ignoreSearch:!isPage});
     const update=fetch(event.request,{cache:"no-store"}).then(fresh=>{if(fresh.ok)cache.put(event.request,fresh.clone());return fresh;});
-    if(event.request.mode==="navigate"){try{return await update}catch{return cached||await cache.match("./index.html")||Response.error();}}
+    if(isPage){try{return await update}catch{return cached||await cache.match("./index.html")||Response.error();}}
     if(cached){event.waitUntil(update.catch(()=>{}));return cached;}
     try{return await update}catch{return Response.error();}
   })());
