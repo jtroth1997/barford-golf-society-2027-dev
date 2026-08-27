@@ -70,19 +70,7 @@
     ).join("");
   }
 
-  const adminLinks = [...document.querySelectorAll('.site-nav a[href="admin.html"]')];
-  if (currentPage !== "admin.html") {
-    adminLinks.forEach(link => link.hidden = true);
-    window.addEventListener("load", async () => {
-      const client = window.BarfordSupabase;
-      if (!client) return;
-      const { data: { session } } = await client.auth.getSession();
-      if (!session) return;
-      const { data } = await client.from("profiles").select("is_admin").eq("id", session.user.id).maybeSingle();
-      adminLinks.forEach(link => link.hidden = !data?.is_admin);
-    }, { once:true });
-  }
-
+  // Admin visibility is handled once by supabase-client.js; avoid a duplicate profile request.\n
   document.querySelectorAll(".rsvp-event-button").forEach(button => {
     if (button.textContent.trim() === "RSVP") button.textContent = "Choose yes or no";
   });
