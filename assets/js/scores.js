@@ -1,4 +1,4 @@
-import { ScoresData } from "./scores-data.js?v=overview1";
+import { ScoresData } from "./scores-data.js?v=royalboard1";
 import { rankPlayers, calculatePlayerStatistics } from "./handicap-engine.js";
 
 
@@ -8,6 +8,7 @@ const state = {
   selectedRoundId: null,
   selectedLeaderboardRoundId: null,
   selectedPlayerId: null,
+  currentUserId: null,
   search: ""
 };
 const $ = selector => document.querySelector(selector);
@@ -17,6 +18,10 @@ const latestResult = (playerId) => [...state.data.rounds].reverse().map(r => r.r
 
 async function refresh() {
   state.data = await ScoresData.getSnapshot();
+  if (window.BarfordSupabase) {
+    const { data: { session } } = await window.BarfordSupabase.auth.getSession();
+    state.currentUserId = session?.user?.id ?? null;
+  }
   state.selectedRoundId ||= state.data.rounds[0]?.id;
   state.selectedPlayerId ||= state.data.players[0]?.id;
 
@@ -151,7 +156,7 @@ function renderLeaderboard() {
   const roundsForStandings = getLeaderboardRounds();
   const roundLabel = selectedRound ? `after ${selectedRound.name}` : "before the season starts";
 
-  $("#leaderboardHeading").textContent = "League Table";
+  $("#leaderboardHeading").textContent = "2027 Championship";
   $("#leagueTableRound").textContent = selectedRound
     ? `Round ${selectedRound.number}`
     : "Awaiting Round 1";
@@ -196,12 +201,12 @@ function renderLeaderboard() {
     const summary = node.querySelector(".player-card-summary");
     const detail = node.querySelector(".player-details");
     const selectedResult = selectedRound?.results.find(result => result.playerId === player.id);
-    const medal = ["🥇","🥈","🥉"][player.position - 1];
     const previousPosition = previousPositions.get(player.id) ?? allRanked.length + 1;
     const positionChange = previousPosition - player.position;
     if (player.position <= 3 && !state.search) {
       card.classList.add("top-three-row", `top-position-${player.position}`);
     }
+    if (player.id === state.currentUserId) card.classList.add("is-current-player");
     if (playFilm) {
       card.classList.add("ranking-motion");
       card.style.setProperty("--move-from", `${positionChange * 64}px`);
@@ -210,21 +215,27 @@ function renderLeaderboard() {
       if (positionChange < 0) card.classList.add("moved-down");
     }
 
-    node.querySelector(".rank-badge").textContent = medal || player.position;
-    if (medal) node.querySelector(".rank-badge").classList.add("medal");
+    node.querySelector(".rank-badge").textContent = player.position;
+    node.querySelector(".player-position-label").textContent = player.position;
     node.querySelector(".player-name").textContent = player.name;
-
-    const meta = node.querySelector(".player-meta");
-    meta.innerHTML = selectedResult
-      ? `<span class="leaderboard-round-line"><span>Round score</span><strong>${selectedResult.dnp ? "DNP" : selectedResult.points}</strong></span>
-         <span class="leaderboard-round-line"><span>Playing handicap</span><strong>${selectedResult.handicapUsed}</strong></span>
-         <span class="leaderboard-round-line"><span>Adjustment</span><strong class="change ${changeClass(selectedResult.adjustment)}">${formatChange(selectedResult.adjustment)}</strong></span>
-         <span class="leaderboard-round-line"><span>Next-round handicap</span><strong>${selectedResult.nextHandicap}</strong></span>`
-      : `<span class="leaderboard-round-line leaderboard-empty"><span>No result recorded for</span><strong>${escapeHtml(selectedRound?.name ?? "this round")}</strong></span>`;
-
+    const initials = player.name.split(/\s+/).filter(Boolean).slice(0,2).map(part => part[0]).join("").toUpperCase();
+    node.querySelector(".leaderboard-initials").textContent = initials || "BG";
+    const avatar = node.querySelector(".leaderboard-avatar img");
+    if (player.photoUrl) {
+      avatar.src = player.photoUrl;
+      avatar.alt = `${player.name} profile picture`;
+      avatar.hidden = false;
+      avatar.addEventListener("error", () => { avatar.hidden = true; }, { once: true });
+    }
+    node.querySelector(".round-handicap strong").textContent = selectedResult && !selectedResult.dnp ? selectedResult.handicapUsed : "—";
+    node.querySelector(".round-points strong").textContent = selectedResult ? (selectedResult.dnp ? "DNP" : selectedResult.points) : "—";
+    node.querySelector(".next-handicap strong").textContent = selectedResult && !selectedResult.dnp ? selectedResult.nextHandicap : "—";
+    const adjustment = node.querySelector(".next-handicap em");
+    adjustment.textContent = selectedResult && !selectedResult.dnp ? formatChange(selectedResult.adjustment) : "";
+    adjustment.className = selectedResult ? changeClass(selectedResult.adjustment) : "same";
+    node.querySelector(".rounds-played strong").textContent = `${player.statistics.roundsPlayed}/${SEASON_ROUNDS}`;
 
     node.querySelector(".player-points").textContent = player.statistics.seasonPoints;
-    node.querySelector(".points-block span").textContent = "best 5 total";
 
     summary.setAttribute(
       "aria-label",
