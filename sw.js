@@ -1,4 +1,4 @@
-const CACHE="barford-golf-2027-offline-v37";
+const CACHE="barford-golf-2027-offline-v38";
 const ESSENTIALS=["./","./index.html","./events.html","./payments.html","./scoring.html","./hole-view.html","./assets/js/app.js","./assets/js/events-live.js","./assets/js/member-dashboard.js","./assets/js/payments-hub.js","./assets/js/scoring.js","./assets/js/scoring-resilience.js","./assets/js/course-view.js","./assets/js/course-view-guided-setup.js","./assets/js/supabase-config.js","./assets/js/supabase-client.js","./assets/css/styles.css","./assets/css/matchday-redesign.css","./assets/css/hole-view-light.css","./assets/css/scoring.css","./assets/css/scoring-simple.css","./assets/css/score-competitions.css"];
 self.addEventListener("install",event=>event.waitUntil(caches.open(CACHE).then(cache=>Promise.allSettled(ESSENTIALS.map(url=>cache.add(new Request(url,{cache:"reload"}))))).then(()=>self.skipWaiting())));
 self.addEventListener("activate",event=>event.waitUntil(caches.keys().then(keys=>Promise.all(keys.filter(key=>key!==CACHE).map(key=>caches.delete(key)))).then(()=>self.clients.claim())));
