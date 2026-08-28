@@ -7,7 +7,7 @@
   "scope": "./",
   "display": "standalone",
   "background_color": "#f4f1e8",
-  "theme_color": "#063d2a",
+  "theme_color": "#082f2f",
   "icons": [
     {
       "src": "assets/images/barford-golf-society-logo.png",
