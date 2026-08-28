@@ -28,7 +28,10 @@ body.matchday-ui #statisticsView{display:none!important}
   z-index:6;
   left:0;
   right:0;
+  width:auto;
   height:8px;
+  border:0;
+  transform:none;
   background:var(--metal-bar);
   box-shadow:var(--metal-shadow);
   pointer-events:none;
@@ -272,10 +275,13 @@ body.matchday-ui #statisticsView{display:none!important}
 @media(max-width:760px){
   body.matchday-ui #leaderboardView{width:min(100% - 16px,980px)!important;padding-top:14px!important}
   .royal-championship-board{border-radius:20px!important}
-  .royal-board-heading{grid-template-columns:60px 1fr!important;gap:11px!important;min-height:118px!important;padding:22px 14px 17px!important}
-  .royal-board-heading>img{width:58px!important;height:58px!important}
-  .royal-board-heading h1{font-size:clamp(1.45rem,7vw,2rem)!important}
-  .royal-board-heading>small{grid-column:1/-1!important;justify-self:start!important;margin-left:71px!important;margin-top:-8px!important;padding:5px 9px!important;font-size:.61rem!important}
+  body.matchday-ui #leaderboardView .royal-board-heading{grid-template-columns:52px minmax(0,1fr)!important;gap:10px!important;min-height:0!important;padding:20px 12px 15px!important}
+  body.matchday-ui #leaderboardView .royal-board-heading>img{width:50px!important;height:50px!important}
+  body.matchday-ui #leaderboardView .royal-board-heading .league-table-side-title{min-width:0!important;text-align:left!important}
+  body.matchday-ui #leaderboardView .royal-board-heading .league-table-side-title>span{font-size:.56rem!important;letter-spacing:.12em!important;white-space:normal!important}
+  body.matchday-ui #leaderboardView .royal-board-heading h1{max-width:100%!important;margin:3px 0 4px!important;font-size:clamp(1.32rem,6vw,1.72rem)!important;line-height:1.02!important;letter-spacing:-.025em!important;white-space:nowrap!important}
+  body.matchday-ui #leaderboardView .royal-board-heading b{font-size:.68rem!important}
+  body.matchday-ui #leaderboardView .royal-board-heading>small{grid-column:2!important;justify-self:start!important;margin:3px 0 0!important;padding:5px 8px!important;font-size:.57rem!important}
   .royal-round-selector{grid-template-columns:1fr!important;gap:6px!important;padding:15px 12px 9px!important}
   .championship-column-key{display:none!important}
   .royal-championship-board .league-table-content{padding:0 9px 17px!important}
@@ -304,8 +310,9 @@ body.matchday-ui #statisticsView{display:none!important}
 }
 
 @media(max-width:390px){
-  .royal-board-heading .league-table-side-title>span{font-size:.6rem!important;letter-spacing:.12em!important}
-  .royal-board-heading>small{margin-left:0!important}
+  body.matchday-ui #leaderboardView .royal-board-heading{grid-template-columns:46px minmax(0,1fr)!important;padding-inline:10px!important}
+  body.matchday-ui #leaderboardView .royal-board-heading>img{width:44px!important;height:44px!important}
+  body.matchday-ui #leaderboardView .royal-board-heading h1{font-size:clamp(1.18rem,5.8vw,1.42rem)!important}
   .championship-player-row .player-card-summary{grid-template-columns:minmax(0,1fr) 64px!important}
   .player-identity{grid-template-columns:30px 38px minmax(0,1fr)!important;gap:5px!important}
   .championship-player-row .rank-badge{width:29px!important;height:29px!important}
