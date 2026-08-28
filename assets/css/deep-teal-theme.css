@@ -126,3 +126,17 @@ body.home-photo-page.product-premium .member-home-grid{
 }
 .site-footer{border-top:0!important}
 .site-footer::before{left:0;right:0;top:0;border-radius:0}
+
+/* Player dashboard: only the next action and genuinely outstanding items. */
+.member-home .dashboard-welcome-copy>.eyebrow,
+.member-home .dashboard-welcome-copy>p:last-child,
+.member-home .dashboard-next-event>.text-link,
+.member-home #seasonDashboardCard,
+.member-home .dashboard-history-toggle,
+.member-home .dashboard-actions{display:none!important}
+.member-home .dashboard-payments{display:none!important}
+.member-home .dashboard-payments.has-payments{display:block!important}
+.member-home .mobile-dashboard-welcome{min-height:58px!important}
+.member-home .dashboard-welcome-copy h1{margin:0!important;font-size:clamp(1.7rem,5vw,2.35rem)!important}
+.member-home-grid{grid-template-columns:1fr!important;max-width:780px!important}
+.member-home .dashboard-next-event{grid-column:1!important}
