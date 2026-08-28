@@ -218,14 +218,16 @@
       .eq("status", "playing")
       .eq("payment_status", "payment_due");
     const due = error ? [] : (data || []).filter(item => item.events?.status === "scheduled" && new Date(`${item.events.event_date}T23:59:59`) >= new Date());
-    set("dashboardPaymentCount", due.length);
+    const extraDue = due.filter(item => item.event_id !== nextEvent?.id);
+    document.querySelector(".dashboard-payments")?.classList.toggle("has-payments", extraDue.length > 0);
+    set("dashboardPaymentCount", extraDue.length);
     const list = document.getElementById("dashboardPaymentList");
     if (!list) return;
-    if (!due.length) {
+    if (!extraDue.length) {
       list.innerHTML = '<div class="dashboard-good"><span>✓</span><div><strong>Nothing to pay</strong><small>You are all up to date.</small></div></div>';
       return;
     }
-    list.innerHTML = due.map(item => `
+    list.innerHTML = extraDue.map(item => `
       <article>
         <div><strong>${escapeHtml(item.events.name)}</strong><small>${escapeHtml(friendlyDate(item.events.event_date))}</small></div>
         <b>${escapeHtml(money(item.events.price))}</b>
@@ -404,13 +406,21 @@
     const { data: events, error } = await client.from("events")
       .select("id,name,event_date,status,venue,address,price,latitude,longitude,notes").gte("event_date", today).in("status", ["scheduled", "cancelled"]).order("event_date").limit(1);
     if (error || !events?.length) {
-      set("dashboardEventName", "No upcoming event announced");
-      set("dashboardEventDetail", "The committee has not published the next 2027 event yet.");
-      set("dashboardRsvpBadge", "Nothing due");
-      setNextStep("Nothing to do — no event has been announced.");
+      set("dashboardEventName", "No upcoming events");
+      set("dashboardEventDetail", "The next society event will appear here when it is announced.");
+      show("dashboardNextStep", false);
+      show("dashboardRsvpBadge", false);
+      show("dashboardEventFacts", false);
+      show("dashboardRsvpActions", false);
+      show("dashboardPlayingConfirmation", false);
+      show("dashboardRsvpLockedNotice", false);
+      show("dashboardTeeGroup", false);
+      show("dashboardEventDirections", false);
       return;
     }
     nextEvent = events[0];
+    show("dashboardNextStep");
+    show("dashboardRsvpBadge");
     const [
       { data: rsvp },
       { data: teeTime },
@@ -505,27 +515,14 @@
     }
     document.getElementById("publicHome")?.classList.add("hidden");
     document.getElementById("memberHomeDashboard")?.classList.remove("hidden");
-    const seasonCard = document.getElementById("seasonDashboardCard");
-    if (seasonCard && !document.getElementById("dashboardHistoryToggle")) {
-      const toggle = document.createElement("button");
-      toggle.id = "dashboardHistoryToggle";
-      toggle.type = "button";
-      toggle.className = "button button-outline dashboard-history-toggle";
-      toggle.textContent = "Show my previous season";
-      seasonCard.before(toggle);
-      seasonCard.classList.add("mobile-history-collapsed");
-      toggle.addEventListener("click", () => {
-        const collapsed = seasonCard.classList.toggle("mobile-history-collapsed");
-        toggle.textContent = collapsed ? "Show my previous season" : "Hide previous season";
-        if (!collapsed) loadPreviousSeason();
-      });
-    }
+    document.getElementById("seasonDashboardCard")?.remove();
+    document.querySelector(".dashboard-actions")?.remove();
     const knownName = session.user.user_metadata?.full_name || "Member";
     set("dashboardFirstName", knownName.split(/\s+/)[0]);
     set("dashboardFullName", knownName);
 
     const profilePromise = client.from("profiles").select("id,full_name,is_admin,photo_url").eq("id", session.user.id).single();
-    const corePromise = Promise.all([loadNextEvent(), loadPayments()]);
+    const corePromise = loadNextEvent().then(loadPayments);
     const [{ data: profile }] = await Promise.all([profilePromise, corePromise]);
     const name = profile?.full_name || knownName;
     set("dashboardFirstName", name.split(/\s+/)[0]);
@@ -533,12 +530,6 @@
     set("dashboardMembershipStatus", profile?.is_admin ? "2027 member · Administrator" : "2027 member");
     if (profile) setAvatar(profile);
 
-    let previousSeasonLoaded = false;
-    const loadPreviousSeason = () => {
-      if (previousSeasonLoaded) return;
-      previousSeasonLoaded = true;
-      loadLegacyStats();
-    };
   };
 
   const rsvpDialog = document.getElementById("dashboardRsvpDialog");
