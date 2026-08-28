@@ -1,6 +1,7 @@
 const body=document.body;
 const currentPage=location.pathname.split("/").pop()||"index.html";
 const addCss=(href,key)=>{const attr=`data-${key.replace(/[A-Z]/g,m=>`-${m.toLowerCase()}`)}`;if(document.querySelector(`link[${attr}]`))return;const link=document.createElement("link");link.rel="stylesheet";link.href=href;link.dataset[key]="1";document.head.appendChild(link);};
+addCss("assets/css/deep-teal-theme.css?v=1","deepTealTheme");
 // Keep the established feature layout, then apply one shared redesign layer.
 if(currentPage==="index.html"){
   body.classList.add("product-premium");
