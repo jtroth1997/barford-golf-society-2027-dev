@@ -152,6 +152,36 @@ body.product-premium #memberHomeDashboard #dashboardRsvpBadge.hidden{display:non
 
 /* Royal player dock: deep snooker cloth, engraved brass detail and only player-first destinations. */
 @media(max-width:850px){
+  body.matchday-ui .site-header .brand,
+  body.matchday-ui .global-site-header .global-brand{
+    gap:12px!important;
+  }
+  body.matchday-ui .site-header .brand::after,
+  body.matchday-ui .global-site-header .global-brand::after{
+    content:"BARFORD"!important;
+    display:block!important;
+    margin:0!important;
+    padding:1px 1px 5px!important;
+    border-bottom:2px solid #c79b48!important;
+    color:#fff7dc!important;
+    background:linear-gradient(180deg,#fffbe8 8%,#f5dda0 42%,#d5a64c 68%,#fff0b0 100%)!important;
+    -webkit-background-clip:text!important;
+    background-clip:text!important;
+    -webkit-text-fill-color:transparent!important;
+    font-family:"Playfair Display",Georgia,"Times New Roman",serif!important;
+    font-size:clamp(1rem,4.2vw,1.28rem)!important;
+    font-weight:700!important;
+    line-height:1!important;
+    letter-spacing:.16em!important;
+    text-shadow:none!important;
+    filter:drop-shadow(0 2px 1px rgba(1,21,19,.85)) drop-shadow(0 0 8px rgba(232,196,105,.12))!important;
+  }
+  body.matchday-ui .site-header .brand img,
+  body.matchday-ui .global-site-header .global-brand img{
+    width:64px!important;
+    height:58px!important;
+    filter:drop-shadow(0 2px 2px rgba(0,0,0,.35))!important;
+  }
   body.product-premium.matchday-ui:not(.scoring-page) .mobile-quick-nav,
   body.matchday-ui:not(.scoring-page) .mobile-quick-nav{
     position:fixed!important;
