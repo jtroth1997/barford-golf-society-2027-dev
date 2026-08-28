@@ -10,6 +10,7 @@
   let rsvpChoicesLocked = false;
   let teeGroup = [];
   let directionsDestination = "";
+  let scorerSelectionRequested = false;
   let legacyCandidate;
   const set = (id, value) => {
     const element = document.getElementById(id);
@@ -368,6 +369,15 @@
     document.getElementById("dashboardDirectionsDialog")?.showModal();
   };
 
+  const loadScorerSelection = () => {
+    if (scorerSelectionRequested || !currentScorecard || currentRsvp?.status !== "playing") return;
+    scorerSelectionRequested = true;
+    const script = document.createElement("script");
+    script.src = "assets/js/dashboard-scorer-selection.js?v=scoreraccess3";
+    script.async = true;
+    document.body.append(script);
+  };
+
   const loadNextEvent = async () => {
     const today = localDate();
     const { data: events, error } = await client.from("events")
@@ -397,6 +407,7 @@
     rsvpChoicesLocked = Boolean(choicesLocked);
     teeGroup = groupError ? [] : (groupRows || []);
     currentScorecard = scorecard || null;
+    loadScorerSelection();
     const scoreLink = document.querySelector(".event-scorecard-cta");
     scoreLink?.classList.toggle("hidden", !currentScorecard);
     const scoreLabel = scoreLink?.querySelector("strong");

@@ -8,6 +8,15 @@
   const money = value => Number.isFinite(Number(value)) ? `£${Number(value).toFixed(2)}` : "Amount TBC";
   let busy = false;
 
+  const loadPaymentStyles = () => {
+    if (document.querySelector('link[data-dashboard-payment-styles]')) return;
+    const stylesheet = document.createElement("link");
+    stylesheet.rel = "stylesheet";
+    stylesheet.href = "assets/css/demo-apple-pay.css?v=demo1";
+    stylesheet.dataset.dashboardPaymentStyles = "1";
+    document.head.append(stylesheet);
+  };
+
   const ensureDirections = () => {
     const button = document.getElementById("dashboardEventDirections");
     const detail = document.getElementById("dashboardEventDetail");
@@ -34,6 +43,7 @@
   };
 
   const ensureSheet = () => {
+    loadPaymentStyles();
     let sheet = document.getElementById("demoApplePaySheet");
     if (sheet) return sheet;
     document.body.insertAdjacentHTML("beforeend", `<div id="demoApplePayBackdrop" class="demo-pay-backdrop" hidden></div><section id="demoApplePaySheet" class="demo-pay-sheet" hidden aria-modal="true" role="dialog" aria-labelledby="demoPayTitle"><div class="demo-pay-grabber"></div><div class="demo-pay-brand"> Pay</div><div id="demoPayBody"></div></section>`);
