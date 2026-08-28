@@ -34,3 +34,35 @@ input,select,textarea{color:#1a2927!important;background-color:#fffdf7!important
 .offline-fallback{position:fixed;inset:0;z-index:1;display:grid;place-items:center;padding:190px 18px 90px;color:#fff;text-align:center;background-color:#073534;background-image:radial-gradient(ellipse at 50% 35%,rgba(46,116,106,.8),transparent 52%),repeating-linear-gradient(98deg,rgba(255,255,255,.022) 0 1px,transparent 1px 4px),repeating-linear-gradient(8deg,rgba(0,0,0,.04) 0 1px,transparent 1px 5px)}
 .offline-fallback-card{width:min(360px,100%);padding:22px;border:2px solid #c79b48;border-radius:22px;background:rgba(5,42,42,.92);box-shadow:0 20px 60px rgba(0,0,0,.55),inset 0 0 0 1px rgba(255,238,165,.24)}.offline-fallback-card strong{display:block;color:#e4c67b;font:700 1.35rem Georgia,serif}.offline-fallback-card p{margin:8px 0 0;color:#e5eee9;font-size:.9rem}
 @media(prefers-reduced-motion:reduce){.button-primary::after,.button-gold::after,.button-small::after{display:none}}
+
+/* Deep green baize page canvas — soft, fibrous and lightly worn like snooker cloth. */
+body:not(.scoring-page):not(.gps-page){
+  background-color:#0b4a3f;
+  background-image:
+    radial-gradient(ellipse at 18% 8%,rgba(72,140,112,.24),transparent 38%),
+    radial-gradient(ellipse at 82% 34%,rgba(3,38,33,.26),transparent 46%),
+    radial-gradient(ellipse at 36% 82%,rgba(52,118,92,.17),transparent 42%),
+    repeating-linear-gradient(94deg,rgba(255,255,255,.018) 0 1px,transparent 1px 3px),
+    repeating-linear-gradient(4deg,rgba(0,0,0,.024) 0 1px,transparent 1px 4px),
+    linear-gradient(135deg,#0c5145,#083a34 72%,#062f2c);
+  background-attachment:fixed;
+  color:#f5efdc;
+  box-shadow:inset 0 0 120px rgba(1,24,21,.22);
+}
+body:not(.scoring-page):not(.gps-page) main{color:#f5efdc}
+body:not(.scoring-page):not(.gps-page) main>.section,
+body:not(.scoring-page):not(.gps-page) .member-home-grid{background:transparent}
+body:not(.scoring-page):not(.gps-page) .section-heading h2,
+body:not(.scoring-page):not(.gps-page) main>.section>h1,
+body:not(.scoring-page):not(.gps-page) main>.section>h2{color:#fff8e3;text-shadow:0 2px 6px rgba(1,25,22,.45)}
+body:not(.scoring-page):not(.gps-page) .text-link{color:#efd083;text-shadow:0 1px 1px rgba(45,26,3,.5)}
+body:not(.scoring-page):not(.gps-page) .card,
+body:not(.scoring-page):not(.gps-page) .dashboard-card,
+body:not(.scoring-page):not(.gps-page) .account-panel,
+body:not(.scoring-page):not(.gps-page) .event-card,
+body:not(.scoring-page):not(.gps-page) .admin-card,
+body:not(.scoring-page):not(.gps-page) .media-card,
+body:not(.scoring-page):not(.gps-page) .product-card,
+body:not(.scoring-page):not(.gps-page) .table-wrap,
+body:not(.scoring-page):not(.gps-page) dialog{color:var(--ink)}
+.site-footer{background-color:#052f2c;background-image:linear-gradient(180deg,rgba(255,255,255,.035),transparent),repeating-linear-gradient(96deg,rgba(255,255,255,.015) 0 1px,transparent 1px 4px);border-top:3px solid #ad7f31;color:#eee8d5;box-shadow:0 -5px 18px rgba(2,24,21,.2)}
