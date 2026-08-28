@@ -140,3 +140,12 @@ body.home-photo-page.product-premium .member-home-grid{
 .member-home .dashboard-welcome-copy h1{margin:0!important;font-size:clamp(1.7rem,5vw,2.35rem)!important}
 .member-home-grid{grid-template-columns:1fr!important;max-width:780px!important}
 .member-home .dashboard-next-event{grid-column:1!important}
+
+/* State always wins over layout: locked, answered or missing events never show RSVP choices. */
+body.product-premium #memberHomeDashboard #dashboardRsvpActions.hidden,
+body.product-premium #memberHomeDashboard #dashboardPlayingConfirmation.hidden,
+body.product-premium #memberHomeDashboard #dashboardRsvpLockedNotice.hidden,
+body.product-premium #memberHomeDashboard #dashboardTeeGroup.hidden,
+body.product-premium #memberHomeDashboard #dashboardEventFacts.hidden,
+body.product-premium #memberHomeDashboard #dashboardNextStep.hidden,
+body.product-premium #memberHomeDashboard #dashboardRsvpBadge.hidden{display:none!important}
