@@ -74,7 +74,7 @@ export function calculateSeasonTotal(scores) {
 export function calculatePlayerStatistics(player, rounds, achievements = []) {
   const results = rounds
     .map(round => round.results.find(result => result.playerId === player.id))
-    .filter(result => result && Number.isFinite(result.points));
+    .filter(result => result && !result.dnp && Number.isFinite(result.points));
 
   const scores = results.map(result => result.points);
   const playerAchievements = achievements.filter(item => item.playerId === player.id);
