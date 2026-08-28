@@ -66,7 +66,7 @@
   body.product-premium #memberHomeDashboard .playing-confirmation-actions{display:grid!important;grid-template-columns:1fr!important;gap:9px!important}
   body.product-premium #memberHomeDashboard .playing-confirmation-actions .button{width:100%!important}
   body.product-premium #memberHomeDashboard .playing-confirmation-actions .button-outline{min-height:44px!important;background:transparent!important;border:0!important;text-decoration:underline;text-underline-offset:3px;padding:8px 10px!important;font-size:.9rem!important}
-  body.product-premium #memberHomeDashboard .dashboard-button-row{display:grid!important;grid-template-columns:1fr!important;gap:10px!important}
+  body.product-premium #memberHomeDashboard .dashboard-button-row:not(.hidden){display:grid!important;grid-template-columns:1fr!important;gap:10px!important}
   body.product-premium #memberHomeDashboard .dashboard-button-row>*{width:100%!important}
   body.product-premium #memberHomeDashboard .dashboard-tee-group{margin-top:18px!important;padding:17px!important;border-radius:18px!important}
   body.product-premium #memberHomeDashboard .tee-group-header h3{font-size:2.55rem!important;line-height:1!important}
