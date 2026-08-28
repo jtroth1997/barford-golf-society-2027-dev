@@ -90,6 +90,7 @@ as $$
       select jsonb_agg(jsonb_build_object(
         'id', p.id,
         'name', p.full_name,
+        'photoUrl', p.photo_url,
         'startingHandicap', coalesce(p.handicap, 0),
         'currentHandicap', coalesce((
           select s.next_handicap
@@ -141,8 +142,9 @@ as $$
         where r.season = 2027 and x.earned = true
       ) earned_items
     ), '[]'::jsonb)
-  );
+  )
+  where (select auth.uid()) is not null;
 $$;
 
-revoke all on function public.get_2027_leaderboard_snapshot() from public;
+revoke all on function public.get_2027_leaderboard_snapshot() from public, anon;
 grant execute on function public.get_2027_leaderboard_snapshot() to authenticated;
