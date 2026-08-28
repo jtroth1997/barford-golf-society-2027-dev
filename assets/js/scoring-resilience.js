@@ -2,7 +2,7 @@
   "use strict";
   const client = window.BarfordSupabase;
   if (!client || !document.getElementById("scoreApp")) return;
-  const PREFIX = "barford-scorecard-v1:";
+  const SCORE_CACHE_KEY = "barford-fast-scorecard-v4";
   const DB_NAME = "barford-score-safety";
   const DB_VERSION = 1;
   const UNCHANGED_TIMESTAMP = "1970-01-01T00:00:00.000Z";
@@ -41,27 +41,23 @@
   const deletePending = cardId => tx("pending", "readwrite", store => store.delete(cardId));
   const getAllPending = () => tx("pending", "readonly", store => store.getAll());
 
-  const scoreKeys = () => {
-    const keys=[];
-    for(let i=0;i<localStorage.length;i+=1){const key=localStorage.key(i);if(key?.startsWith(PREFIX))keys.push(key);}
-    return keys;
-  };
+  const scoreKeys = () => [SCORE_CACHE_KEY].filter(key => localStorage.getItem(key));
   const parse = value => { try { return JSON.parse(value || "null"); } catch { return null; } };
   const snapshotAll = async () => {
     for (const key of scoreKeys()) {
       const value = localStorage.getItem(key);
       const model = parse(value);
       if (!model?.card?.id) continue;
-      await putSnapshot({ key, value, saved_at: model.savedAt || new Date().toISOString(), card_id: model.card.id });
+      await putSnapshot({ key, value, saved_at: model.savedAt || Date.now(), card_id: model.card.id, user_id: model.userId });
     }
   };
   const restoreForUser = async userId => {
-    const key = `${PREFIX}${userId}`;
+    const key = SCORE_CACHE_KEY;
     const backup = await getSnapshot(key);
-    if (!backup?.value) return;
+    if (!backup?.value || (backup.user_id && backup.user_id !== userId)) return;
     const current = localStorage.getItem(key);
     const currentModel = parse(current), backupModel = parse(backup.value);
-    const currentTime = Date.parse(currentModel?.savedAt || 0), backupTime = Date.parse(backupModel?.savedAt || 0);
+    const currentTime = Number(currentModel?.savedAt || 0), backupTime = Number(backupModel?.savedAt || 0);
     if (!current || backupTime > currentTime) {
       localStorage.setItem(key, backup.value);
       recovered = true;
@@ -85,6 +81,8 @@
     }
     return null;
   };
+  window.BarfordScoreSafety = { queue: putPending, remove: deletePending, snapshot: snapshotAll };
+
   const enrichChanges = args => {
     const model = findCachedModel(args?.target_scorecard_id);
     if (!model || !Array.isArray(args?.score_changes)) return args;
@@ -119,7 +117,10 @@
     for (const item of pending || []) {
       try {
         const result = await originalRpc("sync_scorecard", item.args);
-        if (!result?.error) await deletePending(item.card_id);
+        if (!result?.error && item.submit_when_synced) {
+          const submitted = await client.from("event_scorecards").update({ status:"submitted", updated_at:new Date().toISOString() }).eq("id", item.card_id);
+          if (!submitted?.error) { await deletePending(item.card_id); const cached = findCachedModel(item.card_id); if (cached) localStorage.removeItem(SCORE_CACHE_KEY); }
+        } else if (!result?.error) await deletePending(item.card_id);
       } catch {}
     }
   };
