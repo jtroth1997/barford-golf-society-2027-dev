@@ -10,6 +10,7 @@
   <link rel="stylesheet" href="assets/css/scores.css?v=preseason1">
   <link rel="stylesheet" href="assets/css/mobile-menu-fix.css?v=1">
   <link rel="stylesheet" href="assets/css/accessible-mobile.css?v=simplenav1">
+  <link rel="stylesheet" href="assets/css/leaderboard-royal.css?v=2">
 </head>
 <body>
   <a class="skip-link" href="#main-content">Skip to league table</a>
@@ -38,24 +39,27 @@
 
   <main id="main-content">
     <section id="leaderboardView" class="view is-active leaderboard-first" aria-labelledby="leaderboardHeading">
-      <section class="league-table-panel" aria-label="Barford Golf Society league table">
-        <header class="league-table-brand">
-          <img src="assets/images/barford-golf-society-logo.png" alt="Barford Golf Society" width="76" height="76">
+      <section class="league-table-panel royal-championship-board" aria-label="Barford Golf Society championship standings">
+        <header class="league-table-brand royal-board-heading">
+          <img src="assets/images/barford-golf-society-logo.png" alt="" width="76" height="76">
           <div class="league-table-side-title">
             <span>Barford Golf Society</span>
-            <h2 id="leaderboardHeading">League Table</h2>
+            <h1 id="leaderboardHeading">2027 Championship</h1>
             <b id="leagueTableRound">Awaiting Round 1</b>
           </div>
-          <small id="seasonChip">2027 Season</small>
+          <small id="seasonChip">Best 5 scores count</small>
         </header>
+        <div class="royal-round-selector">
+          <span>Standings</span>
+          <div class="leaderboard-round-tabs" id="leaderboardRoundTabs" role="tablist" aria-label="View standings after each round"></div>
+        </div>
+        <div class="championship-column-key" aria-hidden="true">
+          <span>Player</span><span>Round</span><span>Season</span>
+        </div>
         <div class="league-table-content">
-          <div class="league-table-head" aria-hidden="true">
-            <span>Pos</span><span>Player</span><span>Rnd</span><span>HCP</span><span>+/-</span><span>Next</span><span>Total</span>
-          </div>
-          <div id="leaderboardList" class="leaderboard-list"></div>
+          <div id="leaderboardList" class="leaderboard-list royal-leaderboard-list"></div>
         </div>
       </section>
-      <div class="leaderboard-round-tabs" id="leaderboardRoundTabs" role="tablist" aria-label="Leaderboard after round"></div>
       <div class="leaderboard-context" id="leaderboardContext"></div>
       <section class="season-progress-card below-league" aria-labelledby="seasonProgressTitle">
         <div class="season-progress-heading">
@@ -131,22 +135,31 @@
   </dialog>
 
   <template id="leaderboardCardTemplate">
-    <article class="player-card">
+    <article class="player-card championship-player-row">
       <button class="player-card-summary" type="button" aria-expanded="false">
-        <span class="rank-badge"></span>
-        <span class="player-main"><strong class="player-name"></strong><span class="player-meta"></span></span>
-        <span class="points-block"><strong class="player-points"></strong><span>total</span></span>
+        <span class="player-identity">
+          <span class="rank-badge"></span>
+          <span class="leaderboard-avatar"><img alt="" hidden><span class="leaderboard-initials"></span></span>
+          <span class="player-main"><strong class="player-name"></strong><small>Position <span class="player-position-label"></span></small></span>
+        </span>
+        <span class="points-block"><strong class="player-points"></strong><span>Total points</span></span>
+        <span class="player-meta championship-metrics">
+          <span class="championship-metric round-handicap"><small>Round HCP</small><strong></strong></span>
+          <span class="championship-metric round-points"><small>Round points</small><strong></strong></span>
+          <span class="championship-metric next-handicap"><small>Next HCP</small><strong></strong><em></em></span>
+          <span class="championship-metric rounds-played"><small>Rounds played</small><strong></strong></span>
+        </span>
         <span class="expand-indicator" aria-hidden="true">⌄</span>
       </button>
       <div class="player-details" hidden></div>
     </article>
   </template>
 
-  <script src="assets/js/app.js?v=royalnav4" defer></script>
+  <script src="assets/js/app.js?v=royalnav5" defer></script>
   <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2" defer></script>
   <script src="assets/js/supabase-config.js?v=live1" defer></script>
   <script src="assets/js/supabase-client.js?v=ux100" defer></script>
-  <script type="module" src="assets/js/scores.js?v=preseason1"></script>
+  <script type="module" src="assets/js/scores.js?v=royalboard1"></script>
 <script src="assets/js/accessible-mobile.js?v=royalnav1" defer></script>
 
 </body>
