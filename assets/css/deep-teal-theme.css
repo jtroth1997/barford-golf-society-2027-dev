@@ -154,6 +154,8 @@ body.product-premium #memberHomeDashboard #dashboardRsvpBadge.hidden{display:non
 @media(max-width:850px){
   body.product-premium.matchday-ui:not(.scoring-page) .mobile-quick-nav,
   body.matchday-ui:not(.scoring-page) .mobile-quick-nav{
+    position:fixed!important;
+    z-index:9997!important;
     grid-template-columns:repeat(4,minmax(0,1fr))!important;
     left:0!important;
     right:0!important;
@@ -170,6 +172,9 @@ body.product-premium #memberHomeDashboard #dashboardRsvpBadge.hidden{display:non
       linear-gradient(180deg,#0a4a40,#052e2c)!important;
     box-shadow:0 -13px 32px rgba(1,25,22,.3),inset 0 1px 0 rgba(255,255,255,.07)!important;
     backdrop-filter:none!important;
+  }
+  body.matchday-ui:not(.scoring-page){
+    padding-bottom:calc(104px + env(safe-area-inset-bottom))!important;
   }
   body.matchday-ui:not(.scoring-page) .mobile-quick-nav::before{
     left:0!important;
