@@ -49,6 +49,7 @@
   });
 
   document.querySelectorAll('a[href="gallery.html"]').forEach(link => {
+    if (link.closest(".mobile-quick-nav")) return;
     if (link.textContent.trim() === "Gallery" || link.textContent.includes("Member gallery")) link.textContent = "Photos";
   });
   document.querySelectorAll('a[href="worldevents.html"]').forEach(link => {
@@ -56,12 +57,12 @@
   });
 
   const quickNav = document.querySelector(".mobile-quick-nav");
-  if (quickNav) {
+  if (quickNav && !quickNav.dataset.playerNav) {
     const items = [
-      ["index.html", "⌂", "Home"],
+      ["index.html", "⌂", "Dashboard"],
       ["events.html", "▣", "Events"],
-      ["scoring.html", "✎", "Score"],
-      ["account.html", "○", "Account"]
+      ["scores.html", "♛", "Leaderboard"],
+      ["gallery.html", "▧", "Gallery"]
     ];
     const current = currentPage;
     quickNav.innerHTML = items.map(([href, icon, label]) =>
