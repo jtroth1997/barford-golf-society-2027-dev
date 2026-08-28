@@ -18,10 +18,14 @@ body.matchday-ui .menu-button span:not(.sr-only):not(.menu-button-label){backgro
 body.matchday-ui .page-hero,body.matchday-ui .admin-hero{color:#252a27;background:linear-gradient(145deg,#edf2ee 0%,#f7f7f2 58%,#f4eddf 100%);border-bottom:1px solid #e2e5e1}
 body.matchday-ui .page-hero::after{border-color:rgba(49,92,74,.08)}
 body.matchday-ui .page-hero p:last-child,body.matchday-ui .admin-hero p:last-child{color:#68716c}
-body.matchday-ui .page-hero .eyebrow,body.matchday-ui .admin-hero .eyebrow{color:#967b45}
+body.matchday-ui .page-hero .eyebrow,body.matchday-ui .admin-hero .eyebrow{color:#765f32}
 body.matchday-ui .hero{color:#252a27;background:radial-gradient(circle at 78% 22%,rgba(199,169,107,.18),transparent 25%),linear-gradient(145deg,#f7f7f2,#edf2ee)}
 body.matchday-ui .hero::before{background:radial-gradient(circle at 82% 18%,rgba(49,92,74,.08),transparent 25%);opacity:1}
-body.matchday-ui .hero .eyebrow{color:#967b45}body.matchday-ui .hero-lead{color:#68716c}
+body.matchday-ui .hero .eyebrow{color:#765f32}body.matchday-ui .hero-lead{color:#68716c}
+body.matchday-ui .hero-season-lockup{color:#315c4a}
+body.matchday-ui .hero-society-name{color:#765f32}
+body.matchday-ui .hero-season-lockup em{color:#4f5d56}
+body.matchday-ui .hero-divider{background:linear-gradient(90deg,transparent,#765f32,transparent)}
 body.matchday-ui .hero .button-secondary{background:#fff;border-color:#d9dfdb;color:#315c4a}
 body.matchday-ui .logo-card{background:#fff;box-shadow:0 24px 64px rgba(37,42,39,.12)}
 body.matchday-ui .site-footer{background:#fff;color:#68716c;border-top:1px solid #e2e5e1}
@@ -31,13 +35,15 @@ body.matchday-ui .button-primary,body.matchday-ui .button-small,body.matchday-ui
 body.matchday-ui .button-primary:hover,body.matchday-ui .button-small:hover{background:#284d3e;border-color:#284d3e}
 body.matchday-ui .button-secondary,body.matchday-ui .button-outline{background:#fff;border-color:#d9dfdb;color:#315c4a}
 body.matchday-ui .button-danger{background:#b74d4d;border-color:#b74d4d;color:#fff}
+body.matchday-ui main .eyebrow,body.matchday-ui .event-label{color:#765f32}
+body.matchday-ui .member-home-hero .eyebrow,body.matchday-ui .account-season-story .eyebrow,body.matchday-ui .admin-current-event .eyebrow{color:#f0dfb9}
 body.matchday-ui .dashboard-card,body.matchday-ui .compact-event-card,body.matchday-ui .account-panel,body.matchday-ui .admin-card,
 body.matchday-ui .form-card,body.matchday-ui .feature-card,body.matchday-ui .league-table-panel{background:#fff;border:1px solid #e2e5e1;box-shadow:0 10px 28px rgba(37,42,39,.065)}
 body.matchday-ui .dashboard-card,body.matchday-ui .compact-event-card,body.matchday-ui .account-panel,body.matchday-ui .admin-card{border-radius:22px}
 body.matchday-ui input,body.matchday-ui select,body.matchday-ui textarea{border-color:#dfe3df;background:#fff;color:#252a27}
 body.matchday-ui input:focus,body.matchday-ui select:focus,body.matchday-ui textarea:focus{outline:3px solid rgba(199,169,107,.28);border-color:#c7a96b}
 body.matchday-ui .member-home{background:#f7f7f2}body.matchday-ui .member-home-hero{min-height:auto;background:#315c4a;color:#fff}
-body.matchday-ui .member-home-hero .eyebrow{color:#d5bd8b}body.matchday-ui .member-home-grid{gap:16px}
+body.matchday-ui .member-home-hero .eyebrow{color:#f0dfb9}body.matchday-ui .member-home-grid{gap:16px}
 body.matchday-ui .dashboard-next-event{position:relative;border-top:0!important;overflow:hidden}
 body.matchday-ui .dashboard-next-event::before{content:"";position:absolute;inset:0 0 auto;height:4px;background:#c7a96b}
 body.matchday-ui .dashboard-next-step{border:1px solid #d9e4dd!important;background:#f1f6f3!important}
@@ -66,6 +72,8 @@ body.matchday-ui .admin-section-nav button{color:#5b655f;background:transparent}
 body.matchday-ui .admin-workflow{background:#edf2ee}body.matchday-ui .admin-workflow span{color:#315c4a}body.matchday-ui .admin-workflow b{background:#315c4a;color:#fff}
 body.matchday-ui .admin-members-shortcut{background:#315c4a}body.matchday-ui .admin-next-action{border-color:#c7a96b;background:#fffaf0}body.matchday-ui .admin-current-event{background:#315c4a}
 body.matchday-ui.scoring-page{background:#f7f7f2}body.matchday-ui.scoring-page .score-app-header{background:#315c4a}
+body.matchday-ui.scoring-page .score-app-header a,body.matchday-ui.scoring-page .score-app-header strong,body.matchday-ui.scoring-page .score-app-header #competitionSummary{color:#fff}
+body.matchday-ui.scoring-page .score-app-header button{color:#edf5f0}
 body.matchday-ui.scoring-page .live-card-row,body.matchday-ui.scoring-page .score-player-card{border-color:#e2e5e1;background:#fff}
 body.matchday-ui.scoring-page .keypad-grid button{border-color:#dfe3df;background:#fff;color:#252a27;box-shadow:none}body.matchday-ui.scoring-page .keypad-grid button:active{background:#dce6df}
 body.matchday-ui .league-table-brand,body.matchday-ui th{background:#315c4a}body.matchday-ui .status-pill,body.matchday-ui .chip{background:#dce6df;color:#315c4a}
