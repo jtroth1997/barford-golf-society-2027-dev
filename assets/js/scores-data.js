@@ -40,9 +40,17 @@ export const ScoresData = {
           .limit(1)
       ]);
       if (!snapshotResult.error && snapshotResult.data) {
+        const players = await Promise.all((snapshotResult.data.players || []).map(async player => {
+          if (!player.photoUrl) return player;
+          const { data } = await window.BarfordSupabase.storage
+            .from("profile-images")
+            .createSignedUrl(player.photoUrl, 3600);
+          return { ...player, photoUrl: data?.signedUrl || null };
+        }));
         snapshot = {
           ...emptySeason(),
           ...snapshotResult.data,
+          players,
           nextEvent: eventResult.error ? null : (eventResult.data?.[0] || null)
         };
         loadedAt = Date.now();
