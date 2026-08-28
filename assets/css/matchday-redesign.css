@@ -76,6 +76,8 @@ body.matchday-ui.scoring-page .score-app-header a,body.matchday-ui.scoring-page 
 body.matchday-ui.scoring-page .score-app-header button{color:#edf5f0}
 body.matchday-ui.scoring-page .live-card-row,body.matchday-ui.scoring-page .score-player-card{border-color:#e2e5e1;background:#fff}
 body.matchday-ui.scoring-page .keypad-grid button{border-color:#dfe3df;background:#fff;color:#252a27;box-shadow:none}body.matchday-ui.scoring-page .keypad-grid button:active{background:#dce6df}
+body.matchday-ui.scoring-page #scoreReady #pickupScore{display:flex!important;align-items:center;justify-content:center;flex-direction:column;background:#b74d4d!important;border-color:#a63f3f!important;color:#fff!important;font-weight:900;line-height:1.05}
+body.matchday-ui.scoring-page #scoreReady #pickupScore small{color:#fff!important;font-size:.68rem;font-weight:800}
 body.matchday-ui .league-table-brand,body.matchday-ui th{background:#315c4a}body.matchday-ui .status-pill,body.matchday-ui .chip{background:#dce6df;color:#315c4a}
 body.matchday-ui .mobile-quick-nav{grid-template-columns:repeat(4,minmax(0,1fr))!important;background:rgba(255,255,255,.97)!important;border:1px solid #e2e5e1!important;box-shadow:0 12px 30px rgba(37,42,39,.13)!important;backdrop-filter:blur(18px)}
 body.matchday-ui .mobile-quick-nav a{color:#68716c!important;border-radius:13px}body.matchday-ui .mobile-quick-nav a.active{color:#315c4a!important;background:#dce6df!important}
