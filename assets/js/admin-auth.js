@@ -273,7 +273,7 @@
     ]);
     if (error) { setStatus("#adminRsvpStatus", error.message); return; }
     const preferenceLabel = value => ({ dont_mind: "Don’t mind", first: "Early", middle: "Middle", end: "Last" })[value] || "Don’t mind";
-    const row = item => `<article><div><strong>${escapeHtml(item.profiles?.full_name || item.guest_name || "Guest")}</strong><small>${escapeHtml(item.profiles?.phone || "No phone")} · ${item.buggy_requested ? "Buggy requested" : "Walking"} · prefers ${preferenceLabel(item.preferred_tee_time)} · ${escapeHtml(item.payment_status)}</small></div><div class="admin-row-actions"><button type="button" data-edit-rsvp="${item.id}">Change</button>${teeTimesPublished ? "" : `<button class="danger-link" type="button" data-remove-rsvp="${item.id}">Remove</button>`}</div></article>`;
+    const row = item => { const paid=item.payment_status==="paid"; return `<article><div><strong>${escapeHtml(item.profiles?.full_name || item.guest_name || "Guest")}</strong><small>${escapeHtml(item.profiles?.phone || "No phone")} · ${item.buggy_requested ? "Buggy requested" : "Walking"} · prefers ${preferenceLabel(item.preferred_tee_time)}</small><span class="payment-status ${paid?"paid":"due"}">${paid?"Paid":"Payment due"}</span></div><div class="admin-row-actions"><button type="button" data-payment-rsvp="${item.id}" data-payment-next="${paid?"payment_due":"paid"}">${paid?"Mark payment due":"Mark as paid"}</button><button type="button" data-edit-rsvp="${item.id}">Change</button>${teeTimesPublished ? "" : `<button class="danger-link" type="button" data-remove-rsvp="${item.id}">Remove</button>`}</div></article>`; };
     const active = (data || []).filter(item => item.status === "playing");
     const reserves = (data || []).filter(item => item.status === "reserve");
     playing.innerHTML = active.length ? active.map(row).join("") : "<p>No confirmed players.</p>";
@@ -288,6 +288,14 @@
         ? editingRsvp.preferred_tee_time : "dont_mind";
       setStatus("#adminRsvpEditStatus", "");
       document.querySelector("#adminRsvpEditDialog")?.showModal();
+    }));
+    document.querySelectorAll("[data-payment-rsvp]").forEach(button => button.addEventListener("click", async () => {
+      button.disabled = true;
+      const nextStatus = button.dataset.paymentNext;
+      const { error: paymentError } = await client.from("rsvps").update({ payment_status: nextStatus, updated_at: new Date().toISOString() }).eq("id", button.dataset.paymentRsvp);
+      setStatus("#adminRsvpStatus", paymentError ? paymentError.message : nextStatus === "paid" ? "Payment confirmed. The member will now see ‘You have paid’." : "Payment changed back to due.");
+      if (paymentError) button.disabled = false;
+      else loadRsvps(eventId);
     }));
     document.querySelectorAll("[data-remove-rsvp]").forEach(button => button.addEventListener("click", async () => {
       const { error: removeError } = await client.from("rsvps").update({ status: "cancelled", updated_at: new Date().toISOString() }).eq("id", button.dataset.removeRsvp);

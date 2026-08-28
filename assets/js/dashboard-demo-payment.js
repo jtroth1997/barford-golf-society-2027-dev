@@ -1,5 +1,6 @@
 (() => {
   "use strict";
+  if (document.body.classList.contains("matchday-ui")) return;
   const client = window.BarfordSupabase;
   if (!client) return;
   const list = document.getElementById("dashboardPaymentList");

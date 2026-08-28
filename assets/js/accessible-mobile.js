@@ -58,11 +58,10 @@
   const quickNav = document.querySelector(".mobile-quick-nav");
   if (quickNav) {
     const items = [
-      ["index.html", "🏠", "Home"],
-      ["events.html", "📅", "Events"],
-      ["scores.html", "🏆", "League"],
-      ["gallery.html", "📷", "Photos"],
-      ["account.html", "👤", "Account"]
+      ["index.html", "⌂", "Home"],
+      ["events.html", "▣", "Events"],
+      ["scoring.html", "✎", "Score"],
+      ["account.html", "○", "Account"]
     ];
     const current = currentPage;
     quickNav.innerHTML = items.map(([href, icon, label]) =>

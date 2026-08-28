@@ -233,6 +233,27 @@
       </article>`).join("");
   };
 
+  const renderEventPayment = () => {
+    const facts = document.getElementById("dashboardEventFacts");
+    if (!facts) return;
+    let panel = document.getElementById("dashboardEventPayment");
+    if (!panel) {
+      panel = document.createElement("div");
+      panel.id = "dashboardEventPayment";
+      panel.className = "event-payment-state hidden";
+      panel.setAttribute("aria-live", "polite");
+      facts.after(panel);
+    }
+    const shouldShow = Boolean(nextEvent && currentRsvp?.status === "playing" && nextEvent.status !== "cancelled");
+    panel.classList.toggle("hidden", !shouldShow);
+    if (!shouldShow) return;
+    const paid = currentRsvp.payment_status === "paid";
+    panel.className = `event-payment-state ${paid ? "is-paid" : "is-due"}`;
+    panel.innerHTML = paid
+      ? `<span class="payment-state-icon" aria-hidden="true">✓</span><div><span>Payment status</span><strong>You have paid</strong><small>${escapeHtml(money(nextEvent.price))} for ${escapeHtml(nextEvent.name)}</small></div>`
+      : `<div><span>Payment status</span><strong>Payment due · ${escapeHtml(money(nextEvent.price))}</strong><small>Your place is confirmed. Payment is still outstanding.</small></div><a class="button button-primary" href="payments.html?event=${encodeURIComponent(nextEvent.id)}">Make payment</a>`;
+  };
+
   const teeWindowLabel = value => ({ dont_mind: "Don’t mind", first: "Early", middle: "Middle", end: "Last" })[value] || "Don’t mind";
 
   const renderTeeGroup = () => {
@@ -424,6 +445,7 @@
     directionsDestination = [nextEvent.venue, nextEvent.address].filter(Boolean).join(", ");
     document.getElementById("dashboardEventDirections")?.classList.toggle("hidden", !directionsDestination);
     renderRsvpState();
+    renderEventPayment();
     const cancelled = nextEvent.status === "cancelled";
     show("dashboardCancelledBanner", cancelled);
     if (cancelled) {
@@ -464,6 +486,7 @@
     }
     currentRsvp = data;
     renderRsvpState();
+    renderEventPayment();
     if (statusLine) statusLine.textContent = status === "playing"
       ? `Confirmed: you’re playing this event · ${data.buggy_requested ? "Buggy requested" : "Walking"} · ${teeWindowLabel(data.preferred_tee_time)} tee-time preference.`
       : "The committee now knows you cannot attend.";

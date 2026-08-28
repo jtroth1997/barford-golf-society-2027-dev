@@ -19,6 +19,9 @@
 
   const renderEvent=(event,memberState={})=>{
     const date=dateParts(event.event_date), cancelled=event.status==="cancelled", memberRsvp=memberState.rsvp;
+    const paymentPanel=memberRsvp?.status==="playing"?(memberRsvp.payment_status==="paid"
+      ? `<div class="event-hub-payment"><div class="event-hub-paid">You have paid</div><small>${escapeHtml(friendlyPrice(event.price))} confirmed for this event.</small></div>`
+      : `<div class="event-hub-payment"><div class="event-hub-payment-status"><span>Payment</span><strong>${escapeHtml(friendlyPrice(event.price))} due</strong></div><a class="button button-primary" href="payments.html?event=${encodeURIComponent(event.id)}">Make payment</a></div>`):"";
     const address=event.address?`<span><b>Address</b>${escapeHtml(event.address)}</span>`:"";
     const description=courseDescription(event.notes), notes=description?`<p class="event-description">${escapeHtml(description)}</p>`:"";
     const video=event.course_video_url?`<button class="button button-outline" type="button" data-course-video="${escapeHtml(event.course_video_url)}" data-course-name="${escapeHtml(event.name)}">Course video</button>`:"";
@@ -26,8 +29,8 @@
     if(cancelled) participation=`<div class="event-member-state cancelled"><strong>Event cancelled</strong><small>No action needed.</small></div>`;
     else if(!memberState.signedIn) participation=`<div class="event-member-state"><strong>Want to play?</strong><small>Sign in, then tell us whether you’re playing.</small><a class="button button-primary" href="account.html">Sign in</a></div>`;
     else if(memberState.lockUnknown) participation=`<div class="event-member-state"><strong>RSVP temporarily unavailable</strong><small>We couldn’t confirm whether tee times are locked. Please try again in a moment.</small></div>`;
-    else if(memberState.locked) participation=`<div class="event-member-state ${memberRsvp?.status==="playing"?"playing":""}"><strong>${memberRsvp?.status==="playing"?"✓ You’re playing":"RSVP closed"}</strong><small>Tee times are published.</small><span class="rsvp-contact-admin">Contact admin to make a change</span></div>`;
-    else participation=`<div class="event-member-state ${memberRsvp?.status==="playing"?"playing":""}"><strong>${memberRsvp?.status==="playing"?"✓ You’re playing":memberRsvp?.status==="not_playing"||memberRsvp?.status==="cancelled"?"You’re not playing":"Are you playing?"}</strong><small>RSVP here for this event. You can change your answer until tee times are published.</small><div class="event-direct-rsvp-actions"><button class="button button-primary" type="button" data-event-rsvp="playing" data-event-id="${event.id}">${memberRsvp?.status==="playing"?"Keep me playing":"Yes, I’m playing"}</button><button class="button button-outline" type="button" data-event-rsvp="not_playing" data-event-id="${event.id}">No, I can’t play</button></div></div>`;
+    else if(memberState.locked) participation=`<div class="event-member-state ${memberRsvp?.status==="playing"?"playing":""}"><strong>${memberRsvp?.status==="playing"?"✓ You’re playing":"RSVP closed"}</strong><small>Tee times are published.</small><span class="rsvp-contact-admin">Contact admin to make a change</span>${paymentPanel}</div>`;
+    else participation=`<div class="event-member-state ${memberRsvp?.status==="playing"?"playing":""}"><strong>${memberRsvp?.status==="playing"?"✓ You’re playing":memberRsvp?.status==="not_playing"||memberRsvp?.status==="cancelled"?"You’re not playing":"Are you playing?"}</strong><small>RSVP here for this event. You can change your answer until tee times are published.</small><div class="event-direct-rsvp-actions"><button class="button button-primary" type="button" data-event-rsvp="playing" data-event-id="${event.id}">${memberRsvp?.status==="playing"?"Keep me playing":"Yes, I’m playing"}</button><button class="button button-outline" type="button" data-event-rsvp="not_playing" data-event-id="${event.id}">No, I can’t play</button></div>${paymentPanel}</div>`;
     return `<article class="compact-event-card ${cancelled?"event-cancelled-card":""}">${cancelled?`<div class="event-cancelled-banner">CANCELLED${cancellationReason(event)?`<small>${escapeHtml(cancellationReason(event))}</small>`:""}</div>`:""}<div class="event-date-block" aria-label="${escapeHtml(friendlyDate(event.event_date))}"><span>${date.month}</span><strong>${date.day}</strong><small>${date.year}</small></div><div class="event-main"><div class="event-title-row"><div class="event-heading-copy"><h3>${escapeHtml(event.name)}</h3><p class="event-venue">${escapeHtml(event.venue)}</p></div><span class="event-price">${friendlyPrice(event.price)}</span></div><div class="event-summary-row"><span><b>Date:</b> ${escapeHtml(friendlyDate(event.event_date))}</span><span><b>First tee:</b> ${escapeHtml(friendlyTime(event.first_tee_time))}</span><span><b>Places:</b> ${event.capacity?escapeHtml(event.capacity):"TBC"}</span></div>${notes}<div class="event-button-row">${video}<button class="button button-outline" type="button" data-event-details aria-expanded="false">More details</button></div><div class="event-more-details hidden"><div class="detail-grid"><span><b>Course</b>${escapeHtml(event.venue)}</span>${address}<span><b>Date</b>${escapeHtml(friendlyDate(event.event_date))}</span><span><b>First tee</b>${escapeHtml(friendlyTime(event.first_tee_time))}</span></div></div></div><aside class="event-rsvp-section">${participation}</aside></article>`;
   };
 
@@ -41,7 +44,7 @@
     const {data:{session}}=await client.auth.getSession();let ownRsvps=[];const lockMap=new Map();
     if(session){
       const [{data:rsvps,error:rsvpError},locks]=await Promise.all([
-        client.from("rsvps").select("event_id,status,buggy_requested,preferred_tee_time").eq("member_id",session.user.id).in("event_id",events.map(e=>e.id)),
+        client.from("rsvps").select("event_id,status,payment_status,buggy_requested,preferred_tee_time").eq("member_id",session.user.id).in("event_id",events.map(e=>e.id)),
         Promise.all(events.map(e=>client.rpc("get_event_rsvp_lock_status",{target_event_id:e.id})))
       ]);
       if(!rsvpError) ownRsvps=rsvps||[];
@@ -61,9 +64,11 @@
       const existing=rsvpByEvent.get(eventId);
       const payload={event_id:eventId,member_id:session.user.id,status,updated_at:new Date().toISOString()};
       if(existing){
+        payload.payment_status=existing.payment_status||"payment_due";
         if(existing.buggy_requested!==undefined&&existing.buggy_requested!==null)payload.buggy_requested=existing.buggy_requested;
         if(existing.preferred_tee_time)payload.preferred_tee_time=existing.preferred_tee_time;
       }
+      else payload.payment_status="payment_due";
       const {error:saveError}=await client.from("rsvps").upsert(payload,{onConflict:"event_id,member_id"});
       if(saveError){button.disabled=false;button.textContent=old;alert(saveError.message?.includes("locked")?"Tee times have already been produced. Please contact an admin to make a change.":"We couldn’t save your RSVP. Please try again.");return;}
       await loadEvents();
