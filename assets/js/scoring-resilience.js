@@ -202,5 +202,6 @@
   window.addEventListener("unhandledrejection", () => snapshotAll());
   setInterval(snapshotAll, 1200);
   setInterval(() => { if (navigator.onLine) replayPending(); }, 15000);
+  if (navigator.onLine) replayPending();
   updateSafety();
 })();
