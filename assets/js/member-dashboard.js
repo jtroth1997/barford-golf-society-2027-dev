@@ -16,6 +16,16 @@
   const syncEventDayDirections = () => {
     const eventDay = Boolean(nextEvent && nextEvent.event_date === localDate() && nextEvent.status === "scheduled" && currentRsvp?.status === "playing");
     const available = Boolean(eventDay && directionsDestination);
+    const scoreLink = document.querySelector(".event-scorecard-cta");
+    const eventTools = document.querySelector(".dashboard-event-tools");
+    const eventHeading = document.querySelector(".dashboard-next-event .dashboard-card-heading");
+    if (eventDay && scoreLink && eventHeading) {
+      eventHeading.insertAdjacentElement("afterend", scoreLink);
+      scoreLink.classList.add("event-scorecard-main");
+    } else if (scoreLink && eventTools && scoreLink.classList.contains("event-scorecard-main")) {
+      eventTools.append(scoreLink);
+      scoreLink.classList.remove("event-scorecard-main");
+    }
     document.body.classList.toggle("event-day-dashboard", eventDay);
     document.body.classList.toggle("event-day-directions-ready", available);
     const button = document.getElementById("dashboardEventDirections");
@@ -332,6 +342,7 @@
     show("dashboardPlayingConfirmation", isPlaying && !hasPublishedGroup);
     show("dashboardRsvpActions", !isPlaying && !rsvpChoicesLocked);
     show("dashboardRsvpLockedNotice", rsvpChoicesLocked);
+    show("dashboardAttendance", !rsvpChoicesLocked);
     show("dashboardChangeRsvp", isPlaying && !rsvpChoicesLocked);
     show("dashboardWithdrawRsvp", isPlaying && !rsvpChoicesLocked);
     set("dashboardRsvpBadge", isPlaying
@@ -364,7 +375,7 @@
     attendancePlayers = error ? [] : (data || []);
     const capacity = Math.max(Number(nextEvent.capacity) || 0, attendancePlayers.length);
     set("dashboardAttendanceCount", `${attendancePlayers.length} / ${capacity || "—"} slots filled`);
-    show("dashboardAttendance", true);
+    show("dashboardAttendance", !rsvpChoicesLocked);
     return attendancePlayers;
   };
 
