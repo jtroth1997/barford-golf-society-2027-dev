@@ -99,7 +99,7 @@
   };
 
   const optionMarkup = (items, prompt) => `<option value="">${esc(prompt)}</option>${items.map(item =>
-    `<option value="${esc(item.id)}">${esc(item.name)}${item.county ? ` · ${esc(item.county)}` : ""}</option>`
+    `<option value="${esc(item.id)}">${esc(item.name)}${item.tee_sets ? ` — ${Math.max(0, ...(item.tee_sets || []).map(tee => tee.holes?.length || 0))} holes` : item.county ? ` · ${esc(item.county)}` : ""}</option>`
   ).join("")}`;
 
   const scorecardHoleOptions = () => '<option value="">Not selected</option>' +
@@ -371,13 +371,10 @@
       }));
       const holeResult = await client.from("event_holes").upsert(holes, { onConflict: "event_id,hole_number" });
       if (holeResult.error) throw holeResult.error;
-      const linkResult = await client.from("events").update({
-        uk_golf_club_id: state.clubId || null,
-        uk_golf_course_id: state.courseId || null,
-        selected_course_name: state.courseName || null,
-        updated_at: new Date().toISOString()
-      }).eq("id", eventId);
-      if (linkResult.error) throw linkResult.error;
+      const clubName = $("createEventGolfClub")?.selectedOptions?.[0]?.textContent?.replace(/ · .*$/, "").trim() || payload.venue || payload.name;
+      const men = { name: holes[0]?.yellow_tee_name || "Yellow", holes: holes.map(h => ({ hole: h.hole_number, par: h.par, yards: h.yards, stroke_index: h.stroke_index })) };
+      const women = { name: holes[0]?.red_tee_name || "Red", holes: holes.map(h => ({ hole: h.hole_number, par: h.red_par, yards: h.red_yards, stroke_index: h.red_stroke_index })) };
+      await window.BarfordCourseLayouts.saveLayout({ eventId, clubName, layoutName: state.courseName, externalClubId: state.clubId, externalCourseId: state.courseId, men, women });
 
       badge("Course ready", "ready");
       if (statusElement) statusElement.textContent = `${id ? "Event updated" : "Event created"} — course scorecard ready (18/18 holes).`;
