@@ -10,6 +10,16 @@
 }
 
 /* One official header lock-up on every standard page. */
+body.matchday-ui:not(.scoring-page) .site-header,
+body.matchday-ui:not(.scoring-page) .global-site-header{
+  position:sticky!important;top:0!important;background-color:#073534!important;
+  background-image:radial-gradient(ellipse at 48% -80%,rgba(255,255,255,.15),transparent 62%),repeating-linear-gradient(102deg,rgba(255,255,255,.018) 0 1px,transparent 1px 4px),repeating-linear-gradient(12deg,rgba(0,0,0,.035) 0 1px,transparent 1px 5px)!important;
+  border:0!important;box-shadow:0 5px 18px rgba(2,24,23,.25)!important;backdrop-filter:none!important;-webkit-backdrop-filter:none!important
+}
+body.matchday-ui:not(.scoring-page) .site-header::after,
+body.matchday-ui:not(.scoring-page) .global-site-header::after{
+  content:""!important;position:absolute!important;inset:auto 0 -5px!important;height:6px!important;background:var(--metal-bar)!important;border-radius:1px!important;box-shadow:var(--metal-shadow)!important
+}
 body.matchday-ui:not(.scoring-page) .site-header .brand,
 body.matchday-ui:not(.scoring-page) .global-site-header .global-brand{
   display:inline-flex!important;align-items:center!important;gap:14px!important;flex:0 0 auto!important;text-decoration:none!important;line-height:1!important
