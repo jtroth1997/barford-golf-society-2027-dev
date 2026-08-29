@@ -53,6 +53,29 @@
   const signupNameSelect = $("#signupName");
   const signupNewNameWrap = $("#signupNewNameWrap");
   const signupNewName = $("#signupNewName");
+  const themeText = colour => {
+    const value = String(colour || "#000000").replace("#", "");
+    const [red, green, blue] = [0, 2, 4].map(index => parseInt(value.slice(index, index + 2), 16));
+    return (.299 * red + .587 * green + .114 * blue) > 150 ? "#17231D" : "#FFFFFF";
+  };
+  const renderThemePreview = (prefix, primary, accent) => {
+    const preview = $(`#${prefix}ThemePreview`);
+    if (!preview) return;
+    const header = preview.querySelector(".theme-preview-header");
+    const button = preview.querySelector(".theme-preview-body b");
+    if (header) { header.style.background = primary; header.style.color = themeText(primary); }
+    if (button) { button.style.background = accent; button.style.color = themeText(accent); }
+  };
+  const connectThemePreview = prefix => {
+    const primary = $(`#${prefix}ThemePrimary`), accent = $(`#${prefix}ThemeAccent`);
+    if (!primary || !accent) return;
+    const paint = () => renderThemePreview(prefix, primary.value, accent.value);
+    primary.addEventListener("input", paint);
+    accent.addEventListener("input", paint);
+    paint();
+  };
+  connectThemePreview("signup");
+  connectThemePreview("account");
 
   const loadSignupNames = async () => {
     if (!signupNameSelect) return;
@@ -93,6 +116,8 @@
     const handicap = Number($("#signupHandicap").value);
     const password = $("#signupPassword").value;
     const confirmation = $("#signupPasswordConfirm").value;
+    const themePrimary = $("#signupThemePrimary")?.value || "#315C4A";
+    const themeAccent = $("#signupThemeAccent")?.value || "#C7A96B";
 
     if (!fullName) {
       message("#signupStatus", "Please select your name, or choose the new member option.", true);
@@ -118,7 +143,7 @@
     const { data, error } = await client.auth.signUp({
       email,
       password,
-      options: { data: { full_name: fullName, phone, playing_category: playingCategory, handicap } }
+      options: { data: { full_name: fullName, phone, playing_category: playingCategory, handicap, theme_primary: themePrimary, theme_accent: themeAccent } }
     });
     if (error) {
       message("#signupStatus", error.message, true);
@@ -295,6 +320,9 @@
     $("#accountHomeClub").value = profile.home_club || "";
     $("#accountHandicap").value = profile.handicap ?? "";
     $("#accountPlayingCategory").value = profile.playing_category || "";
+    if ($("#accountThemePrimary")) $("#accountThemePrimary").value = profile.theme_primary || "#315C4A";
+    if ($("#accountThemeAccent")) $("#accountThemeAccent").value = profile.theme_accent || "#C7A96B";
+    renderThemePreview("account", profile.theme_primary || "#315C4A", profile.theme_accent || "#C7A96B");
     await Promise.all([
       renderProfilePhoto($("#accountHeroAvatar"), profile),
       renderProfilePhoto($("#accountPhotoPreview"), profile),
@@ -388,6 +416,8 @@
       phone: $("#accountPhone").value.trim() || null,
       home_club: $("#accountHomeClub").value.trim() || null,
       playing_category: $("#accountPlayingCategory").value,
+      theme_primary: $("#accountThemePrimary")?.value || "#315C4A",
+      theme_accent: $("#accountThemeAccent")?.value || "#C7A96B",
       updated_at: new Date().toISOString()
     };
     const { error } = await client.from("profiles").update(changes).eq("id", user.id);
@@ -397,6 +427,7 @@
     }
     $("#accountHeroName").textContent = changes.full_name;
     setAvatar($("#accountHeroAvatar"), changes);
+    window.BarfordPersonalTheme?.apply(changes.theme_primary, changes.theme_accent, `barford-personal-theme-${user.id}`);
     message("#accountSaveStatus", "Your changes have been saved.");
   });
 

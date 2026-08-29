@@ -19,6 +19,14 @@
     }
   );
 
+  const personalThemeStyle = document.createElement("link");
+  personalThemeStyle.rel = "stylesheet";
+  personalThemeStyle.href = "assets/css/personal-theme.css?v=1";
+  document.head.appendChild(personalThemeStyle);
+  const personalThemeScript = document.createElement("script");
+  personalThemeScript.src = "assets/js/personal-theme.js?v=1";
+  document.body.appendChild(personalThemeScript);
+
   // Keep the shared assignment/tee guard, which is not declared in page HTML.
   if (document.body.classList.contains("admin-page") || document.body.classList.contains("scoring-page")) {
     const workflow = document.createElement("script");

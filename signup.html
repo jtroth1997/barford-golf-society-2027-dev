@@ -46,6 +46,18 @@
   <label>Confirm password<input id="signupPasswordConfirm" type="password" required minlength="8" autocomplete="new-password" placeholder="Type it again"></label>
   <button class="password-toggle" type="button" data-password-toggle="signupPassword,signupPasswordConfirm" aria-pressed="false">Show password</button>
   <label>Mobile number <span class="optional-label">Optional</span><input id="signupPhone" type="tel" autocomplete="tel" placeholder="07..."></label>
+  <fieldset class="theme-picker">
+    <legend>Choose your dashboard colours</legend>
+    <p>Pick two colours that feel like you. Tap either colour square to open the full colour chart.</p>
+    <div class="theme-colour-controls">
+      <label><input id="signupThemePrimary" type="color" value="#315C4A" aria-label="Choose your main dashboard colour"><span>Main colour</span></label>
+      <label><input id="signupThemeAccent" type="color" value="#C7A96B" aria-label="Choose your dashboard accent colour"><span>Accent colour</span></label>
+    </div>
+    <div id="signupThemePreview" class="theme-preview" aria-label="Your dashboard colour preview">
+      <div class="theme-preview-header">My dashboard</div>
+      <div class="theme-preview-body"><span>Next golf event</span><b>Open scorecard</b></div>
+    </div>
+  </fieldset>
   <button class="button button-primary full-button" type="submit">Create my account</button>
   <p class="account-helper">After creating your account, sign in using the email address and password you chose.</p>
   <p id="signupStatus" class="form-status" aria-live="polite"></p>
@@ -63,7 +75,7 @@
 <script src="assets/js/supabase-config.js?v=live1" defer></script>
 <script src="assets/js/supabase-client.js?v=ux100" defer></script>
 <script src="assets/js/passkeys.js?v=faceid1" defer></script>
-<script src="assets/js/member-auth.js?v=complete-signup1" defer></script>
+<script src="assets/js/member-auth.js?v=personal-theme1" defer></script>
 
 <script src="assets/js/accessible-mobile.js?v=royalnav1" defer></script>
 

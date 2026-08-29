@@ -74,6 +74,18 @@
           <label>Society handicap<input id="accountHandicap" type="number" min="0" max="54" step=".1" readonly aria-readonly="true"><small>This updates automatically after each completed round. Contact the committee if it needs correcting.</small></label>
           <label>Playing category<select id="accountPlayingCategory" required><option value="">Select…</option><option value="men">Men’s — yellow tees</option><option value="women">Women’s — red tees</option></select><small>This chooses your default event tee and yardages.</small></label>
         </div>
+        <fieldset class="theme-picker">
+          <legend>My dashboard colours</legend>
+          <p>These colours are personal to your account and do not change the site for anybody else.</p>
+          <div class="theme-colour-controls">
+            <label><input id="accountThemePrimary" type="color" value="#315C4A" aria-label="Choose your main dashboard colour"><span>Main colour</span></label>
+            <label><input id="accountThemeAccent" type="color" value="#C7A96B" aria-label="Choose your dashboard accent colour"><span>Accent colour</span></label>
+          </div>
+          <div id="accountThemePreview" class="theme-preview" aria-label="Your dashboard colour preview">
+            <div class="theme-preview-header">My dashboard</div>
+            <div class="theme-preview-body"><span>Next golf event</span><b>Open scorecard</b></div>
+          </div>
+        </fieldset>
         <button class="button button-primary full-button" type="submit">Save my details</button>
         <p id="accountSaveStatus" class="form-status" aria-live="polite"></p>
       </form>
@@ -105,7 +117,7 @@
 <script src="assets/js/supabase-config.js?v=live1" defer></script>
 <script src="assets/js/supabase-client.js?v=ux100" defer></script>
 <script src="assets/js/passkeys.js?v=faceid1" defer></script>
-<script src="assets/js/member-auth.js?v=course-tees2" defer></script>
+<script src="assets/js/member-auth.js?v=personal-theme1" defer></script>
 <script src="assets/js/accessible-mobile.js?v=royalnav1" defer></script>
 
 </body>

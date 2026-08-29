@@ -1,0 +1,33 @@
+html.member-personal-theme body:not(.gps-page){background:var(--member-primary-soft)}
+html.member-personal-theme body.matchday-ui:not(.scoring-page) .site-header,
+html.member-personal-theme body.matchday-ui:not(.scoring-page) .global-site-header,
+html.member-personal-theme .site-header,
+html.member-personal-theme .account-hero,
+html.member-personal-theme .page-hero{background-color:var(--member-primary)!important;background-image:linear-gradient(135deg,var(--member-primary-dark),var(--member-primary))!important}
+html.member-personal-theme .member-home-hero{background-color:var(--member-primary)!important;background-image:radial-gradient(ellipse at 70% 18%,rgba(255,255,255,.16),transparent 31%),linear-gradient(125deg,var(--member-primary-dark),var(--member-primary))!important}
+html.member-personal-theme .member-home{background:var(--member-primary-soft)!important}
+html.member-personal-theme .site-header::after,
+html.member-personal-theme .member-home-hero::after,
+html.member-personal-theme .card::before,
+html.member-personal-theme .dashboard-card::before,
+html.member-personal-theme .account-panel::before,
+html.member-personal-theme .event-card::before{background:var(--metal-bar)!important}
+html.member-personal-theme .button-primary,
+html.member-personal-theme .button-gold,
+html.member-personal-theme .button-small,
+html.member-personal-theme body.event-day-dashboard .event-scorecard-cta.event-scorecard-main{border-color:var(--member-accent-dark)!important;background:var(--member-accent)!important;color:var(--member-accent-text)!important;text-shadow:none!important}
+html.member-personal-theme .button-outline{border-color:var(--member-primary)!important;color:var(--member-primary)!important}
+html.member-personal-theme .eyebrow,
+html.member-personal-theme .text-link,
+html.member-personal-theme .attendance-count,
+html.member-personal-theme .dashboard-card h2,
+html.member-personal-theme .dashboard-card h3{color:var(--member-primary-dark)!important}
+html.member-personal-theme .dashboard-next-event{border-top-color:var(--member-accent)!important}
+html.member-personal-theme body.matchday-ui:not(.scoring-page) .mobile-quick-nav,
+html.member-personal-theme .mobile-quick-nav{background:var(--member-primary)!important;border-top-color:var(--member-accent)!important}
+html.member-personal-theme .mobile-quick-nav a{color:var(--member-primary-text)!important}
+html.member-personal-theme .mobile-quick-nav a.active{background:var(--member-accent-soft)!important;color:var(--member-primary-dark)!important}
+html.member-personal-theme .score-app-header{background:var(--member-primary)!important;color:var(--member-primary-text)!important;border-bottom-color:var(--member-accent)!important}
+
+.theme-picker{margin:1.15rem 0;padding:1rem;border:1px solid #d9dfdb;border-radius:18px;background:#f8faf8}.theme-picker legend{padding:0 .4rem;color:#173f32;font-weight:900}.theme-picker>p{margin:.1rem 0 .85rem;color:#68716c;font-size:.82rem}.theme-colour-controls{display:grid;grid-template-columns:1fr 1fr;gap:.75rem}.theme-colour-controls label{display:grid;grid-template-columns:48px 1fr;align-items:center;gap:.65rem;padding:.65rem;border:1px solid #dce3df;border-radius:13px;background:#fff;font-size:.78rem;font-weight:850}.theme-colour-controls input[type="color"]{width:48px;height:48px;padding:2px;border:0;border-radius:11px;background:transparent}.theme-preview{overflow:hidden;margin-top:.85rem;border:1px solid #d8dfda;border-radius:16px;background:#fff;box-shadow:0 8px 20px rgba(28,55,44,.08)}.theme-preview-header{height:48px;padding:13px 16px;color:#fff;font-weight:900}.theme-preview-body{display:flex;align-items:center;justify-content:space-between;gap:12px;padding:14px}.theme-preview-body span{color:#25312b;font-weight:850}.theme-preview-body b{padding:8px 12px;border-radius:10px;font-size:.75rem}
+@media(max-width:520px){.theme-colour-controls{grid-template-columns:1fr}.theme-picker{padding:.85rem}}
