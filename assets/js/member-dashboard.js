@@ -237,24 +237,37 @@
   };
 
   const renderEventPayment = () => {
-    const facts = document.getElementById("dashboardEventFacts");
-    if (!facts) return;
+    const rsvpBadge = document.getElementById("dashboardRsvpBadge");
+    if (!rsvpBadge) return;
+    let stack = rsvpBadge.closest(".event-status-stack");
+    if (!stack) {
+      stack = document.createElement("div");
+      stack.className = "event-status-stack";
+      rsvpBadge.before(stack);
+      stack.appendChild(rsvpBadge);
+    }
     let panel = document.getElementById("dashboardEventPayment");
     if (!panel) {
-      panel = document.createElement("div");
+      panel = document.createElement("a");
       panel.id = "dashboardEventPayment";
-      panel.className = "event-payment-state hidden";
+      panel.className = "event-payment-badge hidden";
       panel.setAttribute("aria-live", "polite");
-      facts.after(panel);
+      stack.appendChild(panel);
     }
     const shouldShow = Boolean(nextEvent && currentRsvp?.status === "playing" && nextEvent.status !== "cancelled");
     panel.classList.toggle("hidden", !shouldShow);
     if (!shouldShow) return;
     const paid = currentRsvp.payment_status === "paid";
-    panel.className = `event-payment-state ${paid ? "is-paid" : "is-due"}`;
-    panel.innerHTML = paid
-      ? `<span class="payment-state-icon" aria-hidden="true">✓</span><div><span>Payment status</span><strong>You have paid</strong><small>${escapeHtml(money(nextEvent.price))} for ${escapeHtml(nextEvent.name)}</small></div>`
-      : `<div><span>Payment status</span><strong>Payment due · ${escapeHtml(money(nextEvent.price))}</strong><small>Your place is confirmed. Payment is still outstanding.</small></div><a class="button button-primary" href="payments.html?event=${encodeURIComponent(nextEvent.id)}">Make payment</a>`;
+    panel.className = `event-payment-badge ${paid ? "is-paid" : "is-due"}`;
+    panel.removeAttribute("href");
+    if (paid) {
+      panel.innerHTML = '<span aria-hidden="true">✓</span><strong>Paid</strong>';
+      panel.setAttribute("aria-label", `Paid ${money(nextEvent.price)} for this event`);
+    } else {
+      panel.href = `payments.html?event=${encodeURIComponent(nextEvent.id)}`;
+      panel.innerHTML = `<strong>Still to pay ${escapeHtml(money(nextEvent.price))}</strong><span aria-hidden="true">›</span>`;
+      panel.setAttribute("aria-label", `Still to pay ${money(nextEvent.price)}. Open payment details`);
+    }
   };
 
   const teeWindowLabel = value => ({ dont_mind: "Don’t mind", first: "Early", middle: "Middle", end: "Last" })[value] || "Don’t mind";

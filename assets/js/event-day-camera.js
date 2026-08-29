@@ -5,7 +5,7 @@
   if(!client||!config||!button||!input)return;
   button.setAttribute("aria-label","Take an event photo and add it to the gallery");
   button.removeAttribute("title");
-  button.innerHTML='<span class="event-camera-icon" aria-hidden="true">📷</span><span class="event-camera-copy"><strong>Take an event photo</strong><small>Opens your camera · adds it to the event gallery</small></span><span class="event-camera-arrow" aria-hidden="true">›</span>';
+  button.innerHTML='<span class="event-camera-icon" aria-hidden="true">📷</span><strong>Take event photo</strong><small>Add to gallery</small>';
   let activeEvent=null,session=null;
   const today=()=>{const now=new Date();return `${now.getFullYear()}-${String(now.getMonth()+1).padStart(2,"0")}-${String(now.getDate()).padStart(2,"0")}`};
   const initialise=async()=>{
