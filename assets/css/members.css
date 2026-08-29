@@ -572,6 +572,16 @@
 .event-scorecard-cta{display:inline-flex;align-items:center;gap:8px;flex:0 0 auto;min-height:52px;padding:11px 17px;border:3px solid #b88c1d;border-radius:14px;background:linear-gradient(135deg,#ffe9a1,#d8ac39);color:#062d20;text-decoration:none;box-shadow:0 8px 22px rgba(92,65,4,.28);font-size:.92rem;font-weight:950;white-space:nowrap}
 .event-scorecard-cta span{display:grid;place-items:center;width:25px;height:25px;border-radius:50%;background:#073d2a;color:#fff;font-size:1rem}
 .event-scorecard-cta:hover{transform:translateY(-1px);box-shadow:0 9px 22px rgba(109,81,18,.25)}
+.dashboard-event-tools{display:grid;gap:10px;width:100%;margin-top:4px}
+.event-camera-button{display:grid;grid-template-columns:auto minmax(0,1fr) auto;align-items:center;gap:12px;width:100%;min-height:72px;padding:11px 14px;border:2px solid #c7a96b;border-radius:16px;background:linear-gradient(135deg,#f4faf6,#fff9e9);color:#123f31;text-align:left;box-shadow:0 8px 20px rgba(24,74,56,.1);cursor:pointer;font:inherit}
+.event-camera-button:hover{transform:translateY(-1px);box-shadow:0 10px 24px rgba(24,74,56,.14)}
+.event-camera-icon{display:grid;place-items:center;width:46px;height:46px;border-radius:14px;background:#315c4a;color:#fff;font-size:1.35rem;box-shadow:inset 0 0 0 1px rgba(255,255,255,.18)}
+.event-camera-copy,.event-camera-copy strong,.event-camera-copy small{display:block}
+.event-camera-copy strong{font-size:1rem;font-weight:950;line-height:1.15}
+.event-camera-copy small{margin-top:4px;color:#68716c;font-size:.72rem;font-weight:750;line-height:1.25}
+.event-camera-arrow{color:#a37d28;font-size:1.85rem;font-weight:700;line-height:1}
+.event-camera-button.is-uploading .event-camera-copy small{visibility:hidden}
+.event-camera-button.is-done{border-color:#4f8066;background:#e9f5ee}
 .season-chip { padding:.45rem .75rem;border-radius:999px;background:#f7edcf;color:#735717;font-weight:800; }
 .legacy-stat-grid { display:grid;grid-template-columns:repeat(3,1fr);gap:.75rem;margin:1.25rem 0; }
 .legacy-stat-grid div { padding:1rem;border-radius:16px;background:#f4f7f5; }

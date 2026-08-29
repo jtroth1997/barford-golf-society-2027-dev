@@ -6,7 +6,7 @@ addCss("assets/css/deep-teal-theme.css?v=10","deepTealTheme");
 if(currentPage==="index.html"){
   body.classList.add("product-premium");
   addCss("assets/css/product-premium.css?v=4","productPremium");
-  addCss("assets/css/mobile-redesign.css?v=3","mobileRedesign");
+  addCss("assets/css/mobile-redesign.css?v=4","mobileRedesign");
   addCss("assets/css/brilliant.css?v=3","brilliantProduct");
 }
 body.classList.add("matchday-ui");
