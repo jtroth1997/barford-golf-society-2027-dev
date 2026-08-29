@@ -993,3 +993,14 @@
 
 /* Fast, single-purpose event weather status on the member dashboard. */
 .dashboard-weather-card{display:flex;gap:12px;align-items:center;margin:12px 0;padding:14px 16px;border:1px solid #d8e3dc;border-radius:14px;background:#f4f8f5}.dashboard-weather-card>span{font-size:1.65rem}.dashboard-weather-card small,.dashboard-weather-card strong,.dashboard-weather-card p{display:block}.dashboard-weather-card small{color:#52635a;font-size:.72rem;font-weight:800;text-transform:uppercase;letter-spacing:.05em}.dashboard-weather-card strong{margin-top:2px;color:#063d2a}.dashboard-weather-card p{margin:3px 0 0;color:#52635a;font-size:.84rem}
+
+
+/* Live event attendance summary */
+.dashboard-attendance{display:flex;align-items:center;justify-content:space-between;gap:14px;margin:14px 0 18px;padding:12px 14px;border:1px solid rgba(199,169,107,.7);border-radius:16px;background:linear-gradient(135deg,#fffaf0,#f5f8f5)}
+.attendance-count{display:flex;align-items:center;gap:9px;color:var(--green-800)}
+.attendance-count span{color:#4f8066;font-size:.72rem}
+.attendance-count strong{font-size:.94rem;line-height:1.2}
+.dashboard-attendance .button{flex:0 0 auto;min-height:42px;padding:.65rem .9rem;font-size:.82rem}
+.event-players-list article div{display:grid;gap:2px}
+.event-players-list article small{color:var(--muted);font-size:.76rem}
+@media (max-width:520px){.dashboard-attendance{align-items:stretch;flex-direction:column}.dashboard-attendance .button{width:100%}}
