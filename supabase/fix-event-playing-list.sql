@@ -1,5 +1,5 @@
--- Fix confirmed player list lookup.
--- Qualifies rsvps.member_id so it is not confused with the function's output column.
+-- Signed-in member playing list for dashboard attendance.
+-- Returns names only; no email addresses, phone numbers or other profile data.
 
 create or replace function public.get_event_playing_list(target_event_id uuid)
 returns table(member_id uuid, full_name text)
@@ -11,16 +11,6 @@ as $$
 begin
   if auth.uid() is null then
     raise exception 'Please sign in to view the playing list.';
-  end if;
-
-  if not public.is_admin() and not exists (
-    select 1
-    from public.rsvps r_check
-    where r_check.event_id = target_event_id
-      and r_check.member_id = auth.uid()
-      and r_check.status = 'playing'
-  ) then
-    raise exception 'Only confirmed players can view this event playing list.';
   end if;
 
   return query
