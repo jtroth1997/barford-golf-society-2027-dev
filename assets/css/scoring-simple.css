@@ -12,3 +12,8 @@ body.scoring-page{height:100dvh;overflow:hidden}.scoring-page .score-app{height:
 
 /* Keep the fixed scorecard controls in the layout so they never cover the final keypad row. */
 #scoreReady .hole-actions{position:static;left:auto;bottom:auto;transform:none;width:100%;box-sizing:border-box}
+
+/* iPhone Safari: leave enough room to render the full rounded bottom keypad row. */
+#scoreReady .score-keypad{grid-template-rows:32px auto;padding-bottom:8px;overflow:visible}
+#scoreReady .keypad-grid{grid-template-rows:repeat(4,41px);overflow:visible}
+#scoreReady .keypad-grid button{height:41px;min-height:41px}
