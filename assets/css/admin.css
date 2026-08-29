@@ -79,3 +79,11 @@
   .admin-tee-preview,.admin-gallery-grid{min-width:0}
   .tee-photo-card textarea{width:100%;box-sizing:border-box}
 }
+
+.scorecard-auto-import{display:grid;gap:10px;margin:18px 0;padding:18px;border:1px solid rgba(199,169,107,.75);border-radius:18px;background:linear-gradient(135deg,#f4faf6,#fffaf0)}
+.scorecard-auto-import>div{display:grid;gap:3px}
+.scorecard-auto-import strong{color:#315c4a;font-size:1.05rem}
+.scorecard-auto-import small{color:#68716c;font-weight:700}
+.scorecard-auto-import p{margin:0;color:#4f5d56;font-size:.9rem;line-height:1.45}
+.scorecard-auto-import a{color:#315c4a;font-weight:800;text-decoration:underline}
+@media(max-width:620px){.scorecard-auto-import .button{width:100%}}
