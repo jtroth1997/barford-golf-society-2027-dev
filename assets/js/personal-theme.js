@@ -65,14 +65,15 @@
   window.BarfordPersonalTheme = { apply, valid };
 
   (async () => {
-    const { data: { session } } = await client.auth.getSession();
+    const session = (await client.auth.getSession()).data.session;
     if (!session) return;
     const key = `barford-personal-theme-${session.user.id}`;
     try {
       const cached = JSON.parse(localStorage.getItem(key) || "null");
       if (cached) apply(cached.primary, cached.accent);
     } catch {}
-    const { data } = await client.from("profiles").select("theme_primary,theme_accent").eq("id", session.user.id).maybeSingle();
+    const context = window.BarfordMemberContext ? await window.BarfordMemberContext : null;
+    const data = context?.profile || (await client.from("profiles").select("theme_primary,theme_accent").eq("id", session.user.id).maybeSingle()).data;
     if (data) apply(data.theme_primary, data.theme_accent, key);
   })().catch(() => {});
 })();

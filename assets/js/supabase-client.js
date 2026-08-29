@@ -19,10 +19,20 @@
     }
   );
 
-  const personalThemeStyle = document.createElement("link");
-  personalThemeStyle.rel = "stylesheet";
-  personalThemeStyle.href = "assets/css/personal-theme.css?v=2";
-  document.head.appendChild(personalThemeStyle);
+  if (!document.querySelector('link[href*="personal-theme.css"]')) {
+    const personalThemeStyle = document.createElement("link");
+    personalThemeStyle.rel = "stylesheet";
+    personalThemeStyle.href = "assets/css/personal-theme.css?v=3";
+    document.head.appendChild(personalThemeStyle);
+  }
+  window.BarfordMemberContext = (async () => {
+    const { data: { session } } = await window.BarfordSupabase.auth.getSession();
+    if (!session) return { session: null, profile: null };
+    const { data: profile } = await window.BarfordSupabase.from("profiles")
+      .select("id,full_name,is_admin,photo_url,theme_primary,theme_accent").eq("id", session.user.id).maybeSingle();
+    document.body.classList.toggle("is-admin", Boolean(profile?.is_admin));
+    return { session, profile };
+  })();
   const personalThemeScript = document.createElement("script");
   personalThemeScript.src = "assets/js/personal-theme.js?v=2";
   document.body.appendChild(personalThemeScript);
@@ -40,11 +50,5 @@
 
   // Normal members never see Admin in navigation. Existing authorised admins
   // get the link back automatically after their signed-in profile is checked.
-  (async () => {
-    const { data: { session } } = await window.BarfordSupabase.auth.getSession();
-    if (!session) return;
-    const { data: profile } = await window.BarfordSupabase.from("profiles")
-      .select("is_admin").eq("id", session.user.id).maybeSingle();
-    document.body.classList.toggle("is-admin", Boolean(profile?.is_admin));
-  })().catch(() => {});
+  window.BarfordMemberContext.catch(() => {});
 })();

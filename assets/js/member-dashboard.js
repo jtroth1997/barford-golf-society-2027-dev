@@ -540,7 +540,9 @@
     set("dashboardFirstName", knownName.split(/\s+/)[0]);
     set("dashboardFullName", knownName);
 
-    const profilePromise = client.from("profiles").select("id,full_name,is_admin,photo_url").eq("id", session.user.id).single();
+    const profilePromise = window.BarfordMemberContext
+      ? window.BarfordMemberContext.then(({ profile }) => ({ data: profile }))
+      : client.from("profiles").select("id,full_name,is_admin,photo_url").eq("id", session.user.id).single();
     const corePromise = loadNextEvent().then(loadPayments);
     const [{ data: profile }] = await Promise.all([profilePromise, corePromise]);
     const name = profile?.full_name || knownName;

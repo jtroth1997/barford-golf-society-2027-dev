@@ -8,7 +8,6 @@
   --brass-soft:linear-gradient(135deg,#8c6426 0%,#e2c477 28%,#fff2b0 47%,#bc8b39 70%,#76501d 100%);
   --shadow-sm:0 12px 30px rgba(5,42,42,.1),0 2px 7px rgba(70,48,15,.08);--shadow:0 28px 75px rgba(5,42,42,.2)
 }
-
 /* One official header lock-up on every standard page. */
 body.matchday-ui:not(.scoring-page) .site-header,
 body.matchday-ui:not(.scoring-page) .global-site-header{
@@ -94,6 +93,7 @@ body:not(.scoring-page):not(.gps-page){
   color:#f5efdc;
   box-shadow:inset 0 0 120px rgba(1,24,21,.22);
 }
+@media(max-width:850px){body:not(.scoring-page):not(.gps-page){background-attachment:scroll}}
 body:not(.scoring-page):not(.gps-page) main{color:#f5efdc}
 body:not(.scoring-page):not(.gps-page) main>.section,
 body:not(.scoring-page):not(.gps-page) .member-home-grid{background:transparent}
