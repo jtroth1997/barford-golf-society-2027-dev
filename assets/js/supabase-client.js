@@ -21,10 +21,10 @@
 
   const personalThemeStyle = document.createElement("link");
   personalThemeStyle.rel = "stylesheet";
-  personalThemeStyle.href = "assets/css/personal-theme.css?v=1";
+  personalThemeStyle.href = "assets/css/personal-theme.css?v=2";
   document.head.appendChild(personalThemeStyle);
   const personalThemeScript = document.createElement("script");
-  personalThemeScript.src = "assets/js/personal-theme.js?v=1";
+  personalThemeScript.src = "assets/js/personal-theme.js?v=2";
   document.body.appendChild(personalThemeScript);
 
   // Keep the shared assignment/tee guard, which is not declared in page HTML.

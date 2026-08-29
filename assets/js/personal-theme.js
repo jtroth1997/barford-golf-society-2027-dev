@@ -17,9 +17,17 @@
     });
     return .2126 * channels[0] + .7152 * channels[1] + .0722 * channels[2] > .46 ? "#17231D" : "#FFFFFF";
   };
+  const contrast = colour => {
+    const [maximum, minimum] = [Math.max(...rgb(colour)), Math.min(...rgb(colour))];
+    const saturation = maximum ? (maximum - minimum) / maximum : 0;
+    const brightness = rgb(colour).reduce((total, value, index) => total + value * [.299, .587, .114][index], 0);
+    return { saturation, brightness };
+  };
   const apply = (primaryValue, accentValue, persistKey = "") => {
     const primary = valid(primaryValue) ? primaryValue.toUpperCase() : fallback.primary;
     const accent = valid(accentValue) ? accentValue.toUpperCase() : fallback.accent;
+    const accentQuality = contrast(accent);
+    const action = accentQuality.brightness > 225 || accentQuality.saturation < .12 ? primary : accent;
     const root = document.documentElement;
     const properties = {
       "--member-primary": primary,
@@ -30,6 +38,9 @@
       "--member-accent-dark": mix(accent, "#000000", .22),
       "--member-accent-soft": mix(accent, "#FFFFFF", .82),
       "--member-accent-text": readable(accent),
+      "--member-action": action,
+      "--member-action-dark": mix(action, "#000000", .24),
+      "--member-action-text": readable(action),
       "--green-1000": mix(primary, "#000000", .62),
       "--green-950": mix(primary, "#000000", .48),
       "--green-900": mix(primary, "#000000", .36),
