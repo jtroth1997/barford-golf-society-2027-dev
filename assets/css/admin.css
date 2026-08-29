@@ -87,3 +87,8 @@
 .scorecard-auto-import p{margin:0;color:#4f5d56;font-size:.9rem;line-height:1.45}
 .scorecard-auto-import a{color:#315c4a;font-weight:800;text-decoration:underline}
 @media(max-width:620px){.scorecard-auto-import .button{width:100%}}
+
+/* Keep the admin brand mark compact and consistent with the member site. */
+body.admin-page>.site-header .brand{display:inline-flex;align-items:center;flex:0 0 auto;line-height:0}
+body.admin-page>.site-header .brand img{display:block;width:78px!important;height:62px!important;max-width:78px!important;max-height:62px!important;object-fit:contain!important;background:transparent!important;border-radius:0!important;padding:0!important;box-shadow:none!important}
+@media(max-width:760px){body.admin-page>.site-header .brand img{width:58px!important;height:54px!important;max-width:58px!important;max-height:54px!important}}
