@@ -9,6 +9,7 @@
   let currentScorecard;
   let rsvpChoicesLocked = false;
   let teeGroup = [];
+  let attendancePlayers = [];
   let directionsDestination = "";
   let scorerSelectionRequested = false;
   let legacyCandidate;
@@ -335,51 +336,35 @@
     if (hasPublishedGroup) renderTeeGroup();
   };
 
+  const loadAttendance = async () => {
+    if (!nextEvent) return [];
+    const { data, error } = await client.rpc("get_event_playing_list", { target_event_id: nextEvent.id });
+    attendancePlayers = error ? [] : (data || []);
+    const capacity = Math.max(Number(nextEvent.capacity) || 0, attendancePlayers.length);
+    set("dashboardAttendanceCount", `${attendancePlayers.length} / ${capacity || "—"} slots filled`);
+    show("dashboardAttendance", true);
+    return attendancePlayers;
+  };
+
   const loadPlayingList = async () => {
-    if (!nextEvent || currentRsvp?.status !== "playing") return;
+    if (!nextEvent) return;
     const dialog = document.getElementById("dashboardPlayersDialog");
     const list = document.getElementById("dashboardPlayersList");
-    set("dashboardPlayersSummary", "Loading the tee times…");
+    set("dashboardPlayersSummary", "Loading confirmed players…");
     if (list) list.innerHTML = "";
     dialog?.showModal();
-    const { data, error } = await client.rpc("get_event_tee_times", { target_event_id: nextEvent.id });
-    if (error) {
-      set("dashboardPlayersSummary", "The tee times could not be loaded. Please try again.");
-      return;
-    }
-    const rows = data || [];
-    const groups = new Map();
-    rows.forEach(player => {
-      const key = `${friendlyTime(player.tee_time)}|${player.tee_number || 1}`;
-      if (!groups.has(key)) groups.set(key, []);
-      groups.get(key).push(player);
-    });
-    set("dashboardPlayersSummary", rows.length ? `${groups.size} tee time${groups.size === 1 ? "" : "s"} published for ${nextEvent.name}.` : "Tee times have not been published yet.");
-    if (list) {
-      list.innerHTML = groups.size ? [...groups.entries()].map(([key, players], groupIndex) => {
-        const [time, teeNumber] = key.split("|");
-        return `<section class="event-tee-time-group">
-          <div class="event-tee-time-heading"><strong>${escapeHtml(time)}</strong><span>Tee ${escapeHtml(teeNumber)} · Group ${groupIndex + 1}</span></div>
-          <ul class="event-tee-player-list">${players.map((player, playerIndex) => `<li class="${player.is_you ? "is-you" : ""}">
-            <div class="event-tee-avatar" data-all-tee-avatar="${groupIndex}-${playerIndex}">${escapeHtml(initials(player.full_name))}</div>
-            <strong>${escapeHtml(player.full_name)}${player.is_you ? " (You)" : ""}</strong>
-          </li>`).join("")}</ul>
-        </section>`;
-      }).join("") : "<p>No tee times have been published yet.</p>";
-      [...groups.values()].forEach((players, groupIndex) => players.forEach(async (player, playerIndex) => {
-        if (!player.photo_url) return;
-        const { data: signed } = await client.storage.from("profile-images").createSignedUrl(player.photo_url, 3600);
-        const avatar = list.querySelector(`[data-all-tee-avatar="${groupIndex}-${playerIndex}"]`);
-        if (signed?.signedUrl && avatar) {
-          avatar.innerHTML = `<img src="${escapeHtml(signed.signedUrl)}" alt="">`;
-          avatar.classList.add("has-photo");
-          avatar.dataset.profilePhoto = signed.signedUrl;
-          avatar.tabIndex = 0;
-          avatar.setAttribute("role", "button");
-          avatar.setAttribute("aria-label", `View ${player.full_name || "player"} profile photo`);
-        }
-      }));
-    }
+
+    const players = await loadAttendance();
+    set("dashboardPlayersSummary", players.length
+      ? `${players.length} of ${Number(nextEvent.capacity) || "the available"} slots filled for ${nextEvent.name}.`
+      : `No members have signed up for ${nextEvent.name} yet.`);
+
+    if (!list) return;
+    list.className = "event-players-list";
+    list.innerHTML = players.length ? players.map(player => {
+      const isYou = player.member_id === session.user.id;
+      return `<article class="${isYou ? "is-you" : ""}"><span aria-hidden="true">${escapeHtml(initials(player.full_name))}</span><div><strong>${escapeHtml(player.full_name)}${isYou ? " (You)" : ""}</strong><small>Confirmed as playing</small></div></article>`;
+    }).join("") : "<p>No one has signed up yet.</p>";
   };
 
   const openDirections = () => {
@@ -404,7 +389,7 @@
   const loadNextEvent = async () => {
     const today = localDate();
     const { data: events, error } = await client.from("events")
-      .select("id,name,event_date,status,venue,address,price,latitude,longitude,notes").gte("event_date", today).in("status", ["scheduled", "cancelled"]).order("event_date").limit(1);
+      .select("id,name,event_date,status,venue,address,price,capacity,latitude,longitude,notes").gte("event_date", today).in("status", ["scheduled", "cancelled"]).order("event_date").limit(1);
     if (error || !events?.length) {
       set("dashboardEventName", "No upcoming events");
       set("dashboardEventDetail", "The next society event will appear here when it is announced.");
@@ -456,6 +441,7 @@
     document.getElementById("dashboardEventDirections")?.classList.toggle("hidden", !directionsDestination);
     renderRsvpState();
     renderEventPayment();
+    await loadAttendance();
     const cancelled = nextEvent.status === "cancelled";
     show("dashboardCancelledBanner", cancelled);
     if (cancelled) {
@@ -500,7 +486,7 @@
     if (statusLine) statusLine.textContent = status === "playing"
       ? `Confirmed: you’re playing this event · ${data.buggy_requested ? "Buggy requested" : "Walking"} · ${teeWindowLabel(data.preferred_tee_time)} tee-time preference.`
       : "The committee now knows you cannot attend.";
-    await loadPayments();
+    await Promise.all([loadPayments(), loadAttendance()]);
     return data;
   };
 
@@ -560,6 +546,7 @@
     })
   );
   document.getElementById("dashboardSeePlayers")?.addEventListener("click", loadPlayingList);
+  document.getElementById("dashboardSeeSignups")?.addEventListener("click", loadPlayingList);
   document.getElementById("dashboardLockedSeePlayers")?.addEventListener("click", loadPlayingList);
   document.getElementById("dashboardEventDirections")?.addEventListener("click", openDirections);
   document.getElementById("dashboardRsvpClose")?.addEventListener("click", () => rsvpDialog?.close());
