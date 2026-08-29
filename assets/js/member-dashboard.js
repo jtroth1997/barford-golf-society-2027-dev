@@ -14,7 +14,9 @@
   let scorerSelectionRequested = false;
   let legacyCandidate;
   const syncEventDayDirections = () => {
-    const available = Boolean(nextEvent && nextEvent.event_date === localDate() && nextEvent.status === "scheduled" && currentRsvp?.status === "playing" && directionsDestination);
+    const eventDay = Boolean(nextEvent && nextEvent.event_date === localDate() && nextEvent.status === "scheduled" && currentRsvp?.status === "playing");
+    const available = Boolean(eventDay && directionsDestination);
+    document.body.classList.toggle("event-day-dashboard", eventDay);
     document.body.classList.toggle("event-day-directions-ready", available);
     const button = document.getElementById("dashboardEventDirections");
     button?.classList.toggle("hidden", !available);
