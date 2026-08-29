@@ -82,11 +82,12 @@
     if (navigator.onLine || document.querySelector(".offline-fallback")) return;
     const fallback = document.createElement("div");
     fallback.className = "offline-fallback";
-    fallback.innerHTML = '<div class="offline-hole-visual"></div><div class="offline-fallback-card"><strong>Offline hole view</strong><p>Hole details and GPS are running from this phone.</p></div>';
+    fallback.innerHTML = '<div class="offline-connection-modal" role="alertdialog" aria-labelledby="offlineConnectionTitle" aria-describedby="offlineConnectionMessage"><span aria-hidden="true">⛳</span><small>NO SIGNAL</small><strong id="offlineConnectionTitle">No internet or mobile signal available</strong><p id="offlineConnectionMessage">Looks like your signal has found the rough.</p><em>Your scores are safely saved on this phone.</em><button id="offlineBackToScoring" type="button">Back to scoring</button></div>';
     document.body.prepend(fallback);
     document.getElementById("previousHole").onclick = () => { if (hole > 1) { hole--; draw(); } };
     document.getElementById("nextHole").onclick = () => { if (hole < 18) { hole++; draw(); } };
     document.getElementById("quickScore").onclick = () => history.length > 1 ? history.back() : location.href = "scoring.html?hole=" + hole;
+    document.getElementById("offlineBackToScoring").onclick = () => history.length > 1 ? history.back() : location.href = "scoring.html?hole=" + hole;
     document.getElementById("exitGps").onclick = () => history.length > 1 ? history.back() : location.href = "scoring.html?hole=" + hole;
     document.getElementById("recenterMap").disabled = true;
     draw();

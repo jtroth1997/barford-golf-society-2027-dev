@@ -59,8 +59,6 @@
     $("quickScore").textContent = params.get("from") === "scoring" ? "‹ Back to scoring" : `Hole ${hole} · Enter score`;
     const visual = document.querySelector(".offline-hole-visual");
     if (visual) visual.innerHTML = routeSvg(mapped);
-    const message = document.querySelector(".offline-fallback-card p");
-    if (message) message.textContent = mapped ? "Tee, green and hole route saved on this phone." : "Scorecard details are saved; this hole has no saved map positions yet.";
   };
   const start = () => {
     if (active || window.google?.maps || document.querySelector(".offline-fallback")) return;
@@ -68,11 +66,12 @@
     data = readCourse() || { holes: activeCard?.holes || [], views: [] };
     const fallback = document.createElement("div");
     fallback.className = "offline-fallback";
-    fallback.innerHTML = '<div class="offline-hole-visual"></div><div class="offline-fallback-card"><strong>Offline hole view</strong><p>Your saved course details remain available.</p></div>';
+    fallback.innerHTML = '<div class="offline-connection-modal" role="alertdialog" aria-labelledby="offlineConnectionTitle" aria-describedby="offlineConnectionMessage"><span aria-hidden="true">⛳</span><small>NO SIGNAL</small><strong id="offlineConnectionTitle">No internet or mobile signal available</strong><p id="offlineConnectionMessage">Looks like your signal has found the rough.</p><em>Your scores are safely saved on this phone.</em><button id="offlineBackToScoring" type="button">Back to scoring</button></div>';
     document.body.prepend(fallback);
     $("previousHole").onclick = () => { if (hole > 1) { hole--; paint(); } };
     $("nextHole").onclick = () => { if (hole < 18) { hole++; paint(); } };
     $("quickScore").onclick = () => history.length > 1 ? history.back() : location.href = `scoring.html?hole=${hole}`;
+    $("offlineBackToScoring").onclick = () => history.length > 1 ? history.back() : location.href = `scoring.html?hole=${hole}`;
     $("exitGps").onclick = () => history.length > 1 ? history.back() : location.href = "index.html";
     $("recenterMap").disabled = true;
     paint();
