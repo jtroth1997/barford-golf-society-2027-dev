@@ -13,6 +13,13 @@
   let directionsDestination = "";
   let scorerSelectionRequested = false;
   let legacyCandidate;
+  const syncEventDayDirections = () => {
+    const available = Boolean(nextEvent && nextEvent.event_date === localDate() && nextEvent.status === "scheduled" && currentRsvp?.status === "playing" && directionsDestination);
+    document.body.classList.toggle("event-day-directions-ready", available);
+    const button = document.getElementById("dashboardEventDirections");
+    button?.classList.toggle("hidden", !available);
+    if (button && available) button.innerHTML = `<span aria-hidden="true">➤</span><strong>Directions to ${escapeHtml(nextEvent.venue || nextEvent.name)}</strong><small>Choose Apple Maps, Google Maps or Waze</small>`;
+  };
   const set = (id, value) => {
     const element = document.getElementById(id);
     if (element) element.textContent = value;
@@ -313,7 +320,7 @@
 
     const directions = document.getElementById("dashboardEventDirections");
     directionsDestination = [nextEvent.venue, nextEvent.address].filter(Boolean).join(", ");
-    directions?.classList.toggle("hidden", !directionsDestination);
+    syncEventDayDirections();
   };
 
   const renderRsvpState = () => {
@@ -451,7 +458,7 @@
     set("dashboardEventPrice", money(nextEvent.price));
     show("dashboardEventFacts");
     directionsDestination = [nextEvent.venue, nextEvent.address].filter(Boolean).join(", ");
-    document.getElementById("dashboardEventDirections")?.classList.toggle("hidden", !directionsDestination);
+    syncEventDayDirections();
     renderRsvpState();
     renderEventPayment();
     await loadAttendance();
