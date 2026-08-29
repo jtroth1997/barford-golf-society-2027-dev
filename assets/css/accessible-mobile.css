@@ -347,3 +347,7 @@ button:focus-visible,a:focus-visible,input:focus-visible,select:focus-visible,te
 @media(prefers-reduced-motion:reduce){
   *,*::before,*::after{animation-duration:.01ms!important;animation-iteration-count:1!important;scroll-behavior:auto!important;transition-duration:.01ms!important}
 }
+
+/* Event-day dashboard: keep the next-action copy readable on the pale status panel. */
+body.matchday-ui #memberHomeDashboard .dashboard-next-step.score-ready span{color:#315c4a!important;text-shadow:none!important}
+body.matchday-ui #memberHomeDashboard .dashboard-next-step.score-ready strong{color:#173f32!important;text-shadow:none!important}
