@@ -63,7 +63,7 @@
     if (message) message.textContent = mapped ? "Tee, green and hole route saved on this phone." : "Scorecard details are saved; this hole has no saved map positions yet.";
   };
   const start = () => {
-    if (active || window.google?.maps) return;
+    if (active || window.google?.maps || document.querySelector(".offline-fallback")) return;
     active = true;
     data = readCourse() || { holes: activeCard?.holes || [], views: [] };
     const fallback = document.createElement("div");
