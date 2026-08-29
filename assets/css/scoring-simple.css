@@ -17,3 +17,8 @@ body.scoring-page{height:100dvh;overflow:hidden}.scoring-page .score-app{height:
 #scoreReady .score-keypad{grid-template-rows:32px auto;padding-bottom:8px;overflow:visible}
 #scoreReady .keypad-grid{grid-template-rows:repeat(4,41px);overflow:visible}
 #scoreReady .keypad-grid button{height:41px;min-height:41px}
+
+/* Expand the keypad evenly into the available space without overlapping the action bar. */
+#scoreReady .score-keypad{grid-template-rows:32px minmax(0,1fr)}
+#scoreReady .keypad-grid{height:100%;align-self:stretch;grid-template-rows:repeat(4,minmax(41px,1fr))}
+#scoreReady .keypad-grid button{height:100%;min-height:41px}
