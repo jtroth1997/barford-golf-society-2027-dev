@@ -545,7 +545,6 @@
       if (confirm(message)) saveRsvp("not_playing");
     })
   );
-  document.getElementById("dashboardSeePlayers")?.addEventListener("click", loadPlayingList);
   document.getElementById("dashboardSeeSignups")?.addEventListener("click", loadPlayingList);
   document.getElementById("dashboardLockedSeePlayers")?.addEventListener("click", loadPlayingList);
   document.getElementById("dashboardEventDirections")?.addEventListener("click", openDirections);
