@@ -443,3 +443,7 @@ th{background:linear-gradient(135deg,var(--green-1000),var(--green-800));color:#
 .hero-society-name{color:#f3cf7a!important;text-shadow:0 1px 1px rgba(0,0,0,.75)!important}
 .hero-season-lockup strong{color:#fff8df!important;text-shadow:0 2px 1px rgba(0,0,0,.78)!important}
 .hero-season-lockup em{color:#f0f5f1!important;font-weight:600;text-shadow:0 1px 1px rgba(0,0,0,.7)!important}
+
+
+/* Preserve the transparent hero PNG when the match-day theme is active. */
+body.matchday-ui .hero-art-premium .logo-card{background:transparent!important;box-shadow:none!important;padding:0!important;border-radius:0!important}
