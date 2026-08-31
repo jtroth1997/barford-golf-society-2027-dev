@@ -436,3 +436,10 @@ th{background:linear-gradient(135deg,var(--green-1000),var(--green-800));color:#
   .admin-compact-list>article,
   .dashboard-card:not(:first-child){content-visibility:auto;contain-intrinsic-size:auto 220px}
 }
+
+
+/* Crisp public-home brand lock-up. */
+.hero-art-premium .logo-card img{image-rendering:auto;filter:drop-shadow(0 12px 22px rgba(0,0,0,.24))!important}
+.hero-society-name{color:#f3cf7a!important;text-shadow:0 1px 1px rgba(0,0,0,.75)!important}
+.hero-season-lockup strong{color:#fff8df!important;text-shadow:0 2px 1px rgba(0,0,0,.78)!important}
+.hero-season-lockup em{color:#f0f5f1!important;font-weight:600;text-shadow:0 1px 1px rgba(0,0,0,.7)!important}
